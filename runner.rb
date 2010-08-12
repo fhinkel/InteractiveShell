@@ -6,10 +6,13 @@
 # Takes input from dvd website and passes it to M2 to compute fixed points
 # returns 0 (no errors) or 1 (errors) 
 
+puts "Hello Mike"
+
 unless ARGV.size == 1
   puts "Usage: ruby runner.rb command"
   exit 0
 end
+
 
 command = ARGV[0]
 

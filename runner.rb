@@ -16,13 +16,26 @@ end
 
 command = ARGV[0]
 
+# mkfifo my_pipe
+# echo "command" > my_pipe
+#  tail -f my_pipe | M2 > results.txt
+# print results.txt inside console
 
-puts "This is the command we'll run<br>"
-puts  "M2 --stop --no-debug --silent -q -e '#{command}; exit 0'<br>"
-result = `M2 --stop --no-debug --silent -q -e '#{command}; exit 0'`
+# The fife and tail into M2 must already be running, the pipe must have correct permissions
+#`mkfifo tmp/my_pipe`
+ `echo "#{command}" > tmp/my_pipe`
+#`tail -f tmp/my_pipe | M2 > results.txt &`
+#` rm tmp/my_pipe`
+
+puts "<br>"
+puts `cat results.txt`
+
+#puts "This is the command we'll run<br>"
+#puts  "M2 --stop --no-debug --silent -q -e '#{command}; exit 0'<br>"
+#result = `M2 --stop --no-debug --silent -q -e '#{command}; exit 0'`
 
 
-puts "<pre> #{result} </pre><br>"
+#puts "<pre> #{result} </pre><br>"
 puts "<br>"
 
 

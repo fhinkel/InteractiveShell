@@ -13,10 +13,12 @@ end
 
 command = ARGV[0]
 
-result = `M2 --stop --no-debug --silent -q -e '#{command}; exit0'`
+
+puts  "M2 --stop --no-debug --silent -q -e '#{command}; exit 0'"
+result = `M2 --stop --no-debug --silent -q -e '#{command}; exit 0'`
 
 
-puts results
+puts result
 
 
 exit 0

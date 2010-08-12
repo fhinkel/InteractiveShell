@@ -22,7 +22,7 @@ puts  "M2 --stop --no-debug --silent -q -e '#{command}; exit 0'<br>"
 result = `M2 --stop --no-debug --silent -q -e '#{command}; exit 0'`
 
 
-puts result
+puts "<pre> #{result} </pre><br>"
 puts "<br>"
 
 

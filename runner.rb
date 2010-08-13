@@ -22,8 +22,18 @@ command = ARGV[0]
 # print results.txt inside console
 
 # The fife and tail into M2 must already be running, the pipe must have correct permissions
+# do this to set up the pipe
+
+#inside the tryM2 direcotyr: 
+
+# > mkfifo ppp
+# > chmod 777 ppp
+# > touch results.txt
+# > chmod 777 results.txt
+# > tail -f ppp | M2 > results.txt
+
 #`mkfifo tmp/my_pipe`
- `echo "#{command}" > tmp/my_pipe`
+ `echo "#{command}" > ppp`
 #`tail -f tmp/my_pipe | M2 > results.txt &`
 #` rm tmp/my_pipe`
 

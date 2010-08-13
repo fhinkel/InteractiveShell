@@ -12,7 +12,7 @@ print header, start_html( -title=>'TryM2');
 print start_multipart_form(-name=>'form1', -method =>"POST", -onSubmit=>"return validate()");
 
 print "Enter M2 command: <br>";
-print textarea(-name=>'command', -rows=>'16', -columns=>50, -default=>'print version');
+print textarea(-name=>'command', -rows=>'16', -columns=>50, -default=>'version');
 
 print "<center>", submit('button_name','Submit'),"</center><br><br>";
 

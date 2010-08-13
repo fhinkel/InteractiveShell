@@ -28,7 +28,9 @@ command = ARGV[0]
 #` rm tmp/my_pipe`
 
 puts "<br>"
+puts "<pre>"
 puts `cat results.txt`
+puts "</pre>"
 
 #puts "This is the command we'll run<br>"
 #puts  "M2 --stop --no-debug --silent -q -e '#{command}; exit 0'<br>"

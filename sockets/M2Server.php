@@ -22,9 +22,11 @@ do {
 	$id = trim(socket_read($msgsock,2048, PHP_NORMAL_READ));
 	//echo $id."\n";
 	//echo "id end\n";
+	// Checking if there is a process for this id:
 	if(!isset($pipe[$id])){
 		$pipe[$id] = popen("M2 > results_".$id.".txt 2>&1",'w');
 	}
+	// Setting time limit:
 	$connections[$id] = time() + 10;
 	while($buf = socket_read($msgsock, 2048, PHP_NORMAL_READ)){
 		if( trim($buf) == $id ){
@@ -36,6 +38,7 @@ do {
 	}
 	$current_time = time();
 	$remove = array();
+	// Checking which pipes to close:
 	foreach($connections as $key => $t){
 		if($t <= $current_time){
 			$remove[$key] = 0;
@@ -43,6 +46,7 @@ do {
 		echo $key." ".$t."\n";
 	}
 	echo "-------------\n";
+	// Closing pipes:
 	foreach($remove as $key => $t){
 		echo "Closing: ".$key."\n";
 		pclose($pipe[$key]);

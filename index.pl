@@ -8,8 +8,12 @@
 
 use CGI qw( :standard );
 
-print header, start_html( -title=>'TryM2');
-print start_multipart_form(-name=>'form1', -method =>"POST", -onSubmit=>"return validate()");
+
+print header, start_html( -title=>'TryM2', -script=>{-language=>'JavaScript',-src=>'m2.js'});
+
+
+print start_multipart_form(-name=>'form1', -method =>"POST",
+-onSubmit=>"return validate()", );
 
 print "<table><tr> <td valign=top>";
 print "Enter M2 command: <br>";
@@ -29,6 +33,7 @@ if ($button eq "Submit") {
 }
 
 print "</td></tr></table>";
+
 
 print end_form;
 

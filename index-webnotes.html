@@ -1,64 +1,56 @@
-<!DOCTYPE html PUBLIC>
-<html manifest="webnotes.manifest">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>webnotes</title>
-  <meta name="author" content="Michael Stillman">
-  <!-- Date: 2010-08-20 -->
-  <link rel="stylesheet" href="jqtouch/jqtouch.min.css" type="text/css" media="screen">
-  <link rel="stylesheet" href="themes/apple/theme.min.css" type="text/css" media="screen">
-  <script type="text/javascript" src="jqtouch/jquery.1.3.2.min.js"></script>
-  <script type="text/javascript" src="jqtouch/jqtouch.min.js"></script>
-  <script type="text/javascript" src="webnotes.js"></script>
-</head>
-<body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>
+			TryM2!
+		</title>
+		<link rel="stylesheet" href="m2.css" type="text/css" media="screen">
+		<script type="text/javascript" src="jquery.1.3.2.min.js">
+</script>
+		<script type="text/javascript" src="m2.js">
+</script>
+	</head>
+	<body>
+		<div id="main">
+			<div id="header">
+				<h1>
+					TryM2!
+				</h1>This is our great interactive M2 website.
+			</div>
+			<div id="input">
+				<div class="subHeader">
+					This is your input!
+				</div>Enter M2 commands here
+				<div id="dataIn">
+					<form method="post" id="testform" name="testform">
+						<textarea id="M2In">
+</textarea><br>
+						<input type="submit" class="submit" name="action" value="Submit"> <input type="submit" class="reset" name="action" value="Reset">
+					</form>
+				</div>
+			</div>
+			<div id="output">
+				<div class="subHeader">
+					This is our M2 output.
+				</div>
+				<div id="statusbar">
+					Green or red
+				</div>
+				<div id="dataOut">
+					<form method="post">
+						<textarea id="M2Out">
+</textarea><br>
+						<input type="submit" class="submit" name="action" value="Submit"> <input type="submit" class="reset" name="action" value="Reset">
+					</form>
+				</div>
+			</div>
+		</div><script type="text/javascript">
 
-  <div id="home">
-    <div class="toolbar">
-      <h1>Web Notes</h1>
-      <a class="button add slideup"
-	 href="#addNote">+</a>
-    </div>
-    <ul class="metal">
-      <li id="noteTemplate" class="arrow" style="display:none">
-	<span class="title">Title</span>
-      </li>
-    </ul>
-  </div>
-
-  <div id="addNote">
-    <div class="toolbar">
-      <h1>Add Note</h1>
-      <a class="button cancel"
-	 href="#">Cancel</a>
-    </div>
-    <form method="post">
-      <ul>
-	<li><input type="text" class="title" /></li>
-	<li><textarea class="note" ></textarea></li>
-	<li>
-	  <input type="submit" class="submit" name="action" value="Save Note" />
-	</li>
-      </ul>
-    </form>
-  </div>
-
-  <div id="editNote">
-    <div class="toolbar">
-      <h1>Edit Note</h1>
-      <a class="button cancel" href="#">Cancel</a>
-      <a class="button" onclick="deleteNoteById()">Delete</a>
-    </div>
-    <form method="post">
-      <ul>
-	<li><input type="text" class="title" /></li>
-	<li><textarea class="note" ></textarea></li>
-	<li>
-	  <input type="submit" class="submit" name="action" value="Save Note" />
-	</li>
-      </ul>
-    </form>
-  </div>
-
-</body>
+			$("#testform").submit(function() {
+				$("#M2In").value = "We clicked";
+			  
+			});
+		</script>
+	</body>
 </html>

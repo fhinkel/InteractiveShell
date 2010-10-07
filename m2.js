@@ -5,12 +5,16 @@ $(document).ready(function() {
     for (var i = 1; i <= 5; i++)
     $("#header").append("<a href='#'>" + i + "</a> ");
 
+
+
     // add markup to container and apply click handlers to anchors
     $("#header a").click(function(e) {
         // stop normal link click
         e.preventDefault();
 
-        $("#M2Out").append($(this).html());
+        //$("#M2Out").append($(this).html());
+ 		$("#M2Out").append($("#M2In").val());
+		$("#M2Out").append("\n");
 
 
         // send request

@@ -17,7 +17,7 @@ socket_bind($sock, $address, $port);
 socket_listen($sock, 5);
 
 do {
-	echo "waiting\n";
+	echo "waiting\n\n";
 	// This will wait for a new incoming connection. The
 	// loop is not executed without new connection. This means
 	// that no M2pipe is killed without a new connection even if
@@ -25,20 +25,23 @@ do {
 	// socket_set_nonblock() before loop.
 	$msgsock = socket_accept($sock);
 	$id = trim(socket_read($msgsock,2048, PHP_NORMAL_READ));
+	echo "Incoming connection from ".$id."\n";
 	//echo $id."\n";
 	//echo "id end\n";
 	// Checking if there is a process for this id:
 	if(!isset($pipe[$id])){
-	
-	    // If there is no pipe we might have to get the earlier
-		// commands from the client. One can send a response to
-		// client for indicating this. Since they can be saved
-		// in the session object this should be easy.
+		echo "Creating pipe ".$id.".\n";
 		$pipe[$id] = popen("M2 > results_".$id.".txt 2>&1",'w');
 	}
 	// Setting time limit:
 	$connections[$id] = time() + 10;
 	while($buf = socket_read($msgsock, 2048, PHP_NORMAL_READ)){
+		// echo $buf."\n";
+	    if( trim($buf) == ">>RESET<<"){
+			echo "Pipe ".$id." is being reset.\n";
+		    $connections[$id] = time()-5;
+		    break;
+		}
 		if( trim($buf) == $id ){
 			//echo "input end\n";
 			break;
@@ -52,13 +55,12 @@ do {
 	foreach($connections as $key => $t){
 		if($t <= $current_time){
 			$remove[$key] = 0;
+			echo "Pipe ".$key." has timeout ".$t." and will be closed.\n";
 		}
-		echo $key." ".$t."\n";
 	}
-	echo "-------------\n";
 	// Closing pipes:
 	foreach($remove as $key => $t){
-		echo "Closing: ".$key."\n";
+		echo "Closing pipe ".$key."\n";
 		// closing pipes.
 		pclose($pipe[$key]);
 		unset($connections[$key]);
@@ -66,7 +68,8 @@ do {
 		// remove output files.
 		unlink("results_".$key.".txt");
 	}
-	echo count($remove)."\n";
+	// echo count($remove)."\n";
+	echo "Closing connection to ".$id."\n\n";
 	socket_close($msgsock);
 	
 } while (true);

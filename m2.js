@@ -8,7 +8,8 @@ $(document).ready(function() {
 
 
     // add markup to container and apply click handlers to anchors
-    $("#header a").click(function(e) {
+    //$("#header a").click(function(e) {
+	$("#submit").click(function(e) {
         // stop normal link click
         e.preventDefault();
 

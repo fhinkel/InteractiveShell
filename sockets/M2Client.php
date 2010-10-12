@@ -26,7 +26,7 @@ if(strpos($cmd."\n","exit\n")!==false){
 }
 
 if( $cmd == ">>RESET<<"){
-	echo ">>RESET<<<br>";
+	echo ">>RESET<<";
 	unset($_SESSION['cmds']);
 	socket_write($socket, $cmd."\n");
 	socket_close($socket);

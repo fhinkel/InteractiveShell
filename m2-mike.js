@@ -14,29 +14,35 @@ $(document).ready(function() {
     $("#M2Out").append("\n");
 
     // call to php script
-    $.post("sockets/M2Client.php", {cmd: myCommand}, function(data){
-      if(data != "0") {
-        $("#M2Out").val("Session initialized successfully! "+ data);
-        //$("#M2Out").val($("#M2Out").val() + "Session initialized successfully! "+ data);
-        $("#M2In").val("");
-      } else {
-        $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");
-      }
-    });
+    if (!sendToM2( myCommand, "Session initialized successfully! ")) {
+      $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");
+    }
   });
   
   $("#reset").click(function(e) {
-    $("#M2Out").val("We are resetting the current M2 session.\n");
-    $.post("sockets/M2Client.php", {cmd: ">>RESET<<"}, function(data){
-      $("#M2In").val("");
-    });
-  } );
+    if (!sendToM2( ">>RESET<<", "We are resetting the current M2 session.\n")) {
+      $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");
+    }
+    $("#M2Out").val("");
+  });
 
 
   //$("#M2Out").append(window.getSelected());
   //$("#M2Out").val($("#M2Out").val() + "\n");
 });
 
+// return false on error
+function sendToM2( myCommand, baseString ) {
+  $.post("sockets/M2Client.php", {cmd: myCommand}, function(data){
+    if(data != "0") {
+      $("#M2Out").val(baseString + data );
+      $("#M2In").val("");
+    } else {
+      return false;
+    }
+  });
+  return true;
+}
 
 /* attempt to find a text selection */
 function getSelected() {

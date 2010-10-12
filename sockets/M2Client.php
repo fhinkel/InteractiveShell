@@ -84,6 +84,6 @@ if($c == 5){
 	echo "<br>M2 not done yet.<br>";
 }
 // Reformat output for html use.
-$output = str_replace("\n", "<br>\n", file_get_contents("results_".$id.".txt"));
-echo $output."<br>\n";
+$output = str_replace("dontreplacenothing", "<br>\n", file_get_contents("results_".$id.".txt"));
+echo $output."\n";
 ?>

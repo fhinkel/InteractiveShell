@@ -17,15 +17,15 @@ $(document).ready(function() {
     // call to php script
     $.post("sockets/M2Client.php", {cmd: myCommand}, function(data){
       if(data != "0") {
-        $("#container").html("<b>Session initialized successfully!"+ data + "</b>");
-        $("#cmd").val("");
+        $("#M2Out").append("Session initialized successfully!"+ data);
+        $("#M2In").val("");
       } else {
-        $("#container").html("<b>Something Broke! HELP!</b>");
+        $("#M2Out").append("<b>Something Broke! HELP!</b>");
       }
     });
   });
 
-  $("#M2Out").append(window.getSelected());
+  //$("#M2Out").append(window.getSelected());
   $("#M2Out").append("\n");
 });
 

@@ -12,12 +12,12 @@ $(document).ready(function() {
     myCommand = $("#M2In").val()
     $("#M2Out").append( myCommand);
     $("#M2Out").append("\n");
-    $("#M2Out").append("Button clicked! Send to PHP script:\n");
 
     // call to php script
     $.post("sockets/M2Client.php", {cmd: myCommand}, function(data){
       if(data != "0") {
-        $("#M2Out").val($("#M2Out").val() + "Session initialized successfully!"+ data);
+        $("#M2Out").val("Session initialized successfully! "+ data);
+        //$("#M2Out").val($("#M2Out").val() + "Session initialized successfully! "+ data);
         $("#M2In").val("");
       } else {
         $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");

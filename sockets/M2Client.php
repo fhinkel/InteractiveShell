@@ -4,7 +4,7 @@ session_start();
 
 error_reporting(E_ALL);
 
-echo "<h2>TCP/IP Connection</h2>\n";
+//echo "<h2>TCP/IP Connection</h2>\n";
 
 $service_port = 10000;
 $address = 'localhost';
@@ -18,7 +18,7 @@ $cmd = $_POST['cmd'];
 // echo $cmd."<br>";
 // Sending id to socket server for connecting to correct M2 process.
 socket_write($socket, $id."\n", strlen($id."\n"));
-echo "wrote id<br>";
+//echo "wrote id<br>";
 
 if(strpos($cmd."\n","exit\n")!==false){
 	echo "Exit requested.<br>";
@@ -33,7 +33,7 @@ if( $cmd == ">>RESET<<"){
 	return;
 }
 
-echo "<br> Id: ".$id."<br>\n";
+//echo "<br> Id: ".$id."<br>\n";
 
 // Saving commands so far.
 if(isset($_SESSION['cmds'])){
@@ -50,7 +50,7 @@ if(isset($_SESSION['cmds'])){
 	$_SESSION['cmds']=$cmd."\n";
 }
 
-echo "<br>";
+//echo "<br>";
 
 socket_write($socket, $cmd."\n", strlen($cmd."\n"));
 // Sending id second time for indicating end of input.

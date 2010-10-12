@@ -1,3 +1,13 @@
+// Next:
+// output cursor: move to end, so that new commands are showing
+// get rid of extra newline character so Mike doesn't get offended :( 
+// print output once it's back instead of hitting enter over and over, global
+// event handler? 
+// handle post callback differently. Ajax? 
+// 
+
+
+
 $(document).ready(function() {
   // add markup to container and apply click handlers to anchors
   //$("#header a").click(function(e) {

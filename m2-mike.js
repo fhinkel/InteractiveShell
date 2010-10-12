@@ -17,16 +17,24 @@ $(document).ready(function() {
     // call to php script
     $.post("sockets/M2Client.php", {cmd: myCommand}, function(data){
       if(data != "0") {
-        $("#M2Out").append("Session initialized successfully!"+ data);
+        $("#M2Out").val($("#M2Out").val() + "Session initialized successfully!"+ data);
         $("#M2In").val("");
       } else {
-        $("#M2Out").append("<b>Something Broke! HELP!</b>");
+        $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");
       }
     });
   });
+  
+  $("#reset").click(function(e) {
+    $("#M2Out").val("We are resetting the current M2 session.\n");
+    $.post("sockets/M2Client.php", {cmd: ">>RESET<<"}, function(data){
+      $("#M2In").val("");
+    });
+  } );
+
 
   //$("#M2Out").append(window.getSelected());
-  $("#M2Out").append("\n");
+  //$("#M2Out").val($("#M2Out").val() + "\n");
 });
 
 

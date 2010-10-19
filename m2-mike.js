@@ -1,5 +1,8 @@
 // Next:
-// output cursor: move to end, so that new commands are showing
+// DONE: output cursor: move to end, so that new commands are showing
+
+// resize text area (happens automatically? in Safari) -> set textWidth to width of textarea, whenever user resizes the area (and in the beginning)
+// horizontal scroll bar, so text doesn't wrap
 // get rid of extra newline character so Mike doesn't get offended :( 
 // print output once it's back instead of hitting enter over and over, global
 // event handler? 

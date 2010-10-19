@@ -18,14 +18,7 @@ $(document).ready(function() {
     }
   });
 
-	$("#buttonScroll").click(function() { 
-		mySize = $('#M2Out').val().length;
-		//$t.animate({ scrollTop: mySize}, 1000);
-		$("#M2Out").val($("#M2Out").val() + "\nSize: " + mySize);
-		$('#M2Out').scrollTop(mySize);
-		//animate({scrollTop: 0},'slow'); 
-		return false; // Return false to cancel the default link action
-	});
+
 	
   $("#button1").click(function(e) {
     myCommand = $("#M2In").val()
@@ -55,6 +48,7 @@ function sendToM2( myCommand, baseString ) {
   $.post("sockets/M2Client.php", {cmd: myCommand}, function(data){
     if(data != "0") {
       $("#M2Out").val(baseString + data );
+		scrollDown();
       $("#M2In").val("");
     } else {
       return false;
@@ -77,6 +71,16 @@ function getSelected() {
   $('#M2Out').append("option never");
   return false;
 }
+
+function scrollDown() { 
+	mySize = $('#M2Out').val().length;
+	//$t.animate({ scrollTop: mySize}, 1000);
+	//$("#M2Out").val($("#M2Out").val() + "\nSize: " + mySize);
+	$('#M2Out').scrollTop(mySize);
+	//animate({scrollTop: 0},'slow'); 
+	return false; // Return false to cancel the default link action
+}
+
 /* create sniffer */
 /*$(document).ready(function() {
   $('#content-area').mouseup(function() {

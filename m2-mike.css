@@ -28,6 +28,8 @@ html {
 #M2Out{
 	width: 480px;
 	height: 300px;
+	font-family: 'Courier';
+	overflow:'scroll';
 	
 }
 

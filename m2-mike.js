@@ -5,6 +5,8 @@
 
 // resize text area (happens automatically? in Safari) -> set textWidth to width of textarea, whenever user resizes the area (and in the beginning)
 // horizontal scroll bar, so text doesn't wrap
+// only send current line from text input
+// keep history of input
 // print output once it's back instead of hitting enter over and over, global
 // event handler? 
 // handle post callback differently. Ajax? 
@@ -77,7 +79,7 @@ function scrollDown() {
 
 function submitNow(e) {
   myCommand = $("#M2In").val()
-  $("#M2Out").append( myCommand);
+  //$("#M2Out").append( myCommand);
   //$("#M2Out").append("\n");
 
   // call to php script

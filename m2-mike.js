@@ -13,23 +13,13 @@ $(document).ready(function() {
   //$("#header a").click(function(e) {
   $('#M2In').keypress(function(e) {
     if(e.which == 13){
-      $('#M2Out').append("Bravo, you just hit enter!\n");
-      $('#M2Out').append( getSelected());
+      submitNow();
     }
   });
 
 
 	
-  $("#button1").click(function(e) {
-    myCommand = $("#M2In").val()
-    $("#M2Out").append( myCommand);
-    $("#M2Out").append("\n");
-
-    // call to php script
-    if (!sendToM2( myCommand, "Session initialized successfully! ")) {
-      $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");
-    }
-  });
+  $("#button1").click(submitNow);
   
   $("#reset").click(function(e) {
     if (!sendToM2( ">>RESET<<", "We are resetting the current M2 session.\n")) {
@@ -79,6 +69,17 @@ function scrollDown() {
 	$('#M2Out').scrollTop(mySize);
 	//animate({scrollTop: 0},'slow'); 
 	return false; // Return false to cancel the default link action
+}
+
+function submitNow(e) {
+  myCommand = $("#M2In").val()
+  $("#M2Out").append( myCommand);
+  $("#M2Out").append("\n");
+
+  // call to php script
+  if (!sendToM2( myCommand, "Session initialized successfully! ")) {
+    $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");
+  }
 }
 
 /* create sniffer */

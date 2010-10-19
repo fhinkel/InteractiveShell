@@ -18,6 +18,15 @@ $(document).ready(function() {
     }
   });
 
+	$("#buttonScroll").click(function() { 
+		mySize = $('#M2Out').val().length;
+		//$t.animate({ scrollTop: mySize}, 1000);
+		$("#M2Out").val($("#M2Out").val() + "\nSize: " + mySize);
+		$('#M2Out').scrollTop(mySize);
+		//animate({scrollTop: 0},'slow'); 
+		return false; // Return false to cancel the default link action
+	});
+	
   $("#button1").click(function(e) {
     myCommand = $("#M2In").val()
     $("#M2Out").append( myCommand);

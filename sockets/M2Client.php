@@ -85,5 +85,5 @@ if($c == 5){
 }
 // Reformat output for html use.
 $output = str_replace("dontreplacenothing", "<br>\n", file_get_contents("results_".$id.".txt"));
-echo $output."\n";
+echo $output;
 ?>

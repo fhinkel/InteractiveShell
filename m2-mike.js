@@ -17,6 +17,7 @@
 $(document).ready(function() {
   // add markup to container and apply click handlers to anchors
   //$("#header a").click(function(e) {
+
   $('#M2In').keypress(function(e) {
     if(e.which == 13){
       submitNow();

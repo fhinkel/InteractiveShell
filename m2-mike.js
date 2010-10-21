@@ -55,7 +55,6 @@ $(document).ready(function() {
   // add markup to container and apply click handlers to anchors
   //$("#header a").click(function(e) {
 
-	alert('Hello Mike!');
 
   $('#M2In').keypress(function(e) {
     if(e.which == 13){
@@ -118,11 +117,9 @@ function scrollDown() {
 }
 
 function submitNow(e) {
-  alert('Hello Submission!');
-  myCommand = $("#M2In").val()
-  //$("#M2Out").append( myCommand);
-  //$("#M2Out").append("\n");
 
+  // this should be current line
+  myCommand = editAreaLoader.getSelectedText("example_1");
   // call to php script
   if (!sendToM2( myCommand, "Session initialized successfully! ")) {
     $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");

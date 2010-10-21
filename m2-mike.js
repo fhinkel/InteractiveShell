@@ -15,8 +15,47 @@
 
 
 $(document).ready(function() {
+
+		// initialisation
+		editAreaLoader.init({
+			id: "example_1"	// id of the textarea to transform		
+			,start_highlight: true	// if start with highlight
+			,allow_resize: "both"
+			,allow_toggle: true
+			,word_wrap: false
+			,language: "en"
+			,syntax: "php"	
+		});
+		
+		// callback functions
+		
+		function test_setSelectionRange(id){
+			editAreaLoader.setSelectionRange(id, 100, 150);
+		}
+		
+		function test_getSelectionRange(id){
+			var sel =editAreaLoader.getSelectionRange(id);
+			alert("start: "+sel["start"]+"\nend: "+sel["end"]); 
+		}
+		
+		function test_setSelectedText(id){
+			text= "[REPLACED SELECTION]"; 
+			editAreaLoader.setSelectedText(id, text);
+		}
+		
+		function test_getSelectedText(id){
+			alert(editAreaLoader.getSelectedText(id)); 
+		}
+		
+		function toogle_editable(id)
+		{
+			editAreaLoader.execCommand(id, 'set_editable', !editAreaLoader.execCommand(id, 'is_editable'));
+		}
+	
   // add markup to container and apply click handlers to anchors
   //$("#header a").click(function(e) {
+
+	alert('Hello Mike!');
 
   $('#M2In').keypress(function(e) {
     if(e.which == 13){
@@ -79,6 +118,7 @@ function scrollDown() {
 }
 
 function submitNow(e) {
+  alert('Hello Submission!');
   myCommand = $("#M2In").val()
   //$("#M2Out").append( myCommand);
   //$("#M2Out").append("\n");

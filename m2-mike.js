@@ -21,7 +21,7 @@ $(document).ready(function() {
 			id: "M2In"	// id of the textarea to transform		
 			,start_highlight: true	// if start with highlight
 			,allow_resize: "both"
-			,allow_toggle: true
+			,allow_toggle: false
 			,word_wrap: false
 			,language: "en"
 			,syntax: "php"	
@@ -31,7 +31,7 @@ $(document).ready(function() {
 			id: "M2Out"	// id of the textarea to transform		
 			,start_highlight: true	// if start with highlight
 			,allow_resize: "both"
-			,allow_toggle: true
+			,allow_toggle: false
 			,word_wrap: false
 			,language: "en"
 			,syntax: "php"	
@@ -92,7 +92,8 @@ $(document).ready(function() {
 function sendToM2( myCommand, baseString ) {
   $.post("sockets/M2Client.php", {cmd: myCommand}, function(data){
     if(data != "0") {
-      $("#M2Out").val(baseString + data );
+		editAreaLoader.setValue("M2Out", baseString + data)
+    //  $("#M2Out").val(baseString + data );
 		scrollDown();
       $("#M2In").val("");
     } else {

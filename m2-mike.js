@@ -2,7 +2,10 @@
 // DONE: output cursor: move to end, so that new commands are showing
 // get rid of extra newline character so Mike doesn't get offended :( 
 
-
+// get text from line highlihted -> read code
+// send only current line
+// send on Shift Enter
+ 
 // resize text area (happens automatically? in Safari) -> set textWidth to width of textarea, whenever user resizes the area (and in the beginning)
 // horizontal scroll bar, so text doesn't wrap
 // only send current line from text input
@@ -128,7 +131,10 @@ function scrollDown() {
 }
 
 function submitNow(e) {
+	var sel =editAreaLoader.getSelectionRange("M2In");
+	alert("start: "+sel["start"]+"\nend: "+sel["end"]);
 
+	//alert('position is ' + position);
   // this should be current line
   myCommand = editAreaLoader.getSelectedText("M2In");
   // call to php script

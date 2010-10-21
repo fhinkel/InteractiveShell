@@ -36,11 +36,7 @@ html {
 	overflow:    -moz-scrollbars-horizontal;
 }
 
-#output {
-	position: absolute; 
-	left: 500px; 
 
-}
 
 .subHeader {
 	background-color: #ABABAB;

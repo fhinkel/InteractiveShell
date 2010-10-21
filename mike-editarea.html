@@ -13,26 +13,23 @@
 </head>
 <body>
 <h2>Macaulay2 input</h2>
-<form action='' method='post'>
-	<fieldset>
-		<textarea id="example_1" style="height: 350px; width: 100%;" name="test_1">
+		<textarea id="M2In" style="height: 350px; width: 40%;" name="test_1">
+		</textarea>
+		<textarea id="M2Out" style="height: 350px; width: 40%;" name="test_2">
 		</textarea>
 		<p>Custom controls:<br />
 			<button type="button" id="button1">Send to M2</button>
 		  	<button type="button" id="reset">Reset</button>
-			<input type='button' onclick='alert(editAreaLoader.getValue("example_1"));' value='get value' />
-			<input type='button' onclick='editAreaLoader.setValue("example_1", "new_value");' value='set value' />
-			<input type='button' onclick='test_getSelectionRange("example_1");' value='getSelectionRange' />
-			<input type='button' onclick='test_setSelectionRange("example_1");' value='setSelectionRange' />
-			<input type='button' onclick='test_getSelectedText("example_1");' value='getSelectedText' />
-			<input type='button' onclick='test_setSelectedText("example_1");' value='setSelectedText' />
-			<input type='button' onclick='editAreaLoader.insertTags("example_1", "[OPEN]", "[CLOSE]");' value='insertTags' />
-			<input type='button' onclick='toogle_editable("example_1");' value='Toggle readonly mode' />
+			
 		</p>
-	</fieldset>
-</form>
-<div id="dataOut">
-  <textarea id="M2Out"></textarea><br>
-</div>
 </body>
 </html>
+
+<!-- <input type='button' onclick='alert(editAreaLoader.getValue("example_1"));' value='get value' />
+<input type='button' onclick='editAreaLoader.setValue("example_1", "new_value");' value='set value' />
+<input type='button' onclick='test_getSelectionRange("example_1");' value='getSelectionRange' />
+<input type='button' onclick='test_setSelectionRange("example_1");' value='setSelectionRange' />
+<input type='button' onclick='test_getSelectedText("example_1");' value='getSelectedText' />
+<input type='button' onclick='test_setSelectedText("example_1");' value='setSelectedText' />
+<input type='button' onclick='editAreaLoader.insertTags("example_1", "[OPEN]", "[CLOSE]");' value='insertTags' />
+<input type='button' onclick='toogle_editable("example_1");' value='Toggle readonly mode' /> -->

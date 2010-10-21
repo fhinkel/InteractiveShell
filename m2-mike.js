@@ -18,7 +18,17 @@ $(document).ready(function() {
 
 		// initialisation
 		editAreaLoader.init({
-			id: "example_1"	// id of the textarea to transform		
+			id: "M2In"	// id of the textarea to transform		
+			,start_highlight: true	// if start with highlight
+			,allow_resize: "both"
+			,allow_toggle: true
+			,word_wrap: false
+			,language: "en"
+			,syntax: "php"	
+		});
+		
+		editAreaLoader.init({
+			id: "M2Out"	// id of the textarea to transform		
 			,start_highlight: true	// if start with highlight
 			,allow_resize: "both"
 			,allow_toggle: true
@@ -119,7 +129,7 @@ function scrollDown() {
 function submitNow(e) {
 
   // this should be current line
-  myCommand = editAreaLoader.getSelectedText("example_1");
+  myCommand = editAreaLoader.getSelectedText("M2In");
   // call to php script
   if (!sendToM2( myCommand, "Session initialized successfully! ")) {
     $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");

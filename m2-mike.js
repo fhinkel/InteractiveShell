@@ -131,12 +131,21 @@ function scrollDown() {
 }
 
 function submitNow(e) {
-	var sel =editAreaLoader.getSelectionRange("M2In");
-	alert("start: "+sel["start"]+"\nend: "+sel["end"]);
+  var myCommand;
+  var sel = editAreaLoader.getSelectionRange("M2In");
+  var str = editAreaLoader.getValue("M2In");
+  if (sel["start"] == sel["end"]) {
+    // grab the current line
+    sel["start"] = 1 + str.lastIndexOf("\n", sel["end"]);
+  }
 
-	//alert('position is ' + position);
+  alert("start: "+sel["start"]+"\nend: "+sel["end"]);
+  myCommand = str.slice(sel["start"],sel["end"]) + "\n";
+  alert("command: \n" + myCommand);
+
+  //alert('position is ' + position);
   // this should be current line
-  myCommand = editAreaLoader.getSelectedText("M2In");
+  //myCommand = editAreaLoader.getSelectedText("M2In");
   // call to php script
   if (!sendToM2( myCommand, "Session initialized successfully! ")) {
     $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");

@@ -15,10 +15,10 @@ socket_connect($socket, $address, $service_port);
 $id = session_id();
 
 $cmd = $_POST['cmd'];
-// echo $cmd."<br>";
+// echo $cmd."";
 // Sending id to socket server for connecting to correct M2 process.
 socket_write($socket, $id."\n", strlen($id."\n"));
-//echo "wrote id<br>";
+//echo "wrote id";
 $response = trim(socket_read($socket,1024, PHP_NORMAL_READ));
 // If there is a thread sending commands to M2 for this id, the server
 // will send this response and close the connection.
@@ -29,7 +29,7 @@ if($response == ">>OCCUPIED<<"){
 }
 
 if(strpos($cmd."\n","exit\n")!==false){
-	echo "Exit requested.<br>";
+	echo "Exit requested.";
 	$cmd = ">>RESET<<";
 }
 
@@ -41,7 +41,7 @@ if( $cmd == ">>RESET<<"){
 	return;
 }
 
-//echo "<br> Id: ".$id."<br>\n";
+//echo " Id: ".$id."\n";
 
 // Saving commands so far.
 if(isset($_SESSION['cmds'])){
@@ -50,7 +50,7 @@ if(isset($_SESSION['cmds'])){
 		// commands, then the M2 pipe has
 		// certainly been killed. In this case it could be necessary
 		// to resend all commands given so far.
-		echo "Resending all commands.<br>";
+		echo "Resending all commands.";
 		socket_write($socket, $_SESSION['cmds']);
 	}
 	$_SESSION['cmds']=$_SESSION['cmds'].$cmd."\n";
@@ -58,7 +58,7 @@ if(isset($_SESSION['cmds'])){
 	$_SESSION['cmds']=$cmd."\n";
 }
 
-//echo "<br>";
+//echo "";
 
 socket_write($socket, $cmd."\n", strlen($cmd."\n"));
 // Sending id second time for indicating end of input.
@@ -70,7 +70,7 @@ while((!file_exists("results_".$id.".txt"))&&($c<5)){
 	$c++;
 }
 if($c == 5){
-	echo "<br>No output file.<br>";
+	echo "No output file.";
 	return;
 }
 	//echo "file exists";
@@ -89,9 +89,9 @@ while(($output[0] != ":")&&($c<5)){
 }
 
 if($c == 5){
-	echo "<br>M2 not done yet.<br>";
+	echo "M2 not done yet.";
 }
 // Reformat output for html use.
-$output = str_replace("dontreplacenothing", "<br>\n", file_get_contents("results_".$id.".txt"));
+$output = file_get_contents("results_".$id.".txt");
 echo $output;
 ?>

@@ -18,8 +18,7 @@ $cmd = $_POST['cmd'];
 // echo $cmd."<br>";
 // Sending id to socket server for connecting to correct M2 process.
 socket_write($socket, $id."\n", strlen($id."\n"));
-//echo "wrote id<br>";
-$response = trim(socket_read($socket,1024, PHP_NORMAL_READ));
+/*$response = trim(socket_read($socket,1024, PHP_NORMAL_READ));
 // If there is a thread sending commands to M2 for this id, the server
 // will send this response and close the connection.
 if($response == ">>OCCUPIED<<"){
@@ -27,6 +26,8 @@ if($response == ">>OCCUPIED<<"){
 	socket_close($socket);
 	return;
 }
+echo $response."\n";
+//echo "wrote id<br>";*/
 
 if(strpos($cmd."\n","exit\n")!==false){
 	echo "Exit requested.<br>";
@@ -63,6 +64,7 @@ if(isset($_SESSION['cmds'])){
 socket_write($socket, $cmd."\n", strlen($cmd."\n"));
 // Sending id second time for indicating end of input.
 socket_write($socket, $id."\n", strlen($id."\n"));
+// echo "send second time\n";
 socket_close($socket);
 $c = 0;
 while((!file_exists("results_".$id.".txt"))&&($c<5)){
@@ -93,5 +95,5 @@ if($c == 5){
 }
 // Reformat output for html use.
 $output = str_replace("dontreplacenothing", "<br>\n", file_get_contents("results_".$id.".txt"));
-echo $output;
+echo $output."\n";
 ?>

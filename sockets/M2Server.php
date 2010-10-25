@@ -15,6 +15,7 @@ $port = 10000;
 $sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 socket_bind($sock, $address, $port); 
 socket_listen($sock, 5);
+//socket_set_nonblock($sock);
 
 do {
 	echo "waiting\n\n";

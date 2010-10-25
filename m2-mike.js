@@ -13,7 +13,7 @@
 // print output once it's back instead of hitting enter over and over, global
 // event handler? 
 // handle post callback differently. Ajax? 
-// 
+// make a good keyboard for iPad
 
 
 
@@ -131,7 +131,7 @@ function scrollDown() {
 }
 
 function submitNow(e) {
-	var sel =editAreaLoader.getSelectionRange("M2In");
+	var sel = editAreaLoader.getSelectionRange("M2In");
 	alert("start: "+sel["start"]+"\nend: "+sel["end"]);
 
 	//alert('position is ' + position);

@@ -1,5 +1,5 @@
 require 'socket'
-tcpserver = TCPServer.new('localhost',10000)
+
 
 def handle_connection(server_data, m2_pipes, occupied, timeouts, socket)
 	server_data['numthreads'] += 1
@@ -55,6 +55,8 @@ def timeout(m2_pipes, occupied, id)
 end
 	
 begin
+	tcpserver = TCPServer.new('localhost',10000)
+	print "Initializing.\n"
 	if tcpserver
 		server_data = Hash.new  # Hash table for server data, all global variables go here.
 		server_data['numthreads'] = 0
@@ -73,6 +75,8 @@ begin
 				#print server_data['numthreads'].to_s()+"\n"
 			end				
 		end
+	else
+		print "TCPServer not initialized.\n"
 	end
 rescue Errno::EAGAIN, Errno::ECONNABORTED, Errno::EPROTO, Errno::EINTR
 	IO.select([tcpserver])

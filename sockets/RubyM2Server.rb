@@ -6,6 +6,7 @@ def handle_connection(server_data, m2_pipes, occupied, timeouts, socket)
 	#print "Thread is running\n"
 	id = socket.gets.chomp
 	msgid = "ID: " + id + " - "
+	print msgid + "Connected.\n"
 	if timeouts[id]
 		print msgid + "Unsetting timeout.\n"
 		Thread.kill(timeouts[id])
@@ -56,7 +57,7 @@ end
 	
 begin
 	tcpserver = TCPServer.new('localhost',10000)
-	print "Initializing.\n"
+	print "TCPServer ready.\n"
 	if tcpserver
 		server_data = Hash.new  # Hash table for server data, all global variables go here.
 		server_data['numthreads'] = 0

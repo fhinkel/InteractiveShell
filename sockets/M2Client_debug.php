@@ -10,8 +10,11 @@ $service_port = 10000;
 $address = 'localhost';
 
 /* Create a TCP/IP socket. */
+echo "Creating socket.\n";
 $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+echo "Creating socket succesful. Connecting.\n";
 socket_connect($socket, $address, $service_port);
+echo "Connecting succesful.\n\n"
 $id = session_id();
 
 // These commands will be send to M2.

@@ -56,7 +56,7 @@ def timeout(m2_pipes, occupied, id)
 end
 	
 begin
-	tcpserver = TCPServer.new('localhost',10000)
+	tcpserver = TCPServer.new("127.0.0.1", 10000)
 	print "TCPServer ready.\n"
 	if tcpserver
 		server_data = Hash.new  # Hash table for server data, all global variables go here.

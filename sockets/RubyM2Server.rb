@@ -25,7 +25,9 @@ def handle_connection(server_data, m2_pipes, occupied, timeouts, socket)
 	socket.write ">>READY<<\n";
 	occupied[id] = 1
 	while cmd = socket.gets 
-		cmd = cmd.chomp
+		cmd.chomp! # cut off last character, probably \n?
+		cmd.strip! # remove all leading and trailing white spaces
+		
 		#print cmd+"\n"
 		#print cmd
 		if(cmd == id)
@@ -34,8 +36,15 @@ def handle_connection(server_data, m2_pipes, occupied, timeouts, socket)
 		elsif cmd == ">>RESET<<"
 			print msgid + "Reset.\n"
 			timeout(m2_pipes, occupied, id)
+
 		else
-			m2_pipes[id].puts cmd+"\n"
+		  puts "-"+cmd+"-";
+		  unless (cmd == "")
+		    print "not empty command\n"
+			  m2_pipes[id].puts cmd+"\n"
+		  else
+		    print " empty command\n"
+		  end
 			#client_data[id+'M2pipe'].flush
 		end
 	end

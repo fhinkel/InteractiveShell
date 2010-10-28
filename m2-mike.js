@@ -97,6 +97,7 @@ $(document).ready(function() {
 function sendToM2( myCommand, baseString ) {
   $.post("sockets/M2Client.php", {cmd: myCommand}, function(data){
     if(data != "0") {
+		//alert ('-' + data + '-');
 		editAreaLoader.setValue("M2Out", baseString + data)
     //  $("#M2Out").val(baseString + data );
 		scrollDown();
@@ -150,13 +151,10 @@ function submitNow(e) {
 	}
   }
 
-  alert("start: "+sel["start"]+"\nend: "+sel["end"]);
+  //alert("start: "+sel["start"]+"\nend: "+sel["end"]);
   myCommand = str.slice(sel["start"],sel["end"]) + "\n";
   //alert("command: \n" + myCommand);
 
-  //alert('position is ' + position);
-  // this should be current line
-  //myCommand = editAreaLoader.getSelectedText("M2In");
   // call to php script
   if (!sendToM2( myCommand, "Session initialized successfully! ")) {
     $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");

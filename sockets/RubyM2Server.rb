@@ -38,12 +38,12 @@ def handle_connection(server_data, m2_pipes, occupied, timeouts, socket)
 			timeout(m2_pipes, occupied, id)
 
 		else
-		  puts "-"+cmd+"-";
+		  #puts "-"+cmd+"-";
 		  unless (cmd == "")
-		    print "not empty command\n"
+		    #print "not empty command\n"
 			  m2_pipes[id].puts cmd+"\n"
-		  else
-		    print " empty command\n"
+		  #else
+		    #print " empty command\n"
 		  end
 			#client_data[id+'M2pipe'].flush
 		end

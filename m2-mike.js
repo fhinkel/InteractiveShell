@@ -48,7 +48,7 @@ $(document).ready(function() {
 		
 		function test_getSelectionRange(id){
 			var sel =editAreaLoader.getSelectionRange(id);
-			alert("start: "+sel["start"]+"\nend: "+sel["end"]); 
+			("start: "+sel["start"]+"\nend: "+sel["end"]); 
 		}
 		
 		function test_setSelectedText(id){
@@ -69,8 +69,10 @@ $(document).ready(function() {
   //$("#header a").click(function(e) {
 
 
-  $('#M2In').keypress(function(e) {
+  $('#textarea').keypress(function(e) {
+	alert('enter!');
     if(e.which == 13){
+		
       submitNow();
     }
   });
@@ -95,6 +97,7 @@ $(document).ready(function() {
 function sendToM2( myCommand, baseString ) {
   $.post("sockets/M2Client.php", {cmd: myCommand}, function(data){
     if(data != "0") {
+		//alert ('-' + data + '-');
 		editAreaLoader.setValue("M2Out", baseString + data)
     //  $("#M2Out").val(baseString + data );
 		scrollDown();
@@ -136,16 +139,22 @@ function submitNow(e) {
   var str = editAreaLoader.getValue("M2In");
   if (sel["start"] == sel["end"]) {
     // grab the current line
-    sel["start"] = 1 + str.lastIndexOf("\n", sel["end"]);
+    sel["start"] = 1 + str.lastIndexOf("\n", sel["end"]-1);
+	
+	var endPos = str.indexOf("\n", sel["start"]);
+	if ( endPos != -1) {
+		sel["end"] = endPos;
+	} else {
+		sel["end"] = str.length;
+		//alert ("last line");
+		
+	}
   }
 
-  alert("start: "+sel["start"]+"\nend: "+sel["end"]);
+  //alert("start: "+sel["start"]+"\nend: "+sel["end"]);
   myCommand = str.slice(sel["start"],sel["end"]) + "\n";
-  alert("command: \n" + myCommand);
+  //alert("command: \n" + myCommand);
 
-  //alert('position is ' + position);
-  // this should be current line
-  //myCommand = editAreaLoader.getSelectedText("M2In");
   // call to php script
   if (!sendToM2( myCommand, "Session initialized successfully! ")) {
     $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");

@@ -14,7 +14,7 @@ echo "Creating socket.\n";
 $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 echo "Creating socket succesful. Connecting.\n";
 socket_connect($socket, $address, $service_port);
-echo "Connecting succesful.\n\n"
+echo "Connecting succesful.\n\n";
 $id = session_id();
 
 // These commands will be send to M2.

@@ -4,7 +4,7 @@ require 'socket'
 def handle_connection(server_data, m2_pipes, occupied, timeouts, socket)
 	server_data['numthreads'] += 1
 	#print "Thread is running\n"
-	id = socket.gets.chomp
+	id = socket.gets.chomp	
 	msgid = "ID: " + id + " - "
 	print msgid + "Connected.\n"
 	if timeouts[id]
@@ -41,6 +41,7 @@ def handle_connection(server_data, m2_pipes, occupied, timeouts, socket)
 	end
 	#client_data[id+'M2pipe'].close
 	socket.close
+	print msgid + "Disonnected.\n"
 	occupied[id] = 0;
 	server_data['numthreads'] -= 1
 	timeouts[id] = Thread.new {sleep server_data['timeout']; timeout(m2_pipes, occupied, id)}
@@ -68,7 +69,7 @@ begin
 		loop do
 		socket = tcpserver.accept
 			if socket
-				print "SERVERMSG: Incoming conncetion.\n"
+				print "SERVERMSG: Incoming connection.\n"
 				Thread.new do
 					handle_connection(server_data, m2_pipes, occupied, timeouts, socket)
 				end

@@ -70,11 +70,8 @@ $(document).ready(function() {
 			editAreaLoader.execCommand(id, 'set_editable', !editAreaLoader.execCommand(id, 'is_editable'));
 		}
 		
-		function con_keys(e){
-			alert('enter!');
-		}
-		
-				addEvent("M2In",'keypress',con_keys);
+
+	
 	
   // add markup to container and apply click handlers to anchors
   //$("#header a").click(function(e) {

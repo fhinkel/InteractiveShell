@@ -2,21 +2,31 @@
 // DONE: output cursor: move to end, so that new commands are showing
 // get rid of extra newline character so Mike doesn't get offended :( 
 
-// get text from line highlihted -> read code
+// I think these are DONE:
+// get text from line highlighted
 // send only current line
-// send on Shift Enter,  I don't think we are able to catch Shift-enter :( 
-//
- 
-// resize text area (happens automatically? in Safari) -> set textWidth to width of textarea, whenever user resizes the area (and in the beginning)
-// horizontal scroll bar, so text doesn't wrap
-// only send current line from text input
+// print output once it's back instead of hitting enter over and over
 // keep history of input
-// print output once it's back instead of hitting enter over and over, global
-// event handler? 
-// handle post callback differently. Ajax? 
-// make a good keyboard for iPad
-// textarea in Safari is hard to read because of shadows
 
+
+// handle post callback differently. Ajax? Aren't we already doing Ajax?
+// make a good keyboard for iPad
+
+
+// What about our own edit area? 
+// 	- scroll bars
+//	- use fix width font
+// 	- capture key events (shift-enter or F12)
+//	- resizing
+//  - horizontal scroll bar, so text doesn't wrap
+// 	- output scroll to newest results
+// 	- incorporate input from tutorial
+// 	- communicate the Textarea size to M2 for correct string formatting or set reasonable default at beginning
+//	- undo feature	( command Z?)
+//	- get selection or line
+//	- syntax highlighting
+//	- autocompletion on Tab
+// 	- save contents (input and output)
 
 
 $(document).ready(function() {

@@ -6,21 +6,22 @@ $(document).ready(function() {
 	}
       });
 
-    $("#send").click(submitNow);
-    
-    $("#reset").click(function(e) {
-        e.preventDefault();
-	if (!sendToM2( ">>RESET<<", "We are resetting the current M2 session.\n")) {
-	  $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");
-	}
-	$("#M2Out").val("");
-      });
-
-    $("#M2Out").append($("#M2In").val());
-    $("#M2Out").append("\n");
-    $('#M2Out').append( getSelected());
-    });
+    $("#send").click(sendCallback);
+    $("#reset").click(resetCallback);
 });
+
+function resetCallback(e) {
+  if (!sendToM2( ">>RESET<<", "We are resetting the current M2 session.\n")) {
+    $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");
+  }
+  $("#M2Out").val("");
+}
+
+function sendCallback(e) {
+  alert ('doing send callback');
+  var str = $("#M2in").getSelected();
+  sendToM2( str, "Session initialized successfully! ");
+}
 
 // return false on error
 function sendToM2( myCommand, baseString ) {
@@ -31,6 +32,7 @@ function sendToM2( myCommand, baseString ) {
 	$("#M2Out").val(baseString + data );
 	scrollDown();
       } else {
+	$("#M2Out").val($("#M2Out").val() + "Something Broke! HELP!");
 	return false;
       }
     });
@@ -45,17 +47,17 @@ function scrollDown() {
 
 /* attempt to find a text selection */
 function getSelected() {
-	if(window.getSelection) { $('#M2Out').append("option1\n --" + window.getSelection() + "--"); return window.getSelection();  }
-	
-	else if(document.getSelection) { $('#M2Out').append("option2");return document.getSelection(); }
-	else {
-		var selection = document.selection && document.selection.createRange();
-		if(selection.text) { $('#M2Out').append("option3"); return selection.text; }
-		$('#M2Out').append("option4");
-		return false;
-	}
-	$('#M2Out').append("option never");
-	return false;
+  if(window.getSelection) { $('#M2Out').append("option1\n --" + window.getSelection() + "--"); return window.getSelection();  }
+  
+  else if(document.getSelection) { $('#M2Out').append("option2");return document.getSelection(); }
+  else {
+    var selection = document.selection && document.selection.createRange();
+    if(selection.text) { $('#M2Out').append("option3"); return selection.text; }
+    $('#M2Out').append("option4");
+    return false;
+  }
+  $('#M2Out').append("option never");
+  return false;
 }
 
 

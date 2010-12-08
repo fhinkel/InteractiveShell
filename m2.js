@@ -1,8 +1,7 @@
 $(document).ready(function() {
     $('#M2In').keypress(function(e){
 	if(e.which == 13){
-	  $('#M2Out').append("Bravo, you just hit enter!\n");
-	  $('#M2Out').append( getSelected());
+	  sendToM2( getSelected(), "You hit enter!! ");	  
 	}
       });
 
@@ -20,8 +19,7 @@ function resetCallback(e) {
 
 function sendCallback(e) {
   var str = getSelected();
-  alert ('doing send callback --' + str + '-');
-  sendToM2( str, "Session initialized successfully! ");
+  sendToM2( str, "");
   return false;
 }
 
@@ -33,10 +31,8 @@ function seeCallback(e) {
 
 // return false on error
 function sendToM2( myCommand, baseString ) {
-  alert ('-' + myCommand + '-');
   $.post("sockets/M2Client.php", {cmd: myCommand}, function(data){
       if(data != "0") {
-	alert ('-' + data + '-');
 	$("#M2Out").val(baseString + data );
 	scrollDown();
       } else {

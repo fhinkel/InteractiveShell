@@ -11,22 +11,43 @@
 		<link rel="stylesheet" href="m2.css" type="text/css" media="screen" />
 		<script type="text/javascript" src="m2.js">
 </script>
+		<script type="text/javascript" src="jquery.validate.min.js">
+</script>
 	</head>
 	<body>
-		<h2>
-			Macaulay2 input
-		</h2>
-		<p>
-			<button type="button" id="send">Send to M2</button> <button type="button" id="reset">Reset</button> <button type="button" id="see">See selection</button>
-		</p>
+		<table cellpadding="10" cellspacing="10" border="0">
+			<tr>
+				<td>
+					<h2>
+						Macaulay2 input
+					</h2><button type="button" id="send">Send to M2</button> <button type="button" id="reset">Reset</button> <button type="button" id="see">See selection</button>
+					<div id="signup"></div>
+				</td>
+				<td>
+					<h2>
+						Sign up for our Newsletter
+					</h2>
+					<div id="signup">
+					<form action="" id="signupForm">
+						<div>
+							<label for="name">Name:</label> <input name="name" id="name" type="text" />
+						</div>
+						<div>
+							<label for="email">Email:</label> <input name="email" id="email" type="text" />
+						</div><input type="submit" value="Submit!" />
+					</form>
+					</div>
+				</td>
+			</tr>
+		</table>
 		<p>
 			<textarea id="M2In">
 </textarea> 
 			<textarea id="M2Out">
 </textarea>
-</p>
-<p>
-		To send a command to Macaulay2, hit Shift-Enter or press the "Send to M2" Button!
+		</p>
+		<p>
+			To send a command to Macaulay2, hit Shift-Enter or press the "Send to M2" Button!
 		</p>
 	</body>
 </html>

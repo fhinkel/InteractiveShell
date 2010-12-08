@@ -1,7 +1,8 @@
 $(document).ready(function() {
     $('#M2In').keypress(function(e) {
         if (e.which == 13 && e.shiftKey) {
-			e.preventDefault(); // do not make a line break or remove selected text when sending
+            e.preventDefault();
+            // do not make a line break or remove selected text when sending
             sendToM2(getSelected(), "You hit shift-enter!! ");
         }
     });
@@ -9,6 +10,23 @@ $(document).ready(function() {
     $("#send").click(sendCallback);
     $("#reset").click(resetCallback);
     $("#see").click(seeCallback);
+
+	/*http://bassistance.de/jquery-plugins/jquery-plugin-validation/  */
+    $('#signup form').validate({
+        rules: {
+            name: {
+                required: true,
+            },
+            email: {
+                required: true,
+                email: true
+            }
+
+        },
+        success: function(label) {
+            label.text('OK!').addClass('valid');
+        }
+    });
 });
 
 function resetCallback(e) {
@@ -71,6 +89,8 @@ function getSelected() {
     }
     return str.slice(start, end) + "\n";
 }
+
+
 
 /* Info on selected text:
  * jquery plugin: jquery-fieldselection.js

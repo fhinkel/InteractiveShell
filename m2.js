@@ -8,6 +8,7 @@ $(document).ready(function() {
 
     $("#send").click(sendCallback);
     $("#reset").click(resetCallback);
+    $("#see").click(seeCallback);
 });
 
 function resetCallback(e) {
@@ -21,6 +22,12 @@ function sendCallback(e) {
   var str = $("#M2in").getSelected();
   alert ('doing send callback --' + str + '-');
   sendToM2( str, "Session initialized successfully! ");
+}
+
+function seeCallback(e) {
+  var str = $("#M2In")[0].selectionStart + " to " + $("#M2In")[0].selectionEnd;
+  alert(str);
+  return false;
 }
 
 // return false on error
@@ -51,4 +58,9 @@ function getSelected() {
   return "2+7\n"
 }
 
-
+/* Info on selected text:
+ * jquery plugin: jquery-fieldselection.js
+ * example use: http://laboratorium.0xab.cd/jquery/fieldselection/0.1.0/test.html
+ * DOM: selectionStart, selectionEnd
+ *  stackoverflow: search for selectionStart
+ */

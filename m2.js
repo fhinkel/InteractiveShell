@@ -19,13 +19,14 @@ function resetCallback(e) {
 }
 
 function sendCallback(e) {
-  var str = $("#M2in").getSelected();
+  var str = getSelected();
   alert ('doing send callback --' + str + '-');
   sendToM2( str, "Session initialized successfully! ");
+  return false;
 }
 
 function seeCallback(e) {
-  var str = $("#M2In")[0].selectionStart + " to " + $("#M2In")[0].selectionEnd;
+  var str = getSelected();
   alert(str);
   return false;
 }
@@ -52,10 +53,22 @@ function scrollDown() {
   return false; // Return false to cancel the default link action
 }
 
-/* attempt to find a text selection */
-/* NEEDS TO BE WRITTEN */
+/* get selected text, or current line, in the textarea #M2In */
 function getSelected() {
-  return "2+7\n"
+  var str = $("#M2In").val();
+  var start = $("#M2In")[0].selectionStart;
+  var end = $("#M2In")[0].selectionEnd;
+  if (start == end) {
+    // grab the current line
+    start = 1 + str.lastIndexOf("\n", end-1);
+    var endPos = str.indexOf("\n", start);
+    if ( endPos != -1) {
+      end = endPos;
+    } else {
+      end = str.length;
+    }
+  }
+  return str.slice(start,end) + "\n";  
 }
 
 /* Info on selected text:

@@ -18,8 +18,8 @@ function resetCallback(e) {
 }
 
 function sendCallback(e) {
-  alert ('doing send callback');
   var str = $("#M2in").getSelected();
+  alert ('doing send callback --' + str + '-');
   sendToM2( str, "Session initialized successfully! ");
 }
 
@@ -46,18 +46,9 @@ function scrollDown() {
 }
 
 /* attempt to find a text selection */
+/* NEEDS TO BE WRITTEN */
 function getSelected() {
-  if(window.getSelection) { $('#M2Out').append("option1\n --" + window.getSelection() + "--"); return window.getSelection();  }
-  
-  else if(document.getSelection) { $('#M2Out').append("option2");return document.getSelection(); }
-  else {
-    var selection = document.selection && document.selection.createRange();
-    if(selection.text) { $('#M2Out').append("option3"); return selection.text; }
-    $('#M2Out').append("option4");
-    return false;
-  }
-  $('#M2Out').append("option never");
-  return false;
+  return "2+7\n"
 }
 
 

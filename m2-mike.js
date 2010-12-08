@@ -4,7 +4,8 @@
 
 // get text from line highlihted -> read code
 // send only current line
-// send on Shift Enter
+// send on Shift Enter,  I don't think we are able to catch Shift-enter :( 
+//
  
 // resize text area (happens automatically? in Safari) -> set textWidth to width of textarea, whenever user resizes the area (and in the beginning)
 // horizontal scroll bar, so text doesn't wrap
@@ -14,10 +15,12 @@
 // event handler? 
 // handle post callback differently. Ajax? 
 // make a good keyboard for iPad
+// textarea in Safari is hard to read because of shadows
 
 
 
 $(document).ready(function() {
+
 
 		// initialisation
 		editAreaLoader.init({
@@ -42,6 +45,8 @@ $(document).ready(function() {
 		
 		// callback functions
 		
+
+		
 		function test_setSelectionRange(id){
 			editAreaLoader.setSelectionRange(id, 100, 150);
 		}
@@ -64,9 +69,16 @@ $(document).ready(function() {
 		{
 			editAreaLoader.execCommand(id, 'set_editable', !editAreaLoader.execCommand(id, 'is_editable'));
 		}
+		
+		function con_keys(e){
+			alert('enter!');
+		}
+		
+				addEvent("M2In",'keypress',con_keys);
 	
   // add markup to container and apply click handlers to anchors
   //$("#header a").click(function(e) {
+
 
 
   $('#textarea').keypress(function(e) {

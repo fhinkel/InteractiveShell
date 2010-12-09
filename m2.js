@@ -11,6 +11,8 @@ $(document).ready(function() {
     $("#reset").click(resetCallback);
     $("#see").click(seeCallback);
 
+	$("#lesson1").click(seeCallback);
+
 	/*http://bassistance.de/jquery-plugins/jquery-plugin-validation/  */
     $('#signup form').validate({
         rules: {
@@ -27,6 +29,8 @@ $(document).ready(function() {
             label.text('OK!').addClass('valid');
         }
     });
+
+	$("#tutorial").load("tutorial.html")
 });
 
 function resetCallback(e) {

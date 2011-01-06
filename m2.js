@@ -1,13 +1,16 @@
 $(document).ready(function() {
-    $('#M2In').keypress(function(e) {
+    
+
+	$('#M2In').keypress(function(e) {
         if (e.which == 13 && e.shiftKey) {
             e.preventDefault();
             // do not make a line break or remove selected text when sending
-            sendToM2(getSelected(), "You hit shift-enter!! ");
+
+            sendToM2(getSelected('#M2In'), "You hit shift-enter!! ");
         }
     });
 
-    $("#send").click(sendCallback);
+    $("#send").click(sendCallback( '#M2In' ));
     $("#reset").click(resetCallback);
     $("#see").click(seeCallback);
 
@@ -40,14 +43,16 @@ function resetCallback(e) {
     $("#M2Out").val("");
 }
 
-function sendCallback(e) {
-    var str = getSelected();
-    sendToM2(str, "");
-    return false;
+function sendCallback( inputField ) {
+	return function(e) {
+    	var str = getSelected( inputField );
+	    sendToM2(str, "");
+	    return false;
+	}
 }
 
 function seeCallback(e) {
-    var str = getSelected();
+    var str = getSelected('#M2In');
     alert(str);
     return false;
 }
@@ -77,10 +82,10 @@ function scrollDown() {
 }
 
 /* get selected text, or current line, in the textarea #M2In */
-function getSelected() {
-    var str = $("#M2In").val();
-    var start = $("#M2In")[0].selectionStart;
-    var end = $("#M2In")[0].selectionEnd;
+function getSelected( inputField) {
+    var str = $(inputField).val();
+    var start = $(inputField)[0].selectionStart;
+    var end = $(inputField)[0].selectionEnd;
     if (start == end) {
         // grab the current line
         start = 1 + str.lastIndexOf("\n", end - 1);

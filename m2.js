@@ -7,14 +7,16 @@ $(document).ready(function() {
             // do not make a line break or remove selected text when sending
 
             sendToM2(getSelected('#M2In'), "You hit shift-enter!! ");
+			//sendCallback( '#M2In' );
         }
     });
 
     $("#send").click(sendCallback( '#M2In' ));
+
     $("#reset").click(resetCallback);
     $("#see").click(seeCallback);
 
-	$("#lesson1").click(seeCallback);
+
 
 	/*http://bassistance.de/jquery-plugins/jquery-plugin-validation/  */
     $('#signup form').validate({
@@ -34,7 +36,22 @@ $(document).ready(function() {
     });
 
 	$("#tutorial").load("tutorial.html")
+	
+	$('.lessons').keypress(function(e) {
+		alert ("enter");
+        if (e.which == 13 && e.shiftKey) {
+            e.preventDefault();
+            // do not make a line break or remove selected text when sending
+
+            sendToM2(getSelected('.lessons'), "You hit shift-enter!! ");
+			//sendCallback( '#M2In' );
+        }
+    });
+
+    $("#sendLesson").click(sendCallback( '.lessons' ));
 });
+
+
 
 function resetCallback(e) {
     if (!sendToM2(">>RESET<<", "We are resetting the current M2 session.\n")) {

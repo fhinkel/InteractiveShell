@@ -17,6 +17,7 @@ html {
 #M2Out {
     width: 480px;
     height: 300px;
+	font-family: monospace;
 }
 
 #tutorial {
@@ -26,10 +27,15 @@ html {
 
 .lesson {
 	width: 360px;
-	height: 500px;
+	height: 300px;
 	text-align: center;
 	background-color: #CCFFFF;
 	margin-left: auto ;
   	margin-right: auto ;
   
+}
+
+.tutorialCommands {
+	width: 300px;
+	height: 280px;
 }

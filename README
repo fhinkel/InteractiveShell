@@ -1,10 +1,26 @@
+**Planned Feature List**
+resizing
+incorporate input from tutorial
+communicate the text-area size to M2 for correct string formatting or set reasonable default at beginning
+undo feature	( command Z?)
+syntax highlighting
+autocompletion on Tab
+save contents (input and output)
+
+
+**Tutorial**
+Choice of tutorials to chose from
+"run all" button, run selection/line
+
+
+
 This will be the great tryM2.com!
 
 # The fife and tail into M2 must already be running, the pipe must have
 # correct permissions
 # do this to set up the pipe
 
-#inside the tryM2 direcotyr: 
+#inside the tryM2 directory: 
 
 # > mkfifo ppp
 # > chmod 777 ppp

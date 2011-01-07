@@ -1,16 +1,7 @@
 $(document).ready(function() {
     
 
-	$('#M2In').keypress(function(e) {
-        if (e.which == 13 && e.shiftKey) {
-            e.preventDefault();
-            // do not make a line break or remove selected text when sending
-
-            sendToM2(getSelected('#M2In'), "You hit shift-enter!! ");
-			//sendCallback( '#M2In' );
-        }
-    });
-
+	$('#M2In').keypress(sendOnEnterCallback('#M2In'));
     $("#send").click(sendCallback( '#M2In' ));
 
     $("#reset").click(resetCallback);
@@ -37,21 +28,22 @@ $(document).ready(function() {
 
 	$("#tutorial").load("tutorial.html")
 	
-	$('.lessons').keypress(function(e) {
-		alert ("enter");
-        if (e.which == 13 && e.shiftKey) {
+	$('#M2In').keypress(sendOnEnterCallback('#M2In'));
+    $("#sendLesson").click( function() {
+		alert( "send");
+	});
+});
+
+function sendOnEnterCallback( inputfield ) {
+	return function(e) {
+		if (e.which == 13 && e.shiftKey) {
             e.preventDefault();
             // do not make a line break or remove selected text when sending
 
-            sendToM2(getSelected('.lessons'), "You hit shift-enter!! ");
-			//sendCallback( '#M2In' );
+            sendToM2(getSelected( inputfield ), "You hit shift-enter!! ");
         }
-    });
-
-    $("#sendLesson").click(sendCallback( '.lessons' ));
-});
-
-
+	}
+}
 
 function resetCallback(e) {
     if (!sendToM2(">>RESET<<", "We are resetting the current M2 session.\n")) {
@@ -62,6 +54,7 @@ function resetCallback(e) {
 
 function sendCallback( inputField ) {
 	return function(e) {
+		alert ( inputField );
     	var str = getSelected( inputField );
 	    sendToM2(str, "");
 	    return false;

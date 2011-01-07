@@ -7,33 +7,37 @@ $(document).ready(function() {
     $("#reset").click(resetCallback);
     $("#see").click(seeCallback);
 
-
-
-	/*http://bassistance.de/jquery-plugins/jquery-plugin-validation/  */
-    $('#signup form').validate({
-        rules: {
-            name: {
-                required: true,
-            },
-            email: {
-                required: true,
-                email: true
-            }
-
-        },
-        success: function(label) {
-            label.text('OK!').addClass('valid');
-        }
-    });
+	$('#signup').hide();
 
 	$("#tutorial").load("tutorial.html", function () {
-	  	$('.lessons').keypress(sendOnEnterCallback('.lessons'));
-	    $("#sendLesson").click(sendCallback( '.lessons' ));
-	
+		$('.lessons').keypress( function(e) {
+			sendOnEnter(e, '.lessons');
+			if (e.which == 13 && e.shiftKey) {
+				e.preventDefault();
+				cmd = getSelected( '.lessons' )
+				$('#M2In').val( $('#M2In').val() + cmd );
+			}
+		});
+	    $("#sendLesson").click( function() {
+			cmd = getSelected( '.lessons' )
+			sendToM2( cmd );
+			$('#M2In').val( $('#M2In').val() + cmd );
+		});
 	});
 	
    
 });
+
+
+function sendOnEnter( e, inputfield ) {
+	if (e.which == 13 && e.shiftKey) {
+		e.preventDefault();
+		// do not make a line break or remove selected text when sending
+
+		sendToM2(getSelected( inputfield ), "You hit shift-enter!! ");
+	}
+}
+
 
 function sendOnEnterCallback( inputfield ) {
 	return function(e) {

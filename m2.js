@@ -26,12 +26,13 @@ $(document).ready(function() {
         }
     });
 
-	$("#tutorial").load("tutorial.html")
+	$("#tutorial").load("tutorial.html", function () {
+	  	$('.lessons').keypress(sendOnEnterCallback('.lessons'));
+	    $("#sendLesson").click(sendCallback( '.lessons' ));
 	
-	$('#M2In').keypress(sendOnEnterCallback('#M2In'));
-    $("#sendLesson").click( function() {
-		alert( "send");
 	});
+	
+   
 });
 
 function sendOnEnterCallback( inputfield ) {
@@ -54,7 +55,6 @@ function resetCallback(e) {
 
 function sendCallback( inputField ) {
 	return function(e) {
-		alert ( inputField );
     	var str = getSelected( inputField );
 	    sendToM2(str, "");
 	    return false;

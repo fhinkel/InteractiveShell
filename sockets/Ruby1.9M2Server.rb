@@ -19,10 +19,42 @@ def lobby(socket, sd, cd)
 	else
 		print cd[id+'msgid'] + "Unrecognized request.\n"
 	end
+	print cd[id+'msgid'] + "Leaving lobby.\n"
+end
+
+def erase(id, sd, cd)
+	print cd[id+'msgid'] + "Erase.\n"
+	
+	print cd[id+'m2'].status + "\n"
+	Thread.kill(cd[id+'m2'])
+	cd.delete(id+'m2')
+	Thread.kill(cd[id+'stdoutth'])
+	cd.delete(id+'stdoutth')
+	Thread.kill(cd[id+'stderrth'])
+	cd.delete(id+'stderrth')
+	
+	print cd[id+'msgid'] + "Threads killed.\n"
+
+	cd[id+'filepipe'].close
+        cd[id+'stdout'].close
+        cd[id+'stderr'].close
+
+        cd.delete(id+'filepipe')
+        cd.delete(id+'stdin')
+        cd.delete(id+'stdout')
+        cd.delete(id+'stderr')
+
+	print cd[id+'msgid'] + "This user got erased.\n"
+	cd.delete(id+'msgid')
+	
 end
 
 def m2exit(socket, id, sd, cd)
-	print "todo\n"
+	socket.close
+	print cd[id+'m2'].status + "\n"
+	cd[id+'stdin'].puts "exit\n"
+	cd[id+'stdin'].close
+	erase(id,sd,cd)
 end
 
 def nice_exit(socket, id, sd, cd)
@@ -39,8 +71,9 @@ def get_commands(socket, id, sd, cd)
 	end
 	while cmd = socket.gets
 		cd[id+'stdin'].puts preprocess(cmd)
+		cd[id+'stdin'].flush
 	end
-	print "todo\n"
+	print "todo - disconnect\n"
 end
 
 def prepare(id, sd, cd)

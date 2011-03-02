@@ -14,7 +14,7 @@ def lobby(socket, sd, cd)
 		print cd[id+'msgid'] + "Requesting reset.\n"
 		m2exit(socket, id, sd, cd)
 	when ">>SENDCOMMANDS<<"
-		print cd[id+'msgid'] + "Sending commands.\n"
+		print cd[id+'msgid'] + "Receiving commands.\n"
 		get_commands(socket, id, sd, cd)
 	else
 		print cd[id+'msgid'] + "Unrecognized request.\n"
@@ -87,7 +87,7 @@ def prepare(id, sd, cd)
 end
 
 def write_results(id, pipe, cd)
-	while res = pipe.gets
+	while res = pipe.getc
 		print res
 		cd[id+'filepipe'].puts res
 		cd[id+'filepipe'].flush

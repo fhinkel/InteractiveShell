@@ -1,96 +1,112 @@
 require 'socket'
+require 'pty'
 
-
-def handle_connection(server_data, m2_pipes, occupied, timeouts, socket)
-	server_data['numthreads'] += 1
-	#print "Thread is running\n"
-	id = socket.gets.chomp	
-	msgid = "ID: " + id + " - "
-	print msgid + "Connected.\n"
-	if timeouts[id]
-		print msgid + "Unsetting timeout.\n"
-		Thread.kill(timeouts[id])
+def lobby(socket, sd, cd)
+	id = socket.gets.chomp
+	if !cd[id+'msgid']
+		cd[id+'msgid'] = "ID: " + id + " - "
+		cd[id+'new'] = 1
+		print cd[id+'msgid'] + "Msgid created.\n"
 	end
-	if !m2_pipes[id]
-		print msgid + "Opening pipe.\n"
-		m2_pipes[id] = IO.popen("M2 > results_"+id+".txt 2>&1",'w')
+	request = socket.gets.chomp
+	case request
+	when ">>RESET<<"
+		print cd[id+'msgid'] + "Requesting reset.\n"
+		m2exit(socket, id, sd, cd)
+	when ">>SENDCOMMANDS<<"
+		print cd[id+'msgid'] + "Receiving commands.\n"
+		get_commands(socket, id, sd, cd)
+	else
+		print cd[id+'msgid'] + "Unrecognized request.\n"
 	end
-	#print "id: "+id+"\n";
-	if (occupied[id] == 1)
-		socket.write ">>OCCUPIED<<\n"
-		socket.close
-		print msgid + "Sending occupied signal.\n"
-		return
-	end
-	socket.write ">>READY<<\n";
-	occupied[id] = 1
-	while cmd = socket.gets 
-		cmd.chomp! # cut off last character, probably \n?
-		cmd.strip! # remove all leading and trailing white spaces
-		
-		#print cmd+"\n"
-		#print cmd
-		if(cmd == id)
-			print msgid + "Closing.\n"
-			break
-		elsif cmd == ">>RESET<<"
-			print msgid + "Reset.\n"
-			timeout(m2_pipes, occupied, id)
-
-		else
-		  #puts "-"+cmd+"-";
-		  unless (cmd == "")
-		    #print "not empty command\n"
-			  m2_pipes[id].puts cmd+"\n"
-		  #else
-		    #print " empty command\n"
-		  end
-			#client_data[id+'M2pipe'].flush
-		end
-	end
-	#client_data[id+'M2pipe'].close
-	socket.close
-	print msgid + "Disonnected.\n"
-	occupied[id] = 0;
-	server_data['numthreads'] -= 1
-	timeouts[id] = Thread.new {sleep server_data['timeout']; timeout(m2_pipes, occupied, id)}
+	print cd[id+'msgid'] + "Leaving lobby.\n"
 end
 
-def timeout(m2_pipes, occupied, id)
-	print "ID: " + id + " - Timeout.\n"
-	m2_pipes[id].puts "exit\n"
-	m2_pipes[id].close
-	m2_pipes[id] = nil
-	occupied[id] = nil
-	File.delete("results_" + id + ".txt")
-end
+def erase(id, sd, cd)
+	print cd[id+'msgid'] + "Erase.\n"
 	
+	Process.kill(cd[id+'m2'])
+	cd.delete(id+'m2')
+	Thread.kill(cd[id+'stdoutth'])
+	cd.delete(id+'stdoutth')
+	
+	print cd[id+'msgid'] + "Threads killed.\n"
+
+	cd[id+'filepipe'].close
+        cd[id+'stdout'].close
+
+        cd.delete(id+'filepipe')
+        cd.delete(id+'stdin')
+        cd.delete(id+'stdout')
+
+	print cd[id+'msgid'] + "This user got erased.\n"
+	cd.delete(id+'msgid')
+	
+end
+
+def m2exit(socket, id, sd, cd)
+	socket.close
+	cd[id+'stdin'].puts "exit\n"
+	cd[id+'stdin'].close
+	erase(id,sd,cd)
+end
+
+def nice_exit(socket, id, sd, cd)
+	print "todo\n"
+end
+
+def kill(socket, id, sd, cd)
+	print "todo\n"
+end
+
+def get_commands(socket, id, sd, cd)
+	if cd[id+'new'] == 1
+		prepare(id, sd, cd)
+	end
+	while cmd = socket.gets
+		cd[id+'stdin'].puts preprocess(cmd)
+	end
+	print "todo - disconnect\n"
+end
+
+def prepare(id, sd, cd)
+	print cd[id+'msgid'] + "Creating M2 process.\n"
+	cd[id+'stdout'], cd[id+'stdin'], cd[id+'m2'] = PTY.spawn("M2")
+	cd[id+'stdout'].sync = true
+	print cd[id+'msgid'] + "The pid is " + cd[id+'m2'].to_s + ".\n"
+	cd[id+'filepipe'] = File.new('results_' + id + '.txt', 'a')
+	cd[id+'stdoutth'] = Thread.new {write_results(id, cd[id+'stdout'], cd)}
+	cd[id+'new'] = 0
+end
+
+def write_results(id, pipe, cd)
+	while res = [pipe.getc].pack('c*')
+		print res
+		cd[id+'filepipe'].puts res+"\n"
+		cd[id+'filepipe'].flush
+	end
+end
+
+def preprocess(cmd)
+#	print "todo\n"
+	return cmd
+end
+
 begin
 	tcpserver = TCPServer.new("127.0.0.1", 10000)
 	print "TCPServer ready.\n"
 	if tcpserver
-		server_data = Hash.new  # Hash table for server data, all global variables go here.
-		server_data['numthreads'] = 0
-		server_data['timeout'] = 15
-		m2_pipes = Hash.new
-		occupied = Hash.new
-		timeouts = Hash.new
+		server_data = Hash.new
+		client_data = Hash.new
 		loop do
-		socket = tcpserver.accept
+			socket = tcpserver.accept
 			if socket
-				print "SERVERMSG: Incoming connection.\n"
+				print "SERVER: Incoming connection.\n"
 				Thread.new do
-					handle_connection(server_data, m2_pipes, occupied, timeouts, socket)
+					lobby(socket, server_data, client_data)
 				end
-				
-				#print server_data['numthreads'].to_s()+"\n"
-			end				
+			end
 		end
-	else
-		print "TCPServer not initialized.\n"
 	end
-rescue Errno::EAGAIN, Errno::ECONNABORTED, Errno::EPROTO, Errno::EINTR
-	IO.select([tcpserver])
-	print "went here\n"
-	retry
 end
+

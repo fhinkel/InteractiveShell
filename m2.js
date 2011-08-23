@@ -5,58 +5,72 @@ $(document).ready(function() {
 
 	$('#M2In').keypress(sendOnEnterCallback('#M2In'));
     $("#send").click(sendCallback( '#M2In' ));
-
     $("#reset").click(resetCallback);
-    $("#see").click(seeCallback);
 
-	$('#signup').hide();
-
-	$("#tutorial").load("tutorial.html", function () {
-		$('.lessons').keypress( function(e) {
-			sendOnEnter(e, '.lessons');
-			if (e.which == 13 && e.shiftKey) {
-				e.preventDefault();
-				cmd = getSelected( '.lessons' )
-				$('#M2In').val( $('#M2In').val() + cmd );
-			}
-		});
-	    $("#sendLesson").click( function() {
-			cmd = getSelected( '.lessons' )
-			sendToM2( cmd );
-			$('#M2In').val( $('#M2In').val() + cmd );
-		});
+	var lessonNr = 1;
+	var maxLesson = 1;
+	$("#lesson").load("tutorial.html", function () {
+		maxLesson = $('.lesson').length;
 	});
 	
-   
+	$('#lessonNr').html(lessonNr);
+	loadLesson(lessonNr);
+
+	
+	
+
+	
+	$("#next").click( function(){
+		if( lessonNr < maxLesson ) {
+			lessonNr = lessonNr + 1;
+			loadLesson(lessonNr);
+			$('#lessonNr').html(lessonNr);
+		} else {
+			alert("No next lesson available.");
+		}
+	});
+	$("#previous").click( function(){
+		if( lessonNr > 1 ) {
+			lessonNr = lessonNr - 1;
+			loadLesson(lessonNr);
+			$('#lessonNr').html(lessonNr);
+		} else {
+			alert("No previous lesson available.");
+			
+		}
+	});
 });
 
+function loadLesson(lessonNr)
+{
+	$("#lesson").load("tutorial.html .lesson#" + lessonNr, function () {
+		$("code").click( function() { 
+			var code = $(this).html();
+			$("#M2In").val($("#M2In").val() + "\n" + code);
+			scrollDown( "#M2In" );
+			sendToM2(">>SENDCOMMANDS<<\n" + code);
+		});
+	
+	});
+	
+
+}
 	
 function checkForNewData()
 {
-	
 	$.post("getResults.php", 'offset='+ offset, function(data){
 
 		if(data != "")
 		{
 			$("#M2Out").val($("#M2Out").val() + data); 
-            scrollDown();
+            scrollDown( "#M2Out" );
 			offset = offset + data.length;
 		} 
 
 	});
-	setTimeout("checkForNewData()",250);
+	setTimeout("checkForNewData()",2500);
 }
 
-
-
-function sendOnEnter( e, inputfield ) {
-	if (e.which == 13 && e.shiftKey) {
-		e.preventDefault();
-		// do not make a line break or remove selected text when sending
-
-		sendToM2(">>SENDCOMMANDS<<\n"+getSelected( inputfield ), "You hit shift-enter!! ");
-	}
-}
 
 
 function sendOnEnterCallback( inputfield ) {
@@ -85,12 +99,6 @@ function sendCallback( inputField ) {
 	}
 }
 
-function seeCallback(e) {
-    var str = getSelected('#M2In');
-    alert(str);
-    return false;
-}
-
 // return false on error
 function sendToM2(myCommand, baseString) {
     $.post("sockets/M2Client.php", {
@@ -105,9 +113,9 @@ function sendToM2(myCommand, baseString) {
     return true;
 }
 
-function scrollDown() {
-    mySize = $('#M2Out').val().length;
-    $('#M2Out').scrollTop(mySize);
+function scrollDown( area ) {
+    mySize = $(area).val().length;
+    $(area).scrollTop(mySize);
     return false;
     // Return false to cancel the default link action
 }

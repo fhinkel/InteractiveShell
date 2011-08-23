@@ -11,31 +11,45 @@ html {
 
 #M2In {
     width: 480px;
-    height: 120px;
+    height: 250px;
 }
 
 #M2Out {
     width: 480px;
-    height: 300px;
+    height: 250px;
 	font-family: monospace;
+}
+
+#areaTable {
+	
+}
+
+table{
+	background-color: #E8E8E8;
 }
 
 #tutorial {
 	width: 480px;
-	background-color: #6699FF;
+	height: 280px;
+	background-color: #CCFFFF;
 }
 
 .lesson {
-	width: 360px;
-	height: 300px;
-	text-align: center;
+	/*width: 680px;
+	height: 300px;*/
+	/*text-align: center;*/
 	background-color: #CCFFFF;
 	margin-left: auto ;
   	margin-right: auto ;
   
 }
 
-.lessons {
+/*.lessons {
 	width: 300px;
 	height: 280px;
+}*/
+
+code {
+	background-color: yellow;
+	cursor:pointer;
 }

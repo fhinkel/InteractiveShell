@@ -6,6 +6,7 @@ undo feature	( command Z?)
 syntax highlighting
 autocompletion on Tab
 save contents (input and output)
+upload files that will turn into clickable tutorials, notebook style
 
 
 **Tutorial**

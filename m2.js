@@ -1,5 +1,7 @@
+var offset=0;
+
 $(document).ready(function() {
-    
+    checkForNewData(offset);
 
 	$('#M2In').keypress(sendOnEnterCallback('#M2In'));
     $("#send").click(sendCallback( '#M2In' ));
@@ -28,13 +30,31 @@ $(document).ready(function() {
    
 });
 
+	
+function checkForNewData()
+{
+	
+	$.post("getResults.php", 'offset='+ offset, function(data){
+
+		if(data != "")
+		{
+			$("#M2Out").val($("#M2Out").val() + data); 
+            scrollDown();
+			offset = offset + data.length;
+		} 
+
+	});
+	setTimeout("checkForNewData()",250);
+}
+
+
 
 function sendOnEnter( e, inputfield ) {
 	if (e.which == 13 && e.shiftKey) {
 		e.preventDefault();
 		// do not make a line break or remove selected text when sending
 
-		sendToM2(getSelected( inputfield ), "You hit shift-enter!! ");
+		sendToM2(">>SENDCOMMANDS<<\n"+getSelected( inputfield ), "You hit shift-enter!! ");
 	}
 }
 
@@ -45,7 +65,7 @@ function sendOnEnterCallback( inputfield ) {
             e.preventDefault();
             // do not make a line break or remove selected text when sending
 
-            sendToM2(getSelected( inputfield ), "You hit shift-enter!! ");
+            sendToM2(">>SENDCOMMANDS<<\n"+getSelected( inputfield ), "You hit shift-enter!! ");
         }
 	}
 }
@@ -60,7 +80,7 @@ function resetCallback(e) {
 function sendCallback( inputField ) {
 	return function(e) {
     	var str = getSelected( inputField );
-	    sendToM2(str, "");
+	    sendToM2(">>SENDCOMMANDS<<\n"+str, "");
 	    return false;
 	}
 }
@@ -77,10 +97,7 @@ function sendToM2(myCommand, baseString) {
         cmd: myCommand
     },
     function(data) {
-        if (data != "0") {
-            $("#M2Out").val(baseString + data);
-            scrollDown();
-        } else {
+        if (data != "0") { 
             $("#M2Out").val($("#M2Out").val() + "Something Broke! HELP!");
             return false;
         }

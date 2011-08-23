@@ -17,16 +17,7 @@ Choice of tutorials to chose from
 
 This will be the great tryM2.com!
 
-# The fife and tail into M2 must already be running, the pipe must have
-# correct permissions
-# do this to set up the pipe
+Use index.html in main directory, start the server from inside sockets: 
+ruby RubyM2Server.rb
 
-#inside the tryM2 directory: 
-
-# > mkfifo ppp
-# > chmod 777 ppp
-# > touch results.txt
-# > chmod 777 results.txt
-# > tail -f ppp | M2 > results.txt
-
-
+The php scripts that you're using from inside the Javascript files is sockets/M2Client.php and getResults.php. Be careful with different directories ... 

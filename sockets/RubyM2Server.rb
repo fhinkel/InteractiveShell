@@ -17,15 +17,14 @@ def lobby(socket, sd, cd)
 		print cd[id+'msgid'] + "Receiving commands.\n"
 		get_commands(socket, id, sd, cd)
 	else
-		print cd[id+'msgid'] + "Unrecognized request.\n"
+		print cd[id+'msgid'] + "Unrecognized request:"+request +"\n"
 	end
 	print cd[id+'msgid'] + "Leaving lobby.\n"
 end
 
 def erase(id, sd, cd)
 	print cd[id+'msgid'] + "Erase.\n"
-	
-	Process.kill(cd[id+'m2'])
+	Process.kill(9,cd[id+'m2'])
 	cd.delete(id+'m2')
 	Thread.kill(cd[id+'stdoutth'])
 	cd.delete(id+'stdoutth')
@@ -46,9 +45,12 @@ end
 
 def m2exit(socket, id, sd, cd)
 	socket.close
-	cd[id+'stdin'].puts "exit\n"
-	cd[id+'stdin'].close
-	erase(id,sd,cd)
+	#We might not have cd[id+'stdin'] at this point, i.e., if no M2 was running before
+	if cd.has_key?(id+'stdin') 
+	  cd[id+'stdin'].puts "exit\n"
+	  cd[id+'stdin'].close
+	  erase(id,sd,cd)
+  end
 end
 
 def nice_exit(socket, id, sd, cd)
@@ -80,11 +82,18 @@ def prepare(id, sd, cd)
 end
 
 def write_results(id, pipe, cd)
-	while res = [pipe.getc].pack('c*')
-		print res
-		cd[id+'filepipe'].puts res+"\n"
-		cd[id+'filepipe'].flush
-	end
+      pipe.each { |line| print line 
+    	cd[id+'filepipe'].puts line
+    	  cd[id+'filepipe'].flush 
+  }
+
+	
+  
+#while res = [pipe.getc].pack('c*')
+#	print res
+#	cd[id+'filepipe'].print res
+#	cd[id+'filepipe'].flush
+#end
 end
 
 def preprocess(cmd)

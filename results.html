@@ -1,0 +1,52 @@
+<html>
+	<head>
+		<title>TryM2 with Ajax to retrieve newest content of a file</title>
+		
+			<script type="text/javascript" src="jquery.1.3.2.min.js">
+	</script>
+			<script type="text/javascript">
+		var offset=0;	
+		function checkForNewData()
+		{
+			
+			$.post("getResults.php", 'offset='+ offset, function(data){
+
+				if(data != "")
+				{
+					$("#container").html("Here is the file content:\n\n"+ data + "</b>");
+					$("#stats").html("length is :\n\n"+ data.length + "</br>");
+					offset = offset + data.length;
+					$("#stats2").html("The offset is now "+ offset + "</br>");
+				} else {
+					$("#container").html("<b>No file content! HELP!</b>");
+				}
+		
+			});
+			setTimeout("checkForNewData()",3000);
+		}
+		
+		$(document).ready(function() {
+			
+			alert( "ready!");
+			checkForNewData(offset);
+		});
+		
+		
+		</script>
+		
+		
+	</head>
+	<body>
+			
+		In this file, we try to use Ajax to always provide us with the newest results from the M2 calculation. <br>There should be a file on the server that is constantly changing. As you hit OBTAIN, the newest additions to this file should be downloaded and displayed below. <br>
+	
+		<input type="submit" id="submit" name="submit" value="Obtain" />
+		<pre>
+		<div id="container"></div>
+		<div id="stats"></div>
+		<div id="stats2"></div>
+		</pre>
+	
+		
+	</body>
+</html>

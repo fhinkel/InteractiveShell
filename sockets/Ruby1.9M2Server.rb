@@ -14,7 +14,7 @@ def lobby(socket, sd, cd)
 		print cd[id+'msgid'] + "Requesting reset.\n"
 		m2exit(socket, id, sd, cd)
 	when ">>SENDCOMMANDS<<"
-		print cd[id+'msgid'] + "Receiving commands.\n"
+		print cd[id+'msgid'] + "Sending commands.\n"
 		get_commands(socket, id, sd, cd)
 	else
 		print cd[id+'msgid'] + "Unrecognized request.\n"
@@ -100,6 +100,7 @@ def preprocess(cmd)
 end
 
 begin
+	$stdout.sync = true
 	tcpserver = TCPServer.new("127.0.0.1", 10000)
 	print "TCPServer ready.\n"
 	if tcpserver

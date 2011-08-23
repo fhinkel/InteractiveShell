@@ -1,5 +1,6 @@
 require 'socket'
 require 'pty'
+require 'io/nonblock'
 
 def lobby(socket, sd, cd)
 	id = socket.gets.chomp
@@ -25,7 +26,7 @@ end
 def erase(id, sd, cd)
 	print cd[id+'msgid'] + "Erase.\n"
 	
-	Process.kill(cd[id+'m2'])
+	Process.kill(0,cd[id+'m2'])
 	cd.delete(id+'m2')
 	Thread.kill(cd[id+'stdoutth'])
 	cd.delete(id+'stdoutth')
@@ -93,6 +94,7 @@ def preprocess(cmd)
 end
 
 begin
+	$stdout.sync = true
 	tcpserver = TCPServer.new("127.0.0.1", 10000)
 	print "TCPServer ready.\n"
 	if tcpserver

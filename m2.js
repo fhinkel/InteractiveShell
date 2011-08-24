@@ -80,8 +80,12 @@ function checkForNewData()
 		}
 
 	});
+<<<<<<< HEAD
 	
 	setTimeout("checkForNewData()",waitingtime);
+=======
+	setTimeout("checkForNewData()",250);
+>>>>>>> f458945... update to do list
 }
 
 

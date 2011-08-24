@@ -1,4 +1,7 @@
 var offset=0;
+var waitingtime=2500; // in ms.  Each time we poll for data and don't receive it, we wait longer.
+var maxwaitingtime=60*1000*10; // 10 minutes
+var minwaitingtime=250;
 
 $(document).ready(function() {
     checkForNewData(offset);
@@ -65,10 +68,20 @@ function checkForNewData()
 			$("#M2Out").val($("#M2Out").val() + data); 
             scrollDown( "#M2Out" );
 			offset = offset + data.length;
+			waitingtime = minwaitingtime;
 		} 
+		else
+		{
+		    waitingtime = 5*minwaitingtime;
+		    if (waitingtime > maxwaitingtime)
+		    {
+		        waitingtime = maxwaitingtime;
+		    }
+		}
 
 	});
-	setTimeout("checkForNewData()",2500);
+	
+	setTimeout("checkForNewData()",waitingtime);
 }
 
 
@@ -80,6 +93,8 @@ function sendOnEnterCallback( inputfield ) {
             // do not make a line break or remove selected text when sending
 
             sendToM2(">>SENDCOMMANDS<<\n"+getSelected( inputfield ), "You hit shift-enter!! ");
+            waitingtime = minwaitingtime;
+            setTimeout("checkForNewData()",waitingtime);
         }
 	}
 }
@@ -95,6 +110,8 @@ function sendCallback( inputField ) {
 	return function(e) {
     	var str = getSelected( inputField );
 	    sendToM2(">>SENDCOMMANDS<<\n"+str, "");
+        waitingtime = minwaitingtime;
+        setTimeout("checkForNewData()",waitingtime);
 	    return false;
 	}
 }

@@ -68,7 +68,7 @@ function checkForNewData()
 		} 
 
 	});
-	setTimeout("checkForNewData()",2500);
+	setTimeout("checkForNewData()",250);
 }
 
 

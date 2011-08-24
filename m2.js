@@ -80,7 +80,7 @@ function checkForNewData()
 		}
 
 	});
-	
+
 	setTimeout("checkForNewData()",waitingtime);
 }
 
@@ -104,6 +104,8 @@ function resetCallback(e) {
         $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");
     }
     $("#M2Out").val("");
+	waitingtime = minwaitingtime;
+
 }
 
 function sendCallback( inputField ) {

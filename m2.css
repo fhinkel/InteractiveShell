@@ -3,6 +3,7 @@
 body {
     color:#000;
     background-color: #DCDCDC;
+	width: 1024px;
 }
 
 html {
@@ -10,12 +11,12 @@ html {
 }
 
 #M2In {
-    width: 480px;
+    width: 512px;
     height: 250px;
 }
 
 #M2Out {
-    width: 480px;
+    width: 512px;
     height: 250px;
 	font-family: monospace;
 }
@@ -26,10 +27,12 @@ html {
 
 table{
 	background-color: #E8E8E8;
+	margin-left:auto; 
+	margin-right:auto;
 }
 
 #tutorial {
-	width: 480px;
+	width: 512px;
 	height: 280px;
 	background-color: #CCFFFF;
 }

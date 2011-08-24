@@ -1,4 +1,12 @@
-**Planned Feature List**
+
+Use index.html in main directory or index-ipad.html, start the server from inside sockets: 
+ruby RubyM2Server.rb
+
+The php scripts that you're using from inside the Javascript files is sockets/M2Client.php and getResults.php. Be careful with different directories ...
+
+-------
+
+**Planned Feature List** (some things might be out of date...)
 resizing
 incorporate input from tutorial
 communicate the text-area size to M2 for correct string formatting or set reasonable default at beginning
@@ -7,6 +15,18 @@ syntax highlighting
 autocompletion on Tab
 save contents (input and output)
 upload files that will turn into clickable tutorials, notebook style
+Run all commands in the tutorial up to here
+retrieve newest results right after sending a request and then less frequently
+
+iPad: 
+* scroll bars
+* math keyboard, or buttons of most needed keys
+* move text areas around
+* newRing button: k, p, gens
+* buttons for variables that are available
+
+Involve Amelia, Frank Moore, Bart Snapp, other undergrad research people to have undergrads use this site, maybe develop lessons, develop a project that can be used with this site? Brandy (Elena?) thought computational algebra, any insight?
+
 
 
 **Tutorial**
@@ -15,10 +35,7 @@ Choice of tutorials to chose from
 "run all" button, run selection/line
 
 
-
-This will be the great tryM2.com!
-
-Use index.html in main directory, start the server from inside sockets: 
+Use index.html in main directory or index-ipad.html, start the server from inside sockets: 
 ruby RubyM2Server.rb
 
 The php scripts that you're using from inside the Javascript files is sockets/M2Client.php and getResults.php. Be careful with different directories ... 

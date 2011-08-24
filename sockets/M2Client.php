@@ -12,7 +12,7 @@ $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 socket_connect($socket, $address, $service_port);
 $id = session_id();
 
-$cmd = $_POST['cmd'];
+$cmd = stripslashes($_POST['cmd']);
 // Sending id to socket server for connecting to correct M2 process.
 socket_write($socket, $id."\n");
 

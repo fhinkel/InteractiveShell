@@ -1,4 +1,12 @@
-**Planned Feature List**
+
+Use index.html in main directory or index-ipad.html, start the server from inside sockets: 
+ruby RubyM2Server.rb
+
+The php scripts that you're using from inside the Javascript files is sockets/M2Client.php and getResults.php. Be careful with different directories ...
+
+-------
+
+**Planned Feature List** (some things might be out of date...)
 resizing
 incorporate input from tutorial
 communicate the text-area size to M2 for correct string formatting or set reasonable default at beginning
@@ -27,10 +35,7 @@ Choice of tutorials to chose from
 "run all" button, run selection/line
 
 
-
-This will be the great tryM2.com!
-
-Use index.html in main directory, start the server from inside sockets: 
+Use index.html in main directory or index-ipad.html, start the server from inside sockets: 
 ruby RubyM2Server.rb
 
 The php scripts that you're using from inside the Javascript files is sockets/M2Client.php and getResults.php. Be careful with different directories ... 

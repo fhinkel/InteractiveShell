@@ -1,10 +1,12 @@
 var offset=0;
 var waitingtime=2500; // in ms.  Each time we poll for data and don't receive it, we wait longer.
 var maxwaitingtime=60*1000*10; // 10 minutes
-var minwaitingtime=250;
+var minwaitingtime=2500;
 
 var lessonNr = 1;
 var maxLesson = 1;
+
+var tutorial;
 
 $(document).ready(function() {
     checkForNewData(offset);
@@ -13,16 +15,21 @@ $(document).ready(function() {
     $("#send").click(sendCallback( '#M2In' ));
     $("#reset").click(resetCallback);
 
-	$("#lesson").load("tutorial.html", function () {
-		maxLesson = $('.lesson').length;
-	});
+    $("#tutorial").hide();
+    //$("#tutorial").css("visibility", "hidden");
 	
-	$('#lessonNr').html(lessonNr);
-	loadLesson(lessonNr);
-
+	$("#tutorial").load("tutorial.html", function () {
+        $("code").click( function() { 
+   		    var code = $(this).html();
+    		$("#M2In").val($("#M2In").val() + "\n" + code);
+    		scrollDown( "#M2In" );
+    		sendToM2(">>SENDCOMMANDS<<\n" + code);
+    	});
+		maxLesson = $('.lesson').children().length;
+    	$('#lessonNr').html(lessonNr);
+    	loadLesson(lessonNr);
+  	});	
 	
-	
-
 	
 	$("#next").click( function(){
 	    switchLesson(1);
@@ -31,11 +38,7 @@ $(document).ready(function() {
 	    switchLesson(-1);
 	});
 
-//    $.jQTouch({
-//        touchSelector: ".swipe"
-//    });
-
-	$(function(){ $("#lesson").bind("swipe",function(event, info) {
+	$(function(){ $("#leftwindow").bind("swipe",function(event, info) {
         if (info.direction === "left"){
             switchLesson(1);
         } else if (info.direction === "right") {
@@ -49,23 +52,25 @@ $(document).ready(function() {
 
 function loadLesson(ell)
 {
-	$("#lesson").load("tutorial.html .lesson#" + ell, function () {
-		$("code").click( function() { 
-			var code = $(this).html();
-			$("#M2In").val($("#M2In").val() + "\n" + code);
-			scrollDown( "#M2In" );
-			sendToM2(">>SENDCOMMANDS<<\n" + code);
-		});
-		$('#lessonNr').html(ell);
-	});
+    var selector = ".lesson ."+ell;
+    var thehtml = $(selector).html();
+    $("#lesson").html(thehtml);
+	//$("#leftwindow").html($("#tutorial h3"));
+	//$("#leftwindow").css("visibility", "visible");
+	//$("#leftwindow").html($("#leftwindow").html() + $("#tutorial.lesson#ell").html())
+    //$('#lessonNr').html(ell);
 }
 	
 function switchLesson(incr)
 {
-    if ((lessonNr+incr) >= 1 && (lessonNr+incr) <= maxLesson) {
-        lessonNr = lessonNr + incr;
+    lessonNr = lessonNr + incr;
+    if (lessonNr >= 1 && lessonNr <= maxLesson) {
         loadLesson(lessonNr);
-    } else {
+    } else if (lessonNr == 0){
+        $("#leftwindow").html("<textarea id='M2In' wrap='off'></textarea>");
+    }
+    else {
+        lessonNr = lessonNr - incr;
         alert("lesson with " + lessonNr + "." + incr + " not available");
     }
 }

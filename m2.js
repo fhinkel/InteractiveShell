@@ -15,19 +15,19 @@ $(document).ready(function() {
     $("#send").click(sendCallback( '#M2In' ));
     $("#reset").click(resetCallback);
 
+    $("code").live("click", function() { 
+	    var code = $(this).html();
+		$("#M2In").val($("#M2In").val() + "\n" + code);
+		scrollDown( "#M2In" );
+		sendToM2(">>SENDCOMMANDS<<\n" + code);
+	});
     $("#tutorial").hide();
     $("#inputarea").hide();
+    $("#send").hide();
+    $("#pageIndex").hide();
     
-    //$("#tutorial").css("visibility", "hidden");
-	
 	$("#tutorial").load("tutorial.html", function () {
-        $("code").click( function() { 
-   		    var code = $(this).html();
-    		$("#M2In").val($("#M2In").val() + "\n" + code);
-    		scrollDown( "#M2In" );
-    		sendToM2(">>SENDCOMMANDS<<\n" + code);
-    	});
-		maxLesson = $('.lesson').children().length;
+ 		maxLesson = $('.lesson').children().length;
     	$('#lessonNr').html(lessonNr);
     	loadLesson(lessonNr);
   	});	
@@ -57,11 +57,15 @@ function loadLesson(ell)
     if (ell == 0){
         $("#lesson").hide();
         $("#inputarea").show();
+        $("#send").show();
+        $("#pageIndex").hide();
         
     } else {
         $("#inputarea").hide();
         var selector = ".lesson ."+ell;
         var thehtml = $(selector).html();
+        $("#send").hide();
+        $("#pageIndex").text(lessonNr + "/" + maxLesson).show();
         $("#lesson").html(thehtml).show();
     }
 }
@@ -73,7 +77,7 @@ function switchLesson(incr)
         loadLesson(lessonNr);
     } else {
         lessonNr = lessonNr - incr;
-        alert("lesson with " + lessonNr + "." + incr + " not available");
+        //alert("lesson with " + lessonNr + "." + incr + " not available");
     }
 }
 

@@ -12,6 +12,13 @@ var timerobject;
 $(document).ready(function() {
     checkForNewData(offset);
 
+	$('[lessonId]').click(function(){
+		var lessonId = $(this).attr('lessonId');
+		lessonNr = parseInt( lessonId.match(/\d/g ));
+		//alert("Lesson " + lessonNr);
+		loadLesson(lessonNr);
+	});
+	
 	$('#M2In').keypress(sendOnEnterCallback('#M2In'));
     $("#send").click(sendCallback( '#M2In' ));
     $("#reset").click(resetCallback);

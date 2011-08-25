@@ -11,8 +11,8 @@ html {
 }
 
 #leftwindow, #M2In, #M2Out {
-    width: 512px;
-    height: 750px;
+    width: 505px;
+    height: 650px;
 }
 
 #M2Out {
@@ -26,8 +26,10 @@ table{
 }
 
 #tutorial {
+    /*
 	width: 512px;
 	height: 280px;
+	*/
 	background-color: #CCFFFF;
 }
 

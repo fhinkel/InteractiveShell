@@ -1,7 +1,7 @@
 var offset=0;
 var waitingtime=2500; // in ms.  Each time we poll for data and don't receive it, we wait longer.
 var maxwaitingtime=60*1000*10; // 10 minutes
-var minwaitingtime=250;
+var minwaitingtime=100; // 250;
 
 var lessonNr = 1;
 var maxLesson = 1;
@@ -19,9 +19,12 @@ $(document).ready(function() {
 
     $("code").live("click", function() { 
 	    var code = $(this).html();
+	    //var origcolor = $(this).css('background-color');
+	    //$(this).css('background-color', '#7700aa');
 		$("#M2In").val($("#M2In").val() + "\n" + code);
 		scrollDown( "#M2In" );
 		sendToM2(">>SENDCOMMANDS<<\n" + code);
+		//$(this).css('background-color', origcolor);
 	});
     $("#tutorial").hide();
     $("#inputarea").hide();
@@ -82,7 +85,7 @@ function createMenu()
 	var i = 1;
 	$("#tutorial h4").each( function() {
 		var title = $(this).text();
-		alert("<li class='arrow'><a href='#M2' lessonid='lesson" + i +"'>Lesson " + i +": " + title + "</a></li>" );
+		//alert("<li class='arrow'><a href='#M2' lessonid='lesson" + i +"'>Lesson " + i +": " + title + "</a></li>" );
 		$("#menu").append(
 			"<li class='arrow'><a href='#M2' lessonid='lesson" + i +"'>Lesson " + i +": " + title + "</a></li>");
 		// now create new menu item 

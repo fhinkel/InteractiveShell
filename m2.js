@@ -12,7 +12,7 @@ var timerobject;
 $(document).ready(function() {
     checkForNewData(offset);
 
-	
+	alert(window.orientation);
 	$('#M2In').keypress(sendOnEnterCallback('#M2In'));
     $("#send").click(sendCallback( '#M2In' ));
     $("#reset").click(resetCallback);

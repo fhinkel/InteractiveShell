@@ -3,6 +3,9 @@ var waitingtime=2500; // in ms.  Each time we poll for data and don't receive it
 var maxwaitingtime=60*1000*10; // 10 minutes
 var minwaitingtime=250;
 
+var lessonNr = 1;
+var maxLesson = 1;
+
 $(document).ready(function() {
     checkForNewData(offset);
 
@@ -10,8 +13,6 @@ $(document).ready(function() {
     $("#send").click(sendCallback( '#M2In' ));
     $("#reset").click(resetCallback);
 
-	var lessonNr = 1;
-	var maxLesson = 1;
 	$("#lesson").load("tutorial.html", function () {
 		maxLesson = $('.lesson').length;
 	});
@@ -24,41 +25,51 @@ $(document).ready(function() {
 
 	
 	$("#next").click( function(){
-		if( lessonNr < maxLesson ) {
-			lessonNr = lessonNr + 1;
-			loadLesson(lessonNr);
-			$('#lessonNr').html(lessonNr);
-		} else {
-			alert("No next lesson available.");
-		}
+	    switchLesson(1);
 	});
 	$("#previous").click( function(){
-		if( lessonNr > 1 ) {
-			lessonNr = lessonNr - 1;
-			loadLesson(lessonNr);
-			$('#lessonNr').html(lessonNr);
-		} else {
-			alert("No previous lesson available.");
-			
-		}
+	    switchLesson(-1);
 	});
+
+//    $.jQTouch({
+//        touchSelector: ".swipe"
+//    });
+
+	$(function(){ $("#lesson").bind("swipe",function(event, info) {
+        if (info.direction === "left"){
+            switchLesson(1);
+        } else if (info.direction === "right") {
+            switchLesson(-1);
+        } else {
+            alert("swiped: huh?");
+        }
+        });
+    });
 });
 
-function loadLesson(lessonNr)
+function loadLesson(ell)
 {
-	$("#lesson").load("tutorial.html .lesson#" + lessonNr, function () {
+	$("#lesson").load("tutorial.html .lesson#" + ell, function () {
 		$("code").click( function() { 
 			var code = $(this).html();
 			$("#M2In").val($("#M2In").val() + "\n" + code);
 			scrollDown( "#M2In" );
 			sendToM2(">>SENDCOMMANDS<<\n" + code);
 		});
-	
+		$('#lessonNr').html(ell);
 	});
-	
-
 }
 	
+function switchLesson(incr)
+{
+    if ((lessonNr+incr) >= 1 && (lessonNr+incr) <= maxLesson) {
+        lessonNr = lessonNr + incr;
+        loadLesson(lessonNr);
+    } else {
+        alert("lesson with " + lessonNr + "." + incr + " not available");
+    }
+}
+
 function checkForNewData()
 {
 	$.post("getResults.php", 'offset='+ offset, function(data){

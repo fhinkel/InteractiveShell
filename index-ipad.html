@@ -14,6 +14,7 @@
         <script type="text/javascript">
             var jQT = $.jQTouch({
                 icon: 'myCustomIcon.png',
+                touchSelector: '.swipe',
                 statusBar: 'black',
                 fullscreen: true
             });
@@ -91,7 +92,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <div id="tutorial">
+                            <div class="swipe" id="tutorial">
                                 <h3>
                                     Interactive Tutorial: Lesson <span id="lessonNr"></span>
                                 </h3>

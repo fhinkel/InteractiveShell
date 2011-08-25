@@ -8,16 +8,16 @@ The php scripts that you're using from inside the Javascript files is sockets/M2
 
 * clicking on "send to M2" button should move the cursor to next line
 * take out waiting time
-*sendToM2 functional on lesson pages, send everything up to that point
+* sendToM2 functional on lesson pages, send everything up to that point
 * table of contents: collapse/expand, fix sizes
 * help button
-*tutorial button
-*back button change name
-*change titles: "on the web", "interactive" -> remove or change
-*somehow select font size
+* tutorial button
+* back button change name
+* change titles: "on the web", "interactive" -> remove or change
+* somehow select font size
 * 2 finger zoom
-*detect orientation, side by side, over each other
-
+* detect orientation, side by side, over each other
+* colorization
 
 
 **Planned Feature List** (some things might be out of date...)

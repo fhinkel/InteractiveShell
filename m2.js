@@ -12,7 +12,7 @@ var timerobject;
 $(document).ready(function() {
     checkForNewData(offset);
 
-	
+	alert(window.orientation);
 	$('#M2In').keypress(sendOnEnterCallback('#M2In'));
     $("#send").click(sendCallback( '#M2In' ));
     $("#reset").click(resetCallback);
@@ -33,11 +33,7 @@ $(document).ready(function() {
     
 	$("#tutorial").load("tutorial.html", function () {
  		maxLesson = $('.lesson').children().length;
-		// here we need to populate the menu on the home screen
-		
 		createMenu();
-		
-		
     	$('#lessonNr').html(lessonNr);
     	loadLesson(lessonNr);
   	});	
@@ -105,18 +101,14 @@ function createMenu()
 	var i = 1;
 	$("#tutorial h4").each( function() {
 		var title = $(this).text();
-		//alert("<li class='arrow'><a href='#M2' lessonid='lesson" + i +"'>Lesson " + i +": " + title + "</a></li>" );
 		$("#menu").append(
 			"<li class='arrow'><a href='#M2' lessonid='lesson" + i +"'>Lesson " + i +": " + title + "</a></li>");
-		// now create new menu item 
-		//$('[lessonId]').text( "Lesson " + i + ": " + title );
 		i = i + 1;
 	} );
 
 	$('[lessonid]').click(function(){
 		var lessonId = $(this).attr('lessonid');
 		lessonNr = parseInt( lessonId.match(/\d/g ));
-		//alert("Lesson " + lessonNr);
 		loadLesson(lessonNr);
 	});
 

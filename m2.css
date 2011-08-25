@@ -10,19 +10,13 @@ html {
     color:#000;
 }
 
-#M2In {
+#leftwindow, #M2In, #M2Out {
     width: 512px;
-    height: 250px;
+    height: 750px;
 }
 
 #M2Out {
-    width: 512px;
-    height: 250px;
 	font-family: monospace;
-}
-
-#areaTable {
-	
 }
 
 table{
@@ -46,11 +40,6 @@ table{
   	margin-right: auto ;
   
 }
-
-/*.lessons {
-	width: 300px;
-	height: 280px;
-}*/
 
 code {
 	background-color: yellow;

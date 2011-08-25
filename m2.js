@@ -1,12 +1,13 @@
 var offset=0;
 var waitingtime=2500; // in ms.  Each time we poll for data and don't receive it, we wait longer.
 var maxwaitingtime=60*1000*10; // 10 minutes
-var minwaitingtime=2500;
+var minwaitingtime=250;
 
 var lessonNr = 1;
 var maxLesson = 1;
 
 var tutorial;
+var timerobject;
 
 $(document).ready(function() {
     checkForNewData(offset);
@@ -94,16 +95,16 @@ function checkForNewData()
 		} 
 		else
 		{
-		    waitingtime = 5*minwaitingtime;
+		    waitingtime = 2*waitingtime;
 		    if (waitingtime > maxwaitingtime)
 		    {
 		        waitingtime = maxwaitingtime;
 		    }
 		}
-
+        $("#waittime").text("waiting time: " + waitingtime);
+    	timerobject = setTimeout("checkForNewData()",waitingtime);
 	});
 
-	setTimeout("checkForNewData()",waitingtime);
 }
 
 
@@ -115,8 +116,6 @@ function sendOnEnterCallback( inputfield ) {
             // do not make a line break or remove selected text when sending
 
             sendToM2(">>SENDCOMMANDS<<\n"+getSelected( inputfield ), "You hit shift-enter!! ");
-            waitingtime = minwaitingtime;
-            setTimeout("checkForNewData()",waitingtime);
         }
 	}
 }
@@ -126,22 +125,23 @@ function resetCallback(e) {
         $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");
     }
     $("#M2Out").val("");
-	waitingtime = minwaitingtime;
-
 }
 
 function sendCallback( inputField ) {
 	return function(e) {
     	var str = getSelected( inputField );
 	    sendToM2(">>SENDCOMMANDS<<\n"+str, "");
-        waitingtime = minwaitingtime;
-        setTimeout("checkForNewData()",waitingtime);
 	    return false;
 	}
 }
 
 // return false on error
 function sendToM2(myCommand, baseString) {
+    clearTimeout(timerobject);
+    waitingtime = minwaitingtime;
+    $("#waittime").text("waiting time: " + waitingtime);
+    timerobject = setTimeout("checkForNewData()",waitingtime);
+    
     $.post("sockets/M2Client.php", {
         cmd: myCommand
     },

@@ -60,8 +60,28 @@ $(document).ready(function() {
         }
         });
     });
+    
+    
+    updateOrientation();
 });
 
+function updateOrientation()
+{
+    var orient ="";
+    switch(window.orientation) {
+        case 0:
+        case 180:
+            orient = "show_portrait";
+            break;
+        case -90:
+        case 90:
+            orient = "show_landscape";
+            break;
+        default:
+            orient = "show_landscape";
+    }
+    $("body").attr("class", orient);
+}
 function loadLesson(ell)
 {
     if (ell == 0){

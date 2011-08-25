@@ -3,37 +3,71 @@
 body {
     color:#000;
     background-color: #DCDCDC;
-	width: 1024px;
+    font-family: Helvetica;
 }
 
+#content_portrait {
+    display: none;
+}
+#content_landscape {
+    display: none;
+}
+
+.show_portrait {
+    height: 1000px;
+    width: 768px;
+}
+
+.show_landscape {
+    width: 1024px;
+    height: 744px;
+}
+
+td {
+    width: 50%;
+}
 html {
     color:#000;
 }
 
+.shortrow {
+    height: 5%;
+}
+
+.largerow {
+    height: 90%;
+}
+
+#tutorial {
+    display: none;
+}
+
 #leftwindow, #M2In, #M2Out {
-    width: 505px;
-    height: 650px;
+    /* width: 505px;
+    height: 650px; */
+    width: 100%;
+    height: 100%;
+    /*height: 90%;*/
 }
 
 #M2Out {
 	font-family: monospace;
 }
 
+
 table{
 	background-color: #E8E8E8;
 	margin-left:auto; 
 	margin-right:auto;
+	height: 100%;
 }
 
-#tutorial {
-    /*
-	width: 512px;
-	height: 280px;
-	*/
-	background-color: #CCFFFF;
+div {
+	height: 100%;
 }
 
 .lesson {
+    height: 100%;
 	/*width: 680px;
 	height: 300px;*/
 	/*text-align: center;*/

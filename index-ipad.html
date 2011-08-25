@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="viewport" content="width=device-width;">
 		<link rel="stylesheet" href="jqtouch/jqtouch/jqtouch.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="jqtouch/themes/jqt/theme.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="m2.css" type="text/css" media="screen">
@@ -23,7 +24,7 @@ var jQT = $.jQTouch({
 			M2 for ipad
 		</title>
 	</head>
-	<body>
+	<body onorientationchange="updateOrientation();">
 		<div id="home">
 			<div class="toolbar">
 				<h1>
@@ -59,7 +60,7 @@ var jQT = $.jQTouch({
 			</div>
 			<div>
 				<table cellpadding="0" cellspacing="0" border="0" id="areaTable">
-					<tr>
+					<tr class="shortrow">
 						<td>
 							<h3>
 								Macaulay2 input
@@ -72,7 +73,7 @@ var jQT = $.jQTouch({
 						</td>
 						<td></td>
 					</tr>
-					<tr>
+					<tr class="shortrow">
 						<td>
 							<button type="button" id="previous">Previous</button> <button type="button" id="next">Next</button> <button type="button" id="send">Send to M2</button> <span id="pageIndex"></span> <span id="waittime"></span>
 						</td>
@@ -80,7 +81,7 @@ var jQT = $.jQTouch({
 							<button type="button" id="reset">Reset</button>
 						</td>
 					</tr>
-					<tr>
+					<tr class="largerow">
 						<td>
 							<div id="leftwindow" class="swipe">
 								<div id="lesson"></div>

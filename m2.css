@@ -85,9 +85,13 @@ html {
     display: none;
 }
 
-#lesson, inputarea, #M2In, #M2Out {
+#lesson, #inputarea, #M2In, #M2Out {
     width: 100%;
     height: 100%;
+}
+
+#inputarea {
+	height: 90%; /*we want to override!*/
 }
 
 #M2Out {

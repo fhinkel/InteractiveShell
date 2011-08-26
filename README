@@ -13,12 +13,12 @@ The php scripts that you're using from inside the Javascript files is sockets/M2
 * help button
 * tutorial button
 * back button change name
-* change titles: "on the web", "interactive" -> remove or change
 * somehow select font size
 * 2 finger zoom
-* detect orientation, side by side, over each other
 * colorization
 
+* detect orientation, side by side, over each other
+* change titles: "on the web", "interactive" -> remove or change
 
 **Planned Feature List** (some things might be out of date...)
 resizing

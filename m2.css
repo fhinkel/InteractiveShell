@@ -42,11 +42,20 @@ body {
 	clear:both;
 	float: left;
 	width:50%;
+	height: 700;
 }
 
-#rightwindow{
+#rightwindow {
 	float: right;
 	width:50%;
+}
+
+#rightwindow.show_landscape {
+	height: 700px;
+}
+
+#rightwindow.show_portrait {
+	height: 300px;
 }
 
 #content_portrait {

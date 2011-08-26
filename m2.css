@@ -1,50 +1,46 @@
 /*CSS Sheet for TryM2*/
 
 body {
-    color:#000;
-	background-color: #C8C8C8  ;
     font-family: Helvetica;
 }
 
-#headers{
+#headers {
 	position: relative;
 }
 
+.padded {
+	padding:5px 15px;
+}
+
 #headerIn{
-	background-color: #C8C8C8  ;
 	width: 40%;
 	float: left;
 	padding:5px 15px;
 }
 
 #headerOut{
-	background-color: #C8C8C8  ;
 	float: right;
 	width:40%;
 	padding:5px 15px;
 }
 
 #M2headerOut{
-	background-color: #C8C8C8  ;
 	float: left;
 	width:50%;
 }
 
-#TOC{
-	background-color: #C8C8C8  ;
+#toc{
 	float: right;
 }
 
 #leftbuttons{
 	clear:both;
-	background-color: #C8C8C8  ;
 	float: left;
 	width:40%;
 	padding:5px 15px;
 }
 
 #rightbuttons{
-	background-color: #C8C8C8  ;
 	float: right;
 	width:40%;
 	padding:5px 15px;
@@ -92,11 +88,6 @@ body {
 }
 
 
-html {
-    color:#000;
-}
-
-
 #tutorial {
     display: none;
 }
@@ -122,7 +113,7 @@ html {
 	margin-left: auto ;
   	margin-right: auto ;
 	background-color: #C8C8C8  ;
-  
+  	color: black;
 }
 
 code {
@@ -138,7 +129,7 @@ code {
     width: 15em;
     border: 1px solid #ccc;
     border-top-width: 0;
-    background-color: #e3e3e3;
+    background-color: #C8C8DD;
 }
 
 #page-contents a {

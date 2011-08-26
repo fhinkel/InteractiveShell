@@ -58,7 +58,7 @@ body {
 }
 
 #leftwindow.show_landscape, #rightwindow.show_landscape {
-	height: 700px;
+	height: 650px;
 }
 
 #leftwindow.show_portrait, #rightwindow.show_portrait {

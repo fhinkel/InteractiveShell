@@ -65,7 +65,7 @@ $(document).ready(function() {
     $('<div id="page-contents"></div>')
     .prepend('<a class="toggler" href="#">Page Contents</a>')
     .append('<div></div>')
-    .prependTo('#testtoggler');
+    .prependTo('#toc');
     
     
     $('#page-contents > a.toggler').click( function() {

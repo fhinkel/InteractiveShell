@@ -3,10 +3,13 @@
 body {
     color:#000;
     background-color: #DCDCDC;
+
     font-family: Helvetica;
 }
 
 #headers{
+	background-color: #C8C8C8  ;
+	
 	position: relative;
 }
 #headerIn{
@@ -27,6 +30,8 @@ body {
 }
 
 #leftbuttons{
+	background-color: #C8C8C8  ;
+	
 	clear:both;
 	
 	float: left;
@@ -34,6 +39,8 @@ body {
 }
 
 #rightbuttons{
+	background-color: #C8C8C8  ;
+	
 	float: right;
 	width:50%;
 }
@@ -115,7 +122,6 @@ code {
 }
 
 #page-contents {
-    
     text-align: left;
     /*position: absolute;
     top: 0;

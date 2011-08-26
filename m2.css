@@ -2,43 +2,33 @@
 
 body {
     color:#000;
-    background-color: green;
-
+	background-color: #C8C8C8  ;
     font-family: Helvetica;
 }
 
 #headers{
 	background-color: #C8C8C8  ;
+	
 	position: relative;
 }
 #headerIn{
-	background-color: #C8C8C8  ;
-	
 	float: left;
 }
 #headerOut{
-	background-color: #C8C8C8  ;
-	
 	float: right;
 	width:50%;
 }
 
 #M2headerOut{
-	background-color: #C8C8C8  ;
-	
 	float: left;
 	width:50%;
 }
 
 #TOC{
-	background-color: #C8C8C8  ;
-	
 	float: right;
 }
 
 #leftbuttons{
-	background-color: #C8C8C8  ;
-	
 	clear:both;
 	
 	float: left;
@@ -46,8 +36,6 @@ body {
 }
 
 #rightbuttons{
-	background-color: #C8C8C8  ;
-	
 	float: right;
 	width:50%;
 }

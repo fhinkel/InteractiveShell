@@ -151,6 +151,8 @@ function createMenu2()
 		var lessonId = $(this).attr('lessonid');
 		lessonNr = parseInt( lessonId.match(/\d/g ));
 		loadLesson(lessonNr);
+		$(this).parent().slideToggle("fast");
+		return false;
 	});
 
 }

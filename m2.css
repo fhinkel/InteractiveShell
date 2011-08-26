@@ -26,11 +26,9 @@ body {
 	float: right;
 }
 
-#buttons{
-	clear:both;
-}
-
 #leftbuttons{
+	clear:both;
+	
 	float: left;
 	width:50%;
 }
@@ -40,11 +38,8 @@ body {
 	width:50%;
 }
 
-#largestuff{
-	clear:both;
-}
-
 #leftwindow{
+	clear:both;
 	float: left;
 	width:50%;
 }

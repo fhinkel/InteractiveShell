@@ -53,3 +53,15 @@ Use index.html in main directory or index-ipad.html, start the server from insid
 ruby RubyM2Server.rb
 
 The php scripts that you're using from inside the Javascript files is sockets/M2Client.php and getResults.php. Be careful with different directories ... 
+
+
+-----
+
+in the cloud
+education: for undergrads
+why not sage: old version, too complex for simple in-classroom action, 
+
+notebook structure not right format for M2
+not suitable for mobile version
+"join" sage: our notebooks can be made available through sage as well, for a different kind of users
+

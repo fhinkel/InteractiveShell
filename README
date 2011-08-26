@@ -18,6 +18,7 @@ The php scripts that you're using from inside the Javascript files is sockets/M2
 * colorization of keywords, comments, and strings
 
 
+Done :) 
 * detect orientation, side by side, over each other
 * change titles: "on the web", "interactive" -> remove or change
 * take out waiting time

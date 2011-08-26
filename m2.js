@@ -22,6 +22,7 @@ $(document).ready(function() {
     $("#reset").click(resetCallback);
 
     $("code").live("click", function() { 
+       $(this).effect("highlight", {color: 'red'}, 800);
 	    var code = $(this).html();
 	    //var origcolor = $(this).css('background-color');
 	    //$(this).css('background-color', '#7700aa');

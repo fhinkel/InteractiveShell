@@ -9,10 +9,14 @@ var maxLesson = 1;
 var tutorial;
 var timerobject;
 
+jQuery.fn.toggleNext = function() {
+    this.toggleClass("arrow-down").next().slideToggle("fast");
+    return this;
+};
+
 $(document).ready(function() {
     checkForNewData(offset);
 
-	alert(window.orientation);
 	$('#M2In').keypress(sendOnEnterCallback('#M2In'));
     $("#send").click(sendCallback( '#M2In' ));
     $("#reset").click(resetCallback);
@@ -36,6 +40,7 @@ $(document).ready(function() {
 		createMenu();
     	$('#lessonNr').html(lessonNr);
     	loadLesson(lessonNr);
+        createMenu2();
   	});	
 	
 	
@@ -57,6 +62,16 @@ $(document).ready(function() {
         });
     });
     
+    $('<div id="page-contents"></div>')
+    .prepend('<a class="toggler" href="#">Page Contents</a>')
+    .append('<div></div>')
+    .prependTo('#testtoggler');
+    
+    
+    $('#page-contents > a.toggler').click( function() {
+        $(this).toggleNext();
+        return false;
+    });
     
     updateOrientation();
 });
@@ -114,6 +129,28 @@ function createMenu()
 
 }
 	
+function createMenu2()
+{
+	$("#tutorial h4").each( function(i) {
+		var title = $(this).text();
+		var chapterId = 'chapter-' + (i+1);
+		$(this).attr('id', chapterId)
+		$('<a></a>')
+		 .text(title)
+		 .attr('title',title)
+		 .attr('href','#' + chapterId)
+		 .attr('lessonid', "lesson"+(i+1))
+		 .appendTo('#page-contents div');
+	} );
+
+	$('[lessonid]').click(function(){
+		var lessonId = $(this).attr('lessonid');
+		lessonNr = parseInt( lessonId.match(/\d/g ));
+		loadLesson(lessonNr);
+	});
+
+}
+
 function switchLesson(incr)
 {
     lessonNr = lessonNr + incr;

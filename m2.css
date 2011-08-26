@@ -7,18 +7,21 @@ body {
 }
 
 #headers{
-	
 	position: relative;
 }
+
 #headerIn{
 	background-color: #C8C8C8  ;
-	width: 50%;
+	width: 40%;
 	float: left;
+	padding:5px 15px;
 }
+
 #headerOut{
 	background-color: #C8C8C8  ;
 	float: right;
-	width:50%;
+	width:40%;
+	padding:5px 15px;
 }
 
 #M2headerOut{
@@ -36,25 +39,31 @@ body {
 	clear:both;
 	background-color: #C8C8C8  ;
 	float: left;
-	width:50%;
+	width:40%;
+	padding:5px 15px;
 }
 
 #rightbuttons{
 	background-color: #C8C8C8  ;
 	float: right;
-	width:50%;
+	width:40%;
+	padding:5px 15px;
 }
 
 #leftwindow{
 	clear:both;
 	float: left;
-	width:50%;
+	width:40%;
 	height: 700;
+	padding:5px 15px;
+	
 }
 
 #rightwindow {
 	float: right;
-	width:50%;
+	width:40%;
+	padding:5px 15px;
+	
 }
 
 #leftwindow.show_landscape, #rightwindow.show_landscape {

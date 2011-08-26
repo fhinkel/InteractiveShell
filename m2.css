@@ -7,35 +7,40 @@ body {
 }
 
 #headers{
-	background-color: #C8C8C8  ;
 	
 	position: relative;
 }
 #headerIn{
+	background-color: #C8C8C8  ;
+	width: 50%;
 	float: left;
 }
 #headerOut{
+	background-color: #C8C8C8  ;
 	float: right;
 	width:50%;
 }
 
 #M2headerOut{
+	background-color: #C8C8C8  ;
 	float: left;
 	width:50%;
 }
 
 #TOC{
+	background-color: #C8C8C8  ;
 	float: right;
 }
 
 #leftbuttons{
 	clear:both;
-	
+	background-color: #C8C8C8  ;
 	float: left;
 	width:50%;
 }
 
 #rightbuttons{
+	background-color: #C8C8C8  ;
 	float: right;
 	width:50%;
 }

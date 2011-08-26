@@ -92,8 +92,10 @@ function updateOrientation()
             orient = "show_landscape";
     }
     $("body").attr("class", orient);
-	$("#rightwindow").attr('class', orient)
+	$("#rightwindow").attr('class', orient);
+	$("#leftwindow").attr('class', orient);
 }
+
 function loadLesson(ell)
 {
     if (ell == 0){

@@ -63,25 +63,25 @@ var jQT = $.jQTouch({
 					</h3>
 				</div>
 				<div id="headerOut">
-					<div id="headerOutRel">
-						<div id="M2headerOut">
-							<h3>
-								Macaulay2 output
-							</h3>
-						</div>
-						<div id="toc">
-							TOC
-						</div>
+					<div id="M2headerOut">
+						<h3>
+							Macaulay2 output
+						</h3>
+					</div>
+					<div id="toc">
+						TOC
 					</div>
 				</div>
 			</div>
-			<div>
-				<button type="button" id="previous">Previous</button> <button type="button" id="next">Next</button> <button type="button" id="send">Send to M2</button> <span id="pageIndex"></span> <span id="waittime"></span>
+			<div id="buttons">
+				<div id="leftbuttons">
+					<button type="button" id="previous">Previous</button> <button type="button" id="next">Next</button> <button type="button" id="send">Send to M2</button> <span id="pageIndex"></span> <span id="waittime"></span>
+				</div>
+				<div id="rightbuttons">
+					<button type="button" id="reset">Reset</button>
+				</div>
 			</div>
-			<div>
-				<button type="button" id="reset">Reset</button>
-			</div>
-			<div>
+			<div id="largestuff">
 				<div id="leftwindow" class="swipe">
 					<div id="lesson"></div>
 					<div id="inputarea">
@@ -89,7 +89,7 @@ var jQT = $.jQTouch({
 </textarea>
 					</div>
 				</div>
-				<div>
+				<div id="rightwindow">
 					<textarea id="M2Out" wrap='off'>
 </textarea>
 				</div>

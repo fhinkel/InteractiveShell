@@ -10,31 +10,48 @@ body {
 	position: relative;
 }
 #headerIn{
-	position: absolute;
-	left: 0;
-	top: 0;
+	float: left;
 }
 #headerOut{
-	position: absolute;
-	right: 0;
-	top: 0;
-	width: 50%;
-}
-#headerOutRel{
-	position: relative;
-	background-color: red;
+	float: right;
+	width:50%;
 }
 
 #M2headerOut{
-	position: absolute;
-	left: 0;
-	top: 0;
+	float: left;
+	width:50%;
 }
 
 #TOC{
-	position: absolute;
-	right: 0;
-	top: 0;
+	float: right;
+}
+
+#buttons{
+	clear:both;
+}
+
+#leftbuttons{
+	float: left;
+	width:50%;
+}
+
+#rightbuttons{
+	float: right;
+	width:50%;
+}
+
+#largestuff{
+	clear:both;
+}
+
+#leftwindow{
+	float: left;
+	width:50%;
+}
+
+#rightwindow{
+	float: right;
+	width:50%;
 }
 
 #content_portrait {
@@ -71,12 +88,9 @@ html {
     display: none;
 }
 
-#leftwindow, #M2In, #M2Out {
-    /* width: 505px;
-    height: 650px; */
+#M2In, #M2Out {
     width: 100%;
     height: 100%;
-    /*height: 90%;*/
 }
 
 #M2Out {

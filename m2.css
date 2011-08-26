@@ -6,6 +6,37 @@ body {
     font-family: Helvetica;
 }
 
+#headers{
+	position: relative;
+}
+#headerIn{
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+#headerOut{
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 50%;
+}
+#headerOutRel{
+	position: relative;
+	background-color: red;
+}
+
+#M2headerOut{
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+#TOC{
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+
 #content_portrait {
     display: none;
 }
@@ -23,9 +54,7 @@ body {
     height: 744px;*/
 }
 
-td {
-    width: 50%;
-}
+
 html {
     color:#000;
 }
@@ -55,12 +84,6 @@ html {
 }
 
 
-table{
-	background-color: #E8E8E8;
-	margin-left:auto; 
-	margin-right:auto;
-	height: 100%;
-}
 
 div {
 	/*height: 100%;*/

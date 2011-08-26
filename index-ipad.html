@@ -36,11 +36,9 @@ var jQT = $.jQTouch({
 					<a href="#M2" lessonid="lesson0">Terminal</a>
 				</li>
 				<li>Tutorial 1
-					<ul id="menu">
-						
-					</ul>
+					<ul id="menu"></ul>
 				</li>
-				<li>Tutorial 2 - this one is still hard coded, just ignore :) 
+				<li>Tutorial 2 - this one is still hard coded, just ignore :)
 					<ul>
 						<li class="arrow">
 							<a href="#lesson4" lessonid="lesson1">Lesson 4</a>
@@ -58,46 +56,43 @@ var jQT = $.jQTouch({
 					Interactive Macaulay2
 				</h1><a class="button back" href="#">Back</a>
 			</div>
-			<div  id="testtoggler">
-				<table cellpadding="0" cellspacing="0" border="0" id="areaTable">
-					<tr class="shortrow">
-						<td>
-							<h3>
-								Macaulay2 input
-							</h3>
-							<span></span>
-						</td>
-						<td>
+			<div id="headers">
+				<div id="headerIn">
+					<h3>
+						Macaulay2 input
+					</h3>
+				</div>
+				<div id="headerOut">
+					<div id="headerOutRel">
+						<div id="M2headerOut">
 							<h3>
 								Macaulay2 output
 							</h3>
-						</td>
-						<td></td>
-					</tr>
-					<tr class="shortrow">
-						<td>
-							<button type="button" id="previous">Previous</button> <button type="button" id="next">Next</button> <button type="button" id="send">Send to M2</button> <span id="pageIndex"></span> <span id="waittime"></span>
-						</td>
-						<td>
-							<button type="button" id="reset">Reset</button>
-						</td>
-					</tr>
-					<tr class="largerow">
-						<td>
-							<div id="leftwindow" class="swipe">
-								<div id="lesson"></div>
-								<div id="inputarea">
-									<textarea id="M2In" wrap='off'>
+						</div>
+						<div id="toc">
+							TOC
+						</div>
+					</div>
+				</div>
+			</div>
+			<div>
+				<button type="button" id="previous">Previous</button> <button type="button" id="next">Next</button> <button type="button" id="send">Send to M2</button> <span id="pageIndex"></span> <span id="waittime"></span>
+			</div>
+			<div>
+				<button type="button" id="reset">Reset</button>
+			</div>
+			<div>
+				<div id="leftwindow" class="swipe">
+					<div id="lesson"></div>
+					<div id="inputarea">
+						<textarea id="M2In" wrap='off'>
 </textarea>
-								</div>
-							</div>
-						</td>
-						<td>
-							<textarea id="M2Out" wrap='off'>
+					</div>
+				</div>
+				<div>
+					<textarea id="M2Out" wrap='off'>
 </textarea>
-						</td>
-					</tr>
-				</table>
+				</div>
 				<div id="tutorial"></div>
 			</div>
 		</div>

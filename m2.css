@@ -19,8 +19,8 @@ body {
 }
 
 .show_landscape {
-    width: 1024px;
-    height: 744px;
+    /*width: 1024px;
+    height: 744px;*/
 }
 
 td {
@@ -35,7 +35,7 @@ html {
 }
 
 .largerow {
-    height: 90%;
+    /*height: 90%;*/
 }
 
 #tutorial {
@@ -63,7 +63,7 @@ table{
 }
 
 div {
-	height: 100%;
+	/*height: 100%;*/
 }
 
 .lesson {
@@ -80,4 +80,27 @@ div {
 code {
 	background-color: yellow;
 	cursor:pointer;
+}
+
+#page-contents {
+    
+    text-align: left;
+    /*position: absolute;
+    top: 0;
+    left: 0;*/
+    width: 15em;
+    border: 1px solid #ccc;
+    border-top-width: 0;
+    background-color: #e3e3e3;
+}
+
+#page-contents a {
+    display: block;
+    margin: .25em 0;
+}
+
+#page-contents div {
+    padding: .25em .5em .5em;
+    display: none;
+    background-color: red;
 }

@@ -62,7 +62,7 @@ body {
 }
 
 #leftwindow.show_portrait, #rightwindow.show_portrait {
-	height: 900px;
+	height: 850px;
 }
 
 #content_portrait {

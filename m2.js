@@ -52,7 +52,8 @@ $(document).ready(function() {
 	    switchLesson(-1);
 	});
 
-	$(function(){ $("#leftwindow").bind("swipe",function(event, info) {
+	// swipe changed to swipeXXX to remove functionality for testing
+	$(function(){ $("#leftwindow").bind("swipeXXX",function(event, info) {
         if (info.direction === "left"){
             switchLesson(1);
         } else if (info.direction === "right") {

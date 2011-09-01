@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="viewport" content="width=device-width;">
+		<meta name="viewport" content="width=device-width, user-scalable=yes, minimum-scale=.25, maximum-scale=2.0">
 		<link rel="stylesheet" href="jqtouch/jqtouch/jqtouch.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="jqtouch/themes/jqt/theme.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="m2.css" type="text/css" media="screen">
@@ -16,6 +16,7 @@
 </script>
 		<script type="text/javascript">
 var jQT = $.jQTouch({
+                                fixedViewport: false,
 				icon: 'myCustomIcon.png',
 				touchSelector: 'a, .touch, .swipe',
 				statusBar: 'black',

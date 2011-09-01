@@ -126,6 +126,7 @@ body {
 code {
 	background-color: yellow;
 	cursor:pointer;
+	font-size: 140%;
 }
 
 #page-contents {

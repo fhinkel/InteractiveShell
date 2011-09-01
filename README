@@ -8,6 +8,9 @@ The php scripts that you're using from inside the Javascript files is sockets/M2
 
 * clicking on "send to M2" button should move the cursor to next line
 * padding inside lessons
+* fix TOC on help page
+* fix TOC expand/collapse
+* change M2 output to not be a text area but something with scrollbars
 * sendToM2 functional on lesson pages, send everything up to that point
 * table of contents: collapse/expand, fix sizes
 * help button

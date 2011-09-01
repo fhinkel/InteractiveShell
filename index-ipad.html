@@ -10,7 +10,8 @@
 </script>
 		<script type="text/javascript" src="jqtouch/jqtouch/jqtouch.js">
 </script>
-  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript">
+</script>
 		<script type="text/javascript" src="m2.js">
 </script>
 		<script type="text/javascript">
@@ -30,11 +31,9 @@ var jQT = $.jQTouch({
 			<div class="toolbar">
 				<h1>
 					Macaulay2
-				</h1>
-				<a class="button" href="#help">Help</a>
+				</h1><a class="button" href="#help">Help</a>
 			</div>
 			<div id="headers">
-				
 				<div id="headerIn">
 					<h3>
 						Macaulay2 input
@@ -46,38 +45,35 @@ var jQT = $.jQTouch({
 							Macaulay2 output
 						</h3>
 					</div>
-					<div id="toc">
-					</div>
+					<div id="toc"></div>
 				</div>
-
 			</div>
-				<div id="leftbuttons">
-					<button type="button" id="previous">Previous</button> <button type="button" id="next">Next</button> <button type="button" id="send">Send to M2</button> <span id="pageIndex">
-				</div>
-				<div id="rightbuttons">
-					<button type="button" id="reset">Reset</button>
-				</div>
-		
-				<div id="leftwindow" class="swipe">
-					<div id="lesson"></div>
-					<div id="inputarea">
-						<textarea id="M2In" wrap='off'>
-</textarea>
-					</div>
-				</div>
-				<div id="rightwindow">
-					<textarea id="M2Out" wrap='off'>
+			<div id="fixPos">
+			<div id="leftbuttons">
+				<button type="button" id="previous">Previous</button> <button type="button" id="next">Next</button> <button type="button" id="send">Send to M2</button> <span id="pageIndex"></span>
+			</div>
+			<div id="rightbuttons">
+				<span id="pageIndex"><button type="button" id="reset"><span id="pageIndex">Reset</span></button></span>
+			</div>
+			<div id="leftwindow" class="swipe">
+				<div id="lesson"></div>
+				<div id="inputarea">
+					<textarea id="M2In" wrap='off'>
 </textarea>
 				</div>
-				<div id="tutorial"></div>
-		
+			</div>
+			<div id="rightwindow">
+				<textarea id="M2Out" wrap='off'>
+</textarea>
+			</div>
+			<div id="tutorial"></div>
+		</div>
 		</div>
 		<div id="help">
 			<div class="toolbar">
 				<h1>
 					Macaulay2
-				</h1><a class="button back" href="M2#">Back</a>
-				<a class="button" href="#credits">Credits</a>
+				</h1><a class="button back" href="M2#">Back</a> <a class="button" href="#credits">Credits</a>
 			</div>Try out Macaulay2 right here on this interactive website. Macaulay2 is a software system devoted to supporting research in algebraic geometry and commutative algebra, whose creation has been funded by the National Science Foundation since 1992. You can also download and install <a href="http://www.math.uiuc.edu/Macaulay2/">Macaulay2</a> on your machine. Choose a lesson, and have fun!
 			<ul class="edgetoedge">
 				<li class="arrow">
@@ -105,11 +101,9 @@ var jQT = $.jQTouch({
 				</h1><a class="button back" href="M2#">Back</a>
 			</div>
 			<div class="padded">
-			Credits to: <br>
-			Franziska Hinkelmann
-			Lars Kastner
-			Greg Smith
-			Mike Stillman
+				Credits to:<br>
+				Franziska Hinkelmann Lars Kastner Greg Smith Mike Stillman
+			</div>
 		</div>
 	</body>
 </html>

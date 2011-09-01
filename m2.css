@@ -33,8 +33,14 @@ body {
 	float: right;
 }
 
+#fixPos {
+	position: absolute;
+	top: 80px;
+	left:0px;
+}
+
 #leftbuttons{
-	clear:both;
+	clear: both;
 	float: left;
 	width:40%;
 	padding:5px 15px;

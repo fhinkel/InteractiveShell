@@ -110,7 +110,7 @@ function loadLesson(ell)
         var selector = ".lesson ."+ell;
         var thehtml = $(selector).html();
         $("#send").hide();
-        $("#pageIndex").text( "Lessen " + lessonNr + "/" + maxLesson).show();
+        $("#pageIndex").text( "Lesson " + lessonNr + "/" + maxLesson).show();
         $("#lesson").html(thehtml).show();
     }
 }

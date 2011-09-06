@@ -38,10 +38,17 @@ $(document).ready(function() {
     
 	$("#tutorial").load("tutorial.html", function () {
  		maxLesson = $('.lesson').children().length;
-		createMenu();
+		//createMenu();
     	$('#lessonNr').html(lessonNr);
     	loadLesson(lessonNr);
-        createMenu2();
+
+	    $('<div id="page-contents"></div>')
+	    .prepend('<a class="toggler" href="#">Page Contents</a>')
+	    .append('<div></div>')
+	    .prependTo('#toc');
+
+		createMenu2();
+        
   	});	
 	
 	
@@ -64,10 +71,7 @@ $(document).ready(function() {
         });
     });
     
-    $('<div id="page-contents"></div>')
-    .prepend('<a class="toggler" href="#">Page Contents</a>')
-    .append('<div></div>')
-    .prependTo('#toc');
+
     
     
     $('#page-contents > a.toggler').click( function() {
@@ -136,6 +140,7 @@ function createMenu()
 	
 function createMenu2()
 {
+	//alert ("appending");
 	$("#tutorial h4").each( function(i) {
 		var title = $(this).text();
 		var chapterId = 'chapter-' + (i+1);
@@ -146,6 +151,10 @@ function createMenu2()
 		 .attr('href','#' + chapterId)
 		 .attr('lessonid', "lesson"+(i+1))
 		 .appendTo('#page-contents div');
+		
+		//alert ("appending");
+		$("#menu").append(
+			"<li class='arrow'><a href='#M2' lessonid='lesson" + (i+1) +"'>Lesson " + (i+1) +": " + title + "</a></li>");
 	} );
 
 	$('[lessonid]').click(function(){

@@ -18,7 +18,6 @@ new Ext.Application({
                 indexOfCurrentPanel + 1: 0;
             }
             //alert("Hello " + newIndex);
-
             myPanel.down("#cardPanel").setActiveItem(newIndex);
         };
         var ourDock = [{
@@ -56,32 +55,39 @@ new Ext.Application({
                 flex: 1
             },
             items: [
- 	           {
-	                itemId: "cardPanel",
-	                layout: 'card',
-	                cardSwitchAnimation: 'slide',
-	                items: [
-	                {
-	                    html: 'Lesson 1'
-	                },
-	                {
-	                    html: 'Lesson 2'
-	                },
-	                {
-	                    html: 'Lesson 3'
-	                }
-	                ]
-	            },
-	            {
-	                layout: 'hbox',
-	                style: 'border: 1px solid blue;',
-	                defaults: {
-	                    style: "border: 1px solid red;",
-	                    height: "100%",
-	                    flex: 1
-	                },
-					html: 'This is our output area'
-	            },
+            {
+                itemId: "cardPanel",
+                layout: 'card',
+                cardSwitchAnimation: 'slide',
+                items: [
+                {
+                    html: 'Lesson 1'
+                },
+                {
+                    html: 'Lesson 2'
+                },
+                {
+                    html: 'Lesson 3'
+                }
+                ]
+            },
+            {
+                layout: 'hbox',
+                style: 'border: 1px solid blue;',
+                defaults: {
+                    style: "border: 1px solid red;",
+                    height: "100%",
+                    flex: 1
+                },
+                //html: 'This is our output area'
+                xtype: 'container',
+                items: [
+                {
+                    xtype: "textareafield",
+                    value: "This is a larger text area.\n\nWe can even get multiple lines in here"
+                }
+                ]
+            }
             ]
         });
     }

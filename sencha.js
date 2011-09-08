@@ -1,3 +1,24 @@
+var ourDock = [{
+    xtype: 'toolbar',
+    dock: 'top',
+    title: 'Nested Layout',
+    items: [
+    {
+        text: 'Back',
+        ui: 'back',
+        handler: handleNavigation
+    },
+    {
+        xtype: 'spacer'
+    },
+    {
+        text: 'Next',
+        ui: 'forward',
+        handler: handleNavigation
+    }
+    ]
+}];
+
 new Ext.Application({
     launch: function() {
         var mainPanel = new Ext.Panel({
@@ -12,26 +33,7 @@ new Ext.Application({
                 itemId: "cardPanel",
                 layout: 'card',
                 cardSwitchAnimation: 'slide',
-                dockedItems: [{
-                    xtype: 'toolbar',
-                    dock: 'top',
-                    title: 'Nested Layout',
-                    items: [
-                    {
-                        text: 'Back',
-                        ui: 'back',
-                        handler: handleNavigation
-                    },
-                    {
-                        xtype: 'spacer'
-                    },
-                    {
-                        text: 'Next',
-                        ui: 'forward',
-                        handler: handleNavigation
-                    }
-                    ]
-                }],
+                dockedItems: ourDock,
                 items: [
                 {
                     html: 'Card 1'
@@ -43,13 +45,51 @@ new Ext.Application({
                     html: 'Card 3'
                 }
                 ]
+            },
+            {
+                layout: 'hbox',
+                style: 'border: 1px solid blue;',
+                defaults: {
+                    style: "border: 1px solid red;",
+                    height: "100%",
+                    flex: 1
+                },
+                items: [
+                {
+                    html: 'Panel (0, 0)'
+                },
+                {
+                    html: 'Panel (1, 0)'
+                },
+                {
+                    html: 'Panel (2, 0)'
+                }
+                ]
+            },
+            {
+                layout: 'hbox',
+                style: 'border: 1px solid blue;',
+                defaults: {
+                    style: "border: 1px solid red;",
+                    height: "100%",
+                    flex: 1,
+                },
+                items: [
+                {
+                    html: 'Panel (0, 1)'
+                },
+                {
+                    html: 'Panel (1, 1)'
+                },
+                {
+                    html: 'Panel (2, 1)'
+                }
+                ]
             }
             ]
         });
-    }
-
-
-});
+    } 
+}); 
 
 
 var handleNavigation = function(btn) {
@@ -59,13 +99,13 @@ var handleNavigation = function(btn) {
 
     if (btn.text == "Back") {
         var newIndex = indexOfCurrentPanel > 0 ?
-				        indexOfCurrentPanel - 1:
-				        myPanel.down("#cardPanel").items.length - 1;
+        indexOfCurrentPanel - 1:
+        myPanel.down("#cardPanel").items.length - 1;
     }
     else {
-        var newIndex = indexOfCurrentPanel < 
-						myPanel.down("#cardPanel").items.length - 1 ?
-				        indexOfCurrentPanel + 1: 0;
+        var newIndex = indexOfCurrentPanel <
+        myPanel.down("#cardPanel").items.length - 1 ?
+        indexOfCurrentPanel + 1: 0;
     }
     myPanel.down("#cardPanel").setActiveItem(newIndex);
 }

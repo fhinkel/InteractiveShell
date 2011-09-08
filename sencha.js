@@ -8,16 +8,16 @@ new Ext.Application({
             var newIndex;
 
             if (btn.text == "Back") {
-                var newIndex = indexOfCurrentPanel > 0 ?
+                newIndex = indexOfCurrentPanel > 0 ?
                 indexOfCurrentPanel - 1:
                 myPanel.down("#cardPanel").items.length - 1;
             }
             else {
-                var newIndex = indexOfCurrentPanel <
+                newIndex = indexOfCurrentPanel <
                 myPanel.down("#cardPanel").items.length - 1 ?
                 indexOfCurrentPanel + 1: 0;
             }
-            alert("Hello".newIndex);
+            //alert("Hello " + newIndex);
 
             myPanel.down("#cardPanel").setActiveItem(newIndex);
         };

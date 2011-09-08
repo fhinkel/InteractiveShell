@@ -1,3 +1,23 @@
+var handleNavigation = function(btn) {
+	//alert ("Hello");
+    var currentPanel = myPanel.down("#cardPanel").getActiveItem();
+    var indexOfCurrentPanel = myPanel.down("#cardPanel").items.items.indexOf(currentPanel);
+    var newIndex;
+
+    if (btn.text == "Back") {
+        var newIndex = indexOfCurrentPanel > 0 ?
+        indexOfCurrentPanel - 1:
+        myPanel.down("#cardPanel").items.length - 1;
+    }
+    else {
+        var newIndex = indexOfCurrentPanel <
+        myPanel.down("#cardPanel").items.length - 1 ?
+        indexOfCurrentPanel + 1: 0;
+    }
+    myPanel.down("#cardPanel").setActiveItem(newIndex);
+}
+
+
 var ourDock = [{
     xtype: 'toolbar',
     dock: 'top',
@@ -21,6 +41,7 @@ var ourDock = [{
 
 new Ext.Application({
     launch: function() {
+	//alert ("Hello");
         var mainPanel = new Ext.Panel({
             fullscreen: true,
             layout: 'vbox',
@@ -92,21 +113,4 @@ new Ext.Application({
 }); 
 
 
-var handleNavigation = function(btn) {
-    var currentPanel = myPanel.down("#cardPanel").getActiveItem();
-    var indexOfCurrentPanel = myPanel.down("#cardPanel").items.items.indexOf(currentPanel);
-    var newIndex;
-
-    if (btn.text == "Back") {
-        var newIndex = indexOfCurrentPanel > 0 ?
-        indexOfCurrentPanel - 1:
-        myPanel.down("#cardPanel").items.length - 1;
-    }
-    else {
-        var newIndex = indexOfCurrentPanel <
-        myPanel.down("#cardPanel").items.length - 1 ?
-        indexOfCurrentPanel + 1: 0;
-    }
-    myPanel.down("#cardPanel").setActiveItem(newIndex);
-}
 

@@ -1,48 +1,47 @@
-var handleNavigation = function(btn) {
-	//alert ("Hello");
-    var currentPanel = myPanel.down("#cardPanel").getActiveItem();
-    var indexOfCurrentPanel = myPanel.down("#cardPanel").items.items.indexOf(currentPanel);
-    var newIndex;
-
-    if (btn.text == "Back") {
-        var newIndex = indexOfCurrentPanel > 0 ?
-        indexOfCurrentPanel - 1:
-        myPanel.down("#cardPanel").items.length - 1;
-    }
-    else {
-        var newIndex = indexOfCurrentPanel <
-        myPanel.down("#cardPanel").items.length - 1 ?
-        indexOfCurrentPanel + 1: 0;
-    }
-    myPanel.down("#cardPanel").setActiveItem(newIndex);
-}
-
-
-var ourDock = [{
-    xtype: 'toolbar',
-    dock: 'top',
-    title: 'Nested Layout',
-    items: [
-    {
-        text: 'Back',
-        ui: 'back',
-        handler: handleNavigation
-    },
-    {
-        xtype: 'spacer'
-    },
-    {
-        text: 'Next',
-        ui: 'forward',
-        handler: handleNavigation
-    }
-    ]
-}];
-
 new Ext.Application({
     launch: function() {
-	//alert ("Hello");
-        var mainPanel = new Ext.Panel({
+        //alert ("Hello");
+        var handleNavigation = function(btn) {
+
+            var currentPanel = myPanel.down("#cardPanel").getActiveItem();
+            var indexOfCurrentPanel = myPanel.down("#cardPanel").items.items.indexOf(currentPanel);
+            var newIndex;
+
+            if (btn.text == "Back") {
+                var newIndex = indexOfCurrentPanel > 0 ?
+                indexOfCurrentPanel - 1:
+                myPanel.down("#cardPanel").items.length - 1;
+            }
+            else {
+                var newIndex = indexOfCurrentPanel <
+                myPanel.down("#cardPanel").items.length - 1 ?
+                indexOfCurrentPanel + 1: 0;
+            }
+            alert("Hello".newIndex);
+
+            myPanel.down("#cardPanel").setActiveItem(newIndex);
+        };
+        var ourDock = [{
+            xtype: 'toolbar',
+            dock: 'top',
+            title: 'Nested Layout',
+            items: [
+            {
+                text: 'Back',
+                ui: 'back',
+                handler: handleNavigation
+            },
+            {
+                xtype: 'spacer'
+            },
+            {
+                text: 'Next',
+                ui: 'forward',
+                handler: handleNavigation
+            }
+            ]
+        }];
+        var myPanel = new Ext.Panel({
             fullscreen: true,
             layout: 'vbox',
             defaults: {
@@ -109,8 +108,9 @@ new Ext.Application({
             }
             ]
         });
-    } 
-}); 
+    }
+
+});
 
 
 

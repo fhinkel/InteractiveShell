@@ -73,9 +73,10 @@ new Ext.Application({
             },
             {
                 layout: 'hbox',
-                style: 'border: 1px solid blue;',
+                //style: 'border: 1px solid blue;',
+				height: "100%",
                 defaults: {
-                    style: "border: 1px solid red;",
+                    //style: "border: 1px solid red;",
                     height: "100%",
                     flex: 1
                 },
@@ -83,8 +84,12 @@ new Ext.Application({
                 xtype: 'container',
                 items: [
                 {
+					style: "border: 1px solid yellow;",
                     xtype: "textareafield",
-                    value: "This is a larger text area.\n\nWe can even get multiple lines in here"
+					grow: true,
+					height: "100%",
+					width: "100%",
+                    value: "This is a larger text area.\n\nWe can even get multiple lines in here\n \n \n \n here here \n \n ;lkasdfj \be"
                 }
                 ]
             }

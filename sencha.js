@@ -24,18 +24,24 @@ new Ext.Application({
         var ourDock = [{
             xtype: 'toolbar',
             dock: 'top',
-            title: 'Nested Layout',
+            title: 'Macaulay2',
             items: [
             {
                 text: 'Back',
                 ui: 'back',
                 handler: handleNavigation
             },
+
+            {
+                text: 'Next',
+                ui: 'forward',
+                handler: handleNavigation
+            },
             {
                 xtype: 'spacer'
             },
             {
-                text: 'Next',
+                text: 'Help',
                 ui: 'forward',
                 handler: handleNavigation
             }
@@ -43,69 +49,39 @@ new Ext.Application({
         }];
         var myPanel = new Ext.Panel({
             fullscreen: true,
-            layout: 'vbox',
+            dockedItems: ourDock,
+            layout: 'hbox',
             defaults: {
-                width: '100%',
+                height: '100%',
                 flex: 1
             },
             items: [
-            {
-                itemId: "cardPanel",
-                layout: 'card',
-                cardSwitchAnimation: 'slide',
-                dockedItems: ourDock,
-                items: [
-                {
-                    html: 'Card 1'
-                },
-                {
-                    html: 'Card 2'
-                },
-                {
-                    html: 'Card 3'
-                }
-                ]
-            },
-            {
-                layout: 'hbox',
-                style: 'border: 1px solid blue;',
-                defaults: {
-                    style: "border: 1px solid red;",
-                    height: "100%",
-                    flex: 1
-                },
-                items: [
-                {
-                    html: 'Panel (0, 0)'
-                },
-                {
-                    html: 'Panel (1, 0)'
-                },
-                {
-                    html: 'Panel (2, 0)'
-                }
-                ]
-            },
-            {
-                layout: 'hbox',
-                style: 'border: 1px solid blue;',
-                defaults: {
-                    style: "border: 1px solid red;",
-                    height: "100%",
-                    flex: 1,
-                },
-                items: [
-                {
-                    html: 'Panel (0, 1)'
-                },
-                {
-                    html: 'Panel (1, 1)'
-                },
-                {
-                    html: 'Panel (2, 1)'
-                }
-                ]
-            }
+ 	           {
+	                itemId: "cardPanel",
+	                layout: 'card',
+	                cardSwitchAnimation: 'slide',
+	                items: [
+	                {
+	                    html: 'Lesson 1'
+	                },
+	                {
+	                    html: 'Lesson 2'
+	                },
+	                {
+	                    html: 'Lesson 3'
+	                }
+	                ]
+	            },
+	            {
+	                layout: 'hbox',
+	                style: 'border: 1px solid blue;',
+	                defaults: {
+	                    style: "border: 1px solid red;",
+	                    height: "100%",
+	                    flex: 1
+	                },
+					html: 'This is our output area'
+	            },
             ]
         });
     }

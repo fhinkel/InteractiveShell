@@ -77,11 +77,11 @@ MyApp.AppPanel = Ext.extend(Ext.Panel, {
         }
     },
     onBtnTap: function(btn) {
-        var contactForm = this.item.items[0],
+        var contactForm = this.items.items[0],
         leftDock = this.getDockedItems()[1],
         model = contactForm.getRecord(),
-        contactList = leftDock.item.items[0];
-
+        contactList = leftDock.items.items[0];
+        alert("in button tap" + btn.action);
         if (btn.action === 'deleteContact' && !model) {
             return;
         }
@@ -99,11 +99,11 @@ MyApp.AppPanel = Ext.extend(Ext.Panel, {
     onContactListItemTap: function(ctList, itemIdx) {
         this.dispatchToCtcLstCtrlr(ctList, itemIdx, 'itemTap');
         },
-    onContactListItemSwipe: function(ctList) {
+    onContactListItemSwipe: function(ctList, itemIdx) {
         this.dispatchToCtcLstCtrlr(ctList, itemIdx, 'deleteContact');
         },
-    dispatchToCtcLstCtrlr: function(ctList, action) {
-        var contactForm = this.item.items[0];
+    dispatchToCtcLstCtrlr: function(ctList, itemIdx, action) {
+        var contactForm = this.items.items[0];
         
         Ext.dispatch({
             controller: 'ContactListController',

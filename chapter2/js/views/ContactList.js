@@ -11,3 +11,4 @@ MyApp.ContactList = Ext.extend(Ext.List, {
 });
 
 Ext.reg('ContactList', MyApp.ContactList);
+

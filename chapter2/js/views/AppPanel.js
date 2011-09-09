@@ -97,10 +97,24 @@ MyApp.AppPanel = Ext.extend(Ext.Panel, {
         });
     },
     onContactListItemTap: function(ctList, itemIdx) {
+        this.dispatchToCtcLstCtrlr(ctList, itemIdx, 'itemTap');
         },
     onContactListItemSwipe: function(ctList) {
+        this.dispatchToCtcLstCtrlr(ctList, itemIdx, 'deleteContact');
         },
     dispatchToCtcLstCtrlr: function(ctList, action) {
+        var contactForm = this.item.items[0];
+        
+        Ext.dispatch({
+            controller: 'ContactListController',
+            action: action,
+            model: ctList.store.getAt(itemIdx), 
+            views: {
+                contactForm: contactForm,
+                contactList: ctList
+            }
+        });
+        
         }
 
 });

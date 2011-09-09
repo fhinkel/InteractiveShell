@@ -5,7 +5,7 @@ MyApp.ContactList = Ext.extend(Ext.List, {
     emptyText: 'No contacts defined.',
     allowDeselect: false,
     onRender: function(){
-        MyApp.ContactList.superclass.onrender.apply(this,arguments);
+        MyApp.ContactList.superclass.onRender.apply(this,arguments);
         this.store.load();
     }
 });

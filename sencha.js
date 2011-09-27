@@ -1,6 +1,25 @@
 new Ext.Application({
     launch: function() {
-        //alert ("Hello");
+		var onTestButtonTap = function(btn) {
+			//alert("Test me!");
+			// Ajax Post 
+			Ext.Ajax.request({
+			    url: 'test.php',
+			    params: {
+			        s: 'hello'
+			    },
+			    timeout: 3000,
+			    method: 'POST',
+			    success: function(xhr) {
+					// render result from script in lesson ID
+			        //alert('Response is "' + xhr.responseText + '"');
+					//alert( Ext.getCmp('outputArea').value );
+					var area = Ext.getCmp('outputArea');
+					var oldContent = area.getValue();
+					area.setValue(oldContent + xhr.responseText + " something new.\nsome extra lines \n \n \n ");
+			    }
+			});
+		};
         var handleNavigation = function(btn) {
 
             var currentPanel = myPanel.down("#cardPanel").getActiveItem();
@@ -35,6 +54,11 @@ new Ext.Application({
                 text: 'Next',
                 ui: 'forward',
                 handler: handleNavigation
+            },
+            {
+                text: 'Test',
+                ui: 'button',
+                handler: onTestButtonTap
             },
             {
                 xtype: 'spacer'
@@ -72,6 +96,7 @@ new Ext.Application({
                 ]
             },
             {
+				id: 'areaContainer',
                 layout: 'hbox',
                 //style: 'border: 1px solid blue;',
 				height: "100%",
@@ -84,12 +109,13 @@ new Ext.Application({
                 xtype: 'container',
                 items: [
                 {
+					id: "outputArea",
 					style: "border: 1px solid yellow;",
                     xtype: "textareafield",
 					grow: true,
 					height: "100%",
 					width: "100%",
-                    value: "This is a larger text area.\n\nWe can even get multiple lines in here\n \n \n \n here here \n \n ;lkasdfj \be"
+                    value: "This is a larger text area.\n\nWe can even get multiple lines in here\n "
                 }
                 ]
             }

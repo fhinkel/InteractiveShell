@@ -1,4 +1,14 @@
 
+Sencha Touch: 
+* Ajax calls (this should be really easy - really?)
+* more buttons
+* larger textarea
+* lessons
+* we want swiping
+* table of contents/lesson overview
+
+
+
 Use index.html in main directory or index-ipad.html, start the server from inside sockets: 
 ruby RubyM2Server.rb
 

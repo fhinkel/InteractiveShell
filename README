@@ -1,5 +1,8 @@
 
 Sencha Touch: 
+
+* textarea size
+* node.js for "pulling" data from the server without draining the battery
 * Ajax calls (this should be really easy - really?)
 * more buttons
 * larger textarea

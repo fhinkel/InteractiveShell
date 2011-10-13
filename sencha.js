@@ -85,7 +85,13 @@ new Ext.Application({
                 cardSwitchAnimation: 'slide',
                 items: [
                 {
-                    html: 'Lesson 1'
+                    html: '<h1>Lesson 1</h1><h4>Arithmetic</h4>' + 
+	    		    'You can immediately do arithmetic with integers: <br>'+
+	                '<code>34+222</code><br>'+
+	    			   ' <code>107*431</code><br>'+
+	    		    '<code>25!</code><br>'+
+	    		    '<code>binomial(5,4)</code><br>'+
+	    		    '<code>factor 32004</code><br>'
                 },
                 {
                     html: 'Lesson 2'
@@ -95,6 +101,7 @@ new Ext.Application({
                 }
                 ]
             },
+
             {
 				id: 'areaContainer',
                 layout: 'hbox',
@@ -112,12 +119,16 @@ new Ext.Application({
 					id: "outputArea",
 					style: "border: 1px solid yellow;",
                     xtype: "textareafield",
+					renderTo: Ext.getCmp('areaContainer'),
 					grow: true,
 					height: "100%",
-					width: "100%",
-                    value: "This is a larger text area.\n\nWe can even get multiple lines in here\n "
+					width: "100%",				
+					maxRows: "100%",
+                    value: "This is a larger text area.\n\nWe can even get multiple lines in here\n",
+					
                 }
                 ]
+
             }
             ]
         });

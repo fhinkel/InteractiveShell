@@ -13,7 +13,7 @@ socket_connect($socket, $address, $service_port);
 $id = session_id();
 
 $cmd = stripslashes($_POST['cmd']);
-echo "Here is the command ----". $cmd . "---";
+
 // Sending id to socket server for connecting to correct M2 process.
 socket_write($socket, $id."\n");
 

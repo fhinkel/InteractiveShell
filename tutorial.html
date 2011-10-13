@@ -8,38 +8,48 @@
 			TryM2 Tutorial
 		</title>
 	</head>
-	<body>
-		<div class="lesson" id="1"> 
-			You can immediately do arithmetic with integers: <br>
-            <code>34+222</code><br>
- 			<code>107*431</code><br>
-			 <code>25!</code><br>
-			 <code>binomial(5,4)</code><br>
-			 <code>factor 32004</code><br>
+	<body><div id="thish3">
+	    <h3 >
+            Interactive Tutorial: Lesson <span id="lessonNr"></span>
+        </h3></div>
+        <div class="lesson">
+		    <div class="1"> 
+		        <h4>Arithmetic</h4>
+    		    You can immediately do arithmetic with integers: <br>
+                <code>34+222</code><br>
+    			    <code>107*431</code><br>
+    		    <code>25!</code><br>
+    		    <code>binomial(5,4)</code><br>
+    		    <code>factor 32004</code><br>
+		    </div>
+		    <div class="2"> 
+		        <h4>Rings</h4>
+			    Most Macaulay2 applications involve polynomial rings over fields and their quotient rings. Fields can be made in various ways. Computation is often fastest and needs least memory when performed over finite prime fields of the form Z/p. Fortunately, when the characteristic p is not too small, qualitative questions often have similar answers over Z/p and over Q, so we mostly use the former. In Macaulay2 the prime p can range up to 32749.
+    			We make a polynomial ring in 5 variables over Z/101:<br>
+    			<code>kk=ZZ/101</code><br>
+    			<code>S=kk[a,b,c,d,e]</code><br>
+    			One can do arithmetic on polynomials: <br>
+    			<code>(3*a^2+1)^5</code><br>
+    		</div>
+    		<div class="3">
+		        <h4>Matrices</h4>
+    			Here are some basic operations on matrices:<br>
+    			<code> M= matrix{{a,b,c},{b,c,d},{c,d,e}}</code><br>
+    			<code> M^2</code><br>
+    			<code>determinant M</code><br>
+    			<code>trace M</code><br>
+    			<code>M-transpose M</code><br>
+    			A module can be defined as a cokernel, kernel, image, or even as a subquotient:<br>
+    			<code>coker M</code><br>
+    			<code>image M</code><br>
+    			<code>kernel matrix///a,b,0;0,a,b///</code><br>
+    			At any point you can start from scratch by restarting <code>restart</code>.
+    		</div>
+			<div class="4">
+		        <h4>Last Lesson</h4>
+    			You are done! 
+<code>restart</code>
+    		</div>
 		</div>
-		
-		<div class="lesson" id="2"> 
-			Most Macaulay2 applications involve polynomial rings over fields and their quotient rings. Fields can be made in various ways. Computation is often fastest and needs least memory when performed over finite prime fields of the form Z/p. Fortunately, when the characteristic p is not too small, qualitative questions often have similar answers over Z/p and over Q, so we mostly use the former. In Macaulay2 the prime p can range up to 32749.
-			We make a polynomial ring in 5 variables over Z/101:<br>
-			<code>kk=ZZ/101</code><br>
-			<code>S=kk[a,b,c,d,e]</code><br>
-			One can do arithmetic on polynomials: <br>
-			<code>(3*a^2+1)^5</code><br>
-		</div>
-		
-		<div class="lesson" id="3">
-			Here are some basic operations on matrices:<br>
-			<code> M= matrix{{a,b,c},{b,c,d},{c,d,e}}</code><br>
-			<code> M^2</code><br>
-			<code>determinant M</code><br>
-			<code>trace M</code><br>
-			<code>M-transpose M</code><br>
-			A module can be defined as a cokernel, kernel, image, or even as a subquotient:<br>
-			<code>coker M</code><br>
-			<code>image M</code><br>
-			<code>kernel matrix///a,b,0;0,a,b///</code><br>
-			At any point you can start from scratch by restarting <code>restart</code>.
-		</div>
-		
 	</body>
 </html>

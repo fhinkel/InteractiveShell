@@ -4,55 +4,159 @@ body {
     color:#000;
     background-color: #DCDCDC;
 	width: 1024px;
+    font-family: Helvetica;
 }
 
-html {
-    color:#000;
+#headers {
+	position: relative;
 }
 
-#M2In {
-    width: 512px;
-    height: 250px;
+
+.padded {
+	padding:5px 15px;
 }
 
-#M2Out {
-    width: 512px;
-    height: 250px;
-	font-family: monospace;
+#headerIn{
+	width: 40%;
+	float: left;
+	padding:5px 15px;
 }
 
-#areaTable {
+#headerOut{
+	float: right;
+	width:40%;
+	padding:5px 15px;
+}
+
+#M2headerOut{
+	float: left;
+	width:50%;
+}
+
+#toc{
+	float: right;
+}
+
+#fixPos {
+	position: absolute;
+	top: 80px;
+	left:0px;
+	width: 100%;
+}
+
+#leftbuttons{
+	clear: both;
+	float: left;
+	width:40%;
+	padding:5px 15px;
+}
+
+#rightbuttons{
+	float: right;
+	width:40%;
+	padding:5px 15px;
+}
+
+#leftwindow{
+	clear:both;
+	float: left;
+	width:40%;
+	height: 700;
+	padding:5px 15px;
+	
+
+}
+
+#rightwindow {
+	float: right;
+	width:40%;
+	padding:5px 15px;
 	
 }
 
-table{
-	background-color: #E8E8E8;
-	margin-left:auto; 
-	margin-right:auto;
+
+#leftwindow.show_landscape, #rightwindow.show_landscape {
+	height: 650px;
 }
+
+#leftwindow.show_portrait, #rightwindow.show_portrait {
+	height: 850px;
+}
+
+#content_portrait {
+    display: none;
+}
+#content_landscape {
+    display: none;
+
+}
+
+.show_portrait {
+    height: 1000px;
+    width: 768px;
+}
+
+.show_landscape {
+    /*width: 1024px;
+    height: 744px;*/
+}
+
 
 #tutorial {
 	width: 512px;
 	height: 280px;
 	background-color: #CCFFFF;
+    display: none;
 }
 
-.lesson {
+#lesson, #inputarea, #M2In, #M2Out {
+    width: 100%;
+    height: 100%;
+}
+
+#inputarea {
+	height: 90%; /*we want to override!*/
+}
+
+#M2Out {
+	font-family: monospace;
+}
+
+
+#lesson {
 	/*width: 680px;
 	height: 300px;*/
 	/*text-align: center;*/
-	background-color: #CCFFFF;
 	margin-left: auto ;
   	margin-right: auto ;
-  
+	background-color: #C8C8C8  ;
+  	color: black;
 }
-
-/*.lessons {
-	width: 300px;
-	height: 280px;
-}*/
 
 code {
 	background-color: yellow;
 	cursor:pointer;
+	font-size: 140%;
+}
+
+#page-contents {
+    text-align: left;
+    /*position: absolute;
+    top: 0;
+    left: 0;*/
+    width: 15em;
+    border: 1px solid #ccc;
+    border-top-width: 0;
+    background-color: #C8C8DD;
+}
+
+#page-contents a {
+    display: block;
+    margin: .25em 0;
+}
+
+#page-contents div {
+    padding: .25em .5em .5em;
+    display: none;
+    background-color: #C8C8DD;
 }

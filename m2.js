@@ -1,4 +1,18 @@
 var offset=0;
+var waitingtime=2500; // in ms.  Each time we poll for data and don't receive it, we wait longer.
+var maxwaitingtime=60*1000*10; // 10 minutes
+var minwaitingtime=100; // 250;
+
+var lessonNr = 1;
+var maxLesson = 1;
+
+var tutorial;
+var timerobject;
+
+jQuery.fn.toggleNext = function() {
+    this.toggleClass("arrow-down").next().slideToggle("fast");
+    return this;
+};
 
 $(document).ready(function() {
     checkForNewData(offset);
@@ -7,55 +21,163 @@ $(document).ready(function() {
     $("#send").click(sendCallback( '#M2In' ));
     $("#reset").click(resetCallback);
 
-	var lessonNr = 1;
-	var maxLesson = 1;
-	$("#lesson").load("tutorial.html", function () {
-		maxLesson = $('.lesson').length;
+    $("code").live("click", function() { 
+       $(this).effect("highlight", {color: 'red'}, 800);
+	    var code = $(this).html();
+	    //var origcolor = $(this).css('background-color');
+	    //$(this).css('background-color', '#7700aa');
+		$("#M2In").val($("#M2In").val() + "\n" + code);
+		scrollDown( "#M2In" );
+		sendToM2(">>SENDCOMMANDS<<\n" + code);
+		//$(this).css('background-color', origcolor);
 	});
-	
-	$('#lessonNr').html(lessonNr);
-	loadLesson(lessonNr);
+    $("#tutorial").hide();
+    $("#inputarea").hide();
+    $("#send").hide();
+    $("#pageIndex").hide();
+    
+	$("#tutorial").load("tutorial.html", function () {
+ 		maxLesson = $('.lesson').children().length;
+		//createMenu();
+    	$('#lessonNr').html(lessonNr);
+    	loadLesson(lessonNr);
 
-	
-	
+	    $('<div id="page-contents"></div>')
+	    .prepend('<a class="toggler" href="#">Page Contents</a>')
+	    .append('<div></div>')
+	    .prependTo('#toc');
 
+		createMenu2();
+        
+  	});	
+	
 	
 	$("#next").click( function(){
-		if( lessonNr < maxLesson ) {
-			lessonNr = lessonNr + 1;
-			loadLesson(lessonNr);
-			$('#lessonNr').html(lessonNr);
-		} else {
-			alert("No next lesson available.");
-		}
+	    switchLesson(1);
 	});
 	$("#previous").click( function(){
-		if( lessonNr > 1 ) {
-			lessonNr = lessonNr - 1;
-			loadLesson(lessonNr);
-			$('#lessonNr').html(lessonNr);
-		} else {
-			alert("No previous lesson available.");
-			
-		}
+	    switchLesson(-1);
 	});
+
+	// swipe changed to swipeXXX to remove functionality for testing
+	$(function(){ $("#leftwindow").bind("swipeXXX",function(event, info) {
+        if (info.direction === "left"){
+            switchLesson(1);
+        } else if (info.direction === "right") {
+            switchLesson(-1);
+        } else {
+            alert("swiped: huh?");
+        }
+        });
+    });
+    
+
+    
+    
+    $('#page-contents > a.toggler').click( function() {
+        $(this).toggleNext();
+        return false;
+    });
+    
+    updateOrientation();
 });
 
-function loadLesson(lessonNr)
+function updateOrientation()
 {
-	$("#lesson").load("tutorial.html .lesson#" + lessonNr, function () {
-		$("code").click( function() { 
-			var code = $(this).html();
-			$("#M2In").val($("#M2In").val() + "\n" + code);
-			scrollDown( "#M2In" );
-			sendToM2(">>SENDCOMMANDS<<\n" + code);
-		});
-	
+    var orient ="";
+    switch(window.orientation) {
+        case 0:
+        case 180:
+            orient = "show_portrait";
+            break;
+        case -90:
+        case 90:
+            orient = "show_landscape";
+            break;
+        default:
+            orient = "show_landscape";
+    }
+    $("body").attr("class", orient);
+	$("#rightwindow").attr('class', orient);
+	$("#leftwindow").attr('class', orient);
+}
+
+function loadLesson(ell)
+{
+    if (ell == 0){
+        $("#lesson").hide();
+        $("#inputarea").show();
+        $("#send").show();
+        $("#pageIndex").hide();
+        
+    } else {
+        $("#inputarea").hide();
+        var selector = ".lesson ."+ell;
+        var thehtml = $(selector).html();
+        $("#send").hide();
+        $("#pageIndex").text( "Lesson " + lessonNr + "/" + maxLesson).show();
+        $("#lesson").html(thehtml).show();
+    }
+}
+
+function createMenu()
+{
+	var i = 1;
+	$("#tutorial h4").each( function() {
+		var title = $(this).text();
+		$("#menu").append(
+			"<li class='arrow'><a href='#M2' lessonid='lesson" + i +"'>Lesson " + i +": " + title + "</a></li>");
+		i = i + 1;
+	} );
+
+	$('[lessonid]').click(function(){
+		var lessonId = $(this).attr('lessonid');
+		lessonNr = parseInt( lessonId.match(/\d/g ));
+		loadLesson(lessonNr);
 	});
-	
 
 }
 	
+function createMenu2()
+{
+	//alert ("appending");
+	$("#tutorial h4").each( function(i) {
+		var title = $(this).text();
+		var chapterId = 'chapter-' + (i+1);
+		$(this).attr('id', chapterId)
+		$('<a></a>')
+		 .text(title)
+		 .attr('title',title)
+		 .attr('href','#' + chapterId)
+		 .attr('lessonid', "lesson"+(i+1))
+		 .appendTo('#page-contents div');
+		
+		//alert ("appending");
+		$("#menu").append(
+			"<li class='arrow'><a href='#M2' lessonid='lesson" + (i+1) +"'>Lesson " + (i+1) +": " + title + "</a></li>");
+	} );
+
+	$('[lessonid]').click(function(){
+		var lessonId = $(this).attr('lessonid');
+		lessonNr = parseInt( lessonId.match(/\d/g ));
+		loadLesson(lessonNr);
+		$(this).parent().slideToggle("fast");
+		return false;
+	});
+
+}
+
+function switchLesson(incr)
+{
+    lessonNr = lessonNr + incr;
+    if (lessonNr >= 0 && lessonNr <= maxLesson) {
+        loadLesson(lessonNr);
+    } else {
+        lessonNr = lessonNr - incr;
+        //alert("lesson with " + lessonNr + "." + incr + " not available");
+    }
+}
+
 function checkForNewData()
 {
 	$.post("getResults.php", 'offset='+ offset, function(data){
@@ -65,10 +187,20 @@ function checkForNewData()
 			$("#M2Out").val($("#M2Out").val() + data); 
             scrollDown( "#M2Out" );
 			offset = offset + data.length;
+			waitingtime = minwaitingtime;
 		} 
-
+		else
+		{
+		    waitingtime = 2*waitingtime;
+		    if (waitingtime > maxwaitingtime)
+		    {
+		        waitingtime = maxwaitingtime;
+		    }
+		}
+        $("#waittime").text("waiting time: " + waitingtime);
+    	timerobject = setTimeout("checkForNewData()",waitingtime);
 	});
-	setTimeout("checkForNewData()",250);
+
 }
 
 
@@ -101,6 +233,11 @@ function sendCallback( inputField ) {
 
 // return false on error
 function sendToM2(myCommand, baseString) {
+    clearTimeout(timerobject);
+    waitingtime = minwaitingtime;
+    $("#waittime").text("waiting time: " + waitingtime);
+    timerobject = setTimeout("checkForNewData()",waitingtime);
+    
     $.post("sockets/M2Client.php", {
         cmd: myCommand
     },

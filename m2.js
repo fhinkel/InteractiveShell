@@ -242,6 +242,7 @@ function sendToM2(myCommand, baseString) {
         cmd: myCommand
     },
     function(data) {
+		console.log("Here is the data: " + data);
         if (data != "0") { 
             $("#M2Out").val($("#M2Out").val() + "Something Broke! HELP!");
             return false;

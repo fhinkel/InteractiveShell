@@ -1,67 +1,113 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>
-			Try Macaulay2! An interactive tutorial in your browser
-		</title>
-<link rel="stylesheet" href="m2.css" type="text/css" media="screen" />		
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="viewport" content="width=device-width, user-scalable=yes, minimum-scale=.25, maximum-scale=2.0">
+		<link rel="stylesheet" href="jqtouch/jqtouch/jqtouch.css" type="text/css" media="screen">
+		<link rel="stylesheet" href="jqtouch/themes/jqt/theme.css" type="text/css" media="screen">
+		<link rel="stylesheet" href="m2.css" type="text/css" media="screen">
 		<script type="text/javascript" src="jquery.1.3.2.min.js">
+</script>
+		<script type="text/javascript" src="jqtouch/jqtouch/jqtouch.js">
+</script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript">
 </script>
 		<script type="text/javascript" src="m2.js">
 </script>
-		<script type="text/javascript" src="jquery.validate.min.js">
-</script>
+		<script type="text/javascript">
+var jQT = $.jQTouch({
+                                fixedViewport: false,
+				icon: 'myCustomIcon.png',
+				touchSelector: 'a, .touch, .swipe',
+				statusBar: 'black',
+				fullscreen: true
+			});
+		</script>
+		<title>
+			Macaulay2
+		</title>
 	</head>
-	<body>
-		<h2>Try Macaulay2! An interactive tutorial in your browser</h2>
-		<div id="preamble">
-			Tryout Macaulay2 right here on this interactive website. You can also download and install <a href="http://www.math.uiuc.edu/Macaulay2/">Macaulay2</a> on your machine. Click on the commands down below in the tutorial to send them to M2 or type your own commands in the input window. Watch the right output field to see what happens.
-		</div>
-		<table cellpadding="0" cellspacing="0" border="0" id="areaTable">
-			<tr>
-				<td>
+	<body onorientationchange="updateOrientation();">
+		<div id="M2">
+			<div class="toolbar">
+				<h1>
+					Macaulay2
+				</h1><a class="button" href="#help">Help</a>
+			</div>
+			<div id="headers">
+				<div id="headerIn">
 					<h3>
-					Macaulay2 input
+						Macaulay2 input
 					</h3>
-				</td>
-				<td>	
-					<h3>
-						Macaulay2 output
-					</h3>
-				</td>
-				<td>
-			</tr>
-			<tr>
-				<td >		
-				Shift-Enter sends the current line or text selection to M2 for evaluation. 
-				</td>
-				<td><button type="button" id="reset">Reset</button> 
-				</td>
-			</tr>
-			<tr>
-				<td >
-					<textarea id="M2In" wrap='off'></textarea>		
-				</td>
-				<td>
-					<textarea id="M2Out" wrap='off'></textarea>
-				</td>
-			</tr>
-			<tr>
-				<td>
-				<div id="tutorial">
-					<h3>Interactive Tutorial: Lesson <span id="lessonNr"></span></h3>
-
-					<div id="lesson"></div>
-					<button type="button" id="previous">Previous</button>
-					<button type="button" id="next">Next</button>
 				</div>
-				</td>
-				<td align="center"><a href="http://www.math.uiuc.edu/Macaulay2/" target="_blank"><img src="./logo.jpg" ></a></td>
-			</tr>
-		</table>
-
-	
+				<div id="headerOut">
+					<div id="M2headerOut">
+						<h3>
+							Macaulay2 output
+						</h3>
+					</div>
+					<div id="toc"></div>
+				</div>
+			</div>
+			<div id="fixPos">
+			<div id="leftbuttons">
+				<button type="button" id="previous">Previous</button> <button type="button" id="next">Next</button> <button type="button" id="send">Send to M2</button> <span id="pageIndex"></span>
+			</div>
+			<div id="rightbuttons">
+				<span id="pageIndex"><button type="button" id="reset"><span id="pageIndex">Reset</span></button></span>
+			</div>
+			<div id="leftwindow" class="swipe">
+				<div id="lesson"></div>
+				<div id="inputarea">
+					<textarea id="M2In" wrap='off'>
+</textarea>
+				</div>
+			</div>
+			<div id="rightwindow">
+				<textarea id="M2Out" wrap='off'>
+</textarea>
+			</div>
+			<div id="tutorial"></div>
+		</div>
+		</div>
+		<div id="help">
+			<div class="toolbar">
+				<h1>
+					Macaulay2
+				</h1><a class="button back" href="M2#">Back</a> <a class="button" href="#credits">Credits</a>
+			</div>Try out Macaulay2 right here on this interactive website. Macaulay2 is a software system devoted to supporting research in algebraic geometry and commutative algebra, whose creation has been funded by the National Science Foundation since 1992. You can also download and install <a href="http://www.math.uiuc.edu/Macaulay2/">Macaulay2</a> on your machine. Choose a lesson, and have fun!
+			<ul class="edgetoedge">
+				<li class="arrow">
+					<a href="#M2" lessonid="lesson0">Terminal</a>
+				</li>
+				<li>Tutorial 1
+					<ul id="menu"></ul>
+				</li>
+				<li>Tutorial 2 - this one is still hard coded, just ignore :)
+					<ul>
+						<li class="arrow">
+							<a href="#lesson4" lessonid="lesson1">Lesson 4</a>
+						</li>
+						<li class="arrow">
+							<a href="#lesson5">Lesson 5</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div id="credits">
+			<div class="toolbar">
+				<h1>
+					Credits
+				</h1><a class="button back" href="M2#">Back</a>
+			</div>
+			<div class="padded">
+				Credits to:<br>
+				Franziska Hinkelmann <br> 
+				Lars Kastner <br>
+				Greg Smith <br>
+				Mike Stillman<br>
+			</div>
+		</div>
 	</body>
 </html>

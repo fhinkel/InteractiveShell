@@ -5,13 +5,10 @@
 		<meta name="viewport" content="width=device-width, user-scalable=yes, minimum-scale=.25, maximum-scale=2.0">
 		<link rel="stylesheet" href="m2.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="css/overcast/jquery-ui-1.8.16.custom.css" type="text/css" media="screen">
-		
 		<script type="text/javascript" src="jquery-1.6.4.min.js">
 </script>
 		<script type="text/javascript" src="jquery-ui-1.8.16.custom.min.js">
 </script>
-
-
 		<script type="text/javascript" src="m2.js">
 </script>
 		<title>
@@ -19,86 +16,42 @@
 		</title>
 	</head>
 	<body onorientationchange="updateOrientation();">
-		<div id="M2">
-			<div class="toolbar">
-				<h1>
-					Macaulay2
-				</h1><a class="button" href="#help">Help</a>
-			</div>
-			<div id="headers">
-				<div id="headerIn">
-					<h3>
-						Macaulay2 input
-					</h3>
-				</div>
-				<div id="headerOut">
-					<div id="M2headerOut">
-						<h3>
-							Macaulay2 output
-						</h3>
-					</div>
-					<div id="toc"></div>
-				</div>
-			</div>
-			<div id="fixPos">
-			<div id="leftbuttons">
-				<button type="button" id="previous">Previous</button> <button type="button" id="next">Next</button> <button type="button" id="send">Send to M2</button> <span id="pageIndex"></span>
-			</div>
-			<div id="rightbuttons">
-				<span id="pageIndex"><button type="button" id="reset"><span id="pageIndex">Reset</span></button></span>
-			</div>
-			<div id="leftwindow" class="swipe">
-				<div id="lesson"></div>
-				<div id="inputarea">
-					<textarea id="M2In" wrap='off'>
+		<div class="toolbar">
+			<h1>
+				Macaulay2
+			</h1>
+		</div>
+		<div id="headerIn">
+			<h3>
+				Macaulay2 input
+			</h3>
+		</div>
+		<div id="headerOut">
+			<h3>
+				Macaulay2 output
+			</h3>
+		</div>
+		<div id="toc"></div><a href="#help">Help</a>
+		<div id="navigation" class="terminal">
+			<button type="button" id="previous">Previous</button> <button type="button" id="next">Next</button> <button type="button" id="send">Send to M2</button> <span id="pageIndex"></span> <span id="pageIndex"><button type="button" id="reset"><span id="pageIndex"><span id="pageIndex"><span id="pageIndex">Reset</span></span></span></button></span>
+		</div>
+		<div id="lesson" class="terminal"></div>
+		<div id="inputarea" class="terminal">
+			<textarea id="M2In" wrap='off'>
 </textarea>
-				</div>
-			</div>
-			<div id="rightwindow">
-				<textarea id="M2Out" wrap='off'>
+		</div>
+		<div id="outputarea" class="terminal">
+	
+			<textarea id="M2Out" wrap='off'>
 </textarea>
-			</div>
-			<div id="tutorial"></div>
 		</div>
-		</div>
-		<div id="help">
-			<div class="toolbar">
-				<h1>
-					Macaulay2
-				</h1><a class="button back" href="M2#">Back</a> <a class="button" href="#credits">Credits</a>
-			</div>Try out Macaulay2 right here on this interactive website. Macaulay2 is a software system devoted to supporting research in algebraic geometry and commutative algebra, whose creation has been funded by the National Science Foundation since 1992. You can also download and install <a href="http://www.math.uiuc.edu/Macaulay2/">Macaulay2</a> on your machine. Choose a lesson, and have fun!
-			<ul class="edgetoedge">
-				<li class="arrow">
-					<a href="#M2" lessonid="lesson0">Terminal</a>
-				</li>
-				<li>Tutorial 1
-					<ul id="menu"></ul>
-				</li>
-				<li>Tutorial 2 - this one is still hard coded, just ignore :)
-					<ul>
-						<li class="arrow">
-							<a href="#lesson4" lessonid="lesson1">Lesson 4</a>
-						</li>
-						<li class="arrow">
-							<a href="#lesson5">Lesson 5</a>
-						</li>
-					</ul>
-				</li>
-			</ul>
-		</div>
+		<div id="tutorial"></div>
 		<div id="credits">
-			<div class="toolbar">
-				<h1>
-					Credits
-				</h1><a class="button back" href="M2#">Back</a>
-			</div>
-			<div class="padded">
-				Credits to:<br>
-				Franziska Hinkelmann <br> 
-				Lars Kastner <br>
-				Greg Smith <br>
-				Mike Stillman<br>
-			</div>
+			Credits to:<br>
+			Franziska Hinkelmann<br>
+			Lars Kastner<br>
+			Greg Smith<br>
+			Mike Stillman<br>
 		</div>
 	</body>
 </html>

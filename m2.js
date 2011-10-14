@@ -15,6 +15,13 @@ jQuery.fn.toggleNext = function() {
 };
 
 $(document).ready(function() {
+	$('ul').menu({
+			content: $('#myContent').html(),		
+			maxHeight: 180,
+			positionOpts: { offsetX: 10, offsetY: 20 },
+			showSpeed: 300
+		});
+		
     checkForNewData(offset);
 
 	$('#M2In').keypress(sendOnEnterCallback('#M2In'));

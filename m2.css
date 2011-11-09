@@ -1,10 +1,14 @@
 /*CSS Sheet for TryM2*/
 
+html {
+	height: 100%;	
+	
+}
 body {
     color:#000;
     background-color: #DCDCDC;
-	width: 1024px;
     font-family: Helvetica;
+	height: 96%;	
 }
 
 .halfWidth {
@@ -30,7 +34,7 @@ body {
 }
 
 div {
-	/*border: 1px black solid;*/
+	border: 1px black solid;
 }
 
 .red {
@@ -51,7 +55,7 @@ div {
 
 #inputarea, #lesson, #outputarea {
 	width: 49%;
-	height: 312px;
+	height: 75%;
 }
 
 #inputarea, #lesson {
@@ -69,6 +73,8 @@ div {
 
 #credits {
 	clear: both;
+	position: absolute;
+	bottom: 0;
 	font-size: 10pt;
 }
 

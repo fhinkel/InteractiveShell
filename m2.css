@@ -56,6 +56,12 @@ div {
 #inputarea, #lesson, #outputarea {
 	width: 49%;
 	height: 75%;
+	 
+	
+}
+
+#lesson {
+	overflow-y: auto;
 }
 
 #inputarea, #lesson {

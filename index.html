@@ -1,8 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
 <html>
 	<head>
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="viewport" content="width=device-width, user-scalable=yes, minimum-scale=.25, maximum-scale=2.0">
+		<!--<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="viewport" content="width=device-width, user-scalable=yes, minimum-scale=.25, maximum-scale=2.0">-->
 		<link rel="stylesheet" href="m2.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="css/overcast/jquery-ui-1.8.16.custom.css" type="text/css" media="screen">
 		<script type="text/javascript" src="jquery-1.6.4.min.js">
@@ -15,7 +15,7 @@
 			Macaulay2
 		</title>
 	</head>
-	<body onorientationchange="updateOrientation();">
+	<body> <!--onorientationchange="updateOrientation();">-->
 		<div class="toolbar">
 			<h1>
 				Macaulay2
@@ -33,7 +33,11 @@
 		</div>
 		<div id="toc"></div><a href="#help">Help</a>
 		<div id="navigation" class="terminal">
-			<button type="button" id="previous">Previous</button> <button type="button" id="next">Next</button> <button type="button" id="send">Send to M2</button> <span id="pageIndex"></span> <span id="pageIndex"><button type="button" id="reset"><span id="pageIndex"><span id="pageIndex"><span id="pageIndex">Reset</span></span></span></button></span>
+			<button type="button" id="previous">Previous</button> 
+			<button type="button" id="next">Next</button> 
+			<button type="button" id="send">Send to M2</button> 
+			<span id="pageIndex"></span> 
+			<button type="button" id="reset">Reset</button>
 		</div>
 		<div id="lesson" class="terminal"></div>
 		<div id="inputarea" class="terminal">

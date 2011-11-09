@@ -1,4 +1,4 @@
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 	<head>
 		<!--<meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,37 +15,51 @@
 			Macaulay2
 		</title>
 	</head>
-	<body> <!--onorientationchange="updateOrientation();">-->
-		<div class="toolbar">
-			<h1>
+	<body>
+		<!--onorientationchange="updateOrientation();">-->
+		<div class="rel">
+			<div id="title">
 				Macaulay2
-			</h1>
+			</div>
+			
+			<div class="left halfWidth rel">
+				<div class="bottom">
+					<div class="right" >
+						<button type="button">Index</button>
+						 <span id="pageIndex"></span>
+					</div>
+					<div  class="right" >
+						<button type="button" id="previous">Previous</button> 
+						<button type="button" id="next">Next</button> 
+						<button type="button" id="send">Send to M2</button>
+					</div>
+				</div>
+			</div>
+			<div class="right halfWidth rel">
+				<div class="bottom">
+					<div class ="left">
+						<button type="button" id="reset">Reset</button>
+					</div>
+					<div class="right">
+						<button type="button" id="help">Help</button>
+					</div>
+				</div>
+	
+			</div>
 		</div>
-		<div id="headerIn">
-			<h3>
-				Macaulay2 input
-			</h3>
-		</div>
-		<div id="headerOut">
-			<h3>
-				Macaulay2 output
-			</h3>
-		</div>
-		<div id="toc"></div><a href="#help">Help</a>
+		
+		<!-- <div id="toc"></div> 
 		<div id="navigation" class="terminal">
-			<button type="button" id="previous">Previous</button> 
-			<button type="button" id="next">Next</button> 
-			<button type="button" id="send">Send to M2</button> 
-			<span id="pageIndex"></span> 
-			<button type="button" id="reset">Reset</button>
-		</div>
-		<div id="lesson" class="terminal"></div>
-		<div id="inputarea" class="terminal">
+			<button type="button" id="previous">Previous</button> <button type="button" id="next">Next</button> <button type="button" id="send">Send to M2</button> 
+		</div> -->
+		
+		
+		<div id="lesson" class="terminal left "></div>
+		<div id="inputarea" class="terminal left">
 			<textarea id="M2In" wrap='off'>
 </textarea>
 		</div>
-		<div id="outputarea" class="terminal">
-	
+		<div id="outputarea" class="terminal right">
 			<textarea id="M2Out" wrap='off'>
 </textarea>
 		</div>

@@ -7,8 +7,40 @@ body {
     font-family: Helvetica;
 }
 
+.halfWidth {
+	width: 49%;
+}
+
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
+.rel { 
+	position: relative;
+}
+
+.bottom {
+	position: absolute; 
+    bottom: 0;
+	width: 100%;
+}
+
 div {
-	/*border: 3px black solid*/;
+	/*border: 1px black solid;*/
+}
+
+.red {
+	border: 1px red solid;
+}
+
+
+#title {
+	font-size: 24pt;
+	font-weight: bold;
 }
 
 .terminal {
@@ -16,36 +48,19 @@ div {
 }
 
 
-#headerIn {
-	float: left;
-	padding:0px 15px;
-}
-
-#headerOut {
-	float: right;
-	padding:0px 15px;
-}
-
-#navigation {
-	clear: both;
-	float: left;
-	width: 100%;
-	padding:10px 0px;
-	
-}
 
 #inputarea, #lesson, #outputarea {
-	width: 50%;
-	height: 256px;
+	width: 49%;
+	height: 312px;
 }
 
 #inputarea, #lesson {
 	clear: both;
-	float:left ;
+
 }
 
 #outputarea {
-	float: right;
+
 }
 
 #toc {

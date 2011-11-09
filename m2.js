@@ -86,7 +86,7 @@ $(document).ready(function() {
         return false;
     });
     
-    updateOrientation();
+    //updateOrientation();
 });
 
 function updateOrientation()

@@ -15,7 +15,7 @@ jQuery.fn.toggleNext = function() {
 };
 
 $(document).ready(function() {
-	$('#dialog-modal').dialog({
+	$('#help-dialog').dialog({
 			height: 340,
 			width: 460,
 			modal: true,
@@ -101,7 +101,7 @@ $(document).ready(function() {
 
 function helpScreen()  {
 	console.log("Display Help.");
-	$("#dialog-modal").dialog('open') 
+	$("#help-dialog").dialog('open') 
 
 }
 

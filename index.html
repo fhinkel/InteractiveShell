@@ -9,6 +9,11 @@
 </script>
 		<script type="text/javascript" src="jquery-ui-1.8.16.custom.min.js">
 </script>
+	<script type="text/javascript" src="syntaxhighlighter_3.0.83/scripts/shCore.js"></script>
+	<script type="text/javascript" src="syntaxhighlighter_3.0.83/scripts/shBrushJScript.js"></script>
+	<link type="text/css" rel="stylesheet" href="syntaxhighlighter_3.0.83/styles/shCoreDefault.css"/>
+
+
 		<script type="text/javascript" src="m2.js">
 </script>
 		<title>
@@ -16,6 +21,28 @@
 		</title>
 	</head>
 	<body>
+<h1>Hello SyntaxHighlighter</h1>
+<pre class="brush: js;">
+function helloSyntaxHighlighter()
+{
+	return "hi!";
+}
+</pre>
+
+<script type="syntaxhighlighter" class="brush: js"><![CDATA[
+  /**
+   * SyntaxHighlighter
+   */
+  function foo()
+  {
+      if (counter <= 10)
+          return;
+      // it works!
+  }
+]]></script>
+
+
+
 		<!--onorientationchange="updateOrientation();">-->
 		<div class="rel">
 			<div id="title">

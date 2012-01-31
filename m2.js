@@ -15,6 +15,7 @@ jQuery.fn.toggleNext = function() {
 };
 
 $(document).ready(function() {
+    SyntaxHighlighter.all();
 	$('ul').menu({
 			content: $('#myContent').html(),		
 			maxHeight: 180,

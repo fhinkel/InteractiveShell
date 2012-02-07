@@ -1,3 +1,5 @@
+/* Make changes in here! */
+
 .extruder{position:fixed;cursor:default;background:url("../elements/extruder_blank.png");}
 .extruder .header{height:27px;}
 .extruder .content{display:none;background:#000000;}

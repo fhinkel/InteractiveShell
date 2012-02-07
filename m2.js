@@ -53,6 +53,7 @@ $(document).ready(function() {
     $("#send").hide();
     $("#pageIndex").hide();
     
+
 	$("#tutorial").load("tutorial.html", function () {
  		maxLesson = $('.lesson').children().length;
 		//createMenu();
@@ -88,6 +89,16 @@ $(document).ready(function() {
         });
     });
     
+$(function(){
+    $("#extruderBottom").buildMbExtruder({
+                position:"bottom",
+                width:350,
+                extruderOpacity:1,
+                onExtOpen:function(){},
+                onExtContentLoad:function(){},
+                onExtClose:function(){}
+            });
+    });
 
     
     

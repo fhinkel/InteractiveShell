@@ -15,6 +15,15 @@ jQuery.fn.toggleNext = function() {
 };
 
 $(document).ready(function() {
+	$('#help-dialog').dialog({
+			height: 340,
+			width: 460,
+			modal: true,
+			autoOpen: false
+		});
+	$('#help').click(helpScreen );
+	
+	
     SyntaxHighlighter.all();
 	$('ul').menu({
 			content: $('#myContent').html(),		
@@ -100,6 +109,12 @@ $(function(){
     
     //updateOrientation();
 });
+
+function helpScreen()  {
+	console.log("Display Help.");
+	$("#help-dialog").dialog('open') 
+
+}
 
 function updateOrientation()
 {

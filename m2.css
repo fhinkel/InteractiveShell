@@ -51,7 +51,10 @@ div {
 	background-color: #C2DFFF;
 }
 
-
+.left {
+	padding-left: 10px;
+	
+}
 
 #inputarea, #lesson, #outputarea {
 	width: 49%;

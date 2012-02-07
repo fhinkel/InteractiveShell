@@ -1,3 +1,11 @@
+2/7/12
+* MB Extruder, http://pupunzi.open-lab.com/mb-jquery-components/jquery-mb-extruder/
+* we need 
+	- show tutorial lessons
+	- load lessons
+	- load lessons from url
+	
+	
 1/30/12
 * final prompts in output terminal
 * AJAX-like call to get results from M2 when they're ready instead of pulling every x ms, get a smarter web server

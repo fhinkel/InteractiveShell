@@ -15,6 +15,14 @@ jQuery.fn.toggleNext = function() {
 };
 
 $(document).ready(function() {
+	
+	$('.franzi').live("click", function(){
+		//alert("lesson in tutorial was just clicked");
+		$("#tmp").load('tutorial.html h4');
+		//console.log( $("#tmp").html() );
+		//alert( $("#tmp").text()  );
+	})
+	
 	$('#help-dialog').dialog({
 			height: 340,
 			width: 460,
@@ -89,16 +97,16 @@ $(document).ready(function() {
         });
     });
     
-$(function(){
-    $("#extruderBottom").buildMbExtruder({
-                position:"bottom",
-                width:350,
-                extruderOpacity:1,
-                onExtOpen:function(){},
-                onExtContentLoad:function(){},
-                onExtClose:function(){}
-            });
-    });
+	$(function(){   	 
+		$("#extruderTop").buildMbExtruder({
+	                position:"top",
+	                width:350,
+	                extruderOpacity:1,
+	                onExtOpen:function(){},
+	                onExtContentLoad:function(){},
+	                onExtClose:function(){}
+	         });
+	    });
 
     
     

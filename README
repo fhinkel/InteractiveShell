@@ -4,6 +4,7 @@
 	- show tutorial lessons
 	- load lessons
 	- load lessons from url
+* Strip down extruder files (js and css in root dir), change way menu is getting its content
 	
 	
 1/30/12

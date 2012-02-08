@@ -4,7 +4,7 @@
 	- show tutorial lessons
 	- load lessons
 	- load lessons from url
-* Strip down extruder files (js and css in root dir), change way menu is getting its content
+* Strip down extruder files (js and css in root dir), change way menu is getting its content (we have a function for retrieving content, i.e., all H4's, in m2.js, createMenu()
 	
 	
 1/30/12

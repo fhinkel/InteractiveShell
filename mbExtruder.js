@@ -305,7 +305,7 @@
 		var voices= $(this).find(".voice");
 		voices.each(function(){
 			var voice=$(this);
-			console.log( voice );
+			//console.log( voice );
 			if ($.metadata){
 				$.metadata.setType("class");
 				if (voice.metadata().panel) {
@@ -343,8 +343,19 @@
 						voices.find(".settingsBtn").removeClass("sel").css({opacity:.5});
 					}
 					var content=$("<div class='optionsPanel'></div>");
+					//console.log(content);
 					voice.after(content);
-					// select all <h4> from tutorial.html and paste them in here!!!
+					console.log(voice.attr("panel"));
+					console.log(voice.attr("data"));
+					
+					// this is done everytime the panel slides open
+					//$("#tutorial").load("tutorial.html");
+					
+					$("#tutorial h4").each( function() {
+						var title = $(this).text();
+						console.log(title);
+					} );
+					
 					
 					$.ajax({
 						type: "GET",
@@ -353,8 +364,10 @@
 						async:true,
 						dataType:"html",
 						success: function(html){
+							//console.log("another ajax");
 							var c= $(html);
 							content.html(c);
+							console.log(content.children());
 							content.children().not(".text")
 									.addClass("panelVoice")
 									.click(function(){

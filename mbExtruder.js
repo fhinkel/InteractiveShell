@@ -117,8 +117,9 @@
 				}
 
 				txt=extruder.attr("extTitle")?extruder.attr("extTitle"): "";
+				console.log("extTitle: " + extruder.attr("extTitle"));
 				var flapLabel = extruder.find(".flapLabel");
-				flapLabel.text(txt);
+				flapLabel.text(txt); // what is this doing?
 				if(isVertical){
 					flapLabel.html(txt).css({whiteSpace:"noWrap"});//,height:this.options.flapDim
 					var orientation= this.options.textOrientation == "tb";
@@ -204,8 +205,9 @@
 				return;
 			}
 			var url=this.options.url;
+			console.log("url: " + url); // file name with different tutorials
 			var data=this.options.data;
-			//console.log( "alert alert alert ");
+			console.log( "data: " + data); // we do not pass in data
 			//console.log( $(this) );
 			var where=$(this), voice;
 			var cb= this.options.callback;
@@ -224,7 +226,7 @@
 					console.log(where.find(".container").html() );
 					voice=where.find(".voice");
 					voice.hover(function(){$(this).addClass("hover");},function(){$(this).removeClass("hover");});
-					where.setExtruderVoicesAction();
+					where.setExtruderVoicesAction(); //  setting voices actions for each content item, i.e. for each tutorial
 					if (cb) {
 						setTimeout(function(){cb();},100);
 					}
@@ -303,9 +305,13 @@
 		var voices= $(this).find(".voice");
 		voices.each(function(){
 			var voice=$(this);
+			console.log( voice );
 			if ($.metadata){
 				$.metadata.setType("class");
-				if (voice.metadata().panel) voice.attr("panel",voice.metadata().panel);
+				if (voice.metadata().panel) {
+					console.log( voice.metadata().panel);
+					voice.attr("panel",voice.metadata().panel);
+				}
 				if (voice.metadata().data) voice.attr("data",voice.metadata().data);
 				if (voice.metadata().disabled) voice.attr("setDisabled", voice.metadata().disabled);
 			}
@@ -338,6 +344,8 @@
 					}
 					var content=$("<div class='optionsPanel'></div>");
 					voice.after(content);
+					// select all <h4> from tutorial.html and paste them in here!!!
+					
 					$.ajax({
 						type: "GET",
 						url: voice.attr("panel"),

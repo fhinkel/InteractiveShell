@@ -352,20 +352,19 @@
 					//$("#tutorial").load("tutorial.html");
 					
 					var tutorialFile = voice.attr("panel");
-					//console.log("TutorialFile: " + tutorialFile);
+					console.log("TutorialFile: " + tutorialFile);
 					$("#tmp").load(tutorialFile + ' h4', function(){
 						$("#tmp h4").each( function() {
 							var title = $(this).html();
 							//console.log(title);
-							content.append( "<div><a class=\"franzi\">" + title + "</a></div>" );
-							
+							content.append( "<div><a class=\"franzi\">" + title + "</a></div>" );	
 							content.children()
 								.addClass("panelVoice")
 								.click(function(){
 								extruder.closeMbExtruder();
 							});							
 					
-							console.log("content: " + content.html());
+							//console.log("content: " + content.html());
 							content.slideDown(40);
 						} );
 					});

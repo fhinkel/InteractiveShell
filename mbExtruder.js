@@ -351,31 +351,51 @@
 					// this is done everytime the panel slides open
 					//$("#tutorial").load("tutorial.html");
 					
-					$("#tutorial h4").each( function() {
-						var title = $(this).text();
-						console.log(title);
-					} );
+					var tutorialFile = voice.attr("panel");
+					//console.log("TutorialFile: " + tutorialFile);
+					$("#tmp").load(tutorialFile + ' h4', function(){
+						$("#tmp h4").each( function() {
+							var title = $(this).html();
+							//console.log(title);
+							content.append( "<div><a class=\"franzi\">" + title + "</a></div>" );
+							
+							content.children()
+								.addClass("panelVoice")
+								.click(function(){
+								extruder.closeMbExtruder();
+							});							
 					
+							console.log("content: " + content.html());
+							content.slideDown(40);
+						} );
+					});
+					//alert( $("#tmp").text );
+
 					
-					$.ajax({
+				
+					
+				/*	$.ajax({
 						type: "GET",
 						url: voice.attr("panel"),
 						data: voice.attr("data"),
 						async:true,
 						dataType:"html",
 						success: function(html){
-							//console.log("another ajax");
+							console.log(html);
 							var c= $(html);
 							content.html(c);
-							console.log(content.children());
+							console.log(content.children().html());
 							content.children().not(".text")
 									.addClass("panelVoice")
 									.click(function(){
 								extruder.closeMbExtruder();
+								//console.log("Child: " + )
 							});
+							console.log("content: " + content.html());
+							
 							content.slideDown(400);
 						}
-					});
+					}); */
 					voice.addClass("sel");
 					voice.find(".settingsBtn").addClass("sel").css({opacity:1});
 				});

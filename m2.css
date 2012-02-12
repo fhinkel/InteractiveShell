@@ -136,3 +136,8 @@ code {
     /*width: 1024px;
     height: 744px;
 }*/
+
+#tmp {
+	background-color:red;
+	visibility:hidden;
+}

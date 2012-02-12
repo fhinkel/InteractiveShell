@@ -65,7 +65,7 @@ $(document).ready(function() {
 	$("#tutorial").load("tutorial.html", function () {
  		maxLesson = $('.lesson').children().length;
 		//createMenu();
-    	$('#lessonNr').html(lessonNr);
+//    	$('#lessonNr').html(lessonNr);
     	loadLesson(lessonNr);
 
 	    $('<div id="page-contents"></div>')

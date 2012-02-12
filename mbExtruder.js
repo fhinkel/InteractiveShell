@@ -345,32 +345,34 @@
 					var content=$("<div class='optionsPanel'></div>");
 					//console.log(content);
 					voice.after(content);
-					console.log(voice.attr("panel"));
-					console.log(voice.attr("data"));
+					//console.log(voice.attr("panel"));
+					//console.log(voice.attr("data"));
 					
 					// this is done everytime the panel slides open
-					//$("#tutorial").load("tutorial.html");
 					
 					var tutorialFile = voice.attr("panel");
-					console.log("TutorialFile: " + tutorialFile);
-					$("#tmp").load(tutorialFile + ' h4', function(){
-						$("#tmp h4").each( function() {
+					//console.log("TutorialFile: " + tutorialFile);
+					$("#tutorial").load(tutorialFile, function(){
+						//console.log("maxLesson: " + maxLesson);
+						maxLesson = $('#tutorial .lesson').children().length;
+						//console.log($('#tmp .lesson').children().text());
+						console.log("maxLesson: " + maxLesson);
+						$("#tutorial h4").each( function() {
 							var title = $(this).html();
+
 							//console.log(title);
 							content.append( "<div><a class=\"franzi\">" + title + "</a></div>" );	
 							content.children()
 								.addClass("panelVoice")
 								.click(function(){
 								extruder.closeMbExtruder();
+								// loading of the lesson content should happen in m2.js, i.e., attach the correct class to title and do something on loading it
 							});							
 					
 							//console.log("content: " + content.html());
 							content.slideDown(40);
 						} );
-					});
-					//alert( $("#tmp").text );
-
-					
+					});					
 				
 					
 				/*	$.ajax({

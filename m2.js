@@ -25,6 +25,11 @@ $(document).ready(function() {
 		var lessonId = $(this).attr('lessonid');
 		trym2.lessonNr = parseInt( lessonId.match(/\d/g ));
 		$("#tutorial").html( $("#menuTutorial").html() );
+		var i = 1;
+		$("#tutorial h4").each( function() {
+				$(this).parent().attr('lessonid', i);
+			i = i + 1;
+		} );
 		trym2.maxLesson = $('#tutorial .lesson').children().length;
 		loadLesson(trym2.lessonNr);
 	});
@@ -68,6 +73,13 @@ $(document).ready(function() {
 
 	$("#tutorial").load("tutorial.html", function () {
  		trym2.maxLesson = $('.lesson').children().length;
+		var i = 1;
+		$("#tutorial h4").each( function() {
+				$(this).parent().attr('lessonid', i);
+			i = i + 1;
+		} );
+	
+
     	loadLesson(trym2.lessonNr);
 
 	    $('<div id="page-contents"></div>')
@@ -156,11 +168,10 @@ function loadLesson(ell)
         
     } else {
         $("#inputarea").hide();
-        var selector = ".lesson ."+ell;
-        var thehtml = $(selector).html();
+        var lessonContent = $('[lessonid="'+ ell + '"]').html();
         $("#send").hide();
         $("#pageIndex").text( "Lesson " + trym2.lessonNr + "/" + trym2.maxLesson).show();
-        $("#lesson").html(thehtml).show();
+        $("#lesson").html(lessonContent).show();
     }
 }
 

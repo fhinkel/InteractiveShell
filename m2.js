@@ -1,13 +1,17 @@
-var offset=0;
-var waitingtime=2500; // in ms.  Each time we poll for data and don't receive it, we wait longer.
-var maxwaitingtime=60*1000*10; // 10 minutes
-var minwaitingtime=100; // 250;
+var trym2 = {
+	offset: 0,
+	waitingtime: 2500, // in ms.  Each time we poll for data and don't receive it, we wait longer.
+	maxwaitingtime: 60*1000*10, // 10 minutes
+	minwaitingtime: 100,
+	lessonNr: 1,
+	maxLesson: 1,
+	timerobject: 0
+}
 
-var lessonNr = 1;
-var maxLesson = 1;
+
 
 var tutorial;
-var timerobject;
+
 
 jQuery.fn.toggleNext = function() {
     this.toggleClass("arrow-down").next().slideToggle("fast");
@@ -19,10 +23,10 @@ $(document).ready(function() {
 	$('.submenuItem').live("click", function(){
 		console.log( "You clicked a submenuItem: " + $(this).html() );
 		var lessonId = $(this).attr('lessonid');
-		lessonNr = parseInt( lessonId.match(/\d/g ));
+		trym2.lessonNr = parseInt( lessonId.match(/\d/g ));
 		$("#tutorial").html( $("#menuTutorial").html() );
-		maxLesson = $('#tutorial .lesson').children().length;
-		loadLesson(lessonNr);
+		trym2.maxLesson = $('#tutorial .lesson').children().length;
+		loadLesson(trym2.lessonNr);
 	});
 		
 	
@@ -43,7 +47,7 @@ $(document).ready(function() {
 			showSpeed: 300
 		});
 		
-    checkForNewData(offset);
+    checkForNewData(trym2.offset);
 
 	$('#M2In').keypress(sendOnEnterCallback('#M2In'));
     $("#send").click(sendCallback( '#M2In' ));
@@ -67,10 +71,10 @@ $(document).ready(function() {
     
 
 	$("#tutorial").load("tutorial.html", function () {
- 		maxLesson = $('.lesson').children().length;
+ 		trym2.maxLesson = $('.lesson').children().length;
 		//createMenu();
 //    	$('#lessonNr').html(lessonNr);
-    	loadLesson(lessonNr);
+    	loadLesson(trym2.lessonNr);
 
 	    $('<div id="page-contents"></div>')
 	    .prepend('<a class="toggler" href="#">Page Contents</a>')
@@ -161,7 +165,7 @@ function loadLesson(ell)
         var selector = ".lesson ."+ell;
         var thehtml = $(selector).html();
         $("#send").hide();
-        $("#pageIndex").text( "Lesson " + lessonNr + "/" + maxLesson).show();
+        $("#pageIndex").text( "Lesson " + trym2.lessonNr + "/" + trym2.maxLesson).show();
         $("#lesson").html(thehtml).show();
     }
 }
@@ -178,8 +182,8 @@ function createMenu()
 
 	$('[lessonid]').click(function(){
 		var lessonId = $(this).attr('lessonid');
-		lessonNr = parseInt( lessonId.match(/\d/g ));
-		loadLesson(lessonNr);
+		trym2.lessonNr = parseInt( lessonId.match(/\d/g ));
+		loadLesson(trym2.lessonNr);
 	});
 
 }
@@ -205,8 +209,8 @@ function createMenu2()
 
 	$('[lessonid]').click(function(){
 		var lessonId = $(this).attr('lessonid');
-		lessonNr = parseInt( lessonId.match(/\d/g ));
-		loadLesson(lessonNr);
+		trym2.lessonNr = parseInt( lessonId.match(/\d/g ));
+		loadLesson(trym2.lessonNr);
 		$(this).parent().slideToggle("fast");
 		return false;
 	});
@@ -215,36 +219,36 @@ function createMenu2()
 
 function switchLesson(incr)
 {
-    lessonNr = lessonNr + incr;
-    if (lessonNr >= 0 && lessonNr <= maxLesson) {
-        loadLesson(lessonNr);
+    trym2.lessonNr = trym2.lessonNr + incr;
+    if (trym2.lessonNr >= 0 && trym2.lessonNr <= trym2.maxLesson) {
+        loadLesson(trym2.lessonNr);
     } else {
-        lessonNr = lessonNr - incr;
-        //alert("lesson with " + lessonNr + "." + incr + " not available");
+        trym2.lessonNr = trym2.lessonNr - incr;
+        //alert("lesson with " + trym2.lessonNr + "." + incr + " not available");
     }
 }
 
 function checkForNewData()
 {
-	$.post("getResults.php", 'offset='+ offset, function(data){
+	$.post("getResults.php", 'offset='+ trym2.offset, function(data){
 
 		if(data != "")
 		{
 			$("#M2Out").val($("#M2Out").val() + data); 
             scrollDown( "#M2Out" );
-			offset = offset + data.length;
-			waitingtime = minwaitingtime;
+			trym2.offset = trym2.offset + data.length;
+			trym2.waitingtime = trym2.minwaitingtime;
 		} 
 		else
 		{
-		    waitingtime = 2*waitingtime;
-		    if (waitingtime > maxwaitingtime)
+		    trym2.waitingtime = 2*trym2.waitingtime;
+		    if (trym2.waitingtime > trym2.maxwaitingtime)
 		    {
-		        waitingtime = maxwaitingtime;
+		        trym2.waitingtime = trym2.maxwaitingtime;
 		    }
 		}
-        $("#waittime").text("waiting time: " + waitingtime);
-    	timerobject = setTimeout("checkForNewData()",waitingtime);
+        $("#waittime").text("waiting time: " + trym2.waitingtime);
+    	trym2.timerobject = setTimeout("checkForNewData()",trym2.waitingtime);
 	});
 
 }
@@ -279,10 +283,10 @@ function sendCallback( inputField ) {
 
 // return false on error
 function sendToM2(myCommand, baseString) {
-    clearTimeout(timerobject);
-    waitingtime = minwaitingtime;
-    $("#waittime").text("waiting time: " + waitingtime);
-    timerobject = setTimeout("checkForNewData()",waitingtime);
+    clearTimeout(trym2.timerobject);
+    trym2.waitingtime = trym2.minwaitingtime;
+    $("#waittime").text("waiting time: " + trym2.waitingtime);
+    trym2.timerobject = setTimeout("checkForNewData()", trym2.waitingtime);
     
     $.post("sockets/M2Client.php", {
         cmd: myCommand
@@ -323,13 +327,10 @@ function getSelected( inputField) {
 }
 
 // input: filename with tutorial content
-// return a list of lessons title, each wrapped in a div and link
+// return a list of lessons title, each wrapped in a div and link, 
 // <div><a>" + title + "</a></div>	
-function getLessonTitles( tutorialFile, callback ){
-	//console.log("maxLesson: " + maxLesson);
-	//maxLesson = $('#tutorial .lesson').children().length;
-	//console.log($('#tmp .lesson').children().text());
-	//console.log("maxLesson: " + maxLesson);	
+// attach a lesson ID
+function getLessonTitles( tutorialFile, callback ){	
 	var titles = "";
 	$("#menuTutorial").load(tutorialFile, function(){
 		var i = 1;

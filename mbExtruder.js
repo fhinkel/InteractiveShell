@@ -344,8 +344,7 @@
 					}
 					var content=$("<div class='optionsPanel'></div>");
 					voice.after(content);
-					//console.log(voice.attr("panel"));
-					//console.log(voice.attr("data"));
+
 					
 					// this is done everytime the panel slides open
 				

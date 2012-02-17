@@ -362,16 +362,17 @@
 
 							//console.log(title);
 							content.append( "<div><a class=\"franzi\">" + title + "</a></div>" );	
-							content.children()
-								.addClass("panelVoice")
-								.click(function(){
-								extruder.closeMbExtruder();
-								// loading of the lesson content should happen in m2.js, i.e., attach the correct class to title and do something on loading it
-							});							
-					
-							//console.log("content: " + content.html());
-							content.slideDown(40);
+
 						} );
+						content.children()
+							.addClass("panelVoice")
+							.click(function(){
+							extruder.closeMbExtruder();
+							// loading of the lesson content should happen in m2.js, i.e., attach the correct class to title and do something on loading it
+						});							
+				
+						//console.log("content: " + content.html());
+						content.slideDown(400);
 					});					
 				
 					

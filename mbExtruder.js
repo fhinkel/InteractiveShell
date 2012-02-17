@@ -223,7 +223,7 @@
 				dataType:"html",
 				success: function(html){
 					where.find(".container").append(html);
-					console.log(where.find(".container").html() );
+					//console.log(where.find(".container").html() );
 					voice=where.find(".voice");
 					voice.hover(function(){$(this).addClass("hover");},function(){$(this).removeClass("hover");});
 					where.setExtruderVoicesAction(); //  setting voices actions for each content item, i.e. for each tutorial
@@ -343,7 +343,6 @@
 						voices.find(".settingsBtn").removeClass("sel").css({opacity:.5});
 					}
 					var content=$("<div class='optionsPanel'></div>");
-					//console.log(content);
 					voice.after(content);
 					//console.log(voice.attr("panel"));
 					//console.log(voice.attr("data"));
@@ -352,28 +351,19 @@
 					
 					var tutorialFile = voice.attr("panel");
 					//console.log("TutorialFile: " + tutorialFile);
-					$("#tutorial").load(tutorialFile, function(){
-						//console.log("maxLesson: " + maxLesson);
-						maxLesson = $('#tutorial .lesson').children().length;
-						//console.log($('#tmp .lesson').children().text());
-						console.log("maxLesson: " + maxLesson);
-						$("#tutorial h4").each( function() {
-							var title = $(this).html();
-
-							//console.log(title);
-							content.append( "<div><a class=\"franzi\">" + title + "</a></div>" );	
-
-						} );
-						content.children()
-							.addClass("panelVoice")
-							.click(function(){
-							extruder.closeMbExtruder();
-							// loading of the lesson content should happen in m2.js, i.e., attach the correct class to title and do something on loading it
-						});							
-				
-						//console.log("content: " + content.html());
-						content.slideDown(400);
-					});					
+					getLessonTitles( tutorialFile, function(titles) { 
+							content.append( titles );
+							content.children()
+								.addClass("panelVoice")
+								.click(function(){
+								extruder.closeMbExtruder();
+								// loading of the lesson content should happen in m2.js, i.e., attach the correct class to title and do something on loading it
+							});
+							console.log("content: " + content.html());	
+							content.slideDown(400);
+						});											
+					
+										
 				
 					
 				/*	$.ajax({

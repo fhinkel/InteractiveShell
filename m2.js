@@ -193,7 +193,7 @@ function createMenu2()
 		 .attr('href','#' + chapterId)
 		 .attr('lessonid', "lesson"+(i+1))
 		 .appendTo('#page-contents div');
-		
+			
 		//alert ("appending");
 		$("#menu").append(
 			"<li class='arrow'><a href='#M2' lessonid='lesson" + (i+1) +"'>Lesson " + (i+1) +": " + title + "</a></li>");
@@ -318,8 +318,32 @@ function getSelected( inputField) {
     return str.slice(start, end) + "\n";
 }
 
+// input: filename with tutorial content
+// return a list of lessons title, each wrapped in a div and link
+// <div><a>" + title + "</a></div>	
+function getLessonTitles( tutorialFile, callback ){
+	//console.log("maxLesson: " + maxLesson);
+	//maxLesson = $('#tutorial .lesson').children().length;
+	//console.log($('#tmp .lesson').children().text());
+	//console.log("maxLesson: " + maxLesson);	
+	var titles = "";
+	$("#tutorial").load(tutorialFile, function(){
+		$("#tutorial h4").each( function() {
+			var title = $(this).html();
 
+			console.log("Title in m2.js: " + title);
+			titles = titles + "<div><a>" + title + "</a></div>";	
+		});
+		console.log("All titles: " + titles);
+		callback(titles);
+	});
+	//content.append("<div>I am a fancy content in content</div>");
+}
 
+function franziFunction(s) {
+	console.log("This function is in m2.js");
+	console.log("s: " + s);
+}
 /* Info on selected text:
  * jquery plugin: jquery-fieldselection.js
  * example use: http://laboratorium.0xab.cd/jquery/fieldselection/0.1.0/test.html

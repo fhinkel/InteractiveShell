@@ -141,3 +141,7 @@ code {
 	background-color:red;
 	visibility:hidden;
 }
+
+.hidden {
+	visibility:hidden;
+}

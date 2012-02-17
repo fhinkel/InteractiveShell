@@ -18,9 +18,13 @@ $(document).ready(function() {
 	
 	$('.submenuItem').live("click", function(){
 		console.log( "You clicked a submenuItem: " + $(this).html() );
-		loadLesson(1);
-		//alert( $("#tmp").text()  );
-	})
+		var lessonId = $(this).attr('lessonid');
+		lessonNr = parseInt( lessonId.match(/\d/g ));
+		$("#tutorial").html( $("#menuTutorial").html() );
+		maxLesson = $('#tutorial .lesson').children().length;
+		loadLesson(lessonNr);
+	});
+		
 	
 	$('#help-dialog').dialog({
 			height: 340,
@@ -55,8 +59,8 @@ $(document).ready(function() {
 		sendToM2(">>SENDCOMMANDS<<\n" + code);
 		//$(this).css('background-color', origcolor);
 	});
-    $("#tutorial").hide();
-    $("#menuTutorial").hide();
+    //$("#tutorial").hide();
+    //$("#menuTutorial").hide();
     $("#inputarea").hide();
     $("#send").hide();
     $("#pageIndex").hide();
@@ -328,16 +332,16 @@ function getLessonTitles( tutorialFile, callback ){
 	//console.log("maxLesson: " + maxLesson);	
 	var titles = "";
 	$("#menuTutorial").load(tutorialFile, function(){
+		var i = 1;
 		$("#menuTutorial h4").each( function() {
-			var title = $(this).html();
-
+			var title = $(this).text();
+			titles = titles + "<div><a class='submenuItem' lessonid='lesson" + i +"'>" + title + "</a></div>";	
+			i = i + 1;
 			//console.log("Title in m2.js: " + title);
-			titles = titles + "<div><a class=\"submenuItem\">" + title + "</a></div>";	
 		});
 		//console.log("All titles: " + titles);
 		callback(titles);
 	});
-	//content.append("<div>I am a fancy content in content</div>");
 }
 
 

@@ -1,3 +1,36 @@
+Homework due 2/21 - 80% of your final grade!!!
+Franzi: convert BeginningMacaulay2 to Tutorial (trunk/Macaulay2/packages/Begin...)
+Mike: investigate asynchronous retrieval of M2 output, JS lint, read up on "global" variables in JS
+
+2/17/12
+At this point, it's basically functional, we need to clean it up a little bit: 
+	- add another tutorial
+	- fix help text
+	- credits (funding?)
+	- generally clean code, get rid of obsolete (?) createMenu() and createMenu2()
+	- display title of current tutorial
+	- display 
+	
+	
+In the future:	
+* we need 
+	- load lessons from url
+* write content for help text
+* need Greg make it prettier
+* get rid of constant pulling of data
+* iPad (buttons instead of keyboard input)
+* save/get our work (via email)
+* Stylized way of making a tutorial page, conversion between M2 documentation style and tutorial form 
+* resizing
+* communicate the text-area size to M2 for correct string formatting or set reasonable default at beginning, printWidth = 80, but figure out what the width should be in advance
+* undo feature	( command Z?)
+* syntax highlighting
+* autocompletion on Tab
+* save contents (input and output)
+* upload files that will turn into clickable tutorials, notebook style
+* Run all commands in the tutorial up to here
+
+
 2/7/12
 * MB Extruder, http://pupunzi.open-lab.com/mb-jquery-components/jquery-mb-extruder/
 * we need 

@@ -16,12 +16,11 @@ jQuery.fn.toggleNext = function() {
 
 $(document).ready(function() {
 	
-/*	$('.franzi').live("click", function(){
-		//alert("lesson in tutorial was just clicked");
-		$("#tmp").load('tutorial.html h4');
-		//console.log( $("#tmp").html() );
+	$('.submenuItem').live("click", function(){
+		console.log( "You clicked a submenuItem: " + $(this).html() );
+		loadLesson(1);
 		//alert( $("#tmp").text()  );
-	})*/
+	})
 	
 	$('#help-dialog').dialog({
 			height: 340,
@@ -331,19 +330,16 @@ function getLessonTitles( tutorialFile, callback ){
 		$("#tutorial h4").each( function() {
 			var title = $(this).html();
 
-			console.log("Title in m2.js: " + title);
-			titles = titles + "<div><a>" + title + "</a></div>";	
+			//console.log("Title in m2.js: " + title);
+			titles = titles + "<div><a class=\"submenuItem\">" + title + "</a></div>";	
 		});
-		console.log("All titles: " + titles);
+		//console.log("All titles: " + titles);
 		callback(titles);
 	});
 	//content.append("<div>I am a fancy content in content</div>");
 }
 
-function franziFunction(s) {
-	console.log("This function is in m2.js");
-	console.log("s: " + s);
-}
+
 /* Info on selected text:
  * jquery plugin: jquery-fieldselection.js
  * example use: http://laboratorium.0xab.cd/jquery/fieldselection/0.1.0/test.html

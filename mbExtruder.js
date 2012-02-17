@@ -348,20 +348,21 @@
 					//console.log(voice.attr("data"));
 					
 					// this is done everytime the panel slides open
-					
+				
+					// Modified by Mike and Franzi 2012:
+					// instead of ajax call, we use a more specific function to extract submenu items
 					var tutorialFile = voice.attr("panel");
 					//console.log("TutorialFile: " + tutorialFile);
 					getLessonTitles( tutorialFile, function(titles) { 
-							content.append( titles );
-							content.children()
-								.addClass("panelVoice")
-								.click(function(){
-								extruder.closeMbExtruder();
-								// loading of the lesson content should happen in m2.js, i.e., attach the correct class to title and do something on loading it
-							});
-							console.log("content: " + content.html());	
-							content.slideDown(400);
-						});											
+						content.append( titles );
+						content.children()
+							.addClass("panelVoice")
+							.click(function(){
+							extruder.closeMbExtruder();
+						});
+						//console.log("content: " + content.html());	
+						content.slideDown(400);
+					});											
 					
 										
 				

@@ -56,15 +56,11 @@ $(document).ready(function() {
     $("code").live("click", function() { 
        $(this).effect("highlight", {color: 'red'}, 800);
 	    var code = $(this).html();
-	    //var origcolor = $(this).css('background-color');
-	    //$(this).css('background-color', '#7700aa');
 		$("#M2In").val($("#M2In").val() + "\n" + code);
 		scrollDown( "#M2In" );
 		sendToM2(">>SENDCOMMANDS<<\n" + code);
-		//$(this).css('background-color', origcolor);
 	});
-    //$("#tutorial").hide();
-    //$("#menuTutorial").hide();
+
     $("#inputarea").hide();
     $("#send").hide();
     $("#pageIndex").hide();
@@ -72,8 +68,6 @@ $(document).ready(function() {
 
 	$("#tutorial").load("tutorial.html", function () {
  		trym2.maxLesson = $('.lesson').children().length;
-		//createMenu();
-//    	$('#lessonNr').html(lessonNr);
     	loadLesson(trym2.lessonNr);
 
 	    $('<div id="page-contents"></div>')

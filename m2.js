@@ -56,6 +56,7 @@ $(document).ready(function() {
 		//$(this).css('background-color', origcolor);
 	});
     $("#tutorial").hide();
+    $("#menuTutorial").hide();
     $("#inputarea").hide();
     $("#send").hide();
     $("#pageIndex").hide();
@@ -326,8 +327,8 @@ function getLessonTitles( tutorialFile, callback ){
 	//console.log($('#tmp .lesson').children().text());
 	//console.log("maxLesson: " + maxLesson);	
 	var titles = "";
-	$("#tutorial").load(tutorialFile, function(){
-		$("#tutorial h4").each( function() {
+	$("#menuTutorial").load(tutorialFile, function(){
+		$("#menuTutorial h4").each( function() {
 			var title = $(this).html();
 
 			//console.log("Title in m2.js: " + title);

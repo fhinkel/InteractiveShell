@@ -55,7 +55,7 @@ $(document).ready(function() {
     $("#send").hide();
     $("#pageIndex").hide();
     
-	$("#tutorial").html("<div class='lesson' lessonid='1'><div><br>Get started by <b>selecting a tutorial</b> from the menu on the upper right corner or by using the Macaulay2 console. Have fun!</div></div>");
+	$("#tutorial").html("<div class='lesson' lessonid='1'><div><br>Get started by <b>selecting a tutorial</b>	 from the menu on the upper right corner or by using the Macaulay2 console. Have fun!</div></div>");
 	loadLesson(trym2.lessonNr);
 	trym2.maxLesson = $('.lesson').children().length;
 	

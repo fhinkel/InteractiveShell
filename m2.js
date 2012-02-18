@@ -55,18 +55,9 @@ $(document).ready(function() {
     $("#send").hide();
     $("#pageIndex").hide();
     
-	// Load a default tutorial
-	$("#tutorial").load("tutorial.html", function () {
- 		trym2.maxLesson = $('.lesson').children().length;
-		var i = 1;
-		$("#tutorial h4").each( function() {
-				$(this).parent().attr('lessonid', i);
-			i = i + 1;
-		} );
-	
-
-    	loadLesson(trym2.lessonNr);
-  	});	
+	$("#tutorial").html("<div class='lesson' lessonid='1'><div><br>Get started by <b>selecting a tutorial</b> from the menu on the upper right corner or by using the Macaulay2 console. Have fun!</div></div>");
+	loadLesson(trym2.lessonNr);
+	trym2.maxLesson = $('.lesson').children().length;
 	
 	
 	$("#next").click( function(){

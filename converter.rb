@@ -8,6 +8,7 @@ open("Beginning.html","w") { |out|
       case line 
       when /^\s*Example\s*$/
         isExample = true
+        out << "<br>"
         next
       when /^\s*Code\s*$/
         isCode = true

@@ -9,15 +9,6 @@ var trym2 = {
 }
 
 
-
-var tutorial;
-
-
-jQuery.fn.toggleNext = function() {
-    this.toggleClass("arrow-down").next().slideToggle("fast");
-    return this;
-};
-
 $(document).ready(function() {
 	
 	$('.submenuItem').live("click", function(){
@@ -27,7 +18,7 @@ $(document).ready(function() {
 		$("#tutorial").html( $("#menuTutorial").html() );
 		var i = 1;
 		$("#tutorial h4").each( function() {
-				$(this).parent().attr('lessonid', i);
+				$(this).parent().attr('lessonid', i); // add an ID to every lesson div
 			i = i + 1;
 		} );
 		trym2.maxLesson = $('#tutorial .lesson').children().length;
@@ -41,16 +32,10 @@ $(document).ready(function() {
 			modal: true,
 			autoOpen: false
 		});
-	$('#help').click(helpScreen );
+	$('#help').click(helpScreen);
 	
 	
     SyntaxHighlighter.all();
-	$('ul').menu({
-			content: $('#myContent').html(),		
-			maxHeight: 180,
-			positionOpts: { offsetX: 10, offsetY: 20 },
-			showSpeed: 300
-		});
 		
     checkForNewData(trym2.offset);
 
@@ -70,7 +55,7 @@ $(document).ready(function() {
     $("#send").hide();
     $("#pageIndex").hide();
     
-
+	// Load a default tutorial
 	$("#tutorial").load("tutorial.html", function () {
  		trym2.maxLesson = $('.lesson').children().length;
 		var i = 1;
@@ -81,14 +66,6 @@ $(document).ready(function() {
 	
 
     	loadLesson(trym2.lessonNr);
-
-	    $('<div id="page-contents"></div>')
-	    .prepend('<a class="toggler" href="#">Page Contents</a>')
-	    .append('<div></div>')
-	    .prependTo('#toc');
-
-		createMenu2();
-        
   	});	
 	
 	
@@ -121,13 +98,6 @@ $(document).ready(function() {
 	                onExtClose:function(){}
 	         });
 	    });
-
-    
-    
-    $('#page-contents > a.toggler').click( function() {
-        $(this).toggleNext();
-        return false;
-    });
     
     //updateOrientation();
 });
@@ -138,25 +108,7 @@ function helpScreen()  {
 
 }
 
-function updateOrientation()
-{
-    var orient ="";
-    switch(window.orientation) {
-        case 0:
-        case 180:
-            orient = "show_portrait";
-            break;
-        case -90:
-        case 90:
-            orient = "show_landscape";
-            break;
-        default:
-            orient = "show_landscape";
-    }
-    $("body").attr("class", orient);
-	$("#rightwindow").attr('class', orient);
-	$("#leftwindow").attr('class', orient);
-}
+
 
 function loadLesson(ell)
 {
@@ -175,52 +127,6 @@ function loadLesson(ell)
     }
 }
 
-function createMenu()
-{
-	var i = 1;
-	$("#tutorial h4").each( function() {
-		var title = $(this).text();
-		$("#menu").append(
-			"<li class='arrow'><a href='#M2' lessonid='lesson" + i +"'>Lesson " + i +": " + title + "</a></li>");
-		i = i + 1;
-	} );
-
-	$('[lessonid]').click(function(){
-		var lessonId = $(this).attr('lessonid');
-		trym2.lessonNr = parseInt( lessonId.match(/\d/g ));
-		loadLesson(trym2.lessonNr);
-	});
-
-}
-	
-function createMenu2()
-{
-	//alert ("appending");
-	$("#tutorial h4").each( function(i) {
-		var title = $(this).text();
-		var chapterId = 'chapter-' + (i+1);
-		$(this).attr('id', chapterId)
-		$('<a></a>')
-		 .text(title)
-		 .attr('title',title)
-		 .attr('href','#' + chapterId)
-		 .attr('lessonid', "lesson"+(i+1))
-		 .appendTo('#page-contents div');
-			
-		//alert ("appending");
-		$("#menu").append(
-			"<li class='arrow'><a href='#M2' lessonid='lesson" + (i+1) +"'>Lesson " + (i+1) +": " + title + "</a></li>");
-	} );
-
-	$('[lessonid]').click(function(){
-		var lessonId = $(this).attr('lessonid');
-		trym2.lessonNr = parseInt( lessonId.match(/\d/g ));
-		loadLesson(trym2.lessonNr);
-		$(this).parent().slideToggle("fast");
-		return false;
-	});
-
-}
 
 function switchLesson(incr)
 {
@@ -350,7 +256,25 @@ function getLessonTitles( tutorialFile, callback ){
 	});
 }
 
-
+function updateOrientation()
+{
+    var orient ="";
+    switch(window.orientation) {
+        case 0:
+        case 180:
+            orient = "show_portrait";
+            break;
+        case -90:
+        case 90:
+            orient = "show_landscape";
+            break;
+        default:
+            orient = "show_landscape";
+    }
+    $("body").attr("class", orient);
+	$("#rightwindow").attr('class', orient);
+	$("#leftwindow").attr('class', orient);
+}
 /* Info on selected text:
  * jquery plugin: jquery-fieldselection.js
  * example use: http://laboratorium.0xab.cd/jquery/fieldselection/0.1.0/test.html

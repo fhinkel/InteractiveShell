@@ -10,25 +10,26 @@
 			<div>
 				<h4>Arithmetic with integers, rings and ideals</h4>
   
-	  You can immediately do arithmetic with integers:
+	  You can immediately do arithmetic with integers<br>
    
 	 <code>2+2</code><br>
 <code>107*431</code><br>
 <code>25!</code><br>
 <code>binomial(5,4)</code><br>
 <code>factor 32004</code><br>
-     Text
+     <br>
 
-	  Most {\em Macaulay2} applications involve polynomial rings over fields
-	  and their quotient rings. Fields can be made in various ways:
+	  Most <i>Macaulay2</i> applications involve polynomial rings over fields
+	  and their quotient rings. Fields can be made in various ways:<br>
+	
 <code>ZZ/101</code><br>
 <code>QQ</code><br>
 <code>GF 2^5</code><br>
 <code>k = toField (QQ[i]/(i^2+1))</code><br>
-     Text
+     <br>
 	  After making {\tt k} we can compute in it:
 <code>1/i</code><br>
-     Text
+     <br>
 
 	  Computation is often fastest and needs least
 	  memory when performed over finite prime fields of the form 
@@ -42,30 +43,30 @@
 	  We make a polynomial ring in 5 variables over $\ZZ/101$:
 <code>kk=ZZ/101</code><br>
 <code>S=kk[x_1..x_5]</code><br>
-     Text
+     <br>
 	  Here is another way:
      Example
 	  S=kk[a,b,c,d,e] 
-     Text
+     <br>
 	  One can do arithmetic on polynomials:
      Example
 	  (3*a^2+1)^5
-     Text
+     <br>
 
 	  We make an ideal in $S$:
      Example
 	  I=ideal(a^3-b^3, a+b+c+d+e)
-     Text
+     <br>
 	  Using this ideal, we can make a factor ring:
      Example
 	  R=S/I
-     Text
+     <br>
 	  Another way to make an ideal, with more compact notation (familiar to anyone who used the
 	  classic Macaulay) is:
      Example
 	  use S
 	  I=ideal"3(a+b)3, 4c5"
-     Text
+     <br>
 	  Note the command ``{\tt use S}'', which specifies 
 	  that we want to work with the generators of the polynomial ring S again;
 	  otherwise the variables {\tt a}, {\tt b}, and {\tt c}
@@ -76,13 +77,13 @@
 	  I^2
 	  I*I
 	  I+ideal"a2"
-     Text
+     <br>
 
 	  In case you forget any of these things, @TO help@ is available! The most
 	  useful way to get it is often to type something like:
      Code
      	  EXAMPLE { PRE ///viewHelp ideal/// }
-     Text
+     <br>
      	  Then a browser window will pop up that contains documentation about the function @ TO
           ideal @ that we've been using; links on that page allow one to explore all of the {\em Macaulay2} documentation.
 
@@ -91,7 +92,7 @@
 	  what functions create or use ideals by typing:
      Code                                                                                                                                                                                                
           EXAMPLE { PRE ///viewHelp Ideal/// }                                                                                                                                                           
-     Text                                                                                                                                                                                                
+     <br>                                                                                                                                                                                                
           To see the names of classes, you can begin by looking at the output
 	  of commands; the second line output (the one introduced by a colon) often contains the name of the 
 	  class of the result.
@@ -103,31 +104,31 @@
 	  determinant M
 	  trace M
 	  M-transpose M
-     Text
+     <br>
 	  The function @TO entries@ gives the entries of a matrix:
      Example
 	  entries M
-     Text
+     <br>
 	  The result is a list of lists, one for each row of the matrix $M$.
 	  The function @TO flatten@ can be used to merge the
 	  lists into a single list:
      Example
 	  flatten entries M
-     Text
+     <br>
 	  If you want a particular entry, say the one in the upper left corner, 
 	  you can use the underscore operator @TO2 {(symbol _,Matrix,Sequence),"_"}@:
      Example
 	  M_(0,0)
-     Text
+     <br>
 	  Here, as everywhere in {\em Macaulay2}, all indexing starts with 0.
 	  For example:
      Example
 	  I_0
-     Text
+     <br>
 	  is the first generator of I. You can list all the generators with:
      Example
 	  I_*
-     Text
+     <br>
 
 	  A {\em module} can be defined as a cokernel, kernel, image, or even as a subquotient:
      Example
@@ -137,7 +138,7 @@
 	  N = matrix{{a,b},{b,c},{c,d}}
 	  (image M)/(image N)
 	  subquotient(M,N)
-     Text
+     <br>
 	 Note that the matrix $N$ above was defined with an
 	 alternate syntax, parallel to the alternate syntax for @TO ideal@.
 
@@ -146,30 +147,30 @@
 	  example, by typing:
      Code
      	  EXAMPLE { PRE "viewHelp Macaulay2Doc" }
-     Text
+     <br>
           </div>
 <div>
 	<h4>Properties of ideals and modules</h4>
-     Text
+     <br>
 	  To compute the Gröbner basis of an ideal
 	  $(x^2y,xy^2+x^3)$ in the polynomial ring in
 	  four variables we proceed as follows.
 	  First we make our favorite field:
      Example
 	  kk = ZZ/32003
-     Text
+     <br>
 	  Then the polynomial ring:
      Example
 	  R = kk[x,y,z,w]
-     Text
+     <br>
 	  And then the ideal:
      Example
 	  I = ideal(x^2*y,x*y^2+x^3)
-     Text
+     <br>
 	  Now the punch line.  We compute the Gröbner basis with the @ TO groebnerBasis @ function:
      Example
 	  J = groebnerBasis I
-     Text
+     <br>
 
 	  Gr\"obner bases are always computed with respect to a particular
 	  monomial order on the ring. In fact, the ring we defined above has
@@ -177,19 +178,19 @@
 	  other possibilities, see @ TO MonomialOrder @, or type:
      Code
      	  EXAMPLE { PRE "viewHelp MonomialOrder" }
-     Text
+     <br>
 
 	  The analogue of factorization in the theory of ideals
 	  is primary decomposition.
 	  For example, we can begin by intersecting three ideals:
      Example
 	  I= intersect (ideal"x2,y3", ideal"y2,z3", (ideal"x,y,z")^4)
-     Text
+     <br>
 	  We can almost undo this operation by computing
 	  a primary decomposition:
      Example
 	  primaryDecomposition I
-     Text
+     <br>
           Inspecting the output, we see that the first two ideals
 	  are the same as the first two ideals we intersected, but the 
 	  third one differs from the corresponding input ideal.
@@ -203,7 +204,7 @@
 	  this we can use @ TO decompose @: 
      Example
 	  decompose I
-     Text
+     <br>
 
 	  Using Gröbner bases we can compute 
 	  codimensions, dimensions,
@@ -223,12 +224,12 @@
 	  homogeneous coordinate ring of $\PP^3$:
      Example
 	  R = kk[a..d]
-     Text
+     <br>
 	  We introduce the ring map $\phi: R \to kk[s,t]$ defined by 
      	  $(a,b,c,d) \mapsto{} (s^4, s^3 t, s t^3, t^4)$:	  
      Example
 	  phi = map(kk[s,t],R,{s^4, s^3*t, s*t^3, t^4})
-     Text
+     <br>
 	  Here the syntax of the function @ TO2 {(map,Ring,Ring,List),"map"} @ has the target ring first and the source ring second:
 	  maps in {\em Macaulay2} generally go from right to left!
 	  The last input to the command is a 
@@ -236,23 +237,23 @@
 	  The ideal we want is the kernel of this map:
      Example
 	  I = ker phi
-     Text
+     <br>
 	  Shortcut notation for this construction is provided by the function @ TO
 	  monomialCurveIdeal @:
      Example
 	  I = monomialCurveIdeal(R,{1,3,4})
-     Text
+     <br>
 	  We can compute the @ TO2 {(dim,Ideal),"dimension"}@, @ TO2{(codim,Ideal), "codimension"}@ (also called the
 	  height) and @ TO2{(degree,Ideal),"degree"} @ of this ideal:
      Example
 	  dim I
 	  codim I
 	  degree I
-     Text
+     <br>
 	  The Hilbert polynomial is obtained with the function @ TO hilbertPolynomial@:
      Example
 	  hilbertPolynomial(R/I)
-     Text
+     <br>
 	  The output above may not be what the user expected:
 	  the term ${\bf P}_m$ represents the Hilbert polynomial of
 	  projective $m$-space.  Thus the output tells
@@ -267,20 +268,20 @@
 	  be obtained as follows:
      Example
 	  hilbertPolynomial(R/I, Projective => false)
-     Text
+     <br>
 	  The construction {\tt Projective => false} is our first example of
 	  an {\em option} to a function: we specified that the option 
 	  {\tt Projective} was to have the value {\tt false}.
 	  The form we used first could also have been written this way:
      Example
 	  hilbertPolynomial(R/I, Projective => true)
-     Text
+     <br>
 	  The Hilbert series of $M$ (the generating function
 	  for the dimensions of the graded pieces of $M$) is
      	  obtained with:
      Example
 	  hilbertSeries (R/I)
-     Text
+     <br>
 	  This generating function is expressed
 	  as a rational function with denominator equal to (1-T)^n, where
 	  n is the number of variables in R. 
@@ -288,12 +289,12 @@
 	  with denominator (1-t)^2. To see it in this form, use @ TO reduceHilbert @:
      Example
 	  reduceHilbert hilbertSeries (R/I)
-     Text
+     <br>
 	  It is possible to manipulate the numerator and denominator of this
 	  expression. To learn how to do so, see @ TO hilbertSeries @ or type:
      Code
      	  EXAMPLE { PRE "viewHelp hilbertSeries" }
-     Text
+     <br>
 
 	  A great deal of subtle information about a module is visible using
 	  free resolutions. For an example, we begin
@@ -302,12 +303,12 @@
      Example
 	  M=R^1/I
 	  Mres = res M
-     Text
+     <br>
 	  To get more precise information about {\tt Mres},
 	  we could compute its Betti table with @ TO2{(betti,GradedModule), "betti"} @:
      Example
 	  betti Mres
-     Text
+     <br>
 	  The display is chosen for compactness. Each column of the
 	  table corresponds
 	  to a free module in the resolution. The column's heading
@@ -330,11 +331,11 @@
      Example
 	  pdim M
 	  regularity M
-     Text
+     <br>
 </div>
 <div>
 	<h4>Division With Remainder</h4>
-     Text
+     <br>
 	  A major application of Gröbner bases is
 	  to give the normal form for an element modulo an
 	  ideal, allowing one, for example, to decide whether
@@ -346,7 +347,7 @@
 	  R = kk[a..i]
 	  M = genericMatrix(R,a,3,3)
 	  I = ideal M^3
-     Text
+     <br>
 	  This gives the ideal of entries of the matrix. In the expression
 	  ``{\tt M = genericMatrix(R,a,3,3)}'' the arguments ``{\tt R,a,3,3}'' specify the
 	  ring, the first variable to use, and the numbers of rows and columns
@@ -354,7 +355,7 @@
      Example
 	  Tr = trace M 
 	  for p from 1 to 10 do print (Tr^p % I)
-     Text
+     <br>
 	  The expression ``@ TT "Tr^p % I"@'' computes the normal form for the p-th power
 	  of the trace {\tt Tr} with respect to the Gröbner basis of I.
 	  The expression ``@ TT "for p from 1 to 10 do" @'' specifies a 
@@ -363,7 +364,7 @@
 	  or type:
      Code
      	  EXAMPLE { PRE ///viewHelp "for"/// }
-     Text
+     <br>
 	  Here we have put quotes around ``for'' because
 	  ``for'' is a keyword in the {\em Macaulay2} language.  (In general, it's always safe to use
 	  quotes with viewHelp.)
@@ -379,7 +380,7 @@
 <div>
 	<h4>
 Elimination Theory</h4>
-     Text
+     <br>
 	  Consider the problem of projecting the
 	  ``twisted cubic'', a curve in $\PP^3$ defined
 	  by the three $2 \times{} 2$ minors of a certain
@@ -390,25 +391,25 @@ Elimination Theory</h4>
 	  to allow it to be used as a subscripted variable:
      Example
 	  x = symbol x
-     Text
+     <br>
 	  Since we are going to deal with a curve in $\PP^3$,
 	  we begin with a polynomial ring in four variables:
      Example
 	  R = kk[x_0..x_3] 
-     Text
+     <br>
 	  The ideal of the twisted cubic curve is generated by the $2 \times{} 2$
 	  minors of a ``catalecticant" or ``Hankel" matrix, conveniently
 	  defined as follows:
      Example
 	  M = map(R^2, 3, (i,j)->x_(i+j))
 	  I = minors(2,M)
-     Text
+     <br>
 	  As projection center we
 	  take the point with homogeneous coordinates $(1,0,0,-1)$,
 	  which is defined by the ideal:
      Example
 	  pideal = ideal(x_0+x_3, x_1, x_2)
-     Text
+     <br>
 	  The ideal J of the image of the curve under the projection from this point
 	  is the kernel of the ring map $S=kk[u,v,w] \to R/I$
 	  sending the variables
@@ -422,24 +423,24 @@ Elimination Theory</h4>
 	  pideal = substitute(pideal, Rbar)
 	  S = kk[u,v,w]
 	  J=kernel map (Rbar, S, gens pideal)
-     Text
+     <br>
 	  The ideal J defines a curve with one singular point.
 	  We can compute the ideal of the singular locus with:
      Example
 	  K = ideal singularLocus(J)
-     Text
+     <br>
 	  This doesn't look like the ideal of a reduced point! But
 	  that's because it isn't yet saturated:
      Example
 	  saturate K
-     Text
+     <br>
 	  We have just seen the @ TO saturate @ function in its most
 	  common use: to saturate with respect to the maximal ideal.
 	  but we can also find the saturation of any ideal with
 	  respect to another:
      Example
 	  saturate (ideal"u3w,uv", ideal"u")
-     Text
+     <br>
 	  We can also take the ``ideal quotient'' I:J of an ideal I with
 	  respect to another, J
 	  defined as the set of elements f such that
@@ -450,7 +451,7 @@ Elimination Theory</h4>
 </div>
 <div>
 	<h4>Defining functions and loading packages</h4>
-     Text
+     <br>
 	  It is easy to define your own functions in {\em Macaulay2}, and this
 	  can save a lot of typing. Functions are defined with the 
 	  symbol ->. For example, the famous {\em Collatz Conjecture}
@@ -464,31 +465,31 @@ Elimination Theory</h4>
      Example
 	  Collatz = n ->
 	      while n != 1 list if n%2 == 0 then n=n//2 else n=3*n+1
-     Text
+     <br>
 	  For example:
      Example
 	  Collatz 27
-     Text
+     <br>
 	  If you don't understand this code easily, see @ TO Function @ and @ TO "while" @, or try:
      Code
      	  EXAMPLE { 
 	       PRE "viewHelp Function",
 	       PRE ///viewHelp "while"///
 	       }
-     Text
+     <br>
 	  In order to understand a process it is often useful to tabulate the 
 	  results of applying it many times. One feature of the Collatz process
 	  is how many steps it takes to get to 1. We can tabulate this statistic
 	  for the first 25 values of n with the function @ TO tally @, as follows:
      Example
 	  tally for n from 1 to 30 list length Collatz n
-     Text
+     <br>
 	  A line of the form
      Code
      	  EXAMPLE { 
 	       PRE "            18 => 3"
 	       }
-     Text
+     <br>
 	  in the result means that a Collatz sequence of length 18
 	  was seen 3 times. 
 	  To see the successive ``record-breakers'', 
@@ -501,14 +502,14 @@ Elimination Theory</h4>
 		  if l > record 
 		    then (record = l; (n,l))
 		    else continue)
-     Text
+     <br>
 	  If you want to see a list of just the successive records, 
 	  you can apply the 
 	  function @ TO last @ to each element of the list $L$. 
 	  A convenient way to do this is with this syntax:
      Example
 	  L/last
-     Text
+     <br>
 
 	  Note that in
 	  writing functions of more than one expression (usually
@@ -524,16 +525,16 @@ Elimination Theory</h4>
 	  someday!) A list of ``installed'' packages can be found with:
      Code
      	  EXAMPLE { PRE ///viewHelp/// }
-     Text
+     <br>
 	  For example, there is a package called @TO "EdgeIdeals::EdgeIdeals"@. 
 	  To load the package, use:
      Example
 	  loadPackage "EdgeIdeals"
-     Text
+     <br>
 	  After loading it, you can view its documentation with 
      Code
      	  EXAMPLE { PRE "viewHelp EdgeIdeals" }
-     Text
+     <br>
      	  or you can call its functions, 
 	  such as @TO "EdgeIdeals::randomGraph"@ and @TO "EdgeIdeals::edgeIdeal"@:
      Example
@@ -542,7 +543,7 @@ Elimination Theory</h4>
 	  K=edgeIdeal G
 	  hilbertSeries K
 	  betti res K
-     Text
+     <br>
 
 	  When testing a conjecture  one sometimes wants to run a 
 	  large number of randomly chosen
@@ -558,12 +559,12 @@ Elimination Theory</h4>
 	  L=for j from 1 to 100 list(
 	      I = edgeIdeal randomGraph (R,5);
 	      (codim I, degree I, betti res I));
-     Text
+     <br>
 	  We can use @ TO tally @ to find out how many examples
 	  were found with each combination of codimension and degree and Betti table.
      Example
 	  tally L
-     Text
+     <br>
 	  We can determine how many distinct patterns were found:
      Example
 	  #tally L
@@ -571,7 +572,7 @@ Elimination Theory</h4>
 <div>
 	<h4>
 		Ext, Tor, and cohomology</h4>
-     Text
+     <br>
 	  {\em Macaulay2} can compute the homology of complexes;
 	  for example, let's compute the homology of a
 	  Koszul complex that is not a resolution:
@@ -580,21 +581,21 @@ Elimination Theory</h4>
 	  syntax:
      Example
 	  S^{-2,-3} 
-     Text
+     <br>
           Here is how we can define the maps in the Koszul complex:
      Example
 	  S = kk[x,y]
 	  phi1 = map(S^1, S^{-2,-3}, matrix"x2,xy2")
 	  phi2 = map(S^{-2,-3}, S^{-5}, matrix"xy2;-x2")
-     Text
+     <br>
 	  Let's check that this is will really make a complex:
      Example
 	  phi1*phi2
-     Text
+     <br>
 	  To get the homology we can, for example compute:
      Example
 	  (ker phi1)/(image phi2)
-     Text
+     <br>
 	  We could also use the data type @TO ChainComplex@ 
 	  and use a built-in facility to take homology (in our case $H_1$):
      Example
@@ -602,7 +603,7 @@ Elimination Theory</h4>
 	  FF.dd
 	  homology FF
 	  presentation (homology FF)_1
-     Text
+     <br>
 	  Either way, the first homology is $((x^2):(xy^2)) / (x^2) \cong{} S/(x)$, in accord
 	  with general theory.
 
@@ -611,12 +612,12 @@ Elimination Theory</h4>
      Example
      	  FF = chainComplex matrix {{x^2}} ** chainComplex matrix {{x*y^2}}
 	  FF.dd
-     Text
+     <br>
      	  Another way is by using the function @ TO koszul @, designed for that purpose:
      Example
      	  FF = koszul matrix {{x^2, x*y^2}}
 	  FF.dd
-     Text
+     <br>
 
 	  Since {\em Macaulay2} can compute resolutions and homology, it can
 	  compute things such as $Ext$, $Tor$ and sheaf cohomology, as in the 
@@ -635,12 +636,12 @@ Elimination Theory</h4>
 	  degree ((S^1/IX) ** (S^1/IY))
 	  for j from 0 to 4 list degree Tor_j(S^1/IX, S^1/IY)
 	  sum(0..4, j-> (-1)^j * degree Tor_j(S^1/IX, S^1/IY))
-     Text
+     <br>
 	  Similarly, we can compute Hom and Ext:
      Example
 	  Hom(IX, S^1/IX)
 	  Ext^1(IX, S^1/IX)
-     Text
+     <br>
 	  or the cohomology of the sheaf associated to a module. 
 
 	  Here is how to compute

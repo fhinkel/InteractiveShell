@@ -2,6 +2,7 @@ require 'pp'
 
 isCode = false
 isExample = false
+isInLesson = false
 
 open("Beginning.html","w") { |out|
   File.open("BeginningCopy.html").each { |line|
@@ -24,6 +25,11 @@ open("Beginning.html","w") { |out|
         elsif isCode
           case line
           when /SUBSECTION/
+            if isInLesson
+              out << "</div>"
+            end
+            out << "<div>"
+            isInLesson = true
             out << "<h4>" << line << "</h4>\n"
           else
             out << line
@@ -35,4 +41,5 @@ open("Beginning.html","w") { |out|
       
       end
   }
+  out << "</div>"
 }

@@ -30,7 +30,8 @@ open("Beginning.html","w") { |out|
             end
             out << "<div>"
             isInLesson = true
-            out << "<h4>" << line << "</h4>\n"
+            puts line.match(/\s*SUBSECTION\s*"(.*)"/)[1]
+            out << "<h4>" << line.match(/\s*SUBSECTION\s*"(.*)"/)[1] << "</h4>\n"
           else
             out << line
           end

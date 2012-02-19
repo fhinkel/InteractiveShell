@@ -10,6 +10,7 @@ var trym2 = {
     timerobject: 0
 };
 
+
 trym2.scrollDown = function (area) {
     var mySize = $(area).val().length;
     $(area).scrollTop(mySize);
@@ -84,20 +85,60 @@ trym2.sendOnEnterCallback = function (inputfield) {
     };
 };
 
+trym2.loadLesson = function (ell) {
+    if (ell === 0) {
+        $("#lesson").hide();
+        $("#inputarea").show();
+        $("#send").show();
+        $("#pageIndex").hide();
+    } else {
+        $("#inputarea").hide();
+        var lessonContent = $('[lessonid="'+ ell + '"]').html();
+        $("#send").hide();
+        $("#pageIndex").text( "Lesson " + trym2.lessonNr + "/" + trym2.maxLesson).show();
+        $("#lesson").html(lessonContent).show();
+    }
+};
+
+trym2.switchLesson = function (incr) {
+    trym2.lessonNr = trym2.lessonNr + incr;
+    if (trym2.lessonNr >= 0 && trym2.lessonNr <= trym2.maxLesson) {
+        trym2.loadLesson(trym2.lessonNr);
+    } else {
+        trym2.lessonNr = trym2.lessonNr - incr;
+        //alert("lesson with " + trym2.lessonNr + "." + incr + " not available");
+    }
+};
+
+
+trym2.resetCallback = function (e) {
+    if (!trym2.sendToM2(">>RESET<<", "We are resetting the current M2 session.\n")) {
+        $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");
+    }
+    $("#M2Out").val("");
+};
+
+trym2.sendCallback = function (inputField) {
+    return function(e) {
+        var str = trym2.getSelected(inputField);
+        trym2.sendToM2(">>SENDCOMMANDS<<\n"+str, "");
+        return false;
+    }
+};
+
 $(document).ready(function () {
-    
-    $('.submenuItem').live("click", function(){
-        console.log( "You clicked a submenuItem: " + $(this).html() );
-        var lessonId = $(this).attr('lessonid');
-        trym2.lessonNr = parseInt( lessonId.match(/\d/g ));
-        $("#tutorial").html( $("#menuTutorial").html() );
-        var i = 1;
-        $("#tutorial h4").each( function() {
-                $(this).parent().attr('lessonid', i); // add an ID to every lesson div
+    $('.submenuItem').live("click", function () {
+        var i = 1,
+            lessonId = $(this).attr('lessonid');
+        console.log("You clicked a submenuItem: " + $(this).html());
+        trym2.lessonNr = parseInt(lessonId.match(/\d/g),10);
+        $("#tutorial").html($("#menuTutorial").html());
+        $("#tutorial h4").each(function () {
+            $(this).parent().attr('lessonid', i); // add an ID to every lesson div
             i = i + 1;
         } );
         trym2.maxLesson = $('#tutorial .lesson').children().length;
-        loadLesson(trym2.lessonNr);
+        trym2.loadLesson(trym2.lessonNr);
     });
         
     
@@ -115,8 +156,8 @@ $(document).ready(function () {
     trym2.checkForNewData(trym2.offset);
 
     $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
-    $("#send").click(sendCallback( '#M2In' ));
-    $("#reset").click(resetCallback);
+    $("#send").click(trym2.sendCallback( '#M2In' ));
+    $("#reset").click(trym2.resetCallback);
 
     $("code").live("click", function() { 
        $(this).effect("highlight", {color: 'red'}, 800);
@@ -131,23 +172,23 @@ $(document).ready(function () {
     $("#pageIndex").hide();
     
     $("#tutorial").html("<div class='lesson' lessonid='1'><div><br>Get started by <b>selecting a tutorial</b> from the menu on the upper right corner or by using the Macaulay2 console. Have fun!</div></div>");
-    loadLesson(trym2.lessonNr);
+    trym2.loadLesson(trym2.lessonNr);
     trym2.maxLesson = $('.lesson').children().length;
     
     
     $("#next").click( function(){
-        switchLesson(1);
+        trym2.switchLesson(1);
     });
     $("#previous").click( function(){
-        switchLesson(-1);
+        trym2.switchLesson(-1);
     });
 
     // swipe changed to swipeXXX to remove functionality for testing
     $(function(){ $("#leftwindow").bind("swipeXXX",function(event, info) {
         if (info.direction === "left"){
-            switchLesson(1);
+            trym2.switchLesson(1);
         } else if (info.direction === "right") {
-            switchLesson(-1);
+            trym2.switchLesson(-1);
         } else {
             alert("swiped: huh?");
         }
@@ -176,50 +217,8 @@ function helpScreen()  {
 
 
 
-function loadLesson(ell)
-{
-    if (ell == 0){
-        $("#lesson").hide();
-        $("#inputarea").show();
-        $("#send").show();
-        $("#pageIndex").hide();
-        
-    } else {
-        $("#inputarea").hide();
-        var lessonContent = $('[lessonid="'+ ell + '"]').html();
-        $("#send").hide();
-        $("#pageIndex").text( "Lesson " + trym2.lessonNr + "/" + trym2.maxLesson).show();
-        $("#lesson").html(lessonContent).show();
-    }
-}
 
 
-function switchLesson(incr)
-{
-    trym2.lessonNr = trym2.lessonNr + incr;
-    if (trym2.lessonNr >= 0 && trym2.lessonNr <= trym2.maxLesson) {
-        loadLesson(trym2.lessonNr);
-    } else {
-        trym2.lessonNr = trym2.lessonNr - incr;
-        //alert("lesson with " + trym2.lessonNr + "." + incr + " not available");
-    }
-}
-
-
-function resetCallback(e) {
-    if (!trym2.sendToM2(">>RESET<<", "We are resetting the current M2 session.\n")) {
-        $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");
-    }
-    $("#M2Out").val("");
-}
-
-function sendCallback( inputField ) {
-    return function(e) {
-        var str = trym2.getSelected( inputField );
-        trym2.sendToM2(">>SENDCOMMANDS<<\n"+str, "");
-        return false;
-    }
-}
 
 
 

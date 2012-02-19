@@ -1,15 +1,71 @@
+/*global $, console, document */
+
 var trym2 = {
     offset: 0,
     waitingtime: 2500, // in ms.  Each time we poll for data and don't receive it, we wait longer.
-    maxwaitingtime: 60*1000*10, // 10 minutes
+    maxwaitingtime: 60 * 1000 * 10, // 10 minutes
     minwaitingtime: 100,
     lessonNr: 1,
     maxLesson: 1,
     timerobject: 0
+};
+
+trym2.scrollDown = function (area) {
+    var mySize = $(area).val().length;
+    $(area).scrollTop(mySize);
+    return false;
+    // Return false to cancel the default link action
+};
+
+trym2.checkForNewData = function () {
+    $.post("getResults.php", 'offset=' + trym2.offset, function (data) {
+        if (data !== "") {
+            $("#M2Out").val($("#M2Out").val() + data);
+            trym2.scrollDown("#M2Out");
+            trym2.offset = trym2.offset + data.length;
+            trym2.waitingtime = trym2.minwaitingtime;
+        } else {
+            trym2.waitingtime = 2 * trym2.waitingtime;
+            if (trym2.waitingtime > trym2.maxwaitingtime) {
+                trym2.waitingtime = trym2.maxwaitingtime;
+            }
+        }
+        $("#waittime").text("waiting time: " + trym2.waitingtime);
+        trym2.timerobject = setTimeout(trym2.checkForNewData, trym2.waitingtime);
+    });
+};
+
+// return false on error
+trym2.sendToM2 = function (myCommand, baseString) {
+    clearTimeout(trym2.timerobject);
+    trym2.waitingtime = trym2.minwaitingtime;
+    $("#waittime").text("waiting time: " + trym2.waitingtime);
+    trym2.timerobject = setTimeout(trym2.checkForNewData, trym2.waitingtime);
+    
+    $.post("sockets/M2Client.php", {
+        cmd: myCommand
+    },
+    function (data) {
+        console.log("Here is the data: " + data);
+        if (data != "0") { 
+            $("#M2Out").val($("#M2Out").val() + "Something Broke! HELP!");
+            return false;
+        }
+    });
+    return true;
 }
 
+trym2.sendOnEnterCallback = function (inputfield) {
+    return function (e) {
+        if (e.which === 13 && e.shiftKey) {
+            e.preventDefault();
+            // do not make a line break or remove selected text when sending
+            trym2.sendToM2(">>SENDCOMMANDS<<\n"+getSelected( inputfield ), "You hit shift-enter!! ");
+        }
+    }
+}
 
-$(document).ready(function() {
+$(document).ready(function () {
     
     $('.submenuItem').live("click", function(){
         console.log( "You clicked a submenuItem: " + $(this).html() );
@@ -37,9 +93,9 @@ $(document).ready(function() {
     
     SyntaxHighlighter.all();
         
-    checkForNewData(trym2.offset);
+    trym2.checkForNewData(trym2.offset);
 
-    $('#M2In').keypress(sendOnEnterCallback('#M2In'));
+    $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
     $("#send").click(sendCallback( '#M2In' ));
     $("#reset").click(resetCallback);
 
@@ -47,8 +103,8 @@ $(document).ready(function() {
        $(this).effect("highlight", {color: 'red'}, 800);
         var code = $(this).html();
         $("#M2In").val($("#M2In").val() + "\n" + code);
-        scrollDown( "#M2In" );
-        sendToM2(">>SENDCOMMANDS<<\n" + code);
+        trym2.scrollDown( "#M2In" );
+        trym2.sendToM2(">>SENDCOMMANDS<<\n" + code);
     });
 
     $("#inputarea").hide();
@@ -130,46 +186,9 @@ function switchLesson(incr)
     }
 }
 
-function checkForNewData()
-{
-    $.post("getResults.php", 'offset='+ trym2.offset, function(data){
-
-        if(data != "")
-        {
-            $("#M2Out").val($("#M2Out").val() + data); 
-            scrollDown( "#M2Out" );
-            trym2.offset = trym2.offset + data.length;
-            trym2.waitingtime = trym2.minwaitingtime;
-        } 
-        else
-        {
-            trym2.waitingtime = 2*trym2.waitingtime;
-            if (trym2.waitingtime > trym2.maxwaitingtime)
-            {
-                trym2.waitingtime = trym2.maxwaitingtime;
-            }
-        }
-        $("#waittime").text("waiting time: " + trym2.waitingtime);
-        trym2.timerobject = setTimeout("checkForNewData()",trym2.waitingtime);
-    });
-
-}
-
-
-
-function sendOnEnterCallback( inputfield ) {
-    return function(e) {
-        if (e.which == 13 && e.shiftKey) {
-            e.preventDefault();
-            // do not make a line break or remove selected text when sending
-
-            sendToM2(">>SENDCOMMANDS<<\n"+getSelected( inputfield ), "You hit shift-enter!! ");
-        }
-    }
-}
 
 function resetCallback(e) {
-    if (!sendToM2(">>RESET<<", "We are resetting the current M2 session.\n")) {
+    if (!trym2.sendToM2(">>RESET<<", "We are resetting the current M2 session.\n")) {
         $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");
     }
     $("#M2Out").val("");
@@ -178,37 +197,12 @@ function resetCallback(e) {
 function sendCallback( inputField ) {
     return function(e) {
         var str = getSelected( inputField );
-        sendToM2(">>SENDCOMMANDS<<\n"+str, "");
+        trym2.sendToM2(">>SENDCOMMANDS<<\n"+str, "");
         return false;
     }
 }
 
-// return false on error
-function sendToM2(myCommand, baseString) {
-    clearTimeout(trym2.timerobject);
-    trym2.waitingtime = trym2.minwaitingtime;
-    $("#waittime").text("waiting time: " + trym2.waitingtime);
-    trym2.timerobject = setTimeout("checkForNewData()", trym2.waitingtime);
-    
-    $.post("sockets/M2Client.php", {
-        cmd: myCommand
-    },
-    function(data) {
-        console.log("Here is the data: " + data);
-        if (data != "0") { 
-            $("#M2Out").val($("#M2Out").val() + "Something Broke! HELP!");
-            return false;
-        }
-    });
-    return true;
-}
 
-function scrollDown( area ) {
-    mySize = $(area).val().length;
-    $(area).scrollTop(mySize);
-    return false;
-    // Return false to cancel the default link action
-}
 
 /* get selected text, or current line, in the textarea #M2In */
 function getSelected( inputField) {

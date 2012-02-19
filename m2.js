@@ -17,6 +17,25 @@ trym2.scrollDown = function (area) {
     // Return false to cancel the default link action
 };
 
+/* get selected text, or current line, in the textarea #M2In */
+trym2.getSelected = function (inputField) {
+    var str = $(inputField).val(),
+        start = $(inputField)[0].selectionStart,
+        end = $(inputField)[0].selectionEnd,
+        endPos;
+    if (start === end) {
+        // grab the current line
+        start = 1 + str.lastIndexOf("\n", end - 1);
+        endPos = str.indexOf("\n", start);
+        if (endPos !== -1) {
+            end = endPos;
+        } else {
+            end = str.length;
+        }
+    }
+    return str.slice(start, end) + "\n";
+};
+
 trym2.checkForNewData = function () {
     $.post("getResults.php", 'offset=' + trym2.offset, function (data) {
         if (data !== "") {
@@ -41,29 +60,29 @@ trym2.sendToM2 = function (myCommand, baseString) {
     trym2.waitingtime = trym2.minwaitingtime;
     $("#waittime").text("waiting time: " + trym2.waitingtime);
     trym2.timerobject = setTimeout(trym2.checkForNewData, trym2.waitingtime);
-    
-    $.post("sockets/M2Client.php", {
-        cmd: myCommand
-    },
-    function (data) {
-        console.log("Here is the data: " + data);
-        if (data != "0") { 
-            $("#M2Out").val($("#M2Out").val() + "Something Broke! HELP!");
-            return false;
-        }
-    });
+    $.post("sockets/M2Client.php",
+        {
+            cmd: myCommand
+        },
+        function (data) {
+            console.log("Here is the data: " + data);
+            if (data !== "0") {
+                $("#M2Out").val($("#M2Out").val() + "Something Broke! HELP!");
+                return false;
+            }
+        });
     return true;
-}
+};
 
 trym2.sendOnEnterCallback = function (inputfield) {
     return function (e) {
         if (e.which === 13 && e.shiftKey) {
             e.preventDefault();
             // do not make a line break or remove selected text when sending
-            trym2.sendToM2(">>SENDCOMMANDS<<\n"+getSelected( inputfield ), "You hit shift-enter!! ");
+            trym2.sendToM2(">>SENDCOMMANDS<<\n" + trym2.getSelected(inputfield), "You hit shift-enter!! ");
         }
-    }
-}
+    };
+};
 
 $(document).ready(function () {
     
@@ -196,7 +215,7 @@ function resetCallback(e) {
 
 function sendCallback( inputField ) {
     return function(e) {
-        var str = getSelected( inputField );
+        var str = trym2.getSelected( inputField );
         trym2.sendToM2(">>SENDCOMMANDS<<\n"+str, "");
         return false;
     }
@@ -204,23 +223,7 @@ function sendCallback( inputField ) {
 
 
 
-/* get selected text, or current line, in the textarea #M2In */
-function getSelected( inputField) {
-    var str = $(inputField).val();
-    var start = $(inputField)[0].selectionStart;
-    var end = $(inputField)[0].selectionEnd;
-    if (start == end) {
-        // grab the current line
-        start = 1 + str.lastIndexOf("\n", end - 1);
-        var endPos = str.indexOf("\n", start);
-        if (endPos != -1) {
-            end = endPos;
-        } else {
-            end = str.length;
-        }
-    }
-    return str.slice(start, end) + "\n";
-}
+
 
 // input: filename with tutorial content
 // return a list of lessons title, each wrapped in a div and link, 

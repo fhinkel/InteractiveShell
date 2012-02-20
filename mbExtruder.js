@@ -352,7 +352,7 @@
 					// instead of ajax call, we use a more specific function to extract submenu items
 					var tutorialFile = voice.attr("panel");
 					//console.log("TutorialFile: " + tutorialFile);
-					getLessonTitles( tutorialFile, function(titles) { 
+					trym2.getLessonTitles( tutorialFile, function(titles) { 
 						content.append( titles );
 						content.children()
 							.addClass("panelVoice")

@@ -109,8 +109,7 @@ trym2.switchLesson = function (incr) {
     }
 };
 
-
-trym2.resetCallback = function (e) {
+trym2.resetCallback = function () {
     if (!trym2.sendToM2(">>RESET<<", "We are resetting the current M2 session.\n")) {
         $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");
     }
@@ -118,7 +117,7 @@ trym2.resetCallback = function (e) {
 };
 
 trym2.sendCallback = function (inputField) {
-    return function (e) {
+    return function () {
         var str = trym2.getSelected(inputField);
         trym2.sendToM2(">>SENDCOMMANDS<<\n" + str, "");
         return false;
@@ -128,6 +127,25 @@ trym2.sendCallback = function (inputField) {
 trym2.helpScreen = function () {
     console.log("Display Help.");
     $("#help-dialog").dialog('open');
+};
+
+// input: filename with tutorial content
+// return a list of lessons title, each wrapped in a div and link, 
+// <div><a>" + title + "</a></div>  
+// attach a lesson ID
+trym2.getLessonTitles = function (tutorialFile, callback) {
+    var titles = "";
+    $("#menuTutorial").load(tutorialFile, function () {
+        var i = 1;
+        $("#menuTutorial h4").each(function () {
+            var title = $(this).text();
+            titles = titles + "<div><a class='submenuItem' lessonid='lesson" + i + "'>" + title + "</a></div>";
+            i = i + 1;
+            //console.log("Title in m2.js: " + title);
+        });
+        //console.log("All titles: " + titles);
+        callback(titles);
+    });
 };
 
 $(document).ready(function () {
@@ -211,49 +229,19 @@ $(document).ready(function () {
     //updateOrientation();
 });
 
-
-
-
-
-
-
-
-
-
-
-// input: filename with tutorial content
-// return a list of lessons title, each wrapped in a div and link, 
-// <div><a>" + title + "</a></div>  
-// attach a lesson ID
-function getLessonTitles( tutorialFile, callback ){ 
-    var titles = "";
-    $("#menuTutorial").load(tutorialFile, function(){
-        var i = 1;
-        $("#menuTutorial h4").each( function() {
-            var title = $(this).text();
-            titles = titles + "<div><a class='submenuItem' lessonid='lesson" + i +"'>" + title + "</a></div>";  
-            i = i + 1;
-            //console.log("Title in m2.js: " + title);
-        });
-        //console.log("All titles: " + titles);
-        callback(titles);
-    });
-}
-
-function updateOrientation()
-{
-    var orient ="";
-    switch(window.orientation) {
-        case 0:
-        case 180:
-            orient = "show_portrait";
-            break;
-        case -90:
-        case 90:
-            orient = "show_landscape";
-            break;
-        default:
-            orient = "show_landscape";
+function updateOrientation() {
+    var orient = "";
+    switch (window.orientation) {
+    case 0:
+    case 180:
+        orient = "show_portrait";
+        break;
+    case -90:
+    case 90:
+        orient = "show_landscape";
+        break;
+    default:
+        orient = "show_landscape";
     }
     $("body").attr("class", orient);
     $("#rightwindow").attr('class', orient);

@@ -1,4 +1,4 @@
-/*global $, console, document */
+/*global $, console, document, SyntaxHighlighter */
 
 var trym2 = {
     offset: 0,
@@ -9,7 +9,6 @@ var trym2 = {
     maxLesson: 1,
     timerobject: 0
 };
-
 
 trym2.scrollDown = function (area) {
     var mySize = $(area).val().length;
@@ -93,9 +92,9 @@ trym2.loadLesson = function (ell) {
         $("#pageIndex").hide();
     } else {
         $("#inputarea").hide();
-        var lessonContent = $('[lessonid="'+ ell + '"]').html();
+        var lessonContent = $('[lessonid="' + ell + '"]').html();
         $("#send").hide();
-        $("#pageIndex").text( "Lesson " + trym2.lessonNr + "/" + trym2.maxLesson).show();
+        $("#pageIndex").text("Lesson " + trym2.lessonNr + "/" + trym2.maxLesson).show();
         $("#lesson").html(lessonContent).show();
     }
 };
@@ -119,11 +118,16 @@ trym2.resetCallback = function (e) {
 };
 
 trym2.sendCallback = function (inputField) {
-    return function(e) {
+    return function (e) {
         var str = trym2.getSelected(inputField);
-        trym2.sendToM2(">>SENDCOMMANDS<<\n"+str, "");
+        trym2.sendToM2(">>SENDCOMMANDS<<\n" + str, "");
         return false;
-    }
+    };
+};
+
+trym2.helpScreen = function () {
+    console.log("Display Help.");
+    $("#help-dialog").dialog('open');
 };
 
 $(document).ready(function () {
@@ -131,89 +135,82 @@ $(document).ready(function () {
         var i = 1,
             lessonId = $(this).attr('lessonid');
         console.log("You clicked a submenuItem: " + $(this).html());
-        trym2.lessonNr = parseInt(lessonId.match(/\d/g),10);
+        trym2.lessonNr = parseInt(lessonId.match(/\d/g), 10);
         $("#tutorial").html($("#menuTutorial").html());
         $("#tutorial h4").each(function () {
             $(this).parent().attr('lessonid', i); // add an ID to every lesson div
             i = i + 1;
-        } );
+        });
         trym2.maxLesson = $('#tutorial .lesson').children().length;
         trym2.loadLesson(trym2.lessonNr);
     });
-        
-    
+
     $('#help-dialog').dialog({
-            height: 340,
-            width: 460,
-            modal: true,
-            autoOpen: false
-        });
-    $('#help').click(helpScreen);
-    
-    
+        height: 340,
+        width: 460,
+        modal: true,
+        autoOpen: false
+    });
+    $('#help').click(trym2.helpScreen);
+
     SyntaxHighlighter.all();
-        
+
     trym2.checkForNewData(trym2.offset);
 
     $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
-    $("#send").click(trym2.sendCallback( '#M2In' ));
+    $("#send").click(trym2.sendCallback('#M2In'));
     $("#reset").click(trym2.resetCallback);
 
-    $("code").live("click", function() { 
-       $(this).effect("highlight", {color: 'red'}, 800);
+    $("code").live("click", function () {
+        $(this).effect("highlight", {color: 'red'}, 800);
         var code = $(this).html();
         $("#M2In").val($("#M2In").val() + "\n" + code);
-        trym2.scrollDown( "#M2In" );
+        trym2.scrollDown("#M2In");
         trym2.sendToM2(">>SENDCOMMANDS<<\n" + code);
     });
 
     $("#inputarea").hide();
     $("#send").hide();
     $("#pageIndex").hide();
-    
+
     $("#tutorial").html("<div class='lesson' lessonid='1'><div><br>Get started by <b>selecting a tutorial</b> from the menu on the upper right corner or by using the Macaulay2 console. Have fun!</div></div>");
     trym2.loadLesson(trym2.lessonNr);
     trym2.maxLesson = $('.lesson').children().length;
-    
-    
-    $("#next").click( function(){
+
+    $("#next").click(function () {
         trym2.switchLesson(1);
     });
-    $("#previous").click( function(){
+    $("#previous").click(function () {
         trym2.switchLesson(-1);
     });
 
     // swipe changed to swipeXXX to remove functionality for testing
-    $(function(){ $("#leftwindow").bind("swipeXXX",function(event, info) {
-        if (info.direction === "left"){
-            trym2.switchLesson(1);
-        } else if (info.direction === "right") {
-            trym2.switchLesson(-1);
-        } else {
-            alert("swiped: huh?");
-        }
+    $(function () {
+        $("#leftwindow").bind("swipeXXX", function (event, info) {
+            if (info.direction === "left") {
+                trym2.switchLesson(1);
+            } else if (info.direction === "right") {
+                trym2.switchLesson(-1);
+            } else {
+                alert("swiped: huh?");
+            }
         });
     });
-    
-    $(function(){        
+
+    $(function () {
         $("#extruderTop").buildMbExtruder({
-                    position:"top",
-                    width:350,
-                    extruderOpacity:1,
-                    onExtOpen:function(){},
-                    onExtContentLoad:function(){},
-                    onExtClose:function(){}
-             });
+            position: "top",
+            width: 350,
+            extruderOpacity: 1,
+            onExtOpen: function () {},
+            onExtContentLoad: function () {},
+            onExtClose: function () {}
         });
-    
+    });
+
     //updateOrientation();
 });
 
-function helpScreen()  {
-    console.log("Display Help.");
-    $("#help-dialog").dialog('open') 
-
-}
 
 
 

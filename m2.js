@@ -1,4 +1,5 @@
-/*global $, console, document, SyntaxHighlighter */
+/*global $, SyntaxHighlighter, alert, clearTimeout, console, document, setTimeout, trym2, updateOrientation, window */
+
 
 var trym2 = {
     offset: 0,
@@ -55,7 +56,7 @@ trym2.checkForNewData = function () {
 };
 
 // return false on error
-trym2.sendToM2 = function (myCommand, baseString) {
+trym2.sendToM2 = function (myCommand) {
     clearTimeout(trym2.timerobject);
     trym2.waitingtime = trym2.minwaitingtime;
     $("#waittime").text("waiting time: " + trym2.waitingtime);
@@ -79,7 +80,7 @@ trym2.sendOnEnterCallback = function (inputfield) {
         if (e.which === 13 && e.shiftKey) {
             e.preventDefault();
             // do not make a line break or remove selected text when sending
-            trym2.sendToM2(">>SENDCOMMANDS<<\n" + trym2.getSelected(inputfield), "You hit shift-enter!! ");
+            trym2.sendToM2(">>SENDCOMMANDS<<\n" + trym2.getSelected(inputfield));
         }
     };
 };
@@ -110,7 +111,7 @@ trym2.switchLesson = function (incr) {
 };
 
 trym2.resetCallback = function () {
-    if (!trym2.sendToM2(">>RESET<<", "We are resetting the current M2 session.\n")) {
+    if (!trym2.sendToM2(">>RESET<<")) {
         $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");
     }
     $("#M2Out").val("");
@@ -119,7 +120,7 @@ trym2.resetCallback = function () {
 trym2.sendCallback = function (inputField) {
     return function () {
         var str = trym2.getSelected(inputField);
-        trym2.sendToM2(">>SENDCOMMANDS<<\n" + str, "");
+        trym2.sendToM2(">>SENDCOMMANDS<<\n" + str);
         return false;
     };
 };

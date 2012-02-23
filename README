@@ -1,5 +1,9 @@
+2/23/2012
+- Talking about server pushing data to client rather than client pulling for data
+- Sandboxing: Jails (FreeBSD), AmazonS3, 
+
 2/21/2012
-Get "Next" button working again!
+Get "Next" button working again! - Done
 Node.js, chat server example in "Definite Guide to Javascript", Flanagan, p 519, we need Lars to incorporate this into the existing server
 
 Homework due 2/21 - 80% of your final grade!!!

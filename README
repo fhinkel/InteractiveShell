@@ -1,3 +1,7 @@
+2/21/2012
+Get "Next" button working again!
+Node.js, chat server example in "Definite Guide to Javascript", Flanagan, p 519, we need Lars to incorporate this into the existing server
+
 Homework due 2/21 - 80% of your final grade!!!
 Franzi: convert BeginningMacaulay2 to Tutorial (trunk/Macaulay2/packages/Begin...)
 Mike: investigate asynchronous retrieval of M2 output, JS lint, read up on "global" variables in JS

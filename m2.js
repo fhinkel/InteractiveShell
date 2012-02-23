@@ -101,8 +101,11 @@ trym2.loadLesson = function (ell) {
 };
 
 trym2.switchLesson = function (incr) {
+    //console.log("Current lessonNr " + trym2.lessonNr);
+    //console.log("maxlesson " + trym2.maxLesson);
     trym2.lessonNr = trym2.lessonNr + incr;
     if (trym2.lessonNr >= 0 && trym2.lessonNr <= trym2.maxLesson) {
+        //console.log("Switch lesson");
         trym2.loadLesson(trym2.lessonNr);
     } else {
         trym2.lessonNr = trym2.lessonNr - incr;
@@ -153,14 +156,14 @@ $(document).ready(function () {
     $('.submenuItem').live("click", function () {
         var i = 1,
             lessonId = $(this).attr('lessonid');
-        console.log("You clicked a submenuItem: " + $(this).html());
+        //console.log("You clicked a submenuItem: " + $(this).html());
         trym2.lessonNr = parseInt(lessonId.match(/\d/g), 10);
         $("#tutorial").html($("#menuTutorial").html());
         $("#tutorial h4").each(function () {
             $(this).parent().attr('lessonid', i); // add an ID to every lesson div
             i = i + 1;
         });
-        trym2.maxLesson = $('#tutorial .lesson').children().length;
+        trym2.maxLesson = i-1;
         trym2.loadLesson(trym2.lessonNr);
     });
 
@@ -194,7 +197,8 @@ $(document).ready(function () {
 
     $("#tutorial").html("<div class='lesson' lessonid='1'><div><br>Get started by <b>selecting a tutorial</b> from the menu on the upper right corner or by using the Macaulay2 console. Have fun!</div></div>");
     trym2.loadLesson(trym2.lessonNr);
-    trym2.maxLesson = $('.lesson').children().length;
+    trym2.maxLesson = $('#tutorial').children().length;
+    console.log("maxLesson: " + trym2.maxLesson);
 
     $("#next").click(function () {
         trym2.switchLesson(1);

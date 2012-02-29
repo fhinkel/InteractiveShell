@@ -6,6 +6,7 @@ isInLesson = false
 isInPreamble = true
 isHeadline = false
 
+# tutorial in M2 simple doc format
 open("Beginning.html","w") { |out|
   out << "<html>\n"
   out << "  <head>\n"
@@ -32,6 +33,8 @@ open("Beginning.html","w") { |out|
         isExample = false
         #out << "<BR>\n"
         next
+      when /\{\\em (.*)\}/
+        puts "found"
       else
         if isHeadline
           out << line

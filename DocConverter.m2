@@ -45,6 +45,21 @@ toHtml String := (s) ->  (
   s | "<BR>\n"
   )
 
+printHead = method()
+printHead String := title -> (
+     s :=  "<html>\n";
+     s = s |  "  <head>\n";
+     s = s | ///   <link rel="stylesheet" href="m2.css" type="text/css" media="screen"> ///;
+  	 s = s | ///   <script type="text/javascript" src="jquery-1.6.4.min.js"> </script> ///;
+	   s = s | ///   <script type="text/javascript" src="m2.js"></script></script> ///;
+     s = s |  "\n    <title>\n";
+     s = s |   title;
+     s = s | "\n";
+     s = s |  "    </title>\n";
+     s = s |  "  </head>\n";
+     s = s |  "<body>\n"
+     )
+
 convert = method()
 convert String := (filename) -> (
      contents := lines get filename;
@@ -55,17 +70,7 @@ convert String := (filename) -> (
      MDescription := first select(M, x -> match(///^\s*Description///, first x));
      -- ignore the Key for now.
      -- << "Key = " << last MKey << endl;
-     s :=  "<html>\n";
-     s = s |  "  <head>\n";
-     s = s | ///   <link rel="stylesheet" href="m2.css" type="text/css" media="screen"> ///;
-  	 s = s | ///   <script type="text/javascript" src="jquery-1.6.4.min.js"> </script> ///;
-	   s = s | ///   <script type="text/javascript" src="m2.js"></script></script> ///;
-     s = s |  "\n    <title>\n";
-     s = s |   first last MHeadline;
-     s = s | "\n";
-     s = s |  "    </title>\n";
-     s = s |  "  </head>\n";
-     s = s |  "<body>\n";
+     s := printHead first last MHeadline;
 
      inSection := false; -- we need this to keep track of divs around lessons
      M2 := groupLines(last MDescription, descriptionRE);

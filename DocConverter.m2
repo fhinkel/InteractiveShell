@@ -9,6 +9,7 @@
 --        handle wierd other things.  Possibly just ignore them
 -- do not forget to print html header and wrapper.
 
+
 newPackage(
         "DocConverter",
         Version => "0.1", 
@@ -19,6 +20,8 @@ newPackage(
         Headline => "",
         DebuggingMode => true
         )
+
+needsPackage "Text"
 
 export {convert, groupLines, keywordRE, descriptionRE}
 
@@ -39,12 +42,16 @@ groupLines (List,String) := (L, keywordRE) -> (
 	       ))
      )
 
+
+-- create string with code for HTML rather than simple doc
+-- add extra line break at every paragraph
+-- translate TEX code
 toHtml = method()
 toHtml String := (s) ->  (
-  
-  s | "<BR>\n"
+  (html TEX s) | "<BR>\n"
   )
 
+-- return string with HTML head for given title
 printHead = method()
 printHead String := title -> (
      s :=  "<html>\n";
@@ -57,7 +64,7 @@ printHead String := title -> (
      s = s | "\n";
      s = s |  "    </title>\n";
      s = s |  "  </head>\n";
-     s = s |  "<body>\n"
+     s = s |  "<body>\n"  
      )
 
 convert = method()
@@ -107,7 +114,7 @@ end
 
 restart
 loadPackage "DocConverter"
-L = convert "beginningM2.simpledoc"
+L = convert "beginningM2.simpledoc";
 fn = "Beginning.html"
 fn << L
 get ("!open " | fn)

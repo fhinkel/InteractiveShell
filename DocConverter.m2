@@ -51,7 +51,14 @@ groupLines (List,String) := (L, keywordRE) -> (
 -- translate TEX code
 toHtml = method()
 toHtml String := (s) ->  (
-  (html TEX s) | "<BR>\n"
+  -- replace extract only what is between 2 @ symbols 
+  -- @TO2 {(symbol _,Matrix,Sequence),"_"}@
+  -- this causes problems with following TEX, e.g., _ is translated to <sub>
+  --s = replace(///@\s*TO2\s*\{\([^\)]*\),"([^"]*)"\}@///, "(\\1)", s );
+  s = replace(///\s*@\s*TO2\s*\{\([^\)]*\),"([^"]*)"\}@///, "", s );
+  s = replace(///@\s*TO\s*([^@]*)@///, "\\1", s );
+  s = html TEX s;
+  s | "<BR>\n"
   )
 
 -- return string with HTML head for given title

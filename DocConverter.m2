@@ -7,7 +7,7 @@
 --          handle anything else not handled by TEX
 -- Code:  search for SUBSECTION, grab name, put a div in
 --        handle wierd other things.  Possibly just ignore them
--- don't forget to print html header and wrapper.
+-- do not forget to print html header and wrapper.
 
 newPackage(
         "DocConverter",
@@ -40,7 +40,10 @@ groupLines (List,String) := (L, keywordRE) -> (
      )
 
 toHtml = method()
-toHtml String := (s) -> ""; -- s | "\n";
+toHtml String := (s) ->  (
+  
+  s | "<BR>\n"
+  )
 
 convert = method()
 convert String := (filename) -> (
@@ -52,22 +55,46 @@ convert String := (filename) -> (
      MDescription := first select(M, x -> match(///^\s*Description///, first x));
      -- ignore the Key for now.
      -- << "Key = " << last MKey << endl;
-     << "Headline = " << first last MHeadline << endl;
+     s :=  "<html>\n";
+     s = s |  "  <head>\n";
+     s = s | ///   <link rel="stylesheet" href="m2.css" type="text/css" media="screen"> ///;
+  	 s = s | ///   <script type="text/javascript" src="jquery-1.6.4.min.js"> </script> ///;
+	   s = s | ///   <script type="text/javascript" src="m2.js"></script></script> ///;
+     s = s |  "\n    <title>\n";
+     s = s |   first last MHeadline;
+     s = s | "\n";
+     s = s |  "    </title>\n";
+     s = s |  "  </head>\n";
+     s = s |  "<body>\n";
+
+     inSection := false; -- we need this to keep track of divs around lessons
      M2 := groupLines(last MDescription, descriptionRE);
-     concatenate apply(M2, m -> (
+     cc :=  concatenate apply(M2, m -> (
 	       -- m is {Keyword, List (of lines)}.
 	       -- Keyword is: Text, Code, Example (that is it at the moment)
 	       k := first m;
 	       if k === "Text" then
-	            toHtml concatenate between("\n", m#1)
+	          toHtml concatenate between("\n", m#1)
 	       else if k === "Example" then (
-		    m1 := select(last m, x -> not match(///^\s*$///, x));
-		    concatenate apply(m1, x -> "<code>"|x|"</code><br>\n")
-		    )
+              m1 := select(last m, x -> not match(///^\s*$///, x));
+              concatenate apply(m1, x -> "<code>"|x|"</code><br>\n")
+            )
 	       else if k === "Code" then (
-		    )
-	       else error "unknown Key"
-	       ))
+            if match( ///^\s*SUBSECTION///, first last m) then (
+              s := "";
+              if inSection then 
+                s = "</div>";
+              inSection = true;
+              h := replace( ///^\s*SUBSECTION\s*\"///, "", first last m); 
+              h = replace( ///\"\s*$///, "", h );
+
+              s | "<div><h4>" | h | "</h4>" 
+              )
+            )
+	       else 
+            error "unknown Key"
+	      ));
+      s | cc | "</div></body>\n </html>\n"
      )
 
 
@@ -76,6 +103,10 @@ end
 restart
 loadPackage "DocConverter"
 L = convert "beginningM2.simpledoc"
+fn = "Beginning.html"
+fn << L
+get ("!open " | fn)
+
 M = groupLines(L, keywordRE)
 M1 = first select(M, x -> match(///^\s*Description///, first x))
 M2 = groupLines(last M1, descriptionRE)

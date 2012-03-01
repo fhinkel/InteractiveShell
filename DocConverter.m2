@@ -51,11 +51,20 @@ groupLines (List,String) := (L, keywordRE) -> (
 -- translate TEX code
 toHtml = method()
 toHtml String := (s) ->  (
-  -- replace extract only what is between 2 @ symbols 
-  -- @TO2 {(symbol _,Matrix,Sequence),"_"}@
-  -- this causes problems with following TEX, e.g., _ is translated to <sub>
-  --s = replace(///@\s*TO2\s*\{\([^\)]*\),"([^"]*)"\}@///, "(\\1)", s );
+
+  -- replace only what is between 2 @ symbols 
+    -- there might be extra with spaces betwen @ TO 
+    -- careful with greedy matching
+  -- @TO2 looks like this: 
+    -- @TO2 {(symbol _,Matrix,Sequence),"_"}@
+    -- this causes problems with following TEX, e.g., _ is translated to <sub>
+    --s = replace(///@\s*TO2\s*\{\([^\)]*\),"([^"]*)"\}@///, "(\\1)", s );
+
+  -- whitespaces followed by @TO2, remove everything up to next @ symbold
   s = replace(///\s*@\s*TO2\s*\{\([^\)]*\),"([^"]*)"\}@///, "", s );
+
+  -- @TO (not @TO 2)
+    -- keep text between @TO ... @
   s = replace(///@\s*TO\s*([^@]*)@///, "\\1", s );
   s = html TEX s;
   s | "<BR>\n"

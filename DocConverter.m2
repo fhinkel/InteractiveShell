@@ -1,3 +1,10 @@
+
+-- convert a document in M2 Simple Doc format to an HTML document that can be
+-- used in TryM2 as a tutorial. We assume that every SUBSECTION constitutes as
+-- lesson. Each lesson is wrapped in a <div> with an <h4> headline. 
+-- <code> markes M2 code that can be run in the interactive shell. 
+
+
 -- Umlaute (Groebner ...) cause problems in HTML
 -- \mapsto{}  this causes problems inside TEX
 

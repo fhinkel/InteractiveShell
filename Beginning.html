@@ -12,21 +12,23 @@
           this tutorial!
 
 <BR>
-<div><h4>Arithmetic with integers, rings and ideals</h4>          You can immediately do arithmetic with integers:<BR>
-<code>          2+2</code><br>
-<code>          107*431</code><br>
-<code>          25!</code><br>
-<code>          binomial(5,4)</code><br>
-<code>          factor 32004</code><br>
+<div>
+    <h4>Arithmetic with integers, rings and ideals</h4>
+          You can immediately do arithmetic with integers:<BR>
+        <code>2+2</code><br>
+        <code>107*431</code><br>
+        <code>25!</code><br>
+        <code>binomial(5,4)</code><br>
+        <code>factor 32004</code><br>
 
           Most <em>Macaulay2</em> applications involve polynomial rings over fields
           and their quotient rings. Fields can be made in various ways:<BR>
-<code>          ZZ/101</code><br>
-<code>          QQ</code><br>
-<code>          GF 2^5</code><br>
-<code>          k = toField (QQ[i]/(i^2+1))</code><br>
+        <code>ZZ/101</code><br>
+        <code>QQ</code><br>
+        <code>GF 2^5</code><br>
+        <code>k = toField (QQ[i]/(i^2+1))</code><br>
           After making <tt>k</tt> we can compute in it:<BR>
-<code>          1/i</code><br>
+        <code>1/i</code><br>
 
           Computation is often fastest and needs least
           memory when performed over finite prime fields of the form 
@@ -38,30 +40,30 @@
           can range up to 32749.
 
           We make a polynomial ring in 5 variables over <i>&#x2124;/101</i>:<BR>
-<code>          kk=ZZ/101</code><br>
-<code>          S=kk[x_1..x_5]</code><br>
+        <code>kk=ZZ/101</code><br>
+        <code>S=kk[x_1..x_5]</code><br>
           Here is another way:<BR>
-<code>          S=kk[a,b,c,d,e] </code><br>
+        <code>S=kk[a,b,c,d,e] </code><br>
           One can do arithmetic on polynomials:<BR>
-<code>          (3*a^2+1)^5</code><br>
+        <code>(3*a^2+1)^5</code><br>
 
           We make an ideal in <i>S</i>:<BR>
-<code>          I=ideal(a^3-b^3, a+b+c+d+e)</code><br>
+        <code>I=ideal(a^3-b^3, a+b+c+d+e)</code><br>
           Using this ideal, we can make a factor ring:<BR>
-<code>          R=S/I</code><br>
+        <code>R=S/I</code><br>
           Another way to make an ideal, with more compact notation (familiar to anyone who used the
           classic Macaulay) is:<BR>
-<code>          use S</code><br>
-<code>          I=ideal"3(a+b)3, 4c5"</code><br>
+        <code>use S</code><br>
+        <code>I=ideal"3(a+b)3, 4c5"</code><br>
           Note the command &ldquo;<tt>use S</tt>&rdquo;, which specifies 
           that we want to work with the generators of the polynomial ring S again;
           otherwise the variables <tt>a</tt>, <tt>b</tt>, and <tt>c</tt>
           would still have had values in <i>R</i> instead of in <i>S</i>.
 
           Algebraic operations on ideals are available:<BR>
-<code>          I^2</code><br>
-<code>          I*I</code><br>
-<code>          I+ideal"a2"</code><br>
+        <code>I^2</code><br>
+        <code>I*I</code><br>
+        <code>I+ideal"a2"</code><br>
 
           In case you forget any of these things, @TO help@ is available! The most
           useful way to get it is often to type something like:<BR>
@@ -76,33 +78,33 @@
           class of the result.
           
           Here are some basic operations on matrices:<BR>
-<code>          M= matrix{{a,b,c},{b,c,d},{c,d,e}}</code><br>
-<code>          M^2</code><br>
-<code>          determinant M</code><br>
-<code>          trace M</code><br>
-<code>          M-transpose M</code><br>
+        <code>M= matrix{{a,b,c},{b,c,d},{c,d,e}}</code><br>
+        <code>M^2</code><br>
+        <code>determinant M</code><br>
+        <code>trace M</code><br>
+        <code>M-transpose M</code><br>
           The function @TO entries@ gives the entries of a matrix:<BR>
-<code>          entries M</code><br>
+        <code>entries M</code><br>
           The result is a list of lists, one for each row of the matrix <i>M</i>.
           The function @TO flatten@ can be used to merge the
           lists into a single list:<BR>
-<code>          flatten entries M</code><br>
+        <code>flatten entries M</code><br>
           If you want a particular entry, say the one in the upper left corner, 
           you can use the underscore operator @TO2 (symbol <sub>,</sub>Matrix,Sequence),"<sub>"</sub>@:<BR>
-<code>          M_(0,0)</code><br>
+        <code>M_(0,0)</code><br>
           Here, as everywhere in <em>Macaulay2</em>, all indexing starts with 0.
           For example:<BR>
-<code>          I_0</code><br>
+        <code>I_0</code><br>
           is the first generator of I. You can list all the generators with:<BR>
-<code>          I_*</code><br>
+        <code>I_*</code><br>
 
           A <em>module</em> can be defined as a cokernel, kernel, image, or even as a subquotient:<BR>
-<code>          coker M     </code><br>
-<code>          image M</code><br>
-<code>          kernel matrix"a,b,0;0,a,b"</code><br>
-<code>          N = matrix{{a,b},{b,c},{c,d}}</code><br>
-<code>          (image M)/(image N)</code><br>
-<code>          subquotient(M,N)</code><br>
+        <code>coker M     </code><br>
+        <code>image M</code><br>
+        <code>kernel matrix"a,b,0;0,a,b"</code><br>
+        <code>N = matrix{{a,b},{b,c},{c,d}}</code><br>
+        <code>(image M)/(image N)</code><br>
+        <code>subquotient(M,N)</code><br>
          Note that the matrix <i>N</i> above was defined with an
          alternate syntax, parallel to the alternate syntax for @TO ideal@.
 
@@ -111,17 +113,20 @@
           example, by typing:<BR>
           
 <BR>
-</div><div><h4>Properties of ideals and modules",</h4>          To compute the Gröbner basis of an ideal
+</div>
+<div>
+    <h4>Properties of ideals and modules</h4>
+          To compute the Gröbner basis of an ideal
           <i>(x<sup>2</sup>y,xy<sup>2</sup>+x<sup>3</sup>)</i> in the polynomial ring in
           four variables we proceed as follows.
           First we make our favorite field:<BR>
-<code>          kk = ZZ/32003</code><br>
+        <code>kk = ZZ/32003</code><br>
           Then the polynomial ring:<BR>
-<code>          R = kk[x,y,z,w]</code><br>
+        <code>R = kk[x,y,z,w]</code><br>
           And then the ideal:<BR>
-<code>          I = ideal(x^2*y,x*y^2+x^3)</code><br>
+        <code>I = ideal(x^2*y,x*y^2+x^3)</code><br>
           Now the punch line.  We compute the Gröbner basis with the @ TO groebnerBasis @ function:<BR>
-<code>          J = groebnerBasis I</code><br>
+        <code>J = groebnerBasis I</code><br>
 
           Gr&ouml;bner bases are always computed with respect to a particular
           monomial order on the ring. In fact, the ring we defined above has
@@ -131,10 +136,10 @@
           The analogue of factorization in the theory of ideals
           is primary decomposition.
           For example, we can begin by intersecting three ideals:<BR>
-<code>          I= intersect (ideal"x2,y3", ideal"y2,z3", (ideal"x,y,z")^4)</code><br>
+        <code>I= intersect (ideal"x2,y3", ideal"y2,z3", (ideal"x,y,z")^4)</code><br>
           We can almost undo this operation by computing
           a primary decomposition:<BR>
-<code>          primaryDecomposition I</code><br>
+        <code>primaryDecomposition I</code><br>
           Inspecting the output, we see that the first two ideals
           are the same as the first two ideals we intersected, but the 
           third one differs from the corresponding input ideal.
@@ -146,7 +151,7 @@
           For larger examples, primary decomposition is computationally challenging!
           Sometimes it is easier to compute just the minimal primes. To do
           this we can use @ TO decompose @: <BR>
-<code>          decompose I</code><br>
+        <code>decompose I</code><br>
 
           Using Gröbner bases we can compute 
           codimensions, dimensions,
@@ -164,26 +169,26 @@
           First we make the
           polynomial ring in 4 variables, to serve as the
           homogeneous coordinate ring of <i>&#x2119;<sup>3</sup></i>:<BR>
-<code>          R = kk[a..d]</code><br>
+        <code>R = kk[a..d]</code><br>
           We introduce the ring map <i>&phi;: R &rarr;kk[s,t]</i> defined by 
           <i>(a,b,c,d) ↦ (s<sup>4</sup>, s<sup>3</sup> t, s t<sup>3</sup>, t<sup>4</sup>)</i>:         <BR>
-<code>          phi = map(kk[s,t],R,{s^4, s^3*t, s*t^3, t^4})</code><br>
+        <code>phi = map(kk[s,t],R,{s^4, s^3*t, s*t^3, t^4})</code><br>
           Here the syntax of the function @ TO2 (map,Ring,Ring,List),"map" @ has the target ring first and the source ring second:
           maps in <em>Macaulay2</em> generally go from right to left!
           The last input to the command is a 
           list of the elements to which to send the variables of the source ring.
           The ideal we want is the kernel of this map:<BR>
-<code>          I = ker phi</code><br>
+        <code>I = ker phi</code><br>
           Shortcut notation for this construction is provided by the function @ TO
           monomialCurveIdeal @:<BR>
-<code>          I = monomialCurveIdeal(R,{1,3,4})</code><br>
+        <code>I = monomialCurveIdeal(R,{1,3,4})</code><br>
           We can compute the @ TO2 (dim,Ideal),"dimension"@, @ TO2(codim,Ideal), "codimension"@ (also called the
           height) and @ TO2(degree,Ideal),"degree" @ of this ideal:<BR>
-<code>          dim I</code><br>
-<code>          codim I</code><br>
-<code>          degree I</code><br>
+        <code>dim I</code><br>
+        <code>codim I</code><br>
+        <code>degree I</code><br>
           The Hilbert polynomial is obtained with the function @ TO hilbertPolynomial@:<BR>
-<code>          hilbertPolynomial(R/I)</code><br>
+        <code>hilbertPolynomial(R/I)</code><br>
           The output above may not be what the user expected:
           the term <i><b>P</b><sub>m</sub></i> represents the Hilbert polynomial of
           projective <i>m</i>-space.  Thus the output tells
@@ -196,22 +201,22 @@
 
           The more usual expression for the Hilbert polynomial can
           be obtained as follows:<BR>
-<code>          hilbertPolynomial(R/I, Projective => false)</code><br>
+        <code>hilbertPolynomial(R/I, Projective => false)</code><br>
           The construction <tt>Projective => false</tt> is our first example of
           an <em>option</em> to a function: we specified that the option 
           <tt>Projective</tt> was to have the value <tt>false</tt>.
           The form we used first could also have been written this way:<BR>
-<code>          hilbertPolynomial(R/I, Projective => true)</code><br>
+        <code>hilbertPolynomial(R/I, Projective => true)</code><br>
           The Hilbert series of <i>M</i> (the generating function
           for the dimensions of the graded pieces of <i>M</i>) is
           obtained with:<BR>
-<code>          hilbertSeries (R/I)</code><br>
+        <code>hilbertSeries (R/I)</code><br>
           This generating function is expressed
           as a rational function with denominator equal to (1-T)<sup>n</sup>, where
           n is the number of variables in R. 
           Since R/I has dimension 2, it can also be written
           with denominator (1-t)<sup>2</sup>. To see it in this form, use @ TO reduceHilbert @:<BR>
-<code>          reduceHilbert hilbertSeries (R/I)</code><br>
+        <code>reduceHilbert hilbertSeries (R/I)</code><br>
           It is possible to manipulate the numerator and denominator of this
           expression. To learn how to do so, see @ TO hilbertSeries @ or type:<BR>
 
@@ -219,11 +224,11 @@
           free resolutions. For an example, we begin
           by turning <i>R/I</i> into a module. Here the code @ TT "R<sup>1</sup>" @ produces the free module of
           rank 1 over <i>R</i>, and @ TO2 (resolution,Module),"res" @ computes a free resolution:<BR>
-<code>          M=R^1/I</code><br>
-<code>          Mres = res M</code><br>
+        <code>M=R^1/I</code><br>
+        <code>Mres = res M</code><br>
           To get more precise information about <tt>Mres</tt>,
           we could compute its Betti table with @ TO2(betti,GradedModule), "betti" @:<BR>
-<code>          betti Mres</code><br>
+        <code>betti Mres</code><br>
           The display is chosen for compactness. Each column of the
           table corresponds
           to a free module in the resolution. The column&rsquo;s heading
@@ -243,26 +248,29 @@
           Commonly computed homological invariants
           such as @ TO2  (pdim,Module), "projective dimension"  @ and @ TO2 (regularity,Module),
           "regularity" @ are (also) available directly:<BR>
-<code>          pdim M</code><br>
-<code>          regularity M</code><br>
+        <code>pdim M</code><br>
+        <code>regularity M</code><br>
 
      <BR>
-</div><div><h4>Division With Remainder</h4>          A major application of Gröbner bases is
+</div>
+<div>
+    <h4>Division With Remainder</h4>
+          A major application of Gröbner bases is
           to give the normal form for an element modulo an
           ideal, allowing one, for example, to decide whether
           the element is in the ideal.
           For example, we can decide which power of the trace
           of a generic 3x3 matrix is expressible in terms of the entries of the 
           cube of the matrix with the following code:<BR>
-<code>          R = kk[a..i]</code><br>
-<code>          M = genericMatrix(R,a,3,3)</code><br>
-<code>          I = ideal M^3</code><br>
+        <code>R = kk[a..i]</code><br>
+        <code>M = genericMatrix(R,a,3,3)</code><br>
+        <code>I = ideal M^3</code><br>
           This gives the ideal of entries of the matrix. In the expression
           &ldquo;<tt>M = genericMatrix(R,a,3,3)</tt>&rdquo; the arguments &ldquo;<tt>R,a,3,3</tt>&rdquo; specify the
           ring, the first variable to use, and the numbers of rows and columns
           desired.<BR>
-<code>          Tr = trace M </code><br>
-<code>          for p from 1 to 10 do print (Tr^p % I)</code><br>
+        <code>Tr = trace M </code><br>
+        <code>for p from 1 to 10 do print (Tr^p % I)</code><br>
           The expression &ldquo;@ TT "Tr<sup>p</sup> % I"@&rdquo; computes the normal form for the p-th power
           of the trace <tt>Tr</tt> with respect to the Gröbner basis of I.
           The expression &ldquo;@ TT "for p from 1 to 10 do" @&rdquo; specifies a 
@@ -278,10 +286,13 @@
           but the 7-th power is. We can compute the coefficients in the expression for it 
           using the division algorithm, denoted in this setting by @ TO2 (symbol //, RingElement,
           Matrix), "//" @:<BR>
-<code>          Tr^7//(gens I)</code><br>
+        <code>Tr^7//(gens I)</code><br>
      
      <BR>
-</div><div><h4>Elimination Theory</h4>          Consider the problem of projecting the
+</div>
+<div>
+    <h4>Elimination Theory</h4>
+          Consider the problem of projecting the
           &ldquo;twisted cubic&rdquo;, a curve in <i>&#x2119;<sup>3</sup></i> defined
           by the three <i>2 &times; 2</i> minors of a certain
           <i>2 &times; 3</i> matrix.  
@@ -289,19 +300,19 @@
           such a problem.
           We first clear the earlier meaning of <tt>x</tt> 
           to allow it to be used as a subscripted variable:<BR>
-<code>          x = symbol x</code><br>
+        <code>x = symbol x</code><br>
           Since we are going to deal with a curve in <i>&#x2119;<sup>3</sup></i>,
           we begin with a polynomial ring in four variables:<BR>
-<code>          R = kk[x_0..x_3] </code><br>
+        <code>R = kk[x_0..x_3] </code><br>
           The ideal of the twisted cubic curve is generated by the <i>2 &times; 2</i>
           minors of a &ldquo;catalecticant" or &ldquo;Hankel" matrix, conveniently
           defined as follows:<BR>
-<code>          M = map(R^2, 3, (i,j)->x_(i+j))</code><br>
-<code>          I = minors(2,M)</code><br>
+        <code>M = map(R^2, 3, (i,j)->x_(i+j))</code><br>
+        <code>I = minors(2,M)</code><br>
           As projection center we
           take the point with homogeneous coordinates <i>(1,0,0,-1)</i>,
           which is defined by the ideal:<BR>
-<code>          pideal = ideal(x_0+x_3, x_1, x_2)</code><br>
+        <code>pideal = ideal(x_0+x_3, x_1, x_2)</code><br>
           The ideal J of the image of the curve under the projection from this point
           is the kernel of the ring map <i>S=kk[u,v,w] &rarr;R/I</i>
           sending the variables
@@ -310,29 +321,32 @@
           <p align=center><i>J = I &cap; kk[x<sub>0</sub>+x<sub>3</sub>, x<sub>1</sub>, x<sub>x</sub>]</i></p> 
           To compute this we first substitute <tt>pIdeal</tt> into <i>R/I</i>, and then form
           the necessary ring map:<BR>
-<code>          Rbar = R/I</code><br>
-<code>          pideal = substitute(pideal, Rbar)</code><br>
-<code>          S = kk[u,v,w]</code><br>
-<code>          J=kernel map (Rbar, S, gens pideal)</code><br>
+        <code>Rbar = R/I</code><br>
+        <code>pideal = substitute(pideal, Rbar)</code><br>
+        <code>S = kk[u,v,w]</code><br>
+        <code>J=kernel map (Rbar, S, gens pideal)</code><br>
           The ideal J defines a curve with one singular point.
           We can compute the ideal of the singular locus with:<BR>
-<code>          K = ideal singularLocus(J)</code><br>
+        <code>K = ideal singularLocus(J)</code><br>
           This doesn&rsquo;t look like the ideal of a reduced point! But
           that&rsquo;s because it isn&rsquo;t yet saturated:<BR>
-<code>          saturate K</code><br>
+        <code>saturate K</code><br>
           We have just seen the @ TO saturate @ function in its most
           common use: to saturate with respect to the maximal ideal.
           but we can also find the saturation of any ideal with
           respect to another:<BR>
-<code>          saturate (ideal"u3w,uv", ideal"u")</code><br>
+        <code>saturate (ideal"u3w,uv", ideal"u")</code><br>
           We can also take the &ldquo;ideal quotient&rdquo; I:J of an ideal I with
           respect to another, J
           defined as the set of elements f such that
           f*J is contained in I:<BR>
-<code>          ideal"u3w,uv":ideal"u"</code><br>
+        <code>ideal"u3w,uv":ideal"u"</code><br>
      
      <BR>
-</div><div><h4>Defining functions and loading packages</h4>          It is easy to define your own functions in <em>Macaulay2</em>, and this
+</div>
+<div>
+    <h4>Defining functions and loading packages</h4>
+          It is easy to define your own functions in <em>Macaulay2</em>, and this
           can save a lot of typing. Functions are defined with the 
           symbol ->. For example, the famous <em>Collatz Conjecture</em>
           (also called the &ldquo;hailstone problem&rdquo;) asks
@@ -342,33 +356,33 @@
           does the process always reach 1?  Here is a function that 
           performs the Hailstone procedure again and again,
           producing a list of the intermediate results.<BR>
-<code>          Collatz = n -></code><br>
-<code>              while n != 1 list if n%2 == 0 then n=n//2 else n=3*n+1</code><br>
+        <code>Collatz = n -></code><br>
+        <code>while n != 1 list if n%2 == 0 then n=n//2 else n=3*n+1</code><br>
           For example:<BR>
-<code>          Collatz 27</code><br>
+        <code>Collatz 27</code><br>
           If you don&rsquo;t understand this code easily, see @ TO Function @ and @ TO "while" @, or try:<BR>
           In order to understand a process it is often useful to tabulate the 
           results of applying it many times. One feature of the Collatz process
           is how many steps it takes to get to 1. We can tabulate this statistic
           for the first 25 values of n with the function @ TO tally @, as follows:<BR>
-<code>          tally for n from 1 to 30 list length Collatz n</code><br>
+        <code>tally for n from 1 to 30 list length Collatz n</code><br>
           A line of the form<BR>
           in the result means that a Collatz sequence of length 18
           was seen 3 times. 
           To see the successive &ldquo;record-breakers&rdquo;, 
           that is, the numbers with longer Collatz sequences than any
           number before them, we might try:<BR>
-<code>          record = length Collatz 1</code><br>
-<code>          L = for n from 2 to 1000 list (</code><br>
-<code>                  l := length Collatz n;</code><br>
-<code>                  if l > record </code><br>
-<code>                    then (record = l; (n,l))</code><br>
-<code>                    else continue)</code><br>
+        <code>record = length Collatz 1</code><br>
+        <code>L = for n from 2 to 1000 list (</code><br>
+        <code>l := length Collatz n;</code><br>
+        <code>if l > record </code><br>
+        <code>then (record = l; (n,l))</code><br>
+        <code>else continue)</code><br>
           If you want to see a list of just the successive records, 
           you can apply the 
           function @ TO last @ to each element of the list <i>L</i>. 
           A convenient way to do this is with this syntax:<BR>
-<code>          L/last</code><br>
+        <code>L/last</code><br>
 
           Note that in
           writing functions of more than one expression (usually
@@ -384,15 +398,15 @@
           someday!) A list of &ldquo;installed&rdquo; packages can be found with:<BR>
           For example, there is a package called @TO "EdgeIdeals::EdgeIdeals"@. 
           To load the package, use:<BR>
-<code>          loadPackage "EdgeIdeals"</code><br>
+        <code>loadPackage "EdgeIdeals"</code><br>
           After loading it, you can view its documentation with <BR>
           or you can call its functions, 
           such as @TO "EdgeIdeals::randomGraph"@ and @TO "EdgeIdeals::edgeIdeal"@:<BR>
-<code>          R = kk[vars(0..10)]</code><br>
-<code>          G=randomGraph (R,20)</code><br>
-<code>          K=edgeIdeal G</code><br>
-<code>          hilbertSeries K</code><br>
-<code>          betti res K</code><br>
+        <code>R = kk[vars(0..10)]</code><br>
+        <code>G=randomGraph (R,20)</code><br>
+        <code>K=edgeIdeal G</code><br>
+        <code>hilbertSeries K</code><br>
+        <code>betti res K</code><br>
 
           When testing a conjecture  one sometimes wants to run a 
           large number of randomly chosen
@@ -403,31 +417,38 @@
           it with a &ldquo;;&rdquo;.  Each entry of <tt>L</tt> is a triple consisting of the
           codimension, degree, and Betti table of a random graph ideal
           on 10 vertices having only 4 edges.<BR>
-<code>          R = ZZ/2[vars(0..10)]</code><br>
-<code>          L=for j from 1 to 100 list(</code><br>
-<code>              I = edgeIdeal randomGraph (R,5);</code><br>
-<code>              (codim I, degree I, betti res I));</code><br>
+        <code>R = ZZ/2[vars(0..10)]</code><br>
+        <code>L=for j from 1 to 100 list(</code><br>
+        <code>I = edgeIdeal randomGraph (R,5);</code><br>
+        <code>(codim I, degree I, betti res I));</code><br>
           We can use @ TO tally @ to find out how many examples
           were found with each combination of codimension and degree and Betti table.<BR>
-<code>          tally L</code><br>
+        <code>tally L</code><br>
           We can determine how many distinct patterns were found:<BR>
-<code>          #tally L</code><br>
+        <code>#tally L</code><br>
      
      <BR>
-</div><div><h4>Ext, Tor, and cohomology</h4>          <em>Macaulay2</em> can compute the homology of complexes;
+</div>
+<div>
+    <h4>Ext, Tor, and cohomology</h4>
+          <em>Macaulay2</em> can compute the homology of complexes;
           for example, let&rsquo;s compute the homology of a
           Koszul complex that is not a resolution:
           <p align=center><i> <b>K</b>(x<sup>2</sup>, x y<sup>2</sup>):&nbsp;&nbsp;0 &rarr; S(-5) &rarr; S(-2)&oplus;S(-3) &rarr; S &rarr;0 </i></p>
           The free module <i>S(-2) &oplus; S(-3)</i> can be defined with this
           syntax:<BR>
-<code>          S^{-2,-3} </code><br>
+        <code>S^{-2,-3} </code><br>
           Here is how we can define the maps in the Koszul complex:<BR>
-<code>          S = kk[x,y]</code><br>
-<code>          phi1 = map(S^1, S^{-2,-3}, matrix"x2,xy2")</code><br>
-<code>          phi2 = map(S^{-2,-3}, S^{-5}, matrix"xy2;-x2")</code><br>
+        <code>S = kk[x,y]</code><br>
+        <code>phi1 = map(S^1, S^{-2,-3}, matrix"x2,xy2")</code><br>
+        <code>phi2 = map(S^{-2,-3}, S^{-5}, matrix"xy2;-x2")</code><br>
           Let&rsquo;s check that this is will really make a complex:<BR>
-<code>          phi1*phi2</code><br>
+        <code>phi1*phi2</code><br>
           To get the homology we can, for example compute:<BR>
-<code>          (ker phi1)/(image phi2)</code><br>
+        <code>(ker phi1)/(image phi2)</code><br>
           We could also use the data type @TO ChainComplex@ 
-      
+          and use a built-in facility to take homology (in our case <i>H<sub>1</sub></i>):<BR>
+        <code>FF = chainComplex(phi1,phi2)</code><br>
+        <code>FF.dd</code><br>
+        <code>homology FF</code><br>
+        <code>pr

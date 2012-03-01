@@ -1,3 +1,6 @@
+-- Umlaute (Groebner ...) cause problems in HTML
+-- \mapsto{}  this causes problems inside TEX
+
 -- TODO 2/29/2012
 -- Example:  group all lines that have further indentation together, and make one button out of those.
 --        remove initial indentation
@@ -89,24 +92,24 @@ convert String := (filename) -> (
 	          toHtml concatenate between("\n", m#1)
 	       else if k === "Example" then (
               m1 := select(last m, x -> not match(///^\s*$///, x));
-              concatenate apply(m1, x -> "<code>"|x|"</code><br>\n")
+              concatenate apply(m1, x -> "        <code>"| replace(///^\s*///, "", x) |"</code><br>\n")
             )
 	       else if k === "Code" then (
             if match( ///^\s*SUBSECTION///, first last m) then (
               s := "";
               if inSection then 
-                s = "</div>";
+                s = "</div>\n";
               inSection = true;
               h := replace( ///^\s*SUBSECTION\s*\"///, "", first last m); 
-              h = replace( ///\"\s*$///, "", h );
+              h = replace( ///\",?\s*$///, "", h );
 
-              s | "<div><h4>" | h | "</h4>" 
+              s | "<div>\n    <h4>" | h | "</h4>\n" 
               )
             )
 	       else 
             error "unknown Key"
 	      ));
-      s | cc | "</div></body>\n </html>\n"
+      s | cc | "    </div>\n  </body>\n</html>\n"
      )
 
 

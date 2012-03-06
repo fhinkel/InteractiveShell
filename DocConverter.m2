@@ -83,9 +83,6 @@ printHead = method()
 printHead String := title -> (
      s :=  "<html>\n";
      s = s |  "  <head>\n";
-     s = s | ///   <link rel="stylesheet" href="m2.css" type="text/css" media="screen"> ///;
-  	 s = s | ///   <script type="text/javascript" src="jquery-1.6.4.min.js"> </script> ///;
-	   s = s | ///   <script type="text/javascript" src="m2.js"></script></script> ///;
      s = s |  "\n    <title>\n";
      s = s |   title;
      s = s | "\n";
@@ -142,9 +139,9 @@ end
 restart
 loadPackage "DocConverter"
 L = convert "beginningM2.simpledoc";
-L = convert "SimpleDoc";
+--L = convert "SimpleDoc";
 
-fn = "Beginning2.html"
+fn = "Beginning.html"
 fn << L
 get ("!open " | fn)
 

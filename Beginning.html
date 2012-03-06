@@ -1,6 +1,6 @@
 <html>
   <head>
-   <link rel="stylesheet" href="m2.css" type="text/css" media="screen">    <script type="text/javascript" src="jquery-1.6.4.min.js"> </script>    <script type="text/javascript" src="m2.js"></script></script> 
+
     <title>
      Mathematicians' Introduction to  Macaulay2
     </title>
@@ -457,37 +457,4 @@
           chain complexes of length 1:<BR>
         <code>FF = chainComplex matrix {{x^2}} ** chainComplex matrix {{x*y^2}}</code><br>
         <code>FF.dd</code><br>
-          Another way is by using the function koszul , designed for that purpose:<BR>
-        <code>FF = koszul matrix {{x^2, x*y^2}}</code><br>
-        <code>FF.dd</code><br>
-
-          Since <em>Macaulay2</em> can compute resolutions and homology, it can
-          compute things such as <i>Ext</i>, <i>Tor</i> and sheaf cohomology, as in the 
-          following examples. The first uses Serre&rsquo;s formula to compute
-          the multiplicity with which a 2-plane meets the union
-          of two 2-planes in 4-space (this is the first case in which
-          the length of the intersection scheme is NOT the right answer.)
-          The notation &ldquo;<tt>M**N</tt>&rdquo; denotes the tensor product of the modules <i>M</i> and <i>N</i>.
-          We use the syntactical forms
-          &ldquo;<tt>for j from 0 to 4 list ...</tt>&rdquo; to list some results and
-          &ldquo;<tt>sum(0..4, j -> ...)</tt>&rdquo; to sum some results.<BR>
-        <code>S=kk[a,b,c,d]</code><br>
-        <code>IX = intersect(ideal(a,b), ideal(c,d))</code><br>
-        <code>IY = ideal(a-c, b-d)</code><br>
-        <code>degree ((S^1/IX) ** (S^1/IY))</code><br>
-        <code>for j from 0 to 4 list degree Tor_j(S^1/IX, S^1/IY)</code><br>
-        <code>sum(0..4, j-> (-1)^j * degree Tor_j(S^1/IX, S^1/IY))</code><br>
-          Similarly, we can compute Hom and Ext:<BR>
-        <code>Hom(IX, S^1/IX)</code><br>
-        <code>Ext^1(IX, S^1/IX)</code><br>
-          or the cohomology of the sheaf associated to a module. 
-
-          Here is how to compute
-          the first cohomology of the structure
-          sheaf twisted by <i>-2</i> of the curve <i>Proj(S/IX)</i>, which
-          in this case is the disjoint union of two
-          lines in <i>&#x2119;<sup>3</sup></i>:<BR>
-        <code>HH^1 (sheaf (S^{-2}**(S^1/IX)))</code><br>
-    </div>
-  </body>
-</html>
+          Another way is by using

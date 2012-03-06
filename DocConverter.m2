@@ -53,27 +53,34 @@ groupLines (List,String) := (L, keywordRE) -> (
      )
 
 
+
+replaceWithValueOf = method()
+replaceWithValueOf String  :=  s -> (
+  -- replace content between @-symbols with its value
+  -- s = "2+2 = @ TO 2+2@, and 4-2= @TO2 {(4-2),"nnnn" }@." 
+  l := separate("@", s);
+  concatenate for i from 0 to #l-1 list (
+    if even i then 
+      l#i
+    else (
+      t := value replace( ///TO|TO2|TT///, "", l#i);
+      if instance(t, List) then 
+        t = last t;
+      t = "{\\tt " | toString t | "}"
+    )  
+    )
+ )
+
+
+
 -- create string with code for HTML rather than simple doc
 -- add extra line break at every paragraph
 -- translate TEX code
 -- input s spans several lines of simple doc
 toHtml = method()
 toHtml String := (s) ->  (
-
-  -- replace only what is between 2 @ symbols 
-    -- there might be extra white spaces between @ TO 
-    -- careful with greedy matching
-  -- @TO2 looks like this: 
-    -- @TO2 {(symbol _,Matrix,Sequence),"_"}@
-    -- this causes problems with following TEX, e.g., _ is translated to <sub>
-    --s = replace(///@\s*TO2\s*\{\([^\)]*\),"([^"]*)"\}@///, "(\\1)", s );
-
-  -- whitespaces followed by @TO2, remove everything up to next @ symbol
-  s = replace(///\s*@\s*TO2\s*\{\([^\)]*\),"([^"]*)"\}@///, "", s );
-
-  -- @TO (not @TO 2)
-    -- keep text between @TO ... @
-  s = replace(///@\s*TO\s*([^@]*)@///, "\\1", s );
+  s = replaceWithValueOf s;
+  print s;
   s = html TEX s;
   s | "<BR>\n"
   )
@@ -140,9 +147,8 @@ restart
 loadPackage "DocConverter"
 L = convert "beginningM2.simpledoc";
 --L = convert "SimpleDoc";
-
 fn = "Beginning.html"
-fn << L
+fn << L << close
 get ("!open " | fn)
 
 M = groupLines(L, keywordRE)

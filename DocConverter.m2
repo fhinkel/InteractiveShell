@@ -1,4 +1,3 @@
-
 -- convert a document in M2 Simple Doc format to an HTML document that can be
 -- used in TryM2 as a tutorial. We assume that every SUBSECTION constitutes as
 -- lesson. Each lesson is wrapped in a <div> with an <h4> headline. 
@@ -7,6 +6,7 @@
 
 -- Umlaute (Groebner ...) cause problems in HTML
 -- \mapsto{}  this causes problems inside TEX
+-- How do we handle "nodes"?
 
 -- TODO 2/29/2012
 -- Example:  group all lines that have further indentation together, and make one button out of those.
@@ -16,7 +16,7 @@
 --          put html TEX around it
 --          handle anything else not handled by TEX
 -- Code:  search for SUBSECTION, grab name, put a div in
---        handle wierd other things.  Possibly just ignore them
+--        handle weird other things.  Possibly just ignore them
 -- do not forget to print html header and wrapper.
 
 
@@ -24,16 +24,16 @@ newPackage(
         "DocConverter",
         Version => "0.1", 
         Date => "",
-        Authors => {{Name => "Franzi", 
-                  Email => "", 
+        Authors => {{Name => "Mike Stillman, Franziska Hinkelmann", 
+                  Email => "hinkelmann.1@mbi.osu.edu", 
                   HomePage => ""}},
-        Headline => "",
+        Headline => "Convert simpleDOC to HTML for TryM2 tutorials",
         DebuggingMode => true
         )
 
 needsPackage "Text"
 
-export {convert, groupLines, keywordRE, descriptionRE}
+export {convert, keywordRE, descriptionRE}
 
 keywordRE = ///^\s*Key|^\s*Headline|^\s*Description///
 descriptionRE = ///^\s*Text|^\s*Code|^\s*Example///
@@ -56,18 +56,19 @@ groupLines (List,String) := (L, keywordRE) -> (
 -- create string with code for HTML rather than simple doc
 -- add extra line break at every paragraph
 -- translate TEX code
+-- input s spans several lines of simple doc
 toHtml = method()
 toHtml String := (s) ->  (
 
   -- replace only what is between 2 @ symbols 
-    -- there might be extra with spaces betwen @ TO 
+    -- there might be extra white spaces between @ TO 
     -- careful with greedy matching
   -- @TO2 looks like this: 
     -- @TO2 {(symbol _,Matrix,Sequence),"_"}@
     -- this causes problems with following TEX, e.g., _ is translated to <sub>
     --s = replace(///@\s*TO2\s*\{\([^\)]*\),"([^"]*)"\}@///, "(\\1)", s );
 
-  -- whitespaces followed by @TO2, remove everything up to next @ symbold
+  -- whitespaces followed by @TO2, remove everything up to next @ symbol
   s = replace(///\s*@\s*TO2\s*\{\([^\)]*\),"([^"]*)"\}@///, "", s );
 
   -- @TO (not @TO 2)
@@ -112,7 +113,7 @@ convert String := (filename) -> (
 	       -- Keyword is: Text, Code, Example (that is it at the moment)
 	       k := first m;
 	       if k === "Text" then
-	          toHtml concatenate between("\n", m#1)
+	          toHtml concatenate between("\n", m#1) -- all lines in a text section
 	       else if k === "Example" then (
               m1 := select(last m, x -> not match(///^\s*$///, x));
               concatenate apply(m1, x -> "        <code>"| replace(///^\s*///, "", x) |"</code><br>\n")
@@ -141,7 +142,9 @@ end
 restart
 loadPackage "DocConverter"
 L = convert "beginningM2.simpledoc";
-fn = "Beginning.html"
+L = convert "SimpleDoc";
+
+fn = "Beginning2.html"
 fn << L
 get ("!open " | fn)
 
@@ -154,6 +157,8 @@ M = L_{4+1..672-1};
 groupLines(M, descriptionRE)
 netList M_{202..216}
 netList oo
+
+
 beginDocumentation()
 
 doc ///

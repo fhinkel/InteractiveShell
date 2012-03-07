@@ -78,13 +78,17 @@ def prepare(id, sd, cd)
 	cd[id+'stdout'].sync = true
 	print cd[id+'msgid'] + "The pid is " + cd[id+'m2'].to_s + ".\n"
 	cd[id+'filepipe'] = File.new('results_' + id + '.txt', 'a')
-	cd[id+'stdoutth'] = Thread.new {write_results(id, cd[id+'stdout'], cd)}
+	cd[id+'stdoutth'] = Thread.new {
+	    print "This is a new thread for write_results" 
+	    write_results(id, cd[id+'stdout'], cd)
+    }
 	cd[id+'new'] = 0
 end
 
 def write_results(id, pipe, cd)
-      pipe.each { |line| print line 
-    	cd[id+'filepipe'].puts line
+      pipe.each { |line| 
+          print line 
+    	  cd[id+'filepipe'].puts line
     	  cd[id+'filepipe'].flush 
   }
 

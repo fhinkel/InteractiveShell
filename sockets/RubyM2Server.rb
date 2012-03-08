@@ -1,6 +1,12 @@
+#!/usr/bin/ruby
+
+
 require 'socket'
 require 'pty'
 require 'io/nonblock'
+
+
+
 
 def lobby(socket, sd, cd)
 	id = socket.gets.chomp
@@ -79,26 +85,25 @@ def prepare(id, sd, cd)
 	print cd[id+'msgid'] + "The pid is " + cd[id+'m2'].to_s + ".\n"
 	cd[id+'filepipe'] = File.new('results_' + id + '.txt', 'a')
 	cd[id+'stdoutth'] = Thread.new {
-	    print "This is a new thread for write_results" 
+	    #puts "This is a new thread for write_results" 
 	    write_results(id, cd[id+'stdout'], cd)
     }
 	cd[id+'new'] = 0
 end
 
 def write_results(id, pipe, cd)
-      pipe.each { |line| 
-          print line 
-    	  cd[id+'filepipe'].puts line
-    	  cd[id+'filepipe'].flush 
-  }
+    fifo = open('../testpipe','w+');
+    pipe.each { |line| 
+        print line 
 
-	
-  
-#while res = [pipe.getc].pack('c*')
-#	print res
-#	cd[id+'filepipe'].print res
-#	cd[id+'filepipe'].flush
-#end
+        # print to named pipe for getResults.php to read from
+        fifo.puts line
+        fifo.flush
+
+        cd[id+'filepipe'].puts line
+        cd[id+'filepipe'].flush 
+    }
+    #fifo.close
 end
 
 def preprocess(cmd)

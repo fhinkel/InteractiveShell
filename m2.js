@@ -51,7 +51,7 @@ trym2.checkForNewData = function () {
             }
         }
         $("#waittime").text("waiting time: " + trym2.waitingtime);
-        trym2.timerobject = setTimeout(trym2.checkForNewData, trym2.waitingtime);
+        //trym2.timerobject = setTimeout(trym2.checkForNewData, trym2.waitingtime);
     });
 };
 
@@ -60,7 +60,7 @@ trym2.sendToM2 = function (myCommand) {
     clearTimeout(trym2.timerobject);
     trym2.waitingtime = trym2.minwaitingtime;
     $("#waittime").text("waiting time: " + trym2.waitingtime);
-    trym2.timerobject = setTimeout(trym2.checkForNewData, trym2.waitingtime);
+    //trym2.timerobject = setTimeout(trym2.checkForNewData, trym2.waitingtime);
     $.post("sockets/M2Client.php",
         {
             cmd: myCommand
@@ -72,6 +72,7 @@ trym2.sendToM2 = function (myCommand) {
                 return false;
             }
         });
+     
     return true;
 };
 
@@ -153,6 +154,25 @@ trym2.getLessonTitles = function (tutorialFile, callback) {
 };
 
 $(document).ready(function () {
+    // Register for notification of new messages using EventSource
+    var chat = new EventSource("getResults.php");
+    chat.onmessage = function(event) {            // When a new message arrives
+        var msg = event.data;                     // Get text from event object
+        //var node = document.createTextNode(msg);  // Make it into a text node
+        //var div = document.createElement("div");  // Create a <div>
+        //div.appendChild(node);                    // Add text node to div
+        //document.body.insertBefore(div, input);   // And add div before input
+        //input.scrollIntoView();                   // Ensure input elt is visible
+        
+        console.log("We got a chat message: " + msg);
+        if (msg !== "") {
+                $("#M2Out").val($("#M2Out").val() + msg + "\n");
+                trym2.scrollDown("#M2Out");
+                trym2.offset = trym2.offset + msg.length;
+        }
+    }
+    
+    
     $('.submenuItem').live("click", function () {
         var i = 1,
             lessonId = $(this).attr('lessonid');
@@ -177,7 +197,7 @@ $(document).ready(function () {
 
     SyntaxHighlighter.all();
 
-    trym2.checkForNewData(trym2.offset);
+    //trym2.checkForNewData(trym2.offset);
 
     $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
     $("#send").click(trym2.sendCallback('#M2In'));

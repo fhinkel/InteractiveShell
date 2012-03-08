@@ -167,7 +167,7 @@ $(document).ready(function () {
         
         if (msg !== "") {
                 console.log("We got a chat message: " + msg);
-                $("#M2Out").val($("#M2Out").val() + msg + "\n");
+                $("#M2Out").val($("#M2Out").val() + msg);
                 trym2.scrollDown("#M2Out");
                 
         }

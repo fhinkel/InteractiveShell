@@ -20,25 +20,35 @@ setInterval(function() {
     });
 }, 20000);
 
-var spawn = require('child_process').spawn,
-    m2    = spawn('M2');
 
-m2.stdout.setEncoding("utf8");
-console.log('Spawned m2 pid: ' + m2.pid);
-m2.stdout.on('data', function (data) {
-    console.log('m2stdout: ' + data);
-    message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
-    console.log('m2stdout message: ' + message);
-    // Now send this message to all listening clients
-    clients.forEach(function(client) { 
-    client.write(message); 
+var m2;
+
+startM2 = function() {
+    var spawn = require('child_process').spawn;
+    m2 = spawn('M2');
+    m2.stdout.setEncoding("utf8");
+    m2.stderr.setEncoding("utf8");
+    console.log('Spawned m2 pid: ' + m2.pid);
+    m2.stdout.on('data', function (data) {
+        console.log('m2stdout: ' + data);
+        message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
+        console.log('m2stdout message: ' + message);
+        // Now send this message to all listening clients
+        clients.forEach(function(client) { 
+        client.write(message); 
+        });
     });
-});
+    m2.stderr.on('data', function (data) {
+        console.log('m2stdout: ' + data);
+        message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
+        console.log('m2stdout message: ' + message);
+        // Now send this message to all listening clients
+        clients.forEach(function(client) { 
+        client.write(message); 
+        });
+    });
+}
 
-m2.stderr.on('data', function (data) {
-  console.log('m2stderr: ' + data);
-});
-//m2.stdin.write("10!\n");
 
 // Create a new server
 var server = new http.Server();  
@@ -104,7 +114,9 @@ server.on("request", function (request, response) {
     else {
         // Set the content type and send an initial message event 
         response.writeHead(200, {'Content-Type': "text/event-stream" });
-        response.write("data: Connected\n\n");
+        response.write("data: Connected, starting M2 ...\ndata: \n\n");
+        startM2();
+        
 
         // If the client closes the connection, remove the corresponding
         // response object from the array of active clients

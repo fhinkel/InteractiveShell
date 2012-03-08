@@ -238,7 +238,8 @@ $(document).ready(function () {
     $("code").live("click", function () {
         $(this).effect("highlight", {color: 'red'}, 800);
         var code = $(this).html();
-        $("#M2In").val($("#M2In").val() + "\n" + code);
+        code = code + "\n";
+        $("#M2In").val($("#M2In").val() + code);
         trym2.scrollDown("#M2In");
         trym2.sendToM2(code);
     });

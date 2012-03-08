@@ -92,18 +92,17 @@ def prepare(id, sd, cd)
 end
 
 def write_results(id, pipe, cd)
-    fifo = open('../testpipe','w+');
+    #fifo = open('../testpipe','w+');
     pipe.each { |line| 
         print line 
 
         # print to named pipe for getResults.php to read from
-        fifo.puts line
-        fifo.flush
+        #fifo.puts line
+        #fifo.flush
 
         cd[id+'filepipe'].puts line
         cd[id+'filepipe'].flush 
     }
-    #fifo.close
 end
 
 def preprocess(cmd)

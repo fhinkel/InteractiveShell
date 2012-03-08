@@ -38,6 +38,7 @@ trym2.getSelected = function (inputField) {
 };
 
 trym2.checkForNewData = function () {
+    return;
     $.post("getResults.php", 'offset=' + trym2.offset, function (data) {
         if (data !== "") {
             $("#M2Out").val($("#M2Out").val() + data);
@@ -56,11 +57,21 @@ trym2.checkForNewData = function () {
 };
 
 // return false on error
-trym2.sendToM2 = function (myCommand) {
+trym2.sendToM2 = function (msg) {
+   
+    var xhr = new XMLHttpRequest();           // Create a new XHR
+    xhr.open("POST", "/chat");                // to POST to /chat.
+    xhr.setRequestHeader("Content-Type",      // Specify plain UTF-8 text 
+                         "text/plain;charset=UTF-8");
+    xhr.send(msg);                            // Send the message
+    
+    return true;
+    
     clearTimeout(trym2.timerobject);
     trym2.waitingtime = trym2.minwaitingtime;
     $("#waittime").text("waiting time: " + trym2.waitingtime);
     //trym2.timerobject = setTimeout(trym2.checkForNewData, trym2.waitingtime);
+    return true;
     $.post("sockets/M2Client.php",
         {
             cmd: myCommand
@@ -81,7 +92,7 @@ trym2.sendOnEnterCallback = function (inputfield) {
         if (e.which === 13 && e.shiftKey) {
             e.preventDefault();
             // do not make a line break or remove selected text when sending
-            trym2.sendToM2(">>SENDCOMMANDS<<\n" + trym2.getSelected(inputfield));
+            trym2.sendToM2(trym2.getSelected(inputfield));
         }
     };
 };
@@ -119,14 +130,16 @@ trym2.switchLesson = function (incr) {
     if (trym2.lessonNr >= 1 && trym2.lessonNr <= trym2.maxLesson) {
         //console.log("Switch lesson");
         trym2.loadLesson(trym2.lessonNr);
+        $("#lesson").scrollTop(0);
     } else {
         trym2.lessonNr = trym2.lessonNr - incr;
         //alert("lesson with " + trym2.lessonNr + "." + incr + " not available");
     }
+    
 };
 
 trym2.resetCallback = function () {
-    if (!trym2.sendToM2(">>RESET<<")) {
+    if (!trym2.sendToM2("restart\n")) {
         $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");
     }
     $("#M2Out").val("");
@@ -135,7 +148,7 @@ trym2.resetCallback = function () {
 trym2.sendCallback = function (inputField) {
     return function () {
         var str = trym2.getSelected(inputField);
-        trym2.sendToM2(">>SENDCOMMANDS<<\n" + str);
+        trym2.sendToM2(str);
         return false;
     };
 };
@@ -166,7 +179,7 @@ trym2.getLessonTitles = function (tutorialFile, callback) {
 
 $(document).ready(function () {
     // Register for notification of new messages using EventSource
-    var chat = new EventSource("getResults.php");
+    var chat = new EventSource("/chat");
     chat.onmessage = function(event) {            // When a new message arrives
         var msg = event.data;                     // Get text from event object
         //var node = document.createTextNode(msg);  // Make it into a text node
@@ -215,14 +228,19 @@ $(document).ready(function () {
     $("#send").click(trym2.sendCallback('#M2In'));
     $("#reset").click(trym2.resetCallback);
     $("#terminal").click(trym2.showTerminal);
-    $("#showLesson").click(trym2.loadLesson(trym2.lessonNr));
+    $("#showLesson").click(function() {
+        trym2.loadLesson(trym2.lessonNr);
+        console.log("lesson!");
+    });
+  
+        
 
     $("code").live("click", function () {
         $(this).effect("highlight", {color: 'red'}, 800);
         var code = $(this).html();
         $("#M2In").val($("#M2In").val() + "\n" + code);
         trym2.scrollDown("#M2In");
-        trym2.sendToM2(">>SENDCOMMANDS<<\n" + code);
+        trym2.sendToM2(code);
     });
 
     $("#inputarea").hide();

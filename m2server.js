@@ -6,7 +6,7 @@
 var http = require('http');  // NodeJS HTTP server API
 
 // The HTML file for the chat client. Used below.
-var clientui = require('fs').readFileSync("chatclient.html");
+var clientui = require('fs').readFileSync("index.html");
 // var emulation = require('fs').readFileSync("EventSourceEmulation.js");
 
 // An array of ServerResponse objects that we're going to send events to
@@ -38,7 +38,7 @@ m2.stdout.on('data', function (data) {
 m2.stderr.on('data', function (data) {
   console.log('m2stderr: ' + data);
 });
-m2.stdin.write("10!\n");
+//m2.stdin.write("10!\n");
 
 // Create a new server
 var server = new http.Server();  
@@ -47,7 +47,7 @@ var server = new http.Server();
 server.on("request", function (request, response) {
     // Parse the requested URL
     var url = require('url').parse(request.url);
-
+   
     // If the request was for "/", send the client-side chat UI.
     if (url.pathname === "/") {  // A request for the chat UI
         response.writeHead(200, {"Content-Type": "text/html"});
@@ -56,11 +56,28 @@ server.on("request", function (request, response) {
         response.end();
         return;
     }
-    // Send 404 for any request other than "/chat"
-    else if (url.pathname !== "/chat") {
-        response.writeHead(404);
+    else if (/\.css/.test(url.pathname) ) {
+        response.writeHead(200, {'Content-Type': 'text/css'});
+        var u = url.pathname.replace("/", '');
+        console.log("Filenmae: " + u);
+        response.write(require('fs').readFileSync(u));
         response.end();
         return;
+        //response.writeHead(404);
+        //response.end();
+        //return;
+    }  
+    // Send 404 for any request other than "/chat"
+    else if (url.pathname !== "/chat") {
+        response.writeHead(200, {"Content-Type": "text/html"});
+        var u = url.pathname.replace("/", '');
+        //console.log("Filenmae: " + u);
+        response.write(require('fs').readFileSync(u));
+        response.end();
+        return;
+        //response.writeHead(404);
+        //response.end();
+        //return;
     }
 
     // If the request was a post, then a client is posting a new message
@@ -76,10 +93,13 @@ server.on("request", function (request, response) {
             response.writeHead(200);   // Respond to the request
             response.end();
 
+
             // Send 'body' to M2
-            m2.stdin.write(body + '\n');
+            m2.stdin.write(body);
         });
     }
+    
+    
     // Otherwise, a client is requesting a stream of messages
     else {
         // Set the content type and send an initial message event 

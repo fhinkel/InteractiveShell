@@ -1,8 +1,7 @@
-<?php
+<?php 
+
 session_start();
 error_reporting(E_ALL);
-
-//echo "<h2>TCP/IP Connection</h2>\n";
 
 $service_port = 10000;
 $address = 'localhost';
@@ -13,6 +12,7 @@ socket_connect($socket, $address, $service_port);
 $id = session_id();
 
 $cmd = stripslashes($_POST['cmd']);
+
 
 // Sending id to socket server for connecting to correct M2 process.
 socket_write($socket, $id."\n");

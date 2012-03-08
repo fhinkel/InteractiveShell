@@ -4,9 +4,8 @@
 -- <code> markes M2 code that can be run in the interactive shell. 
 
 
--- Umlaute (Groebner ...) cause problems in HTML
--- \mapsto{}  this causes problems inside TEX
 -- How do we handle "nodes"?
+-- underscore operator is being translated to <sub> and messes up everything
 
 -- TODO 2/29/2012
 -- Example:  group all lines that have further indentation together, and make one button out of those.

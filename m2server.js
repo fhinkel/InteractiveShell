@@ -114,7 +114,7 @@ server.on("request", function (request, response) {
     else {
         // Set the content type and send an initial message event 
         response.writeHead(200, {'Content-Type': "text/event-stream" });
-        response.write("data: Connected, starting M2 ...\ndata: \n\n");
+        //response.write("data: Connected, starting M2 ...\ndata: \n\n");
         startM2();
         
 

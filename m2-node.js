@@ -237,7 +237,7 @@ $(document).ready(function () {
 
     $("code").live("click", function () {
         $(this).effect("highlight", {color: 'red'}, 800);
-        var code = $(this).html();
+        var code = $(this).text();
         code = code + "\n";
         $("#M2In").val($("#M2In").val() + code);
         trym2.scrollDown("#M2In");

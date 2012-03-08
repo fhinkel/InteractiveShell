@@ -83,7 +83,7 @@ def prepare(id, sd, cd)
 	cd[id+'stdout'], cd[id+'stdin'], cd[id+'m2'] = PTY.spawn("M2")
 	cd[id+'stdout'].sync = true
 	print cd[id+'msgid'] + "The pid is " + cd[id+'m2'].to_s + ".\n"
-	cd[id+'filepipe'] = File.new('results_' + id + '.txt', 'a')
+	cd[id+'filepipe'] = File.new('results_' + id + '.txt', 'a',0777)
 	cd[id+'stdoutth'] = Thread.new {
 	    #puts "This is a new thread for write_results" 
 	    write_results(id, cd[id+'stdout'], cd)

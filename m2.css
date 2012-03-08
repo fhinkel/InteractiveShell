@@ -76,16 +76,6 @@ div {
 
 }
 
-#toc {
-	float: left;
-}
-
-#credits {
-	clear: both;
-	position: absolute;
-	bottom: 0;
-	font-size: 10pt;
-}
 
 
 #M2In, #M2Out {

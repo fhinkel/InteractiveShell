@@ -27,9 +27,7 @@
 	</head>
 	<body>
 
-		<div id="help-dialog" title="TryM2 Help" class="hidden">
-			<p>Welcome to a tour of the M2 programming language. The tour is divided into three sections. At the end of each section is a series of exercises for you to complete. The tour is interactive. Click the Run button now (or type Shift-Enter) to compile and run the program on a remote server. The result is displayed below the code. These example programs demonstrate different aspects of Macaulay2. The programs in the tour are meant to be starting points for your own experimentation. Edit the program and run it again. Whenever you're ready to move on, click the Next button or type the PageDown key.</p>
-		</div>
+
 		
 <!-- <h1>Hello SyntaxHighlighter</h1>
 >>>>>>> e6a14a01a77c0e4ba6dc53ceaec6235db56539c2
@@ -84,11 +82,6 @@ function helloSyntaxHighlighter()
 			</div>
 		</div>
 		
-		<!-- <div id="toc"></div> 
-		<div id="navigation" class="terminal">
-			<button type="button" id="previous">Previous</button> <button type="button" id="next">Next</button> <button type="button" id="send">Send to M2</button> 
-		</div> -->
-		
 		
 		<div id="lesson" class="terminal left "></div>
 		<div id="inputarea" class="terminal left">
@@ -101,14 +94,22 @@ function helloSyntaxHighlighter()
 		</div>
 		<div id="tutorial" class="hidden"></div><!-- this div is used to display a lesson -->
 		<div id="menuTutorial" class="hidden"></div><!-- this div is used to extract the titles in the menu -->
-		<div id="credits">
+		<div id="extruderTop" class="{title:'Tutorials', url:'bottom-extruder.html'}"></div>
+		<div id="tmp"></div>
+		<div id="help-dialog" title="TryM2 Help">
+			<p>Welcome to a tour of <a href="http://www.math.uiuc.edu/Macaulay2/">Macaulay2<a>. Macaulay2 is a software system devoted to supporting research in algebraic geometry and commutative algebra, whose creation has been funded by the National Science Foundation since 1992. </p>
+				
+		<p>		To get started, select a tutorial. Click on any highlighted code, Macaulay2 will execute it. The result is displayed on the right. Alternatively, you can use the <b>Input Terminal</b> on the left to write your own commands. Execute a line by positioning your cursor on it and click on the Send to M2 button (or type Shift-Enter). You can switch back to the tutorial at any time.  </p>
+				
+	 <p>The tutorials demonstrate different aspects of Macaulay2. They are meant to be starting points for your own experimentation. Edit the commands in the <b>Input Terminal</b> and run them again. Whenever you're ready to move on, click the Next button.</p>
+	
 			Credits to:<br>
 			Franziska Hinkelmann<br>
 			Lars Kastner<br>
 			Greg Smith<br>
 			Mike Stillman<br>
+			<p><a href='mailto:fhinkel@vt.edu'>Email us with any questions or suggestions!</a></p>
+			<p>Funding provided by the NSF (<a href="http://www.math.uiuc.edu/Macaulay2/Funding/">see here</a> and through Award 0635561). 
 		</div>
-		<div id="extruderTop" class="{title:'Tutorials', url:'bottom-extruder.html'}"></div>
-		<div id="tmp"></div>
 	</body>
 </html>

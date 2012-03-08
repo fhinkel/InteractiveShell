@@ -66,7 +66,7 @@ trym2.sendToM2 = function (myCommand) {
             cmd: myCommand
         },
         function (data) {
-            console.log("Here is the data: " + data);
+            //console.log("Here is the data: " + data);
             if (data !== "0") {
                 $("#M2Out").val($("#M2Out").val() + "Something Broke! HELP!");
                 return false;
@@ -166,7 +166,7 @@ $(document).ready(function () {
         
         
         if (msg !== "") {
-                console.log("We got a chat message: " + msg);
+                //console.log("We got a chat message: " + msg);
                 $("#M2Out").val($("#M2Out").val() + msg);
                 trym2.scrollDown("#M2Out");
                 

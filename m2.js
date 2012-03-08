@@ -164,11 +164,12 @@ $(document).ready(function () {
         //document.body.insertBefore(div, input);   // And add div before input
         //input.scrollIntoView();                   // Ensure input elt is visible
         
-        console.log("We got a chat message: " + msg);
+        
         if (msg !== "") {
+                console.log("We got a chat message: " + msg);
                 $("#M2Out").val($("#M2Out").val() + msg + "\n");
                 trym2.scrollDown("#M2Out");
-                trym2.offset = trym2.offset + msg.length;
+                
         }
     }
     

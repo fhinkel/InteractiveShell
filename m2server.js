@@ -4,6 +4,8 @@
 // from the same URL. Making a GET request to / returns a simple HTML file
 // that contains the client-side chat UI.
 var http = require('http');  // NodeJS HTTP server API
+var Cookies = require("cookies");
+
 
 // The HTML file for the chat client. Used below.
 var clientui = require('fs').readFileSync("index.html");
@@ -59,10 +61,12 @@ var server = new http.Server();
 // When the server gets a new request, run this function
 server.on("request", function (request, response) {
     // Parse the requested URL
+    var cookies = new Cookies(request, response);
     var url = require('url').parse(request.url);
    
     // If the request was for "/", send the client-side chat UI.
     if (url.pathname === "/" || url.pathname === "/index.html") {  // A request for the chat UI
+        cookies.set( "trym2cookie", clientId.toString(10), { httpOnly: false } );
         console.log("Here is a new client with these headers: ");
         for (e in request.headers) {
                 console.log(e+": "+request.headers[e]);
@@ -91,6 +95,11 @@ server.on("request", function (request, response) {
         // If the request was a post, then a client is posting a new message
         if (request.method === "POST") {
             request.setEncoding("utf8");
+            
+            for (e in request.headers) {
+                console.log(e+": "+request.headers[e]);
+            }
+
             var body = "";
             // When we get a chunk of data, add it to the body
             request.on("data", function(chunk) { body += chunk; });

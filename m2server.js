@@ -24,6 +24,24 @@ setInterval(function() {
 }, 20000);
 
 var m2;
+startM2Emitter = function(client) {
+    var myM2 = client.myM2;
+    myM2.stdout.on('data', function (data) {
+           //console.log('m2stdout: ' + data);
+           message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
+           //console.log('m2stdout message: ' + message);
+           client.write(message); 
+           console.log("This is the Id we attached to a response object: " + client.myId);
+          
+       });
+       myM2.stderr.on('data', function (data) {
+           console.log('m2stdout: ' + data);
+           message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
+           //console.log('m2stdout message: ' + message);
+           client.write(message); 
+           console.log("This is the Id we attached to a response object: " + client.myId);
+       });    
+};
 
 startM2 = function() {
     var spawn = require('child_process').spawn;
@@ -31,25 +49,8 @@ startM2 = function() {
     m2.stdout.setEncoding("utf8");
     m2.stderr.setEncoding("utf8");
     console.log('Spawned m2 pid: ' + m2.pid);
-    m2.stdout.on('data', function (data) {
-        //console.log('m2stdout: ' + data);
-        message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
-        //console.log('m2stdout message: ' + message);
-        // Now send this message to all listening clients
-        clients.forEach(function(client) { 
-        client.write(message); 
-        });
-    });
-    m2.stderr.on('data', function (data) {
-        console.log('m2stdout: ' + data);
-        message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
-        //console.log('m2stdout message: ' + message);
-        // Now send this message to all listening clients
-        clients.forEach(function(client) { 
-        client.write(message); 
-        });
-    });
-}
+   
+};
 
 
 // Create a new server
@@ -68,6 +69,7 @@ server.on("request", function (request, response) {
         }
         clientIds.push(clientId);
         clientId = clientId + 1;
+        startM2();
         
         response.writeHead(200, {"Content-Type": "text/html"});
         response.write(clientui);
@@ -105,9 +107,10 @@ server.on("request", function (request, response) {
         } else {
             // Set the content type and send an initial message event 
             response.writeHead(200, {'Content-Type': "text/event-stream" });
-
+            response.myId = "hello " + clientId;
+            response.myM2 = m2;
             //response.write("data: Connected, starting M2 ...\ndata: \n\n");
-            startM2();
+            startM2Emitter(response);
 
             // If the client closes the connection, remove the corresponding
             // response object from the array of active clients
@@ -139,10 +142,8 @@ server.on("request", function (request, response) {
             response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
         }
         
-        
         response.end();
         return;
-        //response.writeHead(404);
     }
 
   

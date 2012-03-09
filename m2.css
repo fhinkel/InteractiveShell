@@ -99,7 +99,9 @@ code {
 	background-color: yellow;
 	cursor:pointer;
 	font-size: 140%;
+	margin-left: 20px;
 }
+
 
 /*#leftwindow.show_landscape, #rightwindow.show_landscape {
 	height: 650px;

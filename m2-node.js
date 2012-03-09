@@ -117,7 +117,7 @@ trym2.loadLesson = function (ell) {
     $("#send").hide();
     $("#previous").show();
     $("#next").show();
-    $("#pageIndex").text("Lesson " + trym2.lessonNr + "/" + trym2.maxLesson).show();
+    $("#pageIndex").text(trym2.lessonNr + "/" + trym2.maxLesson).show();
     $("#lesson").html(lessonContent).show();
     $("#showLesson").hide();
     $("#terminal").show();

@@ -120,6 +120,9 @@ server.on("request", function (request, response) {
                 response.writeHead(200);   // Respond to the request
                 response.end();
                 // Send 'body' to M2
+                // 'body' can be regular M2 commands, or
+                //               interrupt, or
+                //               reset
                 try {
                     clients[clientID].m2.stdin.write(body);
                 }
@@ -150,6 +153,20 @@ server.on("request", function (request, response) {
             return;
         }
     }
+    if (url.pathname === "/restart") {
+        var clientID = cookies.get("trym2cookie");
+        restartM2(clients[clientID]);
+        console.log("received: /restart from " + clientID);
+        return;
+    }
+    if (url.pathname === "/interrupt") {
+        var clientID = cookies.get("trym2cookie");
+        if (clients[clientID] && clients[clientID].m2) {
+            clients[clientID].m2.kill('SIGINT');
+        }
+        console.log("received: /interrupt from " + clientID);
+        return;
+    }    
     // Send file (e.g. images and tutorial) or 404 if not found
     if (url.pathname !== "/chat") {
         

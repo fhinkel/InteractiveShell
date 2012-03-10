@@ -38,8 +38,7 @@ trym2.getSelected = function (inputField) {
 };
 
 // return false on error
-trym2.sendToM2 = function (msg) {
-   
+trym2.sendToM2 = function (msg) {   
     var xhr = new XMLHttpRequest();           // Create a new XHR
     xhr.open("POST", "/chat");                // to POST to /chat.
     xhr.setRequestHeader("Content-Type",      // Specify plain UTF-8 text 
@@ -47,8 +46,6 @@ trym2.sendToM2 = function (msg) {
     xhr.send(msg);                            // Send the message
     
     return true;
-    
-    
 };
 
 trym2.sendOnEnterCallback = function (inputfield) {
@@ -103,10 +100,23 @@ trym2.switchLesson = function (incr) {
 };
 
 trym2.resetCallback = function () {
-    if (!trym2.sendToM2("restart\n")) {
-        $("#M2Out").val($("#M2Out").val() + "<b>Something Broke! HELP!</b>");
-    }
-    $("#M2Out").val("");
+    var xhr = new XMLHttpRequest();           // Create a new XHR
+    xhr.open("POST", "/restart");                // to POST to /chat.
+    xhr.setRequestHeader("Content-Type",      // Specify plain UTF-8 text 
+                         "text/plain;charset=UTF-8");
+    xhr.send();                            // Send the message
+    
+    return true;
+};
+
+trym2.interruptCallback = function () {
+    var xhr = new XMLHttpRequest();           // Create a new XHR
+    xhr.open("POST", "/interrupt");                // to POST to /chat.
+    xhr.setRequestHeader("Content-Type",      // Specify plain UTF-8 text 
+                         "text/plain;charset=UTF-8");
+    xhr.send();                            // Send the message
+    
+    return true;
 };
 
 trym2.sendCallback = function (inputField) {
@@ -144,6 +154,7 @@ trym2.getLessonTitles = function (tutorialFile, callback) {
 $(document).ready(function () {
     // Register for notification of new messages using EventSource
     var chat = new EventSource("/chat");
+
     chat.onmessage = function(event) {            // When a new message arrives
         var msg = event.data;                     // Get text from event object
         //var node = document.createTextNode(msg);  // Make it into a text node
@@ -189,6 +200,7 @@ $(document).ready(function () {
     $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
     $("#send").click(trym2.sendCallback('#M2In'));
     $("#reset").click(trym2.resetCallback);
+    $("#interrupt").click(trym2.interruptCallback);
     $("#terminal").click(trym2.showTerminal);
     $("#showLesson").click(function() {
         trym2.loadLesson(trym2.lessonNr);
@@ -211,7 +223,7 @@ $(document).ready(function () {
 
     $("#pageIndex").hide();
 
-    $("#tutorial").html("<div class='lesson' lessonid='1'><div><br>Get started by <b>selecting a tutorial</b> from the menu on the upper right corner or by using the Macaulay2 console. Have fun!<br>    <code>3+18</code><br>    <code>version</code><br>    <code> exit </code> <br>    </div></div>");
+    $("#tutorial").html("<div class='lesson' lessonid='1'><div><br>Get started by <b>selecting a tutorial</b> from the menu on the upper right corner or by using the Macaulay2 console. Have fun!<br>    <code>3+18</code><br>    <code>version</code><br>    <code> exit </code> <br>   <code> R = ZZ/101[vars(0..17)] </code> <br>   <code> gbTrace=1 </code> <br> <code> time res coker vars R </code> <br>  <code> m1 = genericMatrix(R,a,3,3) </code> <br> <code> m2 = genericMatrix(R,j,3,3) </code> <br> <code> J = ideal(m1*m2-m2*m1) </code> <br> <code> C = res J </code> <br> <code> C.dd_3 </code> <br></div></div>");
     trym2.loadLesson(trym2.lessonNr);
     trym2.maxLesson = $('#tutorial').children().length;
     console.log("maxLesson: " + trym2.maxLesson);

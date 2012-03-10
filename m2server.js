@@ -1,15 +1,32 @@
-// This is server-side JavaScript, intended to be run with NodeJS.
-// It implements a very simple, completely anonymous chat room.
-// POST new messages to /chat, or GET a text/event-stream of messages
-// from the same URL. Making a GET request to / returns a simple HTML file
-// that contains the client-side chat UI.
+// March 2012, Franziska Hinkelmann, Mike Stillman, and Lars Kastner
+//
+// This is server-side JavaScript, intended to be run with Node.js.
+// This file defines a Node.js server for serving 'tryM2'.
+//   run 
+//      node m2server.js
+// in a terminal in this directory.
+// Then in a browser, use: 
+//      http://localhost:8000/
+// Required Node.js libraries: cookies.  Install via:
+//   npm install cookies, or sudo npm install -g cookies
+// Required on path: M2
+
+//
+// A message on / : possibly creates a cookie, and serves back index.html
+//   and related js/css/png files
+// A POST message on /chat: input should be Macaulay2 commands to perform.
+// A message on /chat: start an event emitter, which will return the output of
+// the M2 process.
+
 var http = require('http');  // NodeJS HTTP server API
 var Cookies = require("cookies");
 
 // The HTML file for the chat client. Used below.
 var clientui = require('fs').readFileSync("index.html");
 
-// An array of ServerResponse objects that we're going to send events to
+// An array of Client objects.  Each has an M2 process, and a response object
+// It is possible that this.m2 is not defined, and/or that this.response is not
+// defined.
 var clients = [];
 var nextClientId = 0;
 
@@ -18,19 +35,25 @@ function Client(m2process, resp) {
     this.response = resp;
 }
 
-startM2Emitter = function(client) {
-    client.m2 = startM2();
+startM2Process = function() {
+    var spawn = require('child_process').spawn;
+    var m2 = spawn('M2');
+    m2.stdout.setEncoding("utf8");
+    m2.stderr.setEncoding("utf8");
+    console.log('Spawned m2 pid: ' + m2.pid);
+    return m2;
+};
+
+startM2 = function(client) {
+    client.m2 = startM2Process();
     console.log("starting emitter");
-    client.m2.stdout.on('data', function (data) {
-        //console.log('m2stdout: ' + data);
+    var ondata = function(data) {
+        //console.log('ondata: ' + data);
         message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
         client.response.write(message);           
-    });
-    client.m2.stderr.on('data', function (data) {
-        //console.log('m2stderr: ' + data);
-        message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
-        client.response.write(message); 
-    });    
+    };
+    client.m2.stdout.on('data', ondata);
+    client.m2.stderr.on('data', ondata);
 };
 
 // Send a comment to the clients every 20 seconds so they don't 
@@ -40,17 +63,6 @@ setInterval(function() {
         client.response.write(":ping\n");
     });
 }, 20000);
-
-
-startM2 = function() {
-    var spawn = require('child_process').spawn;
-    var m2 = spawn('M2');
-    m2.stdout.setEncoding("utf8");
-    m2.stderr.setEncoding("utf8");
-    console.log('Spawned m2 pid: ' + m2.pid);
-    return m2;
-};
-
 
 // Create a new server
 var server = new http.Server();  
@@ -104,12 +116,9 @@ server.on("request", function (request, response) {
         } else {
             // Set the content type and send an initial message event 
             response.writeHead(200, {'Content-Type': "text/event-stream" });
-            //response.write("data: Connected, starting M2 ...\ndata: \n\n");
-            console.log("in /chat: " + clients[clientID].response);
             if (!clients[clientID].response) {
                 clients[clientID].response = response;
-                console.log("in /chat: " + clients[clientID].response);
-                startM2Emitter(clients[clientID]);
+                startM2(clients[clientID]);
             }
 
             // If the client closes the connection, remove the corresponding
@@ -141,8 +150,6 @@ server.on("request", function (request, response) {
         response.end();
         return;
     }
-
-  
 });
 
 // Run the server on port 8000. Connect to http://localhost:8000/ to use it.

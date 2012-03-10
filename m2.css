@@ -103,10 +103,14 @@ div {
 
 code {
 	background-color: lightyellow;
+	padding: 1px 3px;
+	line-height: 1.5;
 	cursor:pointer;
 	/*font-size: 140%;*/
 	margin-left: 20px;
 	font-family: courier new;
+	border-radius: 5px;
+    box-shadow: 1px 1px 2px #000;
 }
 
 

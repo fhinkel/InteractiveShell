@@ -21,8 +21,10 @@
 .extruder .voice span.label{display:block;height:30px;color:#d0cfcf;padding-top:0;text-decoration:none;}
 .extruder .voice{position:relative;}
 .extruder .settingsBtn{display:block;position:absolute;width:36px;height:36px;background:url("../elements/settingsBtn.png") no-repeat bottom;cursor:pointer;right:-3px;top:-4px;}
-.extruder .optionsPanel{background:url("../elements/fuzz.gif");display:none;border-bottom:1px solid #333333;}
+.extruder .optionsPanel{background:url("../elements/black_op_30.png");display:none;border-bottom:1px solid #333333;}
 .extruder .voice.sel{background:url("../elements/extruder_voiceHover.png") no-repeat top;}
 .optionsPanel .panelVoice a{text-decoration:none;display:block;color:#cccccc;padding:8px;padding-left:20px;font-size:16px;text-shadow:2px 2px 2px #333333;border-bottom:1px solid #000000;cursor:pointer;}
-.optionsPanel .panelVoice a:hover{color:#fff;background:url("../elements/red_op_50.png");}
+/*.optionsPanel .panelVoice a:hover{color:#fff;background:url("../elements/red_op_50.png");}*/
+.optionsPanel .panelVoice a:hover{color:#fff;background:url("../elements/light_blue_op.png");}
+
 :focus{outline:0;}

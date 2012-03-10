@@ -102,10 +102,11 @@ div {
 }*/
 
 code {
-	background-color: yellow;
+	background-color: lightyellow;
 	cursor:pointer;
-	font-size: 140%;
+	/*font-size: 140%;*/
 	margin-left: 20px;
+	font-family: courier new;
 }
 
 

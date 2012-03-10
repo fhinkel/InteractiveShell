@@ -12,7 +12,7 @@ html {
 body {
     color:#000;
     background-color: #DCDCDC;
-    font-family: Helvetica;
+    font-family: Helvetica; /*Trebuche, Lucida Grande, Palatino Georgia,Helvetica;*/
 	height: 96%;	
 }
 
@@ -70,6 +70,7 @@ div {
 
 #lesson {
 	overflow-y: auto;
+	font-family: Lucida Grande;
 }
 
 #inputarea, #lesson {

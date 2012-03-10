@@ -27,7 +27,7 @@ var clientui = require('fs').readFileSync("index.html");
 // An array of Client objects.  Each has an M2 process, and a response object
 // It is possible that this.m2 is not defined, and/or that this.response is not
 // defined.
-var clients = [];
+var clients = {};
 var nextClientId = 0;
 
 function Client(m2process, resp) {
@@ -45,6 +45,7 @@ startM2Process = function() {
 };
 
 startM2 = function(client) {
+    // client is an object of type Client
     client.m2 = startM2Process();
     console.log("starting emitter");
     var ondata = function(data) {
@@ -56,12 +57,21 @@ startM2 = function(client) {
     client.m2.stderr.on('data', ondata);
 };
 
+restartM2 = function(client) {
+    if (client.m2) { client.m2.kill(); }
+    startM2(client);
+}
+
 // Send a comment to the clients every 20 seconds so they don't 
 // close the connection and then reconnect
 setInterval(function() {
-    clients.forEach(function(client) {
-        client.response.write(":ping\n");
-    });
+    for (var prop in clients) {
+        if (clients.hasOwnProperty(prop) 
+            && clients[prop]
+            && clients[prop].response) {
+            clients[prop].response.write(":ping\n");
+        }
+    }
 }, 20000);
 
 // Create a new server
@@ -76,7 +86,7 @@ server.on("request", function (request, response) {
     // If the request was for "/", send the client-side chat UI.
     if (url.pathname === "/" || url.pathname === "/index.html") {  // A request for the chat UI
         cookies.set( "trym2cookie", nextClientId.toString(10), { httpOnly: false } );
-        clients.push(new Client); // will be populated with a Client in /chat
+        clients[nextClientId.toString()] = new Client(); // will be populated with a Client in /chat
         nextClientId = nextClientId + 1;
           
         response.writeHead(200, {"Content-Type": "text/html"});
@@ -93,7 +103,7 @@ server.on("request", function (request, response) {
     }
     if (url.pathname === "/chat") {
         // If the request was a post, then a client is posting a new message
-        var clientID = parseInt(cookies.get("trym2cookie"),10);
+        var clientID = cookies.get("trym2cookie");
         console.log("cookie value from client: " + clientID);
         if (request.method === "POST") {
             request.setEncoding("utf8");
@@ -110,7 +120,13 @@ server.on("request", function (request, response) {
                 response.writeHead(200);   // Respond to the request
                 response.end();
                 // Send 'body' to M2
-                clients[clientID].m2.stdin.write(body);
+                try {
+                    clients[clientID].m2.stdin.write(body);
+                }
+                catch (err) {
+                    console.log("socket was closed for clients[" + clientID + "]");
+                    restartM2(clients[clientID]);
+                }
             });
             return;
         } else {
@@ -124,7 +140,10 @@ server.on("request", function (request, response) {
             // If the client closes the connection, remove the corresponding
             // response object from the array of active clients
             request.connection.on("end", function() {
-                //TODO: kill client gracefully
+                console.log("close connection: clients[" + clientID + "]");
+                clients[clientID].m2.kill();
+                clients[clientID].m2 = null;
+                clients[clientID].response = null;
                 response.end();
             });
 

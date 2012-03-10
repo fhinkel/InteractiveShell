@@ -1,14 +1,9 @@
-/*global $, SyntaxHighlighter, alert, clearTimeout, console, document, setTimeout, trym2, updateOrientation, window */
+/*global $, SyntaxHighlighter, alert, console, document, trym2, updateOrientation, window */
 
 
 var trym2 = {
-    offset: 0,
-    waitingtime: 2500, // in ms.  Each time we poll for data and don't receive it, we wait longer.
-    maxwaitingtime: 60 * 1000 * 10, // 10 minutes
-    minwaitingtime: 100,
     lessonNr: 1,
-    maxLesson: 1,
-    timerobject: 0
+    maxLesson: 1
 };
 
 trym2.scrollDown = function (area) {
@@ -36,29 +31,6 @@ trym2.getSelected = function (inputField) {
     }
     return str.slice(start, end) + "\n";
 };
-
-// return false on error
-trym2.sendToM2 = function (msg) {   
-    var xhr = new XMLHttpRequest();           // Create a new XHR
-    xhr.open("POST", "/chat");                // to POST to /chat.
-    xhr.setRequestHeader("Content-Type",      // Specify plain UTF-8 text 
-                         "text/plain;charset=UTF-8");
-    xhr.send(msg);                            // Send the message
-    
-    return true;
-};
-
-trym2.sendOnEnterCallback = function (inputfield) {
-    return function (e) {
-        if (e.which === 13 && e.shiftKey) {
-            e.preventDefault();
-            // do not make a line break or remove selected text when sending
-            trym2.sendToM2(trym2.getSelected(inputfield));
-        }
-    };
-};
-
-
 
 trym2.showTerminal = function () {
     $("#lesson").hide();
@@ -96,39 +68,40 @@ trym2.switchLesson = function (incr) {
         trym2.lessonNr = trym2.lessonNr - incr;
         //alert("lesson with " + trym2.lessonNr + "." + incr + " not available");
     }
-    
 };
 
-trym2.resetCallback = function () {
-    var xhr = new XMLHttpRequest();           // Create a new XHR
-    xhr.open("POST", "/restart");                // to POST to /chat.
-    xhr.setRequestHeader("Content-Type",      // Specify plain UTF-8 text 
-                         "text/plain;charset=UTF-8");
-    xhr.send();                            // Send the message
-    
-    return true;
-};
-
-trym2.interruptCallback = function () {
-    var xhr = new XMLHttpRequest();           // Create a new XHR
-    xhr.open("POST", "/interrupt");                // to POST to /chat.
-    xhr.setRequestHeader("Content-Type",      // Specify plain UTF-8 text 
-                         "text/plain;charset=UTF-8");
-    xhr.send();                            // Send the message
-    
-    return true;
+trym2.callback = function( url, msg ) {
+    return function() {
+        var xhr = new XMLHttpRequest();           // Create a new XHR
+        //console.log( "URL: " + url);
+        xhr.open("POST", url);                // to POST to url.
+        xhr.setRequestHeader("Content-Type",      // Specify plain UTF-8 text 
+                            "text/plain;charset=UTF-8");
+        xhr.send(msg);                            // Send the message
+        return true;
+    }  
 };
 
 trym2.sendCallback = function (inputField) {
     return function () {
         var str = trym2.getSelected(inputField);
-        trym2.sendToM2(str);
+        trym2.callback('/chat', str)();
         return false;
     };
 };
 
+trym2.sendOnEnterCallback = function (inputfield) {
+    return function (e) {
+        if (e.which === 13 && e.shiftKey) {
+            e.preventDefault();
+            // do not make a line break or remove selected text when sending
+            trym2.callback('/chat',trym2.getSelected(inputfield))();
+        }
+    };
+};
+
 trym2.helpScreen = function () {
-    console.log("Display Help.");
+    //console.log("Display Help.");
     $("#help-dialog").dialog('open');
 };
 
@@ -154,24 +127,14 @@ trym2.getLessonTitles = function (tutorialFile, callback) {
 $(document).ready(function () {
     // Register for notification of new messages using EventSource
     var chat = new EventSource("/chat");
-
     chat.onmessage = function(event) {            // When a new message arrives
         var msg = event.data;                     // Get text from event object
-        //var node = document.createTextNode(msg);  // Make it into a text node
-        //var div = document.createElement("div");  // Create a <div>
-        //div.appendChild(node);                    // Add text node to div
-        //document.body.insertBefore(div, input);   // And add div before input
-        //input.scrollIntoView();                   // Ensure input elt is visible
-        
-        
         if (msg !== "") {
                 //console.log("We got a chat message: " + msg);
                 $("#M2Out").val($("#M2Out").val() + msg);
                 trym2.scrollDown("#M2Out");
-                
         }
     }
-    
     
     $('.submenuItem').live("click", function () {
         var i = 1,
@@ -196,18 +159,17 @@ $(document).ready(function () {
     $('#help').click(trym2.helpScreen);
 
     SyntaxHighlighter.all();
-
-    $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
+    
     $("#send").click(trym2.sendCallback('#M2In'));
-    $("#reset").click(trym2.resetCallback);
-    $("#interrupt").click(trym2.interruptCallback);
+    $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
+    $("#reset").click(trym2.callback('/restart'));
+    $("#interrupt").click(trym2.callback('/interrupt'));
     $("#terminal").click(trym2.showTerminal);
     $("#showLesson").click(function() {
         trym2.loadLesson(trym2.lessonNr);
         console.log("lesson!");
     });
   
-        
 
     $("code").live("click", function () {
         $(this).effect("highlight", {color: 'red'}, 800);
@@ -215,7 +177,7 @@ $(document).ready(function () {
         code = code + "\n";
         $("#M2In").val($("#M2In").val() + code);
         trym2.scrollDown("#M2In");
-        trym2.sendToM2(code);
+        trym2.callback('/chat', code)();
     });
 
     $("#inputarea").hide();
@@ -284,9 +246,4 @@ function updateOrientation() {
     $("#rightwindow").attr('class', orient);
     $("#leftwindow").attr('class', orient);
 }
-/* Info on selected text:
- * jquery plugin: jquery-fieldselection.js
- * example use: http://laboratorium.0xab.cd/jquery/fieldselection/0.1.0/test.html
- * DOM: selectionStart, selectionEnd
- *  stackoverflow: search for selectionStart
- */
+

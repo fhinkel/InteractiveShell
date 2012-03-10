@@ -116,13 +116,10 @@ server.on("request", function (request, response) {
             // When we get a chunk of data, add it to the body
             request.on("data", function(chunk) { body += chunk; });
 
-           request.on("end", function() {
+            request.on("end", function() {
                 response.writeHead(200);   // Respond to the request
                 response.end();
                 // Send 'body' to M2
-                // 'body' can be regular M2 commands, or
-                //               interrupt, or
-                //               reset
                 try {
                     clients[clientID].m2.stdin.write(body);
                 }

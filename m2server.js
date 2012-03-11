@@ -28,7 +28,6 @@ var clientui = require('fs').readFileSync("index.html");
 // It is possible that this.m2 is not defined, and/or that this.response is not
 // defined.
 var clients = {};
-var nextClientId = 0;
 
 function Client(m2process, resp) {
     this.m2 = m2process;
@@ -75,10 +74,11 @@ setInterval(function() {
 }, 20000);
 
 startUser = function(cookies) {
-    var clientID = nextClientId.toString(10);
-    cookies.set( "trym2cookie", clientID, { httpOnly: false } );
+    var clientID = Math.random()*1000000;
+    clientID = Math.floor(clientID);
+    clientID = "user" + clientID.toString(10);
+    cookies.set( "tryM2", clientID, { httpOnly: false } );
     clients[clientID] = new Client(); // will be populated with a Client in /chat
-    nextClientId = nextClientId + 1;
     return clientID;
 }
 
@@ -109,7 +109,7 @@ server.on("request", function (request, response) {
     }
     if (url.pathname === "/chat") {
         // If the request was a post, then a client is posting a new message
-        var clientID = cookies.get("trym2cookie");
+        var clientID = cookies.get("tryM2");
         console.log("cookie value from client: " + clientID);
         
         if (!clients[clientID]) {
@@ -170,13 +170,13 @@ server.on("request", function (request, response) {
         }
     }
     if (url.pathname === "/restart") {
-        var clientID = cookies.get("trym2cookie");
+        var clientID = cookies.get("tryM2");
         restartM2(clients[clientID]);
         console.log("received: /restart from " + clientID);
         return;
     }
     if (url.pathname === "/interrupt") {
-        var clientID = cookies.get("trym2cookie");
+        var clientID = cookies.get("tryM2");
         if (clients[clientID] && clients[clientID].m2) {
             clients[clientID].m2.kill('SIGINT');
         }

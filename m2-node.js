@@ -183,7 +183,7 @@ $(document).ready(function () {
     $("#terminal").click(trym2.showTerminal);
     $("#showLesson").click(function() {
         trym2.loadLesson(trym2.lessonNr);
-        console.log("lesson!");
+        //console.log("lesson!");
     });
   
 

@@ -23,6 +23,7 @@ var Cookies = require("cookies");
 
 // The HTML file for the chat client. Used below.
 var clientui = require('fs').readFileSync("index.html");
+var totalUsers = 0;
 
 // An array of Client objects.  Each has an M2 process, and a response object
 // It is possible that this.m2 is not defined, and/or that this.response is not
@@ -74,6 +75,7 @@ setInterval(function() {
 }, 20000);
 
 startUser = function(cookies) {
+    totalUsers = totalUsers + 1;
     var clientID = Math.random()*1000000;
     clientID = Math.floor(clientID);
     clientID = "user" + clientID.toString(10);
@@ -91,6 +93,22 @@ server.on("request", function (request, response) {
     // Parse the requested URL
     var cookies = new Cookies(request, response);
     var url = require('url').parse(request.url);
+    
+    if(url.pathname === "/admin") {
+        // authorization
+        response.writeHead(200, {"Content-Type": "text/html"});
+        var currentUsers = 0;
+        for( var c in clients) {
+            if(clients.hasOwnProperty(c))
+                    currentUsers = currentUsers + 1;
+        }
+        response.write('<head><link rel="stylesheet" href="m2.css" type="text/css" media="screen"></head>' );
+        response.write("There are currently " + currentUsers + " users using M2.<br>" );
+        response.write("In total, there were " + totalUsers + " users since the server started.<br>");
+        response.write("Enjoy M2!");
+        response.end();    
+        return;
+    }
     
     // If the request was for "/", send the client-side chat UI.
     if (url.pathname === "/" || url.pathname === "/index.html") {  // A request for the chat UI

@@ -77,7 +77,20 @@ trym2.callback = function( url, msg ) {
         xhr.open("POST", url);                // to POST to url.
         xhr.setRequestHeader("Content-Type",      // Specify plain UTF-8 text 
                             "text/plain;charset=UTF-8");
-        xhr.send(msg);                            // Send the message
+        xhr.onreadystatechange = function() {
+            if ( xhr.readyState === 4) {
+                //console.log( "All ResponseHeaders: " + xhr.getAllResponseHeaders());
+                var resHead = xhr.getResponseHeader('notEventSourceError');
+                //console.log( "ResponseHeader: " + resHead);
+                if (resHead){
+                    console.log("We must have lost the EventSource Stremt, redoing it...");
+                    trym2.startEventSource();
+                    //send msg again
+                    trym2.callback("/chat", msg)();
+                }
+            }
+        };
+        xhr.send(msg);                            // Send the message        
         return true;
     }  
 };
@@ -124,18 +137,21 @@ trym2.getLessonTitles = function (tutorialFile, callback) {
     });
 };
 
-$(document).ready(function () {
-    // Register for notification of new messages using EventSource
+// Register for notification of new messages using EventSource
+trym2.startEventSource = function () {
     var chat = new EventSource("/chat");
     chat.onmessage = function(event) {            // When a new message arrives
-        var msg = event.data;                     // Get text from event object
-        if (msg !== "") {
-                //console.log("We got a chat message: " + msg);
-                $("#M2Out").val($("#M2Out").val() + msg);
-                trym2.scrollDown("#M2Out");
-        }
-    }
-    
+         var msg = event.data;                     // Get text from event object
+         if (msg !== "") {
+                 //console.log("We got a chat message: " + msg);
+                 $("#M2Out").val($("#M2Out").val() + msg);
+                 trym2.scrollDown("#M2Out");
+         }
+     }
+};
+
+$(document).ready(function () {
+    trym2.startEventSource();
     $('.submenuItem').live("click", function () {
         var i = 1,
             lessonId = $(this).attr('lessonid');

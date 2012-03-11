@@ -49,7 +49,7 @@ startM2 = function(client) {
     client.m2 = startM2Process();
     console.log("starting emitter");
     var ondata = function(data) {
-        //console.log('ondata: ' + data);
+        console.log('ondata: ' + data);
         message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
         client.response.write(message);           
     };
@@ -74,21 +74,27 @@ setInterval(function() {
     }
 }, 20000);
 
+startUser = function(cookies) {
+    var clientID = nextClientId.toString(10);
+    cookies.set( "trym2cookie", clientID, { httpOnly: false } );
+    clients[clientID] = new Client(); // will be populated with a Client in /chat
+    nextClientId = nextClientId + 1;
+    return clientID;
+}
+
 // Create a new server
 var server = new http.Server();  
 
 // When the server gets a new request, run this function
 server.on("request", function (request, response) {
+    console.log( "got on");
     // Parse the requested URL
     var cookies = new Cookies(request, response);
     var url = require('url').parse(request.url);
-   
+    
     // If the request was for "/", send the client-side chat UI.
     if (url.pathname === "/" || url.pathname === "/index.html") {  // A request for the chat UI
-        cookies.set( "trym2cookie", nextClientId.toString(10), { httpOnly: false } );
-        clients[nextClientId.toString()] = new Client(); // will be populated with a Client in /chat
-        nextClientId = nextClientId + 1;
-          
+        startUser(cookies);
         response.writeHead(200, {"Content-Type": "text/html"});
         response.write(clientui);
         response.end();
@@ -105,7 +111,14 @@ server.on("request", function (request, response) {
         // If the request was a post, then a client is posting a new message
         var clientID = cookies.get("trym2cookie");
         console.log("cookie value from client: " + clientID);
+        
+        if (!clients[clientID]) {
+            // somehow the user sent M2 commands without sending "/" first
+            console.log("startUser");
+            clientID = startUser(cookies);
+        }
         if (request.method === "POST") {
+            console.log( " got post");
             request.setEncoding("utf8");
             
             //   for (e in request.headers) {
@@ -116,21 +129,27 @@ server.on("request", function (request, response) {
             // When we get a chunk of data, add it to the body
             request.on("data", function(chunk) { body += chunk; });
 
-            request.on("end", function() {
-                response.writeHead(200);   // Respond to the request
-                response.end();
+            request.on("end", function() {                
                 // Send 'body' to M2
                 try {
+                    console.log("Send M2 output: " + body);
                     clients[clientID].m2.stdin.write(body);
                 }
                 catch (err) {
                     console.log("socket was closed for clients[" + clientID + "]");
-                    restartM2(clients[clientID]);
+                    // send error back to user so user restart eventSource
+                    response.writeHead(200, {
+                      'notEventSourceError': 'No socket for client...' });
+                    response.end();
+                    return;
                 }
+                response.writeHead(200);   // Respond to the request
+                response.end();
             });
             return;
         } else {
-            // Set the content type and send an initial message event 
+            console.log( " got get");
+            
             response.writeHead(200, {'Content-Type': "text/event-stream" });
             if (!clients[clientID].response) {
                 clients[clientID].response = response;

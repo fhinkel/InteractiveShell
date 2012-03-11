@@ -87,6 +87,22 @@ startUser = function(cookies) {
 // Create a new server
 var server = new http.Server();  
 
+var stats = function(response) {
+    // to do: authorization
+     response.writeHead(200, {"Content-Type": "text/html"});
+     var currentUsers = 0;
+     for( var c in clients) {
+         if(clients.hasOwnProperty(c))
+                 currentUsers = currentUsers + 1;
+     }
+     response.write('<head><link rel="stylesheet" href="m2.css" type="text/css" media="screen"></head>' );
+     response.write('<h1>Macaulay2 User Statistics</h1>');
+     response.write("There are currently " + currentUsers + " users using M2.<br>" );
+     response.write("In total, there were " + totalUsers + " users since the server started.<br>");
+     response.write("Enjoy M2!");
+     response.end();    
+}
+
 // When the server gets a new request, run this function
 server.on("request", function (request, response) {
     console.log( "got on");
@@ -95,18 +111,7 @@ server.on("request", function (request, response) {
     var url = require('url').parse(request.url);
     
     if(url.pathname === "/admin") {
-        // authorization
-        response.writeHead(200, {"Content-Type": "text/html"});
-        var currentUsers = 0;
-        for( var c in clients) {
-            if(clients.hasOwnProperty(c))
-                    currentUsers = currentUsers + 1;
-        }
-        response.write('<head><link rel="stylesheet" href="m2.css" type="text/css" media="screen"></head>' );
-        response.write("There are currently " + currentUsers + " users using M2.<br>" );
-        response.write("In total, there were " + totalUsers + " users since the server started.<br>");
-        response.write("Enjoy M2!");
-        response.end();    
+        stats(response);
         return;
     }
     
@@ -179,8 +184,7 @@ server.on("request", function (request, response) {
             request.connection.on("end", function() {
                 console.log("close connection: clients[" + clientID + "]");
                 clients[clientID].m2.kill();
-                clients[clientID].m2 = null;
-                clients[clientID].response = null;
+                delete clients[clientID];
                 response.end();
             });
 

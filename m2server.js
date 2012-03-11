@@ -35,6 +35,16 @@ function Client(m2process, resp) {
     this.response = resp;
 }
 
+startUser = function(cookies) {
+    totalUsers = totalUsers + 1;
+    var clientID = Math.random()*1000000;
+    clientID = Math.floor(clientID);
+    clientID = "user" + clientID.toString(10);
+    cookies.set( "tryM2", clientID, { httpOnly: false } );
+    clients[clientID] = new Client(); // will be populated with a Client in /chat
+    return clientID;
+}
+
 startM2Process = function() {
     var spawn = require('child_process').spawn;
     var m2 = spawn('M2');
@@ -58,34 +68,23 @@ startM2 = function(client) {
 };
 
 restartM2 = function(client) {
-    if (client.m2) { client.m2.kill(); }
-    startM2(client);
-}
-
-// Send a comment to the clients every 20 seconds so they don't 
-// close the connection and then reconnect
-setInterval(function() {
-    for (var prop in clients) {
-        if (clients.hasOwnProperty(prop) 
-            && clients[prop]
-            && clients[prop].response) {
-            clients[prop].response.write(":ping\n");
-        }
+    if (client.m2) { 
+        client.m2.kill(); 
     }
-}, 20000);
+    startM2(client);
+};
 
-startUser = function(cookies) {
-    totalUsers = totalUsers + 1;
-    var clientID = Math.random()*1000000;
-    clientID = Math.floor(clientID);
-    clientID = "user" + clientID.toString(10);
-    cookies.set( "tryM2", clientID, { httpOnly: false } );
-    clients[clientID] = new Client(); // will be populated with a Client in /chat
+getCurrentClientID = function(cookies) {
+    var clientID = cookies.get("tryM2");
+    //console.log("Client has cookie value: " + clientID);
+
+// Start new user for users coming with invalid, i.e., old, cookie
+    if (!clients[clientID]) {
+        console.log("startUser");
+        clientID = startUser(cookies);
+    }
     return clientID;
-}
-
-// Create a new server
-var server = new http.Server();  
+};
 
 var stats = function(response) {
     // to do: authorization
@@ -103,6 +102,20 @@ var stats = function(response) {
      response.end();    
 }
 
+// Send a comment to the clients every 20 seconds so they don't 
+// close the connection and then reconnect
+setInterval(function() {
+    for (var prop in clients) {
+        if (clients.hasOwnProperty(prop) 
+            && clients[prop]
+            && clients[prop].response) {
+            clients[prop].response.write(":ping\n");
+        }
+    }
+}, 20000);
+
+// Create a new server
+var server = new http.Server();  
 // When the server gets a new request, run this function
 server.on("request", function (request, response) {
     console.log( "got on");
@@ -114,100 +127,88 @@ server.on("request", function (request, response) {
         stats(response);
         return;
     }
-    
-    // If the request was for "/", send the client-side chat UI.
-    if (url.pathname === "/" || url.pathname === "/index.html") {  // A request for the chat UI
+    // If the request was for "/", start new user and send index.html
+    if (url.pathname === "/" || url.pathname === "/index.html") {  
         startUser(cookies);
         response.writeHead(200, {"Content-Type": "text/html"});
         response.write(clientui);
         response.end();
         return;
     }
-    if (/\.css/.test(url.pathname) ) {
+    // send css files requested by index.html
+    if (/\.css/.test(url.pathname) ) { 
         response.writeHead(200, {'Content-Type': 'text/css'});
         var u = url.pathname.replace("/", '');
         response.write(require('fs').readFileSync(u));
         response.end();
         return;
     }
+    // communicate with M2 process
     if (url.pathname === "/chat") {
-        // If the request was a post, then a client is posting a new message
-        var clientID = cookies.get("tryM2");
-        console.log("cookie value from client: " + clientID);
-        
-        if (!clients[clientID]) {
-            // somehow the user sent M2 commands without sending "/" first
-            console.log("startUser");
-            clientID = startUser(cookies);
-        }
+        var clientID = getCurrentClientID(cookies);
+        // Client is sending M2 input
         if (request.method === "POST") {
-            console.log( " got post");
             request.setEncoding("utf8");
-            
-            //   for (e in request.headers) {
-            //       console.log(e+": "+request.headers[e]);
-            //   }
-
             var body = "";
             // When we get a chunk of data, add it to the body
             request.on("data", function(chunk) { body += chunk; });
-
+            
+            // Send input to M2 when we have received the complete body
             request.on("end", function() {                
-                // Send 'body' to M2
                 try {
-                    console.log("Send M2 output: " + body);
+                    //console.log("Send M2 input: " + body);
                     clients[clientID].m2.stdin.write(body);
                 }
                 catch (err) {
-                    console.log("socket was closed for clients[" + clientID + "]");
-                    // send error back to user so user restart eventSource
+                    //console.log("Socket was closed for clients[" + clientID + "]");
+                    // send error back to user, user needs to start eventStream and resend 'body'
                     response.writeHead(200, {
                       'notEventSourceError': 'No socket for client...' });
                     response.end();
                     return;
                 }
-                response.writeHead(200);   // Respond to the request
+                response.writeHead(200);  
                 response.end();
             });
             return;
+        // Client starts eventStream to obtain M2 output
         } else {
-            console.log( " got get");
-            
             response.writeHead(200, {'Content-Type': "text/event-stream" });
             if (!clients[clientID].response) {
                 clients[clientID].response = response;
                 startM2(clients[clientID]);
             }
 
-            // If the client closes the connection, remove the corresponding
-            // response object from the array of active clients
+            // If the client closes the connection, remove client from the list of active clients
             request.connection.on("end", function() {
                 console.log("close connection: clients[" + clientID + "]");
                 clients[clientID].m2.kill();
                 delete clients[clientID];
                 response.end();
             });
-
             return;
         }
     }
     if (url.pathname === "/restart") {
-        var clientID = cookies.get("tryM2");
+        var clientID = getCurrentClientID(cookies);
         restartM2(clients[clientID]);
         console.log("received: /restart from " + clientID);
+        response.writeHead(200);  
+        response.end();
         return;
     }
     if (url.pathname === "/interrupt") {
-        var clientID = cookies.get("tryM2");
+        var clientID = getCurrentClientID(cookies);
         if (clients[clientID] && clients[clientID].m2) {
             clients[clientID].m2.kill('SIGINT');
         }
         console.log("received: /interrupt from " + clientID);
+        response.writeHead(200);  
+        response.end();
         return;
     }    
     // Send file (e.g. images and tutorial) or 404 if not found
     if (url.pathname !== "/chat") {
-        
         var u = url.pathname.replace("/", '');
         try {
             data = require('fs').readFileSync(u);
@@ -220,7 +221,6 @@ server.on("request", function (request, response) {
             response.writeHead(404,{"Content-Type": "text/html"});
             response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
         }
-        
         response.end();
         return;
     }

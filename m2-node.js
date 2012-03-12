@@ -41,7 +41,7 @@ trym2.showTerminal = function () {
     $("#next").hide();
     $("#showLesson").show();
     $("#terminal").hide();
-    
+    return false;
 };
 
 trym2.loadLesson = function (ell) {
@@ -151,6 +151,23 @@ trym2.startEventSource = function () {
 };
 
 $(document).ready(function () {
+    var extruderMenu = $("#extruderTop").buildMbExtruder({
+        position: "top",
+        width: 350,
+        extruderOpacity: 1,
+        onExtOpen: function () {},
+        onExtContentLoad: function () {},
+        onExtClose: function () {}
+    });
+    
+    $('#M2In').val("Write an M2 command, e.g., 3+3, and hit Shift+Enter or click on Send to M2 to evaluate it.");
+    $('#M2In').addClass('inactive');
+    $('#M2In').focus(function() {
+        $(this).removeClass('inactive'); 
+        if ($(this).val() == "Write an M2 command, e.g., 3+3, and hit Shift+Enter or click on Send to M2 to evaluate it.") {
+            $(this).val('');
+        }
+    });
     trym2.startEventSource();
     $('.submenuItem').live("click", function () {
         var i = 1,
@@ -181,6 +198,8 @@ $(document).ready(function () {
     $("#reset").click(trym2.callback('/restart'));
     $("#interrupt").click(trym2.callback('/interrupt'));
     $("#terminal").click(trym2.showTerminal);
+    $("#inputTerminalLink").live( "click", trym2.showTerminal);
+    
     $("#showLesson").click(function() {
         trym2.loadLesson(trym2.lessonNr);
         //console.log("lesson!");
@@ -201,7 +220,15 @@ $(document).ready(function () {
 
     $("#pageIndex").hide();
 
-    $("#tutorial").html("<div class='lesson' lessonid='1'><div><br>Get started by <b>selecting a tutorial</b> from the menu on the upper right corner or by using the  <b>Input Terminal</b>. Have fun!<br> </div></div>");// <code>3+18</code><br>    <code>version</code><br>    <code> exit </code> <br>   <code> R = ZZ/101[vars(0..17)] </code> <br>   <code> gbTrace=1 </code> <br> <code> time res coker vars R </code> <br>  <code> m1 = genericMatrix(R,a,3,3) </code> <br> <code> m2 = genericMatrix(R,j,3,3) </code> <br> <code> J = ideal(m1*m2-m2*m1) </code> <br> <code> C = res J </code> <br> <code> C.dd_3 </code> <br>
+$("#tutorial").html("<div class='lesson' lessonid='1'><div><br>Get started by <a href='#' id='selectTutorialLink'><b>selecting a tutorial</b></a> or by using the <a href='#' id='inputTerminalLink'><b>Input Terminal</b></a>. Have fun!<br> <p><a href='http://www.math.uiuc.edu/Macaulay2/'>Macaulay2<a> is a software system devoted to supporting research in algebraic geometry and commutative algebra, whose creation has been funded by the National Science Foundation since 1992. </p> <p> To get started, select a tutorial. Click on any highlighted code, Macaulay2 will execute it. The result is displayed on the right. Alternatively, you can use the <b>Input Terminal</b> on the left to write your own commands. Execute a line by positioning your cursor on it and click on the Send to M2 button (or type Shift-Enter). You can switch back to the tutorial at any time. </p> <p>The tutorials demonstrate different aspects of Macaulay2. They are meant to be starting points for your own experimentation. Edit the commands in the <b>Input Terminal</b> and run them again. Whenever you're ready to move on, click the Next button.</p>");
+// <code>3+18</code><br>    <code>version</code><br>    <code> exit </code> <br>   <code> R = ZZ/101[vars(0..17)] </code> <br>   <code> gbTrace=1 </code> <br> <code> time res coker vars R </code> <br>  <code> m1 = genericMatrix(R,a,3,3) </code> <br> <code> m2 = genericMatrix(R,j,3,3) </code> <br> <code> J = ideal(m1*m2-m2*m1) </code> <br> <code> C = res J </code> <br> <code> C.dd_3 </code> <br>
+    
+    $("#selectTutorialLink").live("click", function() {
+        //console.log("open tutorial menu");
+        extruderMenu.openMbExtruder();
+        return false;
+    });
+    
     trym2.loadLesson(trym2.lessonNr);
     trym2.maxLesson = $('#tutorial').children().length;
     console.log("maxLesson: " + trym2.maxLesson);
@@ -230,16 +257,7 @@ $(document).ready(function () {
         });
     });
 
-    $(function () {
-        $("#extruderTop").buildMbExtruder({
-            position: "top",
-            width: 350,
-            extruderOpacity: 1,
-            onExtOpen: function () {},
-            onExtContentLoad: function () {},
-            onExtClose: function () {}
-        });
-    });
+
 
     //updateOrientation();
 });

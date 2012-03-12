@@ -82,6 +82,9 @@ div {
 
 }
 
+.inactive {
+    color: lightgrey;
+}
 
 
 #M2In, #M2Out {

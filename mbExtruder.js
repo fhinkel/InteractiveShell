@@ -235,6 +235,7 @@
 		},
 
 		openMbExtruder:function(c){
+		    //console.log("open!");
 			var extruder= $(this);
 			extruder.attr("isOpened",true);
 			$(document).unbind("click.extruder"+extruder.get(0).idx);

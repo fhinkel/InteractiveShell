@@ -9,9 +9,17 @@ html {
     overflow:scroll;
 }
 
+a {
+    color: #0000EE;
+}
+
+#title {
+    color: red;
+}
+
 body {
     color:#000;
-    background-color: #DCDCDC;
+    background-color: #D8FFFF; /*#DCDCDC;*/
     font-family: Helvetica; /*Trebuche, Lucida Grande, Palatino Georgia,Helvetica;*/
 	height: 96%;	
 }

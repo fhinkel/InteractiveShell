@@ -120,7 +120,7 @@ setInterval(function() {
 var server = new http.Server();  
 // When the server gets a new request, run this function
 server.on("request", function (request, response) {
-    console.log( "got on");
+    //console.log( "got on");
     // Parse the requested URL
     var cookies = new Cookies(request, response);
     var url = require('url').parse(request.url);

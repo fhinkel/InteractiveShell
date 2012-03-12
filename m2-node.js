@@ -188,7 +188,7 @@ $(document).ready(function () {
   
 
     $("code").live("click", function () {
-        $(this).effect("highlight", {color: 'red'}, 800);
+        $(this).effect("highlight", {color: 'red'}, 300);
         var code = $(this).text();
         code = code + "\n";
         $("#M2In").val($("#M2In").val() + code);

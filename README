@@ -1,3 +1,31 @@
+
+3/12/2012
+  In general: security
+    includes: not serving pages in /etc/...!
+              denial of service attack
+              running security screening tools (nlmp, or...?)
+              https protocol, more secure cookies/session
+
+  streamlining the M2 sandbox:
+    M2 process doesn't seem to get killed
+    SIGINT doesn't seem to be sent to M2 process (in /interrupt)
+    make sure that it works
+    limit resources
+    ...
+  
+  server mechanics:
+    cron job to restart server, if it dies
+    logging of data, who is coming (ip address, OS?)
+    kill extraneous M2 processes
+    learn about load balancing and reverse proxy server
+    remove stale M2's  (time out: after a week, ...)
+  server itself:
+    at the moment: serving "/" resends index.hmtl and restarts M2.
+    would be nice if it didn't do that: it could remember process if cookie is OK.
+  
+  user authentification
+    allowing files on the server? Better persistence, better M2 performance (less limits)
+
 3/7/2012
 For version 1: See Mike's list
 

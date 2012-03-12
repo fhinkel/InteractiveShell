@@ -101,6 +101,10 @@ div {
 	height: 100%;
 }
 
+#M2Out {
+    color: black;
+    disabled: ;
+}
 
 /*#lesson {
 	/*width: 680px;

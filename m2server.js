@@ -47,6 +47,7 @@ startUser = function(cookies) {
 
 startM2Process = function() {
     var spawn = require('child_process').spawn;
+    //var m2 = spawn('M2');
     var m2 = spawn('M2');
     m2.stdout.setEncoding("utf8");
     m2.stderr.setEncoding("utf8");
@@ -182,7 +183,9 @@ server.on("request", function (request, response) {
             // If the client closes the connection, remove client from the list of active clients
             request.connection.on("end", function() {
                 console.log("close connection: clients[" + clientID + "]");
-                clients[clientID].m2.kill();
+                if( clients[clientID].m2) {
+                    clients[clientID].m2.kill();
+                }
                 delete clients[clientID];
                 response.end();
             });

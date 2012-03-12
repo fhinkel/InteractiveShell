@@ -201,7 +201,7 @@ $(document).ready(function () {
 
     $("#pageIndex").hide();
 
-    $("#tutorial").html("<div class='lesson' lessonid='1'><div><br>Get started by <b>selecting a tutorial</b> from the menu on the upper right corner or by using the Macaulay2 console. Have fun!<br>    <code>3+18</code><br>    <code>version</code><br>    <code> exit </code> <br>   <code> R = ZZ/101[vars(0..17)] </code> <br>   <code> gbTrace=1 </code> <br> <code> time res coker vars R </code> <br>  <code> m1 = genericMatrix(R,a,3,3) </code> <br> <code> m2 = genericMatrix(R,j,3,3) </code> <br> <code> J = ideal(m1*m2-m2*m1) </code> <br> <code> C = res J </code> <br> <code> C.dd_3 </code> <br></div></div>");
+    $("#tutorial").html("<div class='lesson' lessonid='1'><div><br>Get started by <b>selecting a tutorial</b> from the menu on the upper right corner or by using the  <b>Input Terminal</b>. Have fun!<br> </div></div>");// <code>3+18</code><br>    <code>version</code><br>    <code> exit </code> <br>   <code> R = ZZ/101[vars(0..17)] </code> <br>   <code> gbTrace=1 </code> <br> <code> time res coker vars R </code> <br>  <code> m1 = genericMatrix(R,a,3,3) </code> <br> <code> m2 = genericMatrix(R,j,3,3) </code> <br> <code> J = ideal(m1*m2-m2*m1) </code> <br> <code> C = res J </code> <br> <code> C.dd_3 </code> <br>
     trym2.loadLesson(trym2.lessonNr);
     trym2.maxLesson = $('#tutorial').children().length;
     console.log("maxLesson: " + trym2.maxLesson);

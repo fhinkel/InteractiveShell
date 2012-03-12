@@ -48,8 +48,8 @@ startUser = function(cookies) {
 startM2Process = function() {
     var spawn = require('child_process').spawn;
     console.log("spawning...");
-    //var m2 = spawn('M2');
-    var m2 = spawn('sudo', ['../sandbox/sandbox', '../../sandbox-dir', 'bin/M2', '-q', '-e', 'limitResources()']);
+    var m2 = spawn('M2');
+    //var m2 = spawn('sudo', ['../sandbox/sandbox', '../../sandbox-dir', 'bin/M2', '-q', '-e', 'limitResources()']);
     //var m2 = spawn('../sandbox/sandbox', ['../../sandbox-dir', 'bin/M2']);
     m2.stdout.setEncoding("utf8");
     m2.stderr.setEncoding("utf8");
@@ -216,9 +216,14 @@ server.on("request", function (request, response) {
     }    
     // Send file (e.g. images and tutorial) or 404 if not found
     if (url.pathname !== "/chat") {
-        var u = url.pathname.replace("/", '');
+        var filename = __dirname + url.pathname;
+        console.log( filename );
+        //var path = require('path');
+        var path = require('path');
+        filename = path.normalize( path.join(process.cwd(), url.pathname) );
+        console.log("User requested: " + filename);
         try {
-            data = require('fs').readFileSync(u);
+            data = require('fs').readFileSync(filename);
             response.writeHead(200, {"Content-Type": "text/html"});
             response.write(data);
         }

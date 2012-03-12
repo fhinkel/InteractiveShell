@@ -48,8 +48,8 @@ startUser = function(cookies) {
 startM2Process = function() {
     var spawn = require('child_process').spawn;
     console.log("spawning...");
-    var m2 = spawn('M2');
-    //var m2 = spawn('sudo', ['../sandbox/sandbox', '../../sandbox-dir', 'bin/M2', '-q', '-e', 'limitResources()']);
+    //var m2 = spawn('M2');
+    var m2 = spawn('sudo', ['../sandbox/sandbox', '../../sandbox-dir', 'bin/M2', '-q', '-e', 'limitResources()']);
     //var m2 = spawn('../sandbox/sandbox', ['../../sandbox-dir', 'bin/M2']);
     m2.stdout.setEncoding("utf8");
     m2.stderr.setEncoding("utf8");
@@ -220,7 +220,7 @@ server.on("request", function (request, response) {
         console.log( filename );
         //var path = require('path');
         var path = require('path');
-        filename = path.normalize( path.join(process.cwd(), url.pathname) );
+        filename = path.normalize( filename );
         console.log("User requested: " + filename);
         try {
             data = require('fs').readFileSync(filename);

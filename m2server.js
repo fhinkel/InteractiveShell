@@ -47,6 +47,7 @@ startUser = function(cookies) {
 
 startM2Process = function() {
     var spawn = require('child_process').spawn;
+    console.log("spawning...");
     //var m2 = spawn('M2');
     var m2 = spawn('sudo', ['../sandbox/sandbox', '../../sandbox-dir', 'bin/M2', '-q', '-e', 'limitResources()']);
     //var m2 = spawn('../sandbox/sandbox', ['../../sandbox-dir', 'bin/M2']);
@@ -70,8 +71,10 @@ startM2 = function(client) {
 };
 
 restartM2 = function(client) {
+    console.log("in restartM2");
     if (client.m2) { 
         client.m2.kill(); 
+        console.log("killed it!");
     }
     startM2(client);
 };

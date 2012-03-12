@@ -231,7 +231,7 @@ $("#tutorial").html("<div class='lesson' lessonid='1'><div><br>Get started by <a
     
     trym2.loadLesson(trym2.lessonNr);
     trym2.maxLesson = $('#tutorial').children().length;
-    console.log("maxLesson: " + trym2.maxLesson);
+    //console.log("maxLesson: " + trym2.maxLesson);
 
     $("#next").click(function () {
         trym2.switchLesson(1);

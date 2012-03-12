@@ -117,7 +117,7 @@
 				}
 
 				txt=extruder.attr("extTitle")?extruder.attr("extTitle"): "";
-				console.log("extTitle: " + extruder.attr("extTitle"));
+				//console.log("extTitle: " + extruder.attr("extTitle"));
 				var flapLabel = extruder.find(".flapLabel");
 				flapLabel.text(txt); // what is this doing?
 				if(isVertical){
@@ -205,9 +205,9 @@
 				return;
 			}
 			var url=this.options.url;
-			console.log("url: " + url); // file name with different tutorials
+			//console.log("url: " + url); // file name with different tutorials
 			var data=this.options.data;
-			console.log( "data: " + data); // we do not pass in data
+			//console.log( "data: " + data); // we do not pass in data
 			//console.log( $(this) );
 			var where=$(this), voice;
 			var cb= this.options.callback;
@@ -310,7 +310,7 @@
 			if ($.metadata){
 				$.metadata.setType("class");
 				if (voice.metadata().panel) {
-					console.log( voice.metadata().panel);
+					//console.log( voice.metadata().panel);
 					voice.attr("panel",voice.metadata().panel);
 				}
 				if (voice.metadata().data) voice.attr("data",voice.metadata().data);

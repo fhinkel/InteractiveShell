@@ -129,7 +129,7 @@ setInterval(function() {
 
 loadFile = function(url, response) {
     var filename = "";
-    //console.log("User requested: " + url.pathname);
+    console.log("User requested: " + url.pathname);
     // If the request was for "/", send index.html
     if (url.pathname === "/" ) {  
         filename = __dirname + "/index.html";
@@ -138,32 +138,42 @@ loadFile = function(url, response) {
         filename = __dirname + url.pathname;
     }
 
-    filename = require('path').normalize( filename );
-    //console.log("We are trying to serve: " + filename);
+    filename = require('path').normalize(filename);
+    if (filename.indexOf(__dirname) != 0 ) {
+        console.log( "requested file, " + filename + " is not in " + __dirname);
+        response.writeHead(404,{"Content-Type": "text/html"});
+        response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
+        response.end();
+        return;
+    }
+    console.log("We are trying to serve: " + filename);
 
+    var ext = require('path').extname(filename);
+    var contentType = "text/html";
+    if ( /\.css|\.png|\.html|\.js/.test(ext)) {
+        switch(ext) {
+        case ".css": 
+            contentType = 'text/css';
+            break;
+        }
+        if ( require('path').existsSync(filename)) {
+            data = require('fs').readFileSync(filename);
+            response.writeHead(200, {"Content-Type": contentType});
+            response.write(data);
+        }
+        else {
+            console.error("There was an error opening the file:");
+            console.log(err);
+            response.writeHead(404,{"Content-Type": "text/html"});
+            response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
+        }
+        response.end();
+        return;
+    }
     // send css files requested by index.html
-     if (/\.css/.test(filename) ) { 
-         response.writeHead(200, {'Content-Type': 'text/css'});
-         response.write(require('fs').readFileSync(filename));
-         response.end();
-         return;
-     }
-     // Send file (e.g. images and tutorial) or 404 if not found
-     if ( /\.png|\.html|\.js/.test(filename) ) {
-         try {
-             data = require('fs').readFileSync(filename);
-             response.writeHead(200, {"Content-Type": "text/html"});
-             response.write(data);
-         }
-         catch (err) {
-             console.error("There was an error opening the file:");
-             console.log(err);
-             response.writeHead(404,{"Content-Type": "text/html"});
-             response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
-         }
-         response.end();
-         return;
-     }
+    response.writeHead(404,{"Content-Type": "text/html"});
+    response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
+    response.end();
 }
 
 // Client starts eventStream to obtain M2 output and start M2
@@ -267,27 +277,19 @@ server.on("request", function (request, response) {
     var cookies = new Cookies(request, response);
     var clientID = getCurrentClientID(cookies);
         
-    
     if(url.pathname == '/startSourceEvent') {
         actions[url.pathname](clientID, request, response);
         return;
     }
 
-    // at this point, we are expecting /chat, /restart, or /interrupt
-    // for any connection, we want to be able to respond to the client
-    // set client.eventStream, i.e., start eventSourceStream, if it has not been established yet
     if (!clients[clientID].eventStream ) {
          console.log("Send notEventSourceError back to user.");
-         // send error back to user, user needs to start eventStream and resend 'body'
          response.writeHead(200, {'notEventSourceError': 'No socket for client...' });
          response.end();
          return;
     }
         
-    if(actions[url.pathname]) {
-        actions[url.pathname](clientID, request, response);
-        return;
-    }  
+    actions[url.pathname](clientID, request, response);
 });
 
 // Run the server on port 8000. Connect to http://localhost:8000/ to use it.

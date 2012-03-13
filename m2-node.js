@@ -162,14 +162,15 @@ $(document).ready(function () {
         onExtClose: function () {}
     });
     
-    $('#M2In').val("Write an M2 command, e.g., 3+3, and hit Shift+Enter or click on Send to M2 to evaluate it.");
-    $('#M2In').addClass('inactive');
-    $('#M2In').focus(function() {
-        $(this).removeClass('inactive'); 
-        if ($(this).val() == "Write an M2 command, e.g., 3+3, and hit Shift+Enter or click on Send to M2 to evaluate it.") {
-            $(this).val('');
-        }
-    });
+    $('#M2In').val("Evaluate a line by typing Shift+Enter or by clicking on Evaluate.\nHere are some sample commands\nR = ZZ/101[a,b,c]\nS = ZZ/32003[vars(1..10)]\nQQ[x_1..x_6]");
+    
+    //$('#M2In').addClass('inactive');
+    //$('#M2In').focus(function() {
+    //    $(this).removeClass('inactive'); 
+    //    if ($(this).val() == "Write an M2 command, e.g., 3+3, and hit Shift+Enter or click on Send to M2 to evaluate it.") {
+    //        $(this).val('');
+    //    }
+    //});
     //trym2.startEventSource();
     $('.submenuItem').live("click", function () {
         var i = 1,
@@ -222,7 +223,7 @@ $(document).ready(function () {
 
     $("#pageIndex").hide();
 
-$("#tutorial").html("<div class='lesson' lessonid='1'>  <div><br>Get started by <a href='#' id='selectTutorialLink'><b>selecting a tutorial</b></a> or by using the <a href='#' id='inputTerminalLink'><b>Input Terminal</b></a>. Have fun!<br> <p><a href='http://www.math.uiuc.edu/Macaulay2/'>Macaulay2</a> is a software system devoted to supporting research in algebraic geometry and commutative algebra, whose creation has been funded by the National Science Foundation since 1992. </p> <p> To get started, select a tutorial. Click on any highlighted code, Macaulay2 will execute it. The result is displayed on the right. Alternatively, you can use the <b>Input Terminal</b> on the left to write your own commands. Execute a line by positioning your cursor on it and click on the Send to M2 button (or type Shift-Enter). You can switch back to the tutorial at any time. </p> <p>The tutorials demonstrate different aspects of Macaulay2. They are meant to be starting points for your own experimentation. Edit the commands in the <b>Input Terminal</b> and run them again. Whenever you're ready to move on, click the Next button.</p>");
+$("#tutorial").html("<div class='lesson' lessonid='1'>  <div><br>Get started by <a href='#' id='selectTutorialLink'><b>selecting a tutorial</b></a> or by using the <a href='#' id='inputTerminalLink'><b>Input Terminal</b></a>. Have fun!<br> <p><code>4+3*9</code><br><code>apply(10, i -> i *17)</code><br><code>R = ZZ/3[x,y,z]</code><br><code>groebnerBasis ideal(x^2, y*x, z+x)</code><br><a href='http://www.math.uiuc.edu/Macaulay2/'>Macaulay2</a> is a software system devoted to supporting research in algebraic geometry and commutative algebra, whose creation has been funded by the National Science Foundation since 1992. </p> <p> To get started, select a tutorial. Click on any highlighted code, Macaulay2 will execute it. The result is displayed on the right. Alternatively, you can use the <b>Input Terminal</b> on the left to write your own commands. Execute a line by positioning your cursor on it and click on the Send to M2 button (or type Shift-Enter). You can switch back to the tutorial at any time. </p> <p>The tutorials demonstrate different aspects of Macaulay2. They are meant to be starting points for your own experimentation. Edit the commands in the <b>Input Terminal</b> and run them again. Whenever you're ready to move on, click the Next button.</p>");
 // <code>3+18</code><br>    <code>version</code><br>    <code> exit </code> <br>   <code> R = ZZ/101[vars(0..13)] </code> <br><code> gbTrace=1 </code> <br> <code> time res coker vars R </code> <br>  <code> m1 = genericMatrix(R,a,3,3) </code> <br> <code> m2 = genericMatrix(R,j,3,3) </code> <br> <code> J = ideal(m1*m2-m2*m1) </code> <br> <code> C = res J </code> <br> <code> C.dd_3 </code> <br> 
     
     $("#selectTutorialLink").live("click", function() {

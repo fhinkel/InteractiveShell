@@ -161,14 +161,34 @@ loadFile = function(url, response) {
      }
 }
 
+// Client starts eventStream to obtain M2 output and start M2
+startSource = function(clientID, request, response) {
+    response.writeHead(200, {'Content-Type': "text/event-stream" });
+    if (!clients[clientID].eventStream) {
+        clients[clientID].eventStream = response;
+        startM2(clients[clientID]);
+    }
+
+    // If the client closes the connection, remove client from the list of active clients
+    request.connection.on("end", function() {
+        console.log("close connection: clients[" + clientID + "]");
+        if( clients[clientID] && clients[clientID].m2) {
+            clients[clientID].m2.kill();
+            clients[clientID].m2 = null;
+        }
+        delete clients[clientID];
+        response.end();
+    });
+};
+
 // server reacts to these requests
 var actions = [];
-actions['/chat'] = true;
-actions['/restart'] = true;
-actions['/interrupt'] = true;
-actions['/'] = true;
-actions['/startSourceEvent'] = true;
-actions['/admin'] = true;
+actions['/chat'] = false;
+actions['/restart'] = false;
+actions['/interrupt'] = false;
+actions['/'] = false;
+actions['/startSourceEvent'] = startSource;
+actions['/admin'] = false;
 
 // Create a new server
 var server = new http.Server();  
@@ -199,26 +219,11 @@ server.on("request", function (request, response) {
     var cookies = new Cookies(request, response);
     var clientID = getCurrentClientID(cookies);
         
-    // Client starts eventStream to obtain M2 output and start M2
-    if (url.pathname === "/startSourceEvent") {
-        response.writeHead(200, {'Content-Type': "text/event-stream" });
-        if (!clients[clientID].eventStream) {
-            clients[clientID].eventStream = response;
-            startM2(clients[clientID]);
-        }
-
-        // If the client closes the connection, remove client from the list of active clients
-        request.connection.on("end", function() {
-            console.log("close connection: clients[" + clientID + "]");
-            if( clients[clientID] && clients[clientID].m2) {
-                clients[clientID].m2.kill();
-                clients[clientID].m2 = null;
-            }
-            delete clients[clientID];
-            response.end();
-        });
+    
+    if(actions[url.pathname]) {
+        actions[url.pathname](clientID, request, response);
         return;
-    } 
+    }
 
 
     // at this point, we are expecting /chat, /request, or /interrupt

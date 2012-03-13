@@ -127,6 +127,49 @@ setInterval(function() {
     }
 }, 20000);
 
+loadFile = function(url, response) {
+    console.log("User requested: " + url.pathname);
+    // send css files requested by index.html
+     if (/\.css/.test(url.pathname) ) { 
+         response.writeHead(200, {'Content-Type': 'text/css'});
+         var u = url.pathname.replace("/", '');
+         response.write(require('fs').readFileSync(u));
+         response.end();
+         return;
+     }
+     // Send file (e.g. images and tutorial) or 404 if not found
+     if ( /\.png|\.html|\.js/.test(url.pathname) ) {
+         var filename = __dirname + url.pathname;
+         //console.log( filename );
+         //var path = require('path');
+         var path = require('path');
+         filename = path.normalize( filename );
+         console.log("User requested: " + filename);
+         try {
+             data = require('fs').readFileSync(filename);
+             response.writeHead(200, {"Content-Type": "text/html"});
+             response.write(data);
+         }
+         catch (err) {
+             console.error("There was an error opening the file:");
+             console.log(err);
+             response.writeHead(404,{"Content-Type": "text/html"});
+             response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
+         }
+         response.end();
+         return;
+     }
+}
+
+// server reacts to these requests
+var actions = [];
+actions['/chat'] = true;
+actions['/restart'] = true;
+actions['/interrupt'] = true;
+actions['/'] = true;
+actions['/startSourceEvent'] = true;
+actions['/admin'] = true;
+
 // Create a new server
 var server = new http.Server();  
 // When the server gets a new request, run this function
@@ -139,34 +182,17 @@ server.on("request", function (request, response) {
         stats(response);
         return;
     }
-    // send css files requested by index.html
-    if (/\.css/.test(url.pathname) ) { 
-        response.writeHead(200, {'Content-Type': 'text/css'});
-        var u = url.pathname.replace("/", '');
-        response.write(require('fs').readFileSync(u));
+    
+    // If the request was for "/", send index.html
+    if (url.pathname === "/") {  
+        response.writeHead(200, {"Content-Type": "text/html"});
+        response.write(clientui);
         response.end();
         return;
     }
-    // Send file (e.g. images and tutorial) or 404 if not found
-    if ( /\.png|^[index]\.html|\.js/.test(url.pathname) ) {
-        var filename = __dirname + url.pathname;
-        //console.log( filename );
-        //var path = require('path');
-        var path = require('path');
-        filename = path.normalize( filename );
-        console.log("User requested: " + filename);
-        try {
-            data = require('fs').readFileSync(filename);
-            response.writeHead(200, {"Content-Type": "text/html"});
-            response.write(data);
-        }
-        catch (err) {
-            console.error("There was an error opening the file:");
-            console.log(err);
-            response.writeHead(404,{"Content-Type": "text/html"});
-            response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
-        }
-        response.end();
+ 
+    if (actions[url.pathname] == undefined ) {
+        loadFile (url, response);
         return;
     }
     
@@ -194,13 +220,6 @@ server.on("request", function (request, response) {
         return;
     } 
 
-    // If the request was for "/", send index.html
-    if (url.pathname === "/" || url.pathname === "/index.html") {  
-        response.writeHead(200, {"Content-Type": "text/html"});
-        response.write(clientui);
-        response.end();
-        return;
-    }
 
     // at this point, we are expecting /chat, /request, or /interrupt
     // for any connection, we want to be able to respond to the client

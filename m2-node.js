@@ -139,7 +139,7 @@ trym2.getLessonTitles = function (tutorialFile, callback) {
 
 // Register for notification of new messages using EventSource
 trym2.startEventSource = function () {
-    var chat = new EventSource("/chat");
+    var chat = new EventSource("/startSourceEvent");
     chat.onmessage = function(event) {            // When a new message arrives
          var msg = event.data;                     // Get text from event object
          if (msg !== "") {
@@ -151,6 +151,8 @@ trym2.startEventSource = function () {
 };
 
 $(document).ready(function () {
+    // send server our client.eventStream
+    trym2.startEventSource();
     var extruderMenu = $("#extruderTop").buildMbExtruder({
         position: "top",
         width: 350,
@@ -168,7 +170,7 @@ $(document).ready(function () {
             $(this).val('');
         }
     });
-    trym2.startEventSource();
+    //trym2.startEventSource();
     $('.submenuItem').live("click", function () {
         var i = 1,
             lessonId = $(this).attr('lessonid');

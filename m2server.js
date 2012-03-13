@@ -128,23 +128,28 @@ setInterval(function() {
 }, 20000);
 
 loadFile = function(url, response) {
-    console.log("User requested: " + url.pathname);
+    var filename = "";
+    //console.log("User requested: " + url.pathname);
+    // If the request was for "/", send index.html
+    if (url.pathname === "/" ) {  
+        filename = __dirname + "/index.html";
+    }
+    else {
+        filename = __dirname + url.pathname;
+    }
+
+    filename = require('path').normalize( filename );
+    //console.log("We are trying to serve: " + filename);
+
     // send css files requested by index.html
-     if (/\.css/.test(url.pathname) ) { 
+     if (/\.css/.test(filename) ) { 
          response.writeHead(200, {'Content-Type': 'text/css'});
-         var u = url.pathname.replace("/", '');
-         response.write(require('fs').readFileSync(u));
+         response.write(require('fs').readFileSync(filename));
          response.end();
          return;
      }
      // Send file (e.g. images and tutorial) or 404 if not found
-     if ( /\.png|\.html|\.js/.test(url.pathname) ) {
-         var filename = __dirname + url.pathname;
-         //console.log( filename );
-         //var path = require('path');
-         var path = require('path');
-         filename = path.normalize( filename );
-         console.log("User requested: " + filename);
+     if ( /\.png|\.html|\.js/.test(filename) ) {
          try {
              data = require('fs').readFileSync(filename);
              response.writeHead(200, {"Content-Type": "text/html"});
@@ -181,11 +186,63 @@ startSource = function(clientID, request, response) {
     });
 };
 
+chatAction = function(clientID, request, response) {
+    request.setEncoding("utf8");
+    var body = "";
+    // When we get a chunk of data, add it to the body
+    request.on("data", function(chunk) { body += chunk; });
+            
+    // Send input to M2 when we have received the complete body
+    request.on("end", function() { 
+        if(!clients[clientID].m2) {
+            console.log("No M2 object for client " + clientID + ", starting M2.");
+            startM2(clients[clientID]);                    
+        }
+        if (!clients[clientID].m2.running) {
+            console.log("No running M2 for client " + clientID + ", waiting for user to send /restart.");
+            response.writeHead(200);  
+            response.end();
+            return;
+        }               
+        try {
+            //console.log("Send M2 input: " + body);
+            clients[clientID].m2.stdin.write(body);
+        }
+        catch (err) {
+            throw ("Internal error: nothing to write to?!");
+            // send error back to user, user needs to start eventStream and resend 'body'
+            //response.writeHead(200, {
+            //  'notEventSourceError': 'No socket for client...' });
+            //response.end();
+            return;
+        }
+        response.writeHead(200);  
+        response.end();
+    });
+};
+
+restartAction = function(clientID, request, response) {
+    console.log("received: /restart from " + clientID);
+    startM2(clients[clientID]);
+    response.writeHead(200);  
+    response.end();
+};
+
+
+interruptAction = function(clientID, request, response)  {
+    console.log("received: /interrupt from " + clientID);
+    if (clients[clientID] && clients[clientID].m2) {
+        clients[clientID].m2.kill('SIGINT');
+    }
+    response.writeHead(200);  
+    response.end();
+};
+
 // server reacts to these requests
 var actions = [];
-actions['/chat'] = false;
-actions['/restart'] = false;
-actions['/interrupt'] = false;
+actions['/chat'] = chatAction;
+actions['/restart'] = restartAction;
+actions['/interrupt'] = interruptAction;
 actions['/'] = false;
 actions['/startSourceEvent'] = startSource;
 actions['/admin'] = false;
@@ -195,23 +252,14 @@ var server = new http.Server();
 // When the server gets a new request, run this function
 server.on("request", function (request, response) {
     //console.log( "got on");
-    // Parse the requested URL
     var url = require('url').parse(request.url);
     
     if (url.pathname === "/admin") {
         stats(response);
         return;
     }
-    
-    // If the request was for "/", send index.html
-    if (url.pathname === "/") {  
-        response.writeHead(200, {"Content-Type": "text/html"});
-        response.write(clientui);
-        response.end();
-        return;
-    }
  
-    if (actions[url.pathname] == undefined ) {
+    if (url.pathname === "/"  || actions[url.pathname] == undefined ) {
         loadFile (url, response);
         return;
     }
@@ -220,77 +268,26 @@ server.on("request", function (request, response) {
     var clientID = getCurrentClientID(cookies);
         
     
-    if(actions[url.pathname]) {
+    if(url.pathname == '/startSourceEvent') {
         actions[url.pathname](clientID, request, response);
         return;
     }
 
-
-    // at this point, we are expecting /chat, /request, or /interrupt
+    // at this point, we are expecting /chat, /restart, or /interrupt
     // for any connection, we want to be able to respond to the client
     // set client.eventStream, i.e., start eventSourceStream, if it has not been established yet
     if (!clients[clientID].eventStream ) {
          console.log("Send notEventSourceError back to user.");
          // send error back to user, user needs to start eventStream and resend 'body'
-         response.writeHead(200, {
-           'notEventSourceError': 'No socket for client...' });
+         response.writeHead(200, {'notEventSourceError': 'No socket for client...' });
          response.end();
          return;
     }
-    // user is sending M2 input
-    if (url.pathname === "/chat" ) {
-        request.setEncoding("utf8");
-        var body = "";
-        // When we get a chunk of data, add it to the body
-        request.on("data", function(chunk) { body += chunk; });
-                
-        // Send input to M2 when we have received the complete body
-        request.on("end", function() { 
-            if(!clients[clientID].m2) {
-                console.log("No M2 object for client " + clientID + ", starting M2.");
-                startM2(clients[clientID]);                    
-            }
-            if (!clients[clientID].m2.running) {
-                console.log("No running M2 for client " + clientID + ", waiting for user to send /restart.");
-                response.writeHead(200);  
-                response.end();
-                return;
-            }               
-            try {
-                //console.log("Send M2 input: " + body);
-                clients[clientID].m2.stdin.write(body);
-            }
-            catch (err) {
-                throw ("Internal error: nothing to write to?!");
-                // send error back to user, user needs to start eventStream and resend 'body'
-                //response.writeHead(200, {
-                //  'notEventSourceError': 'No socket for client...' });
-                //response.end();
-                return;
-            }
-            response.writeHead(200);  
-            response.end();
-        });
+        
+    if(actions[url.pathname]) {
+        actions[url.pathname](clientID, request, response);
         return;
-    }
-    if (url.pathname === "/restart") {
-        var clientID = getCurrentClientID(cookies);
-        console.log("received: /restart from " + clientID);
-        startM2(clients[clientID]);
-        response.writeHead(200);  
-        response.end();
-        return;
-    }
-    if (url.pathname === "/interrupt") {
-        var clientID = getCurrentClientID(cookies);
-        if (clients[clientID] && clients[clientID].m2) {
-            clients[clientID].m2.kill('SIGINT');
-        }
-        console.log("received: /interrupt from " + clientID);
-        response.writeHead(200);  
-        response.end();
-        return;
-    }    
+    }  
 });
 
 // Run the server on port 8000. Connect to http://localhost:8000/ to use it.

@@ -13,13 +13,9 @@ a {
     color: #0000EE;
 }
 
-#title {
-    color: red;
-}
-
 body {
     color:#000;
-    background-color: #D8FFFF; /*#DCDCDC;*/
+    background-color: #DCDCDC; /*#D8FFFF;*/
     font-family: Helvetica; /*Trebuche, Lucida Grande, Palatino Georgia,Helvetica;*/
 	height: 96%;	
 }
@@ -71,7 +67,7 @@ div {
 
 #inputarea, #lesson, #outputarea {
 	width: 49%;
-	height: 75%;
+	height: 90%;
 	 
 	
 }

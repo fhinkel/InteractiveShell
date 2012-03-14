@@ -50,7 +50,8 @@ startM2Process = function() {
     console.log("spawning...");
     //var m2 = spawn('M2');
     //var m2 = spawn('sudo', ['../sandbox/sandbox', '../../sandbox-dir', 'bin/M2', '-q', '-e', 'limitResources()']);
-    var m2 = spawn('../sandbox/sandbox', ['../../sandbox-dir', 'bin/M2', '-q', '-e', 'limitResources()']);
+    var m2 = spawn('../sandbox/sandbox', ['../../sandbox-dir', 'bin/M2', '-q', '--read-only-files', '-e', 'limitProcesses 0; limitFiles 25']);
+    // sudo env -i ./sandbox sandbox-dir /bin/M2 -q --read-only-files -e 'limitProcesses 0; limitFiles 25'
     m2.running = true;
     m2.stdout.setEncoding("utf8");
     m2.stderr.setEncoding("utf8");

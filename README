@@ -1,12 +1,16 @@
+3/13/2012
+multi-line <code>
+
+
 Greg: 
 "useful starting code" in Terminal
 Get rid of M2 title, put in welcome screen instead
-same browser, different tabs, several M2's in the same output window
-help should open up in tutorial-style css, maybe on the left side? 
+Bug: same browser, different tabs, several M2's in the same output window
+help 'command' should open up in tutorial-style css, maybe on the left side? 
 Tutorial button on the bottom of the page? 
 syntax highlighting and autocompletion (maybe a button not necessarily tab)
 Previous and Next should be inside the tutorial screen
-
+re-arrange title, buttons, menu 
 
 3/12/2012
   In general: security
@@ -32,7 +36,7 @@ Previous and Next should be inside the tutorial screen
     at the moment: serving "/" resends index.hmtl and restarts M2.
     would be nice if it didn't do that: it could remember process if cookie is OK.
   
-  user authentification
+  user authentication
     allowing files on the server? Better persistence, better M2 performance (less limits)
 
 3/7/2012

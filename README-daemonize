@@ -1,0 +1,3 @@
+sudo  -i sh -c "cd /home/fhinkel/src/tryM2; forever -p /home/fhinkel/m2server-logging -l /home/fhinkel/m2server-logging/forever.log start m2server.js"
+
+use forever to run m2 on AWS machine, see https://github.com/nodejitsu/forever

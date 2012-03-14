@@ -215,7 +215,7 @@ chatAction = function(clientID, request, response) {
             return;
         }               
         try {
-            //console.log("Send M2 input: " + body);
+            console.log("M2 input: " + body);
             clients[clientID].m2.stdin.write(body);
         }
         catch (err) {

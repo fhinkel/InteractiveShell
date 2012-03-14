@@ -1,3 +1,19 @@
+Gwen: 
+ability to get worksheet uploaded
+print
+DAn: 2 dir's for packages: experimental
+users can start their own server
+want to be able to run programs e.g., gfan...
+be able to display jpg files and generate them as in posets package
+list of allowed commands
+don't delete history on reload in input window
+ask David Cook about M2/gap
+test low memory conditions, gracefully telling the user 
+lots of users -> issues? 
+Save input and output windows
+sage - notebook doesn't run M2
+link for reporting issues, asking questions
+
 3/14/2012
 bug: website is unresponsive for minutes (?) when the connection was closed in between
 "keyboard" with buttons for (){}_#... to make iPad use easier

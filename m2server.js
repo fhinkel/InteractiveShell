@@ -75,7 +75,7 @@ startM2 = function(client) {
     client.m2 = startM2Process();
     console.log("starting sending M2 output to eventStream");
     var ondata = function(data) {
-        //console.log('ondata: ' + data);
+        console.log('ondata: ' + data);
         message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
         if (!client.eventStream) { // fatal error, should not happen
             console.log("Error: No event stream in Start M2");
@@ -220,6 +220,7 @@ chatAction = function(clientID, request, response) {
             clients[clientID].m2.stdin.write(body);
         }
         catch (err) {
+            console.log("Internal error: nothing to write to?!");
             throw ("Internal error: nothing to write to?!");
             // send error back to user, user needs to start eventStream and resend 'body'
             //response.writeHead(200, {

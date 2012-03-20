@@ -1,11 +1,14 @@
+3/20/12
+apparmor?
+
 Gwen: 
 ability to get worksheet uploaded
 print
-DAn: 2 dir's for packages: experimental
+Dan: 2 dir's for packages: experimental
 users can start their own server
 want to be able to run programs e.g., gfan...
 be able to display jpg files and generate them as in posets package
-list of allowed commands
+list of allowed commands  (like gfan etc)
 don't delete history on reload in input window
 ask David Cook about M2/gap
 test low memory conditions, gracefully telling the user 

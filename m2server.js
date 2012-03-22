@@ -130,6 +130,24 @@ setInterval(function() {
 
 loadFile = function(url, response) {
     var filename = "";
+    if (/\.jpg/.test(url.pathname)) {
+        filename = url.pathname;
+        console.log("Hack to get jpg: "+ filename );
+        // Hack for now :(
+        if ( require('path').existsSync(filename)) {
+            data = require('fs').readFileSync(filename);
+            response.writeHead(200, {"Content-Type": "image/jpg"});
+            response.write(data);
+        }
+        else {
+            console.log("There was an error opening the file: " + filename);
+            response.writeHead(404,{"Content-Type": "text/html"});
+            response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
+        }
+        response.end();
+        return;
+    }
+
     console.log("User requested: " + url.pathname);
     // If the request was for "/", send index.html
     if (url.pathname === "/" ) {  
@@ -163,8 +181,7 @@ loadFile = function(url, response) {
             response.write(data);
         }
         else {
-            console.error("There was an error opening the file:");
-            console.log(err);
+            console.log("There was an error opening the file:");
             response.writeHead(404,{"Content-Type": "text/html"});
             response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
         }

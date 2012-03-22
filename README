@@ -1,3 +1,10 @@
+3/22/2012
+cleanup loadFiles for jpg
+display image not in help box
+get PID - find user by PID
+copy file to public/ dir
+does this work in sandboxing?
+
 3/20/12
 apparmor?
 

@@ -140,13 +140,26 @@ trym2.getLessonTitles = function (tutorialFile, callback) {
 // Register for notification of new messages using EventSource
 trym2.startEventSource = function () {
     var chat = new EventSource("/startSourceEvent");
+    chat.addEventListener('image', function(event) {
+        var imageUrl = event.origin + event.data;
+        console.log("Image coming from: " + event.origin);
+        //console.log("We got an image! " + imageUrl);
+        if (imageUrl) {
+            console.log("We got an image! " + imageUrl);
+            $("#help-dialog").append('<h1>Fancy Image!</h1><img src="' + imageUrl + '"/>');
+            trym2.helpScreen();
+        }
+    }, false);
     chat.onmessage = function(event) {            // When a new message arrives
          var msg = event.data;                     // Get text from event object
+         console.log(event);
+         
          if (msg !== "") {
                  //console.log("We got a chat message: " + msg);
                  $("#M2Out").val($("#M2Out").val() + msg);
                  trym2.scrollDown("#M2Out");
          }
+
      }
 };
 

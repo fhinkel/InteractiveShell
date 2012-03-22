@@ -267,6 +267,50 @@ interruptAction = function(clientID, request, response)  {
     response.end();
 };
 
+// fake function returning clientID for a given pid
+findClientID = function(pid){
+    for (var prop in clients) {
+        if (clients.hasOwnProperty(prop) 
+            && clients[prop]
+            && clients[prop].eventStream) {
+                console.log("findClientID picked user with clientID " + prop);
+                return prop;
+        }
+    }
+}
+
+// return a fake PID
+parseUrlForPid = function(url) {
+    console.log(url);
+    return 1234;
+}
+
+// return fake path to image
+parseUrlForPath = function(url) {
+    return '/Users/franzi/1.jpg';
+}
+
+imageAction = function(url, response) {
+    response.writeHead(200);  
+    response.end();
+    
+    var pid = parseUrlForPid(url);
+    var path = parseUrlForPath(url); // a string
+    var clientID = findClientID(pid);
+    client = clients[clientID];
+    console.log('we got a request for an image: ' + path + ", for clientID " + clientID);
+    // parse request for PID and path to image
+    
+    message = 'event: image\r\ndata: ' + path + "\r\n\r\n";
+    if (!client.eventStream) { // fatal error, should not happen
+        console.log("Error: No event stream in Start M2");
+    }
+    else {
+        console.log("Sent image message: " + message);
+        client.eventStream.write(message);           
+    }
+};
+
 // server reacts to these requests
 var actions = [];
 actions['/chat'] = chatAction;
@@ -275,6 +319,7 @@ actions['/interrupt'] = interruptAction;
 actions['/'] = false;
 actions['/startSourceEvent'] = startSource;
 actions['/admin'] = false;
+actions['/image'] = false;
 
 // Create a new server
 var server = new http.Server();  
@@ -285,6 +330,12 @@ server.on("request", function (request, response) {
     
     if (url.pathname === "/admin") {
         stats(response);
+        return;
+    }
+    
+    if ( /^\/image/.test(url.pathname) ){
+        console.log("Server got a request for /image");
+        imageAction(url.pathname, response);
         return;
     }
  

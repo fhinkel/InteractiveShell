@@ -48,9 +48,9 @@ startUser = function(cookies) {
 startM2Process = function() {
     var spawn = require('child_process').spawn;
     console.log("spawning...");
-    //var m2 = spawn('M2');
+    var m2 = spawn('M2');
     //var m2 = spawn('sudo', ['../sandbox/sandbox', '../../sandbox-dir', 'bin/M2', '-q', '-e', 'limitResources()']);
-    var m2 = spawn('../sandbox/sandbox', ['../../sandbox-dir', 'bin/M2', '-q', '--read-only-files', '-e', 'limitProcesses 0; limitFiles 25']);
+    //var m2 = spawn('../sandbox/sandbox', ['../../sandbox-dir', 'bin/M2', '-q', '--read-only-files', '-e', 'limitProcesses 0; limitFiles 25']);
     // sudo env -i ./sandbox sandbox-dir /bin/M2 -q --read-only-files -e 'limitProcesses 0; limitFiles 25'
     m2.running = true;
     m2.stdout.setEncoding("utf8");
@@ -295,5 +295,5 @@ server.on("request", function (request, response) {
 });
 
 // Run the server on port 8000. Connect to http://localhost:8000/ to use it.
-console.log("Listening on port 8000...");
-server.listen(8000);
+console.log("Listening on port 8002..");
+server.listen(8002);

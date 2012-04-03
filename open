@@ -1,0 +1,6 @@
+echo $1
+echo "My PID" 
+echo $$
+echo "parent PID" 
+echo $PPID
+curl http://localhost:8002/image/$PPID/$1

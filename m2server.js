@@ -133,7 +133,7 @@ loadFile = function(url, response) {
     if (/\.jpg/.test(url.pathname)) {
         filename = url.pathname;
         console.log("Hack to get jpg: "+ filename );
-        // Hack for now :(
+        // need to check permissions etc
         if ( require('path').existsSync(filename)) {
             data = require('fs').readFileSync(filename);
             response.writeHead(200, {"Content-Type": "image/jpg"});
@@ -267,48 +267,79 @@ interruptAction = function(clientID, request, response)  {
     response.end();
 };
 
-// fake function returning clientID for a given pid
+// returning clientID for a given M2 pid
 findClientID = function(pid){
+    console.log("Searching for clientID whose M2 has PID " + pid);
     for (var prop in clients) {
-        if (clients.hasOwnProperty(prop) 
-            && clients[prop]
-            && clients[prop].eventStream) {
-                console.log("findClientID picked user with clientID " + prop);
-                return prop;
+        if (clients.hasOwnProperty(prop) && clients[prop] && clients[prop].m2) {
+            if (pid == clients[prop].m2.pid) {
+                console.log("We found the client! It is " + prop);
+                if (clients[prop].eventStream) {
+                    console.log("findClientID picked user with clientID " + prop);
+                    return prop;
+                } else {
+                    throw ("Client " + clientID + " does not have an eventstream.");
+                }
+            }
         }
     }
+    throw ("Did not find a client for PID " + pid);
 }
 
-// return a fake PID
+// return PID extracted from pathname for image displaying
 parseUrlForPid = function(url) {
     console.log(url);
-    return 1234;
+    var pid = url.match(/\/image\/(\d+)\//);
+    //console.log( pid );
+    if (!pid) {
+        console.log("error, didn't get PID in image url");
+        throw ("Did not get PID in image url");
+    }
+    console.log("PID = " + pid[1]);
+    return parseInt(pid[1],10);
 }
 
-// return fake path to image
+// return path to image
 parseUrlForPath = function(url) {
-    return '/Users/franzi/1.jpg';
+    var imagePath = url.match(/\/image\/\d+\/(.*)/);
+    console.log(imagePath);
+    if (!imagePath) {
+        throw("Did not get imagePath in image url");
+    }
+    console.log("imagePath = " + imagePath[1]);
+    return imagePath[1];
 }
 
 imageAction = function(url, response) {
     response.writeHead(200);  
     response.end();
     
-    var pid = parseUrlForPid(url);
-    var path = parseUrlForPath(url); // a string
-    var clientID = findClientID(pid);
-    client = clients[clientID];
-    console.log('we got a request for an image: ' + path + ", for clientID " + clientID);
-    // parse request for PID and path to image
-    
-    message = 'event: image\r\ndata: ' + path + "\r\n\r\n";
-    if (!client.eventStream) { // fatal error, should not happen
-        console.log("Error: No event stream in Start M2");
+    try {
+        var pid = parseUrlForPid(url);
+        var path = parseUrlForPath(url); // a string
+        var clientID = findClientID(pid);
+        
+        client = clients[clientID];
+          if (!client) {
+              console.log("oops, no client");
+              return;
+          }
+          console.log('we got a request for an image: ' + path + ", for clientID " + clientID);
+          // parse request for PID and path to image
+
+          message = 'event: image\r\ndata: ' + path + "\r\n\r\n";
+          if (!client.eventStream) { // fatal error, should not happen
+              console.log("Error: No event stream in Start M2");
+          }
+          else {
+              console.log("Sent image message: " + message);
+              client.eventStream.write(message);           
+          }
     }
-    else {
-        console.log("Sent image message: " + message);
-        client.eventStream.write(message);           
+    catch (err) {
+        console.log("Sorry, could not serve the image: " + err);
     }
+  
 };
 
 // server reacts to these requests
@@ -334,7 +365,7 @@ server.on("request", function (request, response) {
     }
     
     if ( /^\/image/.test(url.pathname) ){
-        console.log("Server got a request for /image");
+        console.log("Server got a request for /image from the open program");
         imageAction(url.pathname, response);
         return;
     }

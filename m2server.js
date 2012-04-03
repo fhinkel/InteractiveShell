@@ -17,6 +17,8 @@
 // A POST message on /chat: input should be Macaulay2 commands to perform.
 // A message on /chat: start an event emitter, which will return the output of
 // the M2 process.
+var port = 8002; 
+var sandboxDir = "/";
 
 var http = require('http');  // NodeJS HTTP server API
 var Cookies = require("cookies");
@@ -130,10 +132,19 @@ setInterval(function() {
 
 loadFile = function(url, response) {
     var filename = "";
-    if (/\.jpg/.test(url.pathname)) {
+    if (/\.jpg/.test(url.pathname) && /\/tmp\//.test(url.pathname)) {
         filename = url.pathname;
-        console.log("Hack to get jpg: "+ filename );
-        // need to check permissions etc
+        console.log("Request for jpg inside sandbox dir: "+ filename );       
+        filename = sandboxDir + filename;
+        filename = require('path').normalize(filename);
+        if (filename.indexOf(sandboxDir + "tmp/") != 0 ) {
+            console.log( "requested file, " + filename + " is not in " + sandboxDir + "tmp/");
+            response.writeHead(404,{"Content-Type": "text/html"});
+            response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
+            response.end();
+            return;
+        }
+         
         if ( require('path').existsSync(filename)) {
             data = require('fs').readFileSync(filename);
             response.writeHead(200, {"Content-Type": "image/jpg"});
@@ -169,10 +180,13 @@ loadFile = function(url, response) {
 
     var ext = require('path').extname(filename);
     var contentType = "text/html";
-    if ( /\.css|\.png|\.html|\.js/.test(ext)) {
+    if ( /\.css|\.jpg|\.png|\.html|\.js/.test(ext)) {
         switch(ext) {
         case ".css": 
             contentType = 'text/css';
+            break;
+        case ".jpg":
+            contentType = 'image/jpg';
             break;
         }
         if ( require('path').existsSync(filename)) {
@@ -394,5 +408,5 @@ server.on("request", function (request, response) {
 });
 
 // Run the server on port 8000. Connect to http://localhost:8000/ to use it.
-console.log("Listening on port 8002..");
-server.listen(8002);
+console.log("Listening on port " + port + "...");
+server.listen(port);

@@ -1,39 +1,44 @@
+Still to do: 
+display image not in help box
+does this work in sandboxing?
+cronjob to cleanup /tmp
+/tmp should be only writable directory in sandbox
+make images work in sandbox and still have security (talk to Dan about allowing allowing restricted M2 to write)
+
+maybe work on Print and Don't reload when briefly navigating away from site
+Can we run a non-restricted M2 inside the sandbox and still be secure?
+
+
+4/3/2012
+source .profile because open is in export PATH=/Users/franzi/open-bin:$PATH
+goal for today: serve the right image, not a static one
+
+
+
 3/22/2012
 cleanup loadFiles for jpg
-display image not in help box
 get PID - find user by PID
-copy file to public/ dir
-does this work in sandboxing?
+
 
 3/20/12
-apparmor?
+app-armor?
 
 allowing the display of created jpg or png images (e.g. with Graphs.m2).
   one possible design:
     a. M2 places all such files into a specific directory, based on the pid (in chroot dir)
-    b. M2 sends thru stdout something like:  <img src="generated/a.jpg"></img>
-      one option: M2 or m2server is sending html to #M2out
-      problems: where is the file a.jpg?  M2 writes this file somewhere.  We have to limit possibles.
-        have to query somehow the output.
-    c. when asked by client, m2server can serve this page (it knows how to find it:
-        url=/jpg/a.jpg).  Takes cookie, determines directory in the sandbox, and then serves that file,
-        if it exists, as text/jpg.
-    d. m2node.js: when receives M2 output, needs to check somehow for images.
+
 
   problem: the 'open' script which would communicate with the server, doesn't know who created
-    then picture. [it could do: netcat localhost:8000/picture/$pid/a.jpg]
+    then picture. [it could do: curl localhost:8000/picture/$pid/a.jpg]
       a. use getppid
-      b. does netcat
-     m2server: handles /getpicture, findClientIDFromPID, gets actual file name (in sandbox), 
-       copy picture into /public/cookiename.a.jpg
+      b. does curl
+     m2server: handles /image/, findClientIDFromPID, gets actual file name (in sandbox), 
        sends on the event stream for that client, an object of type image:
      m2node: on client side, ondata routine needs to check the 'image' type, and if it is set, it loads the file
        in a overlayed window (or whatever).
-     m2server: handles /*.jpg, by looking at cookie value, and construct new file name, then serves that file.
 
-  Lars: what is the best way for M2 to 
 
-Gwen: 
+Gwyn: 
 ability to get worksheet uploaded
 print
 Dan: 2 dir's for packages: experimental

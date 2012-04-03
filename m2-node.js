@@ -116,6 +116,9 @@ trym2.sendOnEnterCallback = function (inputfield) {
 trym2.helpScreen = function () {
     //console.log("Display Help.");
     $("#help-dialog").dialog('open');
+    $("#help-dialog").scrollTop(0);
+    
+    
 };
 
 // input: filename with tutorial content

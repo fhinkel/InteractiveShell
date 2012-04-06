@@ -149,6 +149,13 @@ trym2.startEventSource = function () {
         //console.log("We got an image! " + imageUrl);
         if (imageUrl) {
             console.log("We got an image! " + imageUrl);
+            //$('#help-dialog').dialog({
+            //    height: 340,
+            //    width: 460,
+            //    modal: true,
+            //    autoOpen: false
+            //});
+            $('#help').click(trym2.helpScreen);
             $("#help-dialog").prepend('<h1>Fancy Image!</h1><img src="' + imageUrl + '"/>');
             trym2.helpScreen();
         }
@@ -207,7 +214,7 @@ $(document).ready(function () {
         width: 460,
         modal: true,
         autoOpen: false
-    });
+    }).draggable();
     $('#help').click(trym2.helpScreen);
 
     SyntaxHighlighter.all();

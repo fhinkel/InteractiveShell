@@ -1,7 +1,11 @@
+
+Mike: get server ready for May visit
+
+
 Still to do: 
 display image not in help box
 does this work in sandboxing?
-cronjob to cleanup /tmp
+cronjob to cleanup /tmp (Maybe Lars?)
 /tmp should be only writable directory in sandbox
 make images work in sandbox and still have security (talk to Dan about allowing allowing restricted M2 to write)
 

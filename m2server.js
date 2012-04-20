@@ -49,7 +49,7 @@ startUser = function(cookies) {
 
 startM2Process = function() {
     var spawn = require('child_process').spawn;
-    console.log("spawning...");
+    console.log("spawning new M2 process...");
     var m2 = spawn('M2');
     //var m2 = spawn('sudo', ['../sandbox/sandbox', '../../sandbox-dir', 'bin/M2', '-q', '-e', 'limitResources()']);
     //var m2 = spawn('../sandbox/sandbox', ['../../sandbox-dir', 'bin/M2', '-q', '--read-only-files', '-e', 'limitProcesses 0; limitFiles 25']);
@@ -69,12 +69,11 @@ startM2Process = function() {
 // if client.m2 is not null, kill it, then start a new process
 // attach M2 output to client.eventStream
 startM2 = function(client) {
-    if (client.m2) { 
-        client.m2.kill(); 
-        console.log("In startM2(), killed M2 with PID " + client.m2.pid);
+    if (!client.m2) { 
+        client.m2 = startM2Process();   
     }
     // client is an object of type Client
-    client.m2 = startM2Process();
+
     console.log("starting sending M2 output to eventStream");
     var ondata = function(data) {
         console.log('ondata: ' + data);
@@ -85,6 +84,8 @@ startM2 = function(client) {
         }
         client.eventStream.write(message);           
     };
+    client.m2.stdout.removeAllListeners('data');
+    client.m2.stderr.removeAllListeners('data');
     client.m2.stdout.on('data', ondata);
     client.m2.stderr.on('data', ondata);
 
@@ -219,11 +220,12 @@ startSource = function(clientID, request, response) {
     // If the client closes the connection, remove client from the list of active clients
     request.connection.on("end", function() {
         console.log("close connection: clients[" + clientID + "]");
-        if( clients[clientID] && clients[clientID].m2) {
-            clients[clientID].m2.kill();
-            clients[clientID].m2 = null;
-        }
-        delete clients[clientID];
+        //if( clients[clientID] && clients[clientID].m2) {
+         //   clients[clientID].m2.kill();
+          //  clients[clientID].m2 = null;
+        //}
+        //delete clients[clientID];
+        clients[clientID].eventStream = null;
         response.end();
     });
 };
@@ -265,8 +267,14 @@ chatAction = function(clientID, request, response) {
 };
 
 restartAction = function(clientID, request, response) {
+    var client = clients[clientID];
     console.log("received: /restart from " + clientID);
-    startM2(clients[clientID]);
+    if (client.m2) { 
+        client.m2.kill(); 
+        console.log("In restartAction, killed M2 with PID " + client.m2.pid);         
+        client.m2 = null;
+    }
+    startM2(client);
     response.writeHead(200);  
     response.end();
 };
@@ -393,6 +401,7 @@ server.on("request", function (request, response) {
     var clientID = getCurrentClientID(cookies);
         
     if(url.pathname == '/startSourceEvent') {
+        //console.log("action is startSourceEvent");
         actions[url.pathname](clientID, request, response);
         return;
     }

@@ -1,11 +1,21 @@
+4/20/2012
+* problem: 2 tabs in the same browser share the same cookie and the same eventStream
+* what happens when we quit the browser? 
+
+Timer: 
+- start timer when user leaves
+- destroy timer when user with same cookie comes back
+- Can we determine if M2 is currently running a calculation for a client?
+
+
 
 Mike: get server ready for May visit
 
 4/17/2012
 Do not start a new user every time they leave the page:  
 - don't delete clientID right away from clients[], use a timer instead
-- we are currently writing to many (dead) clients with ondata, we need to "unlink" previous on data calls first, before assigning them to new eventStreams
-- hack from this week is in m2server-4/17.js
+- Done: we are currently writing to many (dead) clients with ondata, we need to "unlink" previous on data calls first, before assigning them to new eventStreams
+- merged with original file: hack from this week is in m2server-4/17.js
 
 Still to do: 
 display image not in help box

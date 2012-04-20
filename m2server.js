@@ -220,6 +220,7 @@ startSource = function(clientID, request, response) {
     // If the client closes the connection, remove client from the list of active clients
     request.connection.on("end", function() {
         console.log("close connection: clients[" + clientID + "]");
+        // 
         //if( clients[clientID] && clients[clientID].m2) {
          //   clients[clientID].m2.kill();
           //  clients[clientID].m2 = null;

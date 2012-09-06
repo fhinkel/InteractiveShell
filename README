@@ -1,3 +1,13 @@
+9/6/2012
+For security reasons, we're moving to FreeBSD with jails instead of chroot: 
+* freebsd system working
+* M2 on it
+* node.js on it, npm
+* M2 in jail
+* connect jails, changing M2server code
+
+
+
 8/31/2012
 * get it running on Mike's newest machine
 * maybe get MacOS 10 Server, can we sandbox it on there? 

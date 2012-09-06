@@ -1,0 +1,43 @@
+\documentclass[a4paper]{article}
+\usepackage{verbatim}
+
+\begin{document}
+\section{sudo}
+
+First one needs to install the port sudo. Login as root, then
+
+\begin{verbatim}
+cd /usr/ports/security/sudo
+make
+make install clean
+\end{verbatim}
+
+Then one can select which group should contain the sudoers
+
+\begin{verbatim}
+visudo
+\end{verbatim}
+
+Maybe one needs to create that group and add users to it
+
+\begin{verbatim}
+pw groupadd group
+pw groupmod group -m new_member
+\end{verbatim}
+
+
+\section{portmaster}
+Install portmaster
+
+\begin{verbatim}
+cd /usr/ports/ports-mgmt/portmaster
+sudo make install clean
+\end{verbatim}
+
+Now e.g. vim can be installed like
+
+\begin{verbatim}
+cd /usr/ports
+sudo portmaster editors/vim
+\end{verbatim}
+\end{document}

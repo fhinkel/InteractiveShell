@@ -25,7 +25,6 @@ pw groupadd group
 pw groupmod group -m new_member
 \end{verbatim}
 
-
 \section{portmaster}
 Install portmaster
 
@@ -59,6 +58,17 @@ sudo zpool create tank ada1p1
 sudo zfs create -o mountpoint=/jails tank/jails
 sudo zfs create -o mountpoint=/jails/public tank/jails/public
 zfs list
+\end{verbatim}
+
+\section{Macaulay2}
+Install Macaulay2
+
+\begin{verbatim}
+# inside ~/src
+  svn co svn://svn.macaulay2.com/Macaulay2/trunk M2-trunk
+  cd M2-trunk/M2
+  gmake
+
 \end{verbatim}
 
 \end{document}

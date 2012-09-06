@@ -25,7 +25,6 @@ pw groupadd group
 pw groupmod group -m new_member
 \end{verbatim}
 
-
 \section{portmaster}
 Install portmaster
 
@@ -39,5 +38,16 @@ Now e.g. vim can be installed like
 \begin{verbatim}
 cd /usr/ports
 sudo portmaster editors/vim
+\end{verbatim}
+
+\section{Macaulay2}
+Install Macaulay2
+
+\begin{verbatim}
+# inside ~/src
+  svn co svn://svn.macaulay2.com/Macaulay2/trunk M2-trunk
+  cd M2-trunk/M2
+  gmake
+
 \end{verbatim}
 \end{document}

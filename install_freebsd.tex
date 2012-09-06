@@ -40,4 +40,25 @@ Now e.g. vim can be installed like
 cd /usr/ports
 sudo portmaster editors/vim
 \end{verbatim}
+
+\section{jails}
+For virtualbox I inserted a second harddisc after installing freebsd on the first one.
+Add the line
+
+\begin{verbatim}
+zfs_enable="YES"
+\end{verbatim}
+
+to the rc.conf.
+Let ada1 be the new disc, now do
+
+\begin{verbatim}
+sudo gpart create -s gpt ada1
+sudo gpart add -t freebsd-zfs ada1
+sudo zpool create tank ada1p1
+sudo zfs create -o mountpoint=/jails tank/jails
+sudo zfs create -o mountpoint=/jails/public tank/jails/public
+zfs list
+\end{verbatim}
+
 \end{document}

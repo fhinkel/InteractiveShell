@@ -2,6 +2,7 @@
 \usepackage{verbatim}
 
 \begin{document}
+\section{Creating the master}
 First I installed schroot and debootstrap
 
 \begin{verbatim}
@@ -51,5 +52,62 @@ schroot -c precise_amd64 -u root
 Note that you might get an error message depending on whether the folder you start the schroot in also exists in the schroot environment or not.
 
 Schroot automatically mounts the /home folders. We don't want that, thus we deactivate this by commenting the /home line in /etc/schroot/mount-defaults. Actually we don't want to mount any folder from the outside to the schroot, so we comment all lines that aren't commented yet.
+\section{A first copy}
+I edit the file /etc/schroot/chroot.d/precise\_clone.conf
+
+\begin{verbatim}
+[precise_clone]
+description=Ubuntu precise pangolin
+directory=/home/lars/ubuntu-master/precise.clone
+root-users=lars
+type=directory
+users=lars,m2user
+\end{verbatim}
+
+Next I create a folder and mount the original system into it
+
+\begin{verbatim}
+cd /home/lars/ubuntu-master
+mkdir precise.clone
+sudo mount --bind -r /home/lars/ubuntu-master/precise.chroot 
+  /home/lars/ubuntu-master/precise.clone
+schroot -c precise_clone -u root
+\end{verbatim}
+
+This even works.
+
+\section{Installing packages}
+The package list is very short and incomplete. Change that via
+
+\begin{verbatim}
+sudo cp /etc/apt/sources.list 
+  /home/lars/ubuntu-master/precise.chroot/etc/apt/sources.list
+schroot -c precise_amd64 -u root
+apt-get update
+apt-get upgrade
+apt-get install openssh-server vim
+\end{verbatim}
+
+\section{Setting upd ssh}
+
+We already installed the ssh server in the last section. Now change the port it listens on:
+
+\begin{verbatim}
+schroot -c precise_amd64 -u root
+vim /etc/ssh/sshd_config
+\end{verbatim}
+
+Then restart the server
+
+\begin{verbatim}
+/etc/init.d/ssh restart
+\end{verbatim}
+
+Now from the outside do
+
+\begin{verbatim}
+ssh localhost port_you_chose
+\end{verbatim}
+
 
 \end{document}

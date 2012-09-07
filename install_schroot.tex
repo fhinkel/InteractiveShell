@@ -3,6 +3,8 @@
 
 \begin{document}
 \section{Creating the master}
+Replace precise by another version if needed.
+
 First I installed schroot and debootstrap
 
 \begin{verbatim}
@@ -24,7 +26,7 @@ description=Ubuntu precise pangolin
 directory=/home/lars/ubuntu-master/precise.chroot
 root-users=lars
 type=directory
-users=lars,m2user
+users=lars
 \end{verbatim}
 
 Note that I already had the necessary folders created.
@@ -61,7 +63,7 @@ description=Ubuntu precise pangolin
 directory=/home/lars/ubuntu-master/precise.clone
 root-users=lars
 type=directory
-users=lars,m2user
+users=lars
 \end{verbatim}
 
 Next I create a folder and mount the original system into it
@@ -108,6 +110,17 @@ Now from the outside do
 \begin{verbatim}
 ssh localhost port_you_chose
 \end{verbatim}
+
+\section{Installing M2}
+
+We use oneiric instead of precise.
+Use Google to find a more complete sources.list.
+Add the
+
+\begin{verbatim}
+
+\end{verbatim}
+
 
 \section{Pitfalls}
 \begin{itemize}

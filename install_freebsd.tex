@@ -27,6 +27,7 @@ pw groupmod group -m new_member
 
 \section{portmaster}
 Install portmaster
+One usefule command is {\tt whereis}.
 
 \begin{verbatim}
 cd /usr/ports/ports-mgmt/portmaster
@@ -38,6 +39,11 @@ Now e.g. vim can be installed like
 \begin{verbatim}
 cd /usr/ports
 sudo portmaster editors/vim
+\end{verbatim}
+
+\begin{verbatim}
+sudo portmaster devel/subversion
+sudo portmaster devel/git
 \end{verbatim}
 
 \section{jails}
@@ -60,6 +66,7 @@ sudo zfs create -o mountpoint=/jails/public tank/jails/public
 sudo zfs create -o mountpoint=/jails/master tank/jails/master
 zfs list
 \end{verbatim}
+
 
 We need to compile a kernel for the jail, so start with
 
@@ -119,6 +126,14 @@ Install Macaulay2
   cd M2-trunk/M2
   gmake
 
+  sudo portmaster devel/bison
+  sudo portmaster archivers/gtar
+  sudo portmaster math/lapack  # sucks in gcc46, gmp, mpfr, ...
+\end{verbatim}
+
+\section{tryM2}
+\begin{verbatim}
+  git clone git@mithril.vbi.vt.edu:~/tryM2.git
 \end{verbatim}
 
 \end{document}

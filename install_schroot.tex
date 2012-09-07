@@ -109,5 +109,11 @@ Now from the outside do
 ssh localhost port_you_chose
 \end{verbatim}
 
+\section{Pitfalls}
+\begin{itemize}
+\item Look at /etc/passwd. For some reason all users of the top system appear here. This might be good for others but not for us.
+\item The shell via ssh looks weird.
+\item We want different ports for all schroots, but we only have one file we can change.
+\end{itemize}
 
 \end{document}

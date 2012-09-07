@@ -57,7 +57,28 @@ sudo gpart add -t freebsd-zfs ada1
 sudo zpool create tank ada1p1
 sudo zfs create -o mountpoint=/jails tank/jails
 sudo zfs create -o mountpoint=/jails/public tank/jails/public
+sudo zfs create -o mountpoint=/jails/master tank/jails/master
 zfs list
+\end{verbatim}
+
+We need to compile a kernel for the jail, so start with
+
+\begin{verbatim}
+cd /usr/src
+sudo make buildworld
+\end{verbatim}
+
+This will take forever.
+When it's done install the kernel for the master jail:
+
+\begin{verbatim}
+sudo make installworld DESTDIR=/jails/master
+\end{verbatim}
+
+Install the port for ezjail
+
+\begin{verbatim}
+sudo portmaster sysutils/ezjail
 \end{verbatim}
 
 \section{Macaulay2}

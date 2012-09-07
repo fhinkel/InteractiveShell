@@ -1,0 +1,55 @@
+\documentclass[a4paper]{article}
+\usepackage{verbatim}
+
+\begin{document}
+First I installed schroot and debootstrap
+
+\begin{verbatim}
+sudo apt-get install schroot debootstrap
+\end{verbatim}
+
+Next I created the configuration file
+
+\begin{verbatim}
+cd /etc/schroot/chroot.d
+touch precise_amd64.conf
+\end{verbatim}
+
+And filled it with the following content
+
+\begin{verbatim}
+[precise_amd64]
+description=Ubuntu precise pangolin
+directory=/home/lars/ubuntu-master/precise.chroot
+root-users=lars
+type=directory
+users=lars,m2user
+\end{verbatim}
+
+Note that I already had the necessary folders created.
+Also note that the root user is a user from the outer system. In this case, I (lars) will be able to schroot into this system without using sudo.
+Then I installed precise into the directory
+
+\begin{verbatim}
+sudo debootstrap --variant=buildd --arch=amd64 precise 
+  /home/lars/ubuntu-master/precise.chroot/ 
+  http://archive.ubuntu.com/ubuntu/
+\end{verbatim}
+
+Now one can list all schroots with
+
+\begin{verbatim}
+schroot -l
+\end{verbatim}
+
+One can enter the schroot using
+
+\begin{verbatim}
+schroot -c precise_amd64 -u root
+\end{verbatim}
+
+Note that you might get an error message depending on whether the folder you start the schroot in also exists in the schroot environment or not.
+
+Schroot automatically mounts the /home folders. We don't want that, thus we deactivate this by commenting the /home line in /etc/schroot/mount-defaults. Actually we don't want to mount any folder from the outside to the schroot, so we comment all lines that aren't commented yet.
+
+\end{document}

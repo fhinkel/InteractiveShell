@@ -72,12 +72,15 @@ Now we need to modify the profile for not getting some files from the outside
 
 \begin{verbatim}
 cd /etc/schroot/master
-sudo vim copyfiles
-sudo vim nssdatabases
 sudo vim fstab
 \end{verbatim}
 
-Comment out all lines in these files, except the line with /proc in fstab. Then schroot won't copy the passwd file and /proc won't be mounted from the outside.
+Comment out all lines, except the line with /proc in fstab. 
+
+Later also comment out the lines in copyfiles and nssdatabases. 
+Then schroot won't copy the passwd file and /proc won't be mounted from the outside.
+Somehow it's important to have initial copies of these files, though, for having a sane system. If there aren't any sane versions of these files, M2 will segfault.
+Also if you update these files and want them updated inside you will have to uncomment these files.
 
 Modify the configuration file to have the correct paths
 
@@ -160,7 +163,7 @@ Close the file and the schroot (Ctrl+d). You can restart the schroot and check t
 Install all packages needed for M2. Start the schroot as root and inside
 
 \begin{verbatim}
-apt-get install libxml2
+apt-get install libxml2 graphviz curl
 M2
 \end{verbatim}
 
@@ -223,10 +226,18 @@ path2master/master/run /run  none  bind     0  0
 path2master/master/run /run  none  remount,bind,ro      0  0
 path2master/master/M2 /M2  none  bind     0  0
 path2master/master/M2 /M2  none  remount,bind,ro      0  0
+
+# Temporary file systems
+tmpfs   /tmp    tmpfs   nodev,nosuid,size=32M   0       0
+tmpfs   /home/lars      tmpfs   nodev,nosuid,size=32M,rw,uid=1000,gid=1000      0       0
 \end{verbatim}
 
+\subsection{Special cases}
 The folders /etc and /root cannot be mounted that way. Maybe the folder /var can be mounted like this, but I don't know if M2 might need it.
 
+For the m2user there needs to be a home folder with write-access. Also /tmp needs to have write access.
+
+Note that we do not have a sbin folder at all.
 \subsection{Configuring the clone}
 
 Create a folder for the clone (maybe inside fakeroots)

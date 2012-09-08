@@ -167,53 +167,7 @@ loadFile = function(url, response) {
         return;
     }
 
-    //console.log("User requested: " + url.pathname);
-    // If the request was for "/", send index.html
-    if (url.pathname === "/" ) {  
-        filename = __dirname + "/index.html";
-    }
-    else {
-        filename = __dirname + url.pathname;
-    }
-
-    filename = require('path').normalize(filename);
-    if (filename.indexOf(__dirname) != 0 ) {
-        console.log( "requested file, " + filename + " is not in " + __dirname);
-        response.writeHead(404,{"Content-Type": "text/html"});
-        response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
-        response.end();
-        return;
-    }
-    //console.log("We are trying to serve: " + filename);
-
-    var ext = require('path').extname(filename);
-    var contentType = "text/html";
-    if ( /\.css|\.jpg|\.png|\.html|\.js/.test(ext)) {
-        switch(ext) {
-        case ".css": 
-            contentType = 'text/css';
-            break;
-        case ".jpg":
-            contentType = 'image/jpg';
-            break;
-        }
-        if ( require('path').existsSync(filename)) {
-            data = require('fs').readFileSync(filename);
-            response.writeHead(200, {"Content-Type": contentType});
-            response.write(data);
-        }
-        else {
-            console.log("There was an error opening the file:");
-            response.writeHead(404,{"Content-Type": "text/html"});
-            response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
-        }
-        response.end();
-        return;
-    }
-    // send css files requested by index.html
-    response.writeHead(404,{"Content-Type": "text/html"});
-    response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
-    response.end();
+    throw new Error("Why are we here???");
 }
 
 // Client starts eventStream to obtain M2 output and start M2
@@ -398,6 +352,7 @@ function M2Master(request, response) {
     }
  
     if (url.pathname === "/"  || actions[url.pathname] == undefined ) {
+        console.log("do we ever get this?***************************");
         loadFile (url, response);
         return;
     }

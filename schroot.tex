@@ -225,6 +225,8 @@ path2master/master/M2 /M2  none  bind     0  0
 path2master/master/M2 /M2  none  remount,bind,ro      0  0
 \end{verbatim}
 
+The folders /etc and /root cannot be mounted that way. Maybe the folder /var can be mounted like this, but I don't know if M2 might need it.
+
 \subsection{Configuring the clone}
 
 Create a folder for the clone (maybe inside fakeroots)
@@ -262,6 +264,9 @@ cd fakeroots
 sudo cp -rf master/* clone
 cd clone
 sudo rm -rf bin sbin usr srv proc sys boot run M2
+cd home
+sudo mkdir lars #Home directory, M2 needs it rw
+sudo chown lars:lars lars
 \end{verbatim}
 
 Start the clone and check it

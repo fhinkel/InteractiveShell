@@ -57,7 +57,7 @@ startUser = function(cookies) {
 startM2Process = function() {
     var spawn = require('child_process').spawn;
     console.log("spawning new M2 process...");
-    var m2 = spawn('M2');
+    var m2 = spawn('schroot', ['-c', 'clone', '-u', 'franzi', '-d', '/home/franzi/', '/M2/bin/M2']);
     //var m2 = spawn('sudo', ['../sandbox/sandbox', '../../sandbox-dir', 'bin/M2', '-q', '-e', 'limitResources()']);
     //var m2 = spawn('../sandbox/sandbox', ['../../sandbox-dir', 'bin/M2', '-q', '--read-only-files', '-e', 'limitProcesses 0; limitFiles 25']);
     // sudo env -i ./sandbox sandbox-dir /bin/M2 -q --read-only-files -e 'limitProcesses 0; limitFiles 25'

@@ -219,7 +219,7 @@ $(document).ready(function () {
     });
     $('#help').click(trym2.helpScreen);
 
-    SyntaxHighlighter.all();
+    //SyntaxHighlighter.all();
     
     $("#send").click(trym2.sendCallback('#M2In'));
     $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));

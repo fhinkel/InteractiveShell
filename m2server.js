@@ -31,7 +31,7 @@ var http = require('http')
 
 
 // The HTML file for the chat client. Used below.
-var clientui = require('fs').readFileSync("index.html");
+//var clientui = require('fs').readFileSync("index.html");
 var totalUsers = 0;
 
 // An array of Client objects.  Each has an M2 process, and a response object
@@ -436,6 +436,7 @@ function M2Master(request, response) {
 var app = connect()
     .use(connect.logger('dev'))
     .use(connect.favicon())
+    .use(connect.static('public'))
     .use(M2Master);
 console.log("Listening on port " + port + "...");
 http.createServer(app).listen(port);

@@ -142,7 +142,8 @@ setInterval(function() {
 
 
 // Client starts eventStream to obtain M2 output and start M2
-startSource = function(clientID, request, response) {
+startSource = function( request, response) {
+    var clientID = getCurrentClientID(request, response);
     response.writeHead(200, {'Content-Type': "text/event-stream" });
     if (!clients[clientID].eventStream) {
         clients[clientID].eventStream = response;
@@ -163,7 +164,8 @@ startSource = function(clientID, request, response) {
     });
 };
 
-chatAction = function(clientID, request, response) {
+chatAction = function( request, response) {
+    var clientID = getCurrentClientID(request, response);
     request.setEncoding("utf8");
     var body = "";
     // When we get a chunk of data, add it to the body
@@ -199,7 +201,8 @@ chatAction = function(clientID, request, response) {
     });
 };
 
-restartAction = function(clientID, request, response) {
+restartAction = function(request, response) {
+    var clientID = getCurrentClientID(request, response);
     var client = clients[clientID];
     console.log("received: /restart from " + clientID);
     if (client.m2) { 
@@ -213,7 +216,8 @@ restartAction = function(clientID, request, response) {
 };
 
 
-interruptAction = function(clientID, request, response)  {
+interruptAction = function(request, response)  {
+    var clientID = getCurrentClientID(request, response);
     console.log("received: /interrupt from " + clientID);
     if (clients[clientID] && clients[clientID].m2) {
         clients[clientID].m2.kill('SIGINT');
@@ -265,6 +269,8 @@ parseUrlForPath = function(url) {
     return imagePath[1];
 }
 
+// we get a /image from our open script
+// imageAction finds the matching client by parsing the url, then sends the address of the image to the client's eventStream
 imageAction = function(request, response, next) {
     var url = require('url').parse(request.url).pathname;
     response.writeHead(200);  
@@ -293,47 +299,22 @@ imageAction = function(request, response, next) {
           }
     }
     catch (err) {
-        console.log("Sorry, could not serve the image: " + err);
+        console.log("Received invalid /image request: " + err);
     }
   
 };
 
-// server reacts to these requests
-var actions = [];
-actions['/chat'] = chatAction;
-actions['/restart'] = restartAction;
-actions['/interrupt'] = interruptAction;
-actions['/startSourceEvent'] = startSource;
-
-
-function M2Master(request, response, next) {
-    var url = require('url').parse(request.url);
- 
-    if ( actions[url.pathname] == undefined ) {
-        console.log("Unknown action ***************************");
-        next();
-        return;
-    }
-    
+function checkForEventStream(request, response, next) {
     var clientID = getCurrentClientID(request, response);
-        
-    if(url.pathname == '/startSourceEvent') {
-        //console.log("action is startSourceEvent");
-        actions[url.pathname](clientID, request, response);
-        return;
-    }
-
+    
     if (!clients[clientID].eventStream ) {
          console.log("Send notEventSourceError back to user.");
          response.writeHead(200, {'notEventSourceError': 'No socket for client...' });
          response.end();
          return;
     }
-        
-    // restart, interrupt, or chat
-    actions[url.pathname](clientID, request, response);
+    next();
 }
-
 
 var app = connect()
     .use(connect.logger('dev'))
@@ -343,7 +324,11 @@ var app = connect()
     .use('/tmp', connect.static('/tmp')) // and here on Ubuntu
     .use('/admin', stats)
     .use('/image', imageAction)
-    .use(M2Master)
+    .use('/startSourceEvent', startSource)
+    .use(checkForEventStream)
+    .use('/chat', chatAction)
+    .use('/interrupt', interruptAction)
+    .use('/restart', restartAction)
     .use(connect.errorHandler());
 console.log("Listening on port " + port + "...");
 http.createServer(app).listen(port);

@@ -1,0 +1,9 @@
+sudo apt-get install git
+sudo apt-get install nodejs npm
+git clone git@mithril.vbi.vt.edu:~/tryM2.git 
+cd tryM2
+npm install connect
+npm install cookies
+sudo apt-get install graphviz curl
+
+export PATH=.:$PATH

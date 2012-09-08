@@ -2,6 +2,13 @@
 \usepackage{verbatim}
 
 \begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%%  Preparation
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Preparation}
 
 Install the following
@@ -9,6 +16,14 @@ Install the following
 \begin{verbatim}
 sudo apt-get install schroot debootstrap
 \end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%%  The master
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Creating the master}
 \subsection{Building precise}
@@ -37,7 +52,7 @@ Go into the folder
 cd path2master/master/etc/apt
 \end{verbatim}
 
-and modify the \begin{verbatim}sources.list\end{verbatim} according to your needs. In my case I used
+and modify the sources.list according to your needs. In my case I used
 
 \begin{verbatim}
 http://repogen.simplylinux.ch/
@@ -149,6 +164,13 @@ apt-get install libxml2
 M2
 \end{verbatim}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%%  The Clone
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Cloning the master schroot}
 
 We want to prepare a profile for the clones
@@ -191,17 +213,10 @@ path2master/master/usr /usr  none  bind     0  0
 path2master/master/usr /usr  none  remount,bind,ro      0  0
 path2master/master/srv /srv  none  bind     0  0
 path2master/master/srv /srv  none  remount,bind,ro      0  0
-# /etc folder does not work.
-# path2master/master/etc   /etc  none  bind     0  0
-# path2master/master/etc   /etc  none  remount,bind,ro      0  0
 path2master/master/lib /lib  none  bind     0  0
 path2master/master/lib /lib  none  remount,bind,ro      0  0
-# path2master/master/dev   /dev  none  bind     0  0
-# path2master/master/dev   /dev  none  remount,bind,ro      0  0
 path2master/master/sys /sys  none  bind     0  0
 path2master/master/sys /sys  none  remount,bind,ro      0  0
-path2master/master/root   /root none  bind     0  0
-path2master/master/root   /root none  remount,bind,ro      0  0
 path2master/master/boot   /boot none  bind     0  0
 path2master/master/boot   /boot none  remount,bind,ro      0  0
 path2master/master/run /run  none  bind     0  0
@@ -262,7 +277,14 @@ should yield
 touch: cannot touch `/bin/bla': Read-only file system
 \end{verbatim}
 
-\section{schroot commands}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%%  Schroot Commands
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Schroot Commands}
 One can list all schroots with
 
 \begin{verbatim}
@@ -275,7 +297,14 @@ Kill all schroots with
 schroot -e --all-sessions
 \end{verbatim}
 
-\section{Pitfalls}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%%  Possible Traps
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Possible Traps}
 \begin{itemize}
 \item Look at /etc/passwd. For some reason all users of the top system appear here. This might be good for others but not for us.
 

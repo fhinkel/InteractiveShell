@@ -2,42 +2,126 @@
 \usepackage{verbatim}
 
 \begin{document}
-\section{Creating the master}
-Replace precise by another version if needed.
+\section{Preparation}
 
-First I installed schroot and debootstrap
+Install the following
 
 \begin{verbatim}
 sudo apt-get install schroot debootstrap
 \end{verbatim}
 
+\section{Creating the master}
+
+First we don't want anything from the outside world going into the master.
+Assume we are in a folder 'fakeroots', create a folder for the master
+
+\begin{verbatim}
+cd fakeroots
+mkdir master
+\end{verbatim}
+
+Now install precise into this folder
+
+\begin{verbatim}
+sudo debootstrap --variant=buildd --arch=amd64 precise 
+   path2master/master 
+   http://archive.ubuntu.com/ubuntu
+\end{verbatim}
+
+(all in one line)
+Replace precise by another version if needed.
+
+Go into the folder
+
+\begin{verbatim}
+cd path2master/master/etc/apt
+\end{verbatim}
+
+and modify the \begin{verbatim}sources.list\end{verbatim} according to your needs. In my case I used
+
+\begin{verbatim}
+http://repogen.simplylinux.ch/
+\end{verbatim}
+
+Now we need to modify schroot for not getting some files from the outside
+
+\begin{verbatim}
+cd /etc/schroot/default
+sudo vim copyfiles
+sudo vim nssdatabases
+sudo vim fstab
+\end{verbatim}
+
+Comment out all lines in these files, except the line with /proc in fstab. Then schroot won't copy the passwd file and /proc won't be mounted from the outside.
+
 Next I created the configuration file
 
 \begin{verbatim}
 cd /etc/schroot/chroot.d
-touch precise_amd64.conf
+touch master.conf
 \end{verbatim}
 
 And filled it with the following content
 
 \begin{verbatim}
-[precise_amd64]
-description=Ubuntu precise pangolin
-directory=/home/lars/ubuntu-master/precise.chroot
-root-users=lars
+[master]
+description=Ubuntu precise pangolin master chroot
+directory=path2master/master
+root-users=lars <- your username here.
 type=directory
-users=lars
+users=m2user
 \end{verbatim}
 
-Note that I already had the necessary folders created.
-Also note that the root user is a user from the outer system. In this case, I (lars) will be able to schroot into this system without using sudo.
-Then I installed precise into the directory
+Note that apparently all the users mentioned here have to exist on the outside as well.
+We definetely have to modify the passwd file, since at this point it is a copy from the outside.
+
+Move the M2 sources to a location (for example /home) inside the chroot:
 
 \begin{verbatim}
-sudo debootstrap --variant=buildd --arch=amd64 precise 
-  /home/lars/ubuntu-master/precise.chroot/ 
-  http://archive.ubuntu.com/ubuntu/
+sudo cp M2-1.4.0.1.tar.gz path2master/master/home/
 \end{verbatim}
+
+Now start the master schroot
+
+\begin{verbatim}
+schroot -c master -u root
+\end{verbatim}
+
+NO sudo in front of this command. Once inside, install everything you need using apt.
+Note that you might get an error message depending on whether the folder you start the schroot in also exists in the schroot environment or not.
+
+Inside the chroot
+
+\begin{verbatim}
+cd /home
+tar -xzf M2-1.4.0.1.tar.gz
+cd /
+mkdir M2
+mv /home/installed/* M2
+rm -rf /home/installed/
+rm /home/M2-1.4.0.1.tar.gz
+apt-get update
+apt-get upgrade
+apt-get install vim
+vim /etc/profile
+\end{verbatim}
+
+At the end of this file add the line
+
+\begin{verbatim}
+PATH=$PATH:/M2/bin
+\end{verbatim}
+
+Close the file and the schroot (Ctrl+d). You can restart the schroot and check the PATH variable for correctness.
+
+Install all packages needed for M2. Start the schroot as root and inside
+
+\begin{verbatim}
+apt-get install libxml2
+M2
+\end{verbatim}
+
+
 
 Now one can list all schroots with
 
@@ -45,15 +129,17 @@ Now one can list all schroots with
 schroot -l
 \end{verbatim}
 
-One can enter the schroot using
-
-\begin{verbatim}
-schroot -c precise_amd64 -u root
-\end{verbatim}
-
-Note that you might get an error message depending on whether the folder you start the schroot in also exists in the schroot environment or not.
 
 Schroot automatically mounts the /home folders. We don't want that, thus we deactivate this by commenting the /home line in /etc/schroot/mount-defaults. Actually we don't want to mount any folder from the outside to the schroot, so we comment all lines that aren't commented yet.
+\section{Readonly folders}
+
+Assume given two chroots master and clone we now want to mount the bin folder from master into clone. We want to do it readonly.
+
+\begin{verbatim}
+sudo mount --bind precise.master/bin precise.clone/bin
+sudo mount -o remount,ro precise.clone/bin
+\end{verbatim}
+
 \section{A first copy}
 I edit the file /etc/schroot/chroot.d/precise\_clone.conf
 
@@ -121,12 +207,26 @@ Add the
 
 \end{verbatim}
 
+We can write a script in /etc/schroot/exec.d that makes M2 start when logging in.
+
+Kill all schroot sessions
+
+\begin{verbatim}
+schroot -e --all-sessions
+\end{verbatim}
 
 \section{Pitfalls}
 \begin{itemize}
 \item Look at /etc/passwd. For some reason all users of the top system appear here. This might be good for others but not for us.
+
+One can resolve this by manipulating the files in /etc/schroot/default. In this case the nssdatabases file is the one to be manipulated.
 \item The shell via ssh looks weird.
 \item We want different ports for all schroots, but we only have one file we can change.
 \end{itemize}
 
+\section{Things to delete}
+\begin{itemize}
+\item[sbin] ctrlaltdel, shutdown, reboot, restart, fdisk. Maybe don't mount this folder at all.
+\item[/usr/sbin] Maybe don't mount this folder at all.
+\end{itemize}
 \end{document}

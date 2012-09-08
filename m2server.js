@@ -1,4 +1,4 @@
-// March 2012, Franziska Hinkelmann, Mike Stillman, and Lars Kastner
+// September 2012, Franziska Hinkelmann, Mike Stillman, and Lars Kastner
 //
 // This is server-side JavaScript, intended to be run with Node.js.
 // This file defines a Node.js server for serving 'tryM2'.
@@ -10,21 +10,28 @@
 // Required Node.js libraries: cookies.  Install via:
 //   npm install cookies, or sudo npm install -g cookies
 // Required on path: M2
+// We are using our own open script to make Graphs.m2 work (generate jpegs for users), please include the current directory in your path: 
+// export PATH=.:$PATH
 
+// intended to run on (s)chrooted environment, where every user starts M2 in a separate schroot. 
 //
 // A message on / : possibly creates a cookie, and serves back index.html
 //   and related js/css/png files
 // A POST message on /chat: input should be Macaulay2 commands to perform.
 // A message on /chat: start an event emitter, which will return the output of
 // the M2 process.
+
 var port = 8002; 
 var sandboxDir = "/";
 
-var http = require('http');  // NodeJS HTTP server API
-var Cookies = require("cookies");
+var http = require('http') 
+    , connect = require('connect')
+    , Cookies = require('cookies');
+    
+
 
 // The HTML file for the chat client. Used below.
-var clientui = require('fs').readFileSync("index.html");
+//var clientui = require('fs').readFileSync("index.html");
 var totalUsers = 0;
 
 // An array of Client objects.  Each has an M2 process, and a response object
@@ -160,7 +167,7 @@ loadFile = function(url, response) {
         return;
     }
 
-    console.log("User requested: " + url.pathname);
+    //console.log("User requested: " + url.pathname);
     // If the request was for "/", send index.html
     if (url.pathname === "/" ) {  
         filename = __dirname + "/index.html";
@@ -177,7 +184,7 @@ loadFile = function(url, response) {
         response.end();
         return;
     }
-    console.log("We are trying to serve: " + filename);
+    //console.log("We are trying to serve: " + filename);
 
     var ext = require('path').extname(filename);
     var contentType = "text/html";
@@ -375,10 +382,7 @@ actions['/startSourceEvent'] = startSource;
 actions['/admin'] = false;
 actions['/image'] = false;
 
-// Create a new server
-var server = new http.Server();  
-// When the server gets a new request, run this function
-server.on("request", function (request, response) {
+function M2Master(request, response) {
     //console.log( "got on");
     var url = require('url').parse(request.url);
     
@@ -415,8 +419,28 @@ server.on("request", function (request, response) {
     }
         
     actions[url.pathname](clientID, request, response);
-});
+}
 
-// Run the server on port 8000. Connect to http://localhost:8000/ to use it.
+//<!--
+// var http = require('http') 
+// , connect = require('connect');
+// var logger = setup;
+// var app = connect()
+//     .use(logger(':method :url'));
+// app.use('/admin', restrict);
+// app.use('/admin', admin);
+// app.use(hello);
+//
+// http.createServer(app).listen(3000); -->
+
+var app = connect()
+    .use(connect.logger('dev'))
+    .use(connect.favicon())
+    .use(connect.static('public'))
+    .use(M2Master);
 console.log("Listening on port " + port + "...");
-server.listen(port);
+http.createServer(app).listen(port);
+
+
+
+

@@ -153,12 +153,6 @@ startSource = function( request, response) {
     // If the client closes the connection, remove client from the list of active clients
     request.connection.on("end", function() {
         console.log("close connection: clients[" + clientID + "]");
-        // 
-        //if( clients[clientID] && clients[clientID].m2) {
-         //   clients[clientID].m2.kill();
-          //  clients[clientID].m2 = null;
-        //}
-        //delete clients[clientID];
         clients[clientID].eventStream = null;
         response.end();
     });
@@ -166,6 +160,7 @@ startSource = function( request, response) {
 
 chatAction = function( request, response) {
     var clientID = getCurrentClientID(request, response);
+    if (!checkForEventStream(clientID)) {return false};
     request.setEncoding("utf8");
     var body = "";
     // When we get a chunk of data, add it to the body
@@ -203,6 +198,7 @@ chatAction = function( request, response) {
 
 restartAction = function(request, response) {
     var clientID = getCurrentClientID(request, response);
+    if (!checkForEventStream(clientID)) {return false};
     var client = clients[clientID];
     console.log("received: /restart from " + clientID);
     if (client.m2) { 
@@ -218,6 +214,7 @@ restartAction = function(request, response) {
 
 interruptAction = function(request, response)  {
     var clientID = getCurrentClientID(request, response);
+    if (!checkForEventStream(clientID)) {return false};
     console.log("received: /interrupt from " + clientID);
     if (clients[clientID] && clients[clientID].m2) {
         clients[clientID].m2.kill('SIGINT');
@@ -304,16 +301,24 @@ imageAction = function(request, response, next) {
   
 };
 
-function checkForEventStream(request, response, next) {
-    var clientID = getCurrentClientID(request, response);
-    
+function checkForEventStream(clientID) {
     if (!clients[clientID].eventStream ) {
-         console.log("Send notEventSourceError back to user.");
-         response.writeHead(200, {'notEventSourceError': 'No socket for client...' });
-         response.end();
-         return;
+      console.log("Send notEventSourceError back to user.");
+      response.writeHead(200, {'notEventSourceError': 'No socket for client...' });
+      response.end();
+      return false;
+   }
+   return true;
+}
+
+function unhandled(request, response, next) {
+    var url = require('url').parse(request.url).pathname;
+    if (url == '/chat' || url == 'interrupt' || url == '/restart') {
+        next();
+        return;
     }
-    next();
+    console.log("User requested something we don't serve");
+    console.log(request.url);
 }
 
 var app = connect()
@@ -325,11 +330,12 @@ var app = connect()
     .use('/admin', stats)
     .use('/image', imageAction)
     .use('/startSourceEvent', startSource)
-    .use(checkForEventStream)
     .use('/chat', chatAction)
     .use('/interrupt', interruptAction)
     .use('/restart', restartAction)
-    .use(connect.errorHandler());
+    .use(unhandled)
+    ;
+    //.use(connect.errorHandler());
 console.log("Listening on port " + port + "...");
 http.createServer(app).listen(port);
 

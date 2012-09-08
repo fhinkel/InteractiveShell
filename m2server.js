@@ -57,7 +57,7 @@ startUser = function(cookies) {
 startM2Process = function() {
     var spawn = require('child_process').spawn;
     console.log("spawning new M2 process...");
-    var m2 = spawn('M2');
+    var m2 = spawn('schroot', ['-c', 'clone', '-u', 'franzi', '-d', '/home/franzi/', '/M2/bin/M2']);
     //var m2 = spawn('sudo', ['../sandbox/sandbox', '../../sandbox-dir', 'bin/M2', '-q', '-e', 'limitResources()']);
     //var m2 = spawn('../sandbox/sandbox', ['../../sandbox-dir', 'bin/M2', '-q', '--read-only-files', '-e', 'limitProcesses 0; limitFiles 25']);
     // sudo env -i ./sandbox sandbox-dir /bin/M2 -q --read-only-files -e 'limitProcesses 0; limitFiles 25'
@@ -98,7 +98,8 @@ startM2 = function(client) {
 
 };
 
-getCurrentClientID = function(cookies) {
+getCurrentClientID = function(request, response) {
+    var cookies = new Cookies(request, response);
     var clientID = cookies.get("tryM2");
     //console.log("Client has cookie value: " + clientID);
 
@@ -110,13 +111,13 @@ getCurrentClientID = function(cookies) {
     return clientID;
 };
 
-var stats = function(response) {
+var stats = function(request, response, next) {
     // to do: authorization
      response.writeHead(200, {"Content-Type": "text/html"});
      var currentUsers = 0;
      for( var c in clients) {
          if(clients.hasOwnProperty(c))
-                 currentUsers = currentUsers + 1;
+            currentUsers = currentUsers + 1;
      }
      response.write('<head><link rel="stylesheet" href="m2.css" type="text/css" media="screen"></head>' );
      response.write('<h1>Macaulay2 User Statistics</h1>');
@@ -138,86 +139,11 @@ setInterval(function() {
     }
 }, 20000);
 
-loadFile = function(url, response) {
-    var filename = "";
-    if (/\.jpg/.test(url.pathname) && (/\/tmp\//.test(url.pathname) || /\/var\//.test(url.pathname))) {
-        filename = url.pathname;
-        console.log("Request for jpg inside sandbox dir: "+ filename );       
-        filename = sandboxDir + filename;
-        filename = require('path').normalize(filename);
-        if ((filename.indexOf(sandboxDir + "tmp/") != 0 ) && (filename.indexOf(sandboxDir + "var/") != 0))  {
-            console.log( "requested file, " + filename + " is not in " + sandboxDir + "tmp/ or var/");
-            response.writeHead(404,{"Content-Type": "text/html"});
-            response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
-            response.end();
-            return;
-        }
-         
-        if ( require('path').existsSync(filename)) {
-            data = require('fs').readFileSync(filename);
-            response.writeHead(200, {"Content-Type": "image/jpg"});
-            response.write(data);
-        }
-        else {
-            console.log("There was an error opening the file: " + filename);
-            response.writeHead(404,{"Content-Type": "text/html"});
-            response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
-        }
-        response.end();
-        return;
-    }
 
-    //console.log("User requested: " + url.pathname);
-    // If the request was for "/", send index.html
-    if (url.pathname === "/" ) {  
-        filename = __dirname + "/index.html";
-    }
-    else {
-        filename = __dirname + url.pathname;
-    }
-
-    filename = require('path').normalize(filename);
-    if (filename.indexOf(__dirname) != 0 ) {
-        console.log( "requested file, " + filename + " is not in " + __dirname);
-        response.writeHead(404,{"Content-Type": "text/html"});
-        response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
-        response.end();
-        return;
-    }
-    //console.log("We are trying to serve: " + filename);
-
-    var ext = require('path').extname(filename);
-    var contentType = "text/html";
-    if ( /\.css|\.jpg|\.png|\.html|\.js/.test(ext)) {
-        switch(ext) {
-        case ".css": 
-            contentType = 'text/css';
-            break;
-        case ".jpg":
-            contentType = 'image/jpg';
-            break;
-        }
-        if ( require('path').existsSync(filename)) {
-            data = require('fs').readFileSync(filename);
-            response.writeHead(200, {"Content-Type": contentType});
-            response.write(data);
-        }
-        else {
-            console.log("There was an error opening the file:");
-            response.writeHead(404,{"Content-Type": "text/html"});
-            response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
-        }
-        response.end();
-        return;
-    }
-    // send css files requested by index.html
-    response.writeHead(404,{"Content-Type": "text/html"});
-    response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
-    response.end();
-}
 
 // Client starts eventStream to obtain M2 output and start M2
-startSource = function(clientID, request, response) {
+startSource = function( request, response) {
+    var clientID = getCurrentClientID(request, response);
     response.writeHead(200, {'Content-Type': "text/event-stream" });
     if (!clients[clientID].eventStream) {
         clients[clientID].eventStream = response;
@@ -227,18 +153,14 @@ startSource = function(clientID, request, response) {
     // If the client closes the connection, remove client from the list of active clients
     request.connection.on("end", function() {
         console.log("close connection: clients[" + clientID + "]");
-        // 
-        //if( clients[clientID] && clients[clientID].m2) {
-         //   clients[clientID].m2.kill();
-          //  clients[clientID].m2 = null;
-        //}
-        //delete clients[clientID];
         clients[clientID].eventStream = null;
         response.end();
     });
 };
 
-chatAction = function(clientID, request, response) {
+chatAction = function( request, response) {
+    var clientID = getCurrentClientID(request, response);
+    if (!checkForEventStream(clientID, response)) {return false};
     request.setEncoding("utf8");
     var body = "";
     // When we get a chunk of data, add it to the body
@@ -274,7 +196,9 @@ chatAction = function(clientID, request, response) {
     });
 };
 
-restartAction = function(clientID, request, response) {
+restartAction = function(request, response) {
+    var clientID = getCurrentClientID(request, response);
+    if (!checkForEventStream(clientID, response)) {return false};
     var client = clients[clientID];
     console.log("received: /restart from " + clientID);
     if (client.m2) { 
@@ -288,7 +212,9 @@ restartAction = function(clientID, request, response) {
 };
 
 
-interruptAction = function(clientID, request, response)  {
+interruptAction = function(request, response)  {
+    var clientID = getCurrentClientID(request, response);
+    if (!checkForEventStream(clientID, response)) {return false};
     console.log("received: /interrupt from " + clientID);
     if (clients[clientID] && clients[clientID].m2) {
         clients[clientID].m2.kill('SIGINT');
@@ -319,7 +245,9 @@ findClientID = function(pid){
 // return PID extracted from pathname for image displaying
 parseUrlForPid = function(url) {
     console.log(url);
-    var pid = url.match(/\/image\/(\d+)\//);
+    var pid = url.match(/\/M2-(\d+)-/);
+    //var pid = url.match(/^\/(\d+)\//);
+    
     //console.log( pid );
     if (!pid) {
         console.log("error, didn't get PID in image url");
@@ -331,7 +259,7 @@ parseUrlForPid = function(url) {
 
 // return path to image
 parseUrlForPath = function(url) {
-    var imagePath = url.match(/\/image\/\d+\/(.*)/);
+    var imagePath = url.match(/^\/\d+\/(.*)/);
     console.log(imagePath);
     if (!imagePath) {
         throw("Did not get imagePath in image url");
@@ -340,7 +268,10 @@ parseUrlForPath = function(url) {
     return imagePath[1];
 }
 
-imageAction = function(url, response) {
+// we get a /image from our open script
+// imageAction finds the matching client by parsing the url, then sends the address of the image to the client's eventStream
+imageAction = function(request, response, next) {
+    var url = require('url').parse(request.url).pathname;
     response.writeHead(200);  
     response.end();
     
@@ -367,77 +298,46 @@ imageAction = function(url, response) {
           }
     }
     catch (err) {
-        console.log("Sorry, could not serve the image: " + err);
+        console.log("Received invalid /image request: " + err);
     }
   
 };
 
-// server reacts to these requests
-var actions = [];
-actions['/chat'] = chatAction;
-actions['/restart'] = restartAction;
-actions['/interrupt'] = interruptAction;
-actions['/'] = false;
-actions['/startSourceEvent'] = startSource;
-actions['/admin'] = false;
-actions['/image'] = false;
-
-function M2Master(request, response) {
-    //console.log( "got on");
-    var url = require('url').parse(request.url);
-    
-    if (url.pathname === "/admin") {
-        stats(response);
-        return;
-    }
-    
-    if ( /^\/image/.test(url.pathname) ){
-        console.log("Server got a request for /image from the open program");
-        imageAction(url.pathname, response);
-        return;
-    }
- 
-    if (url.pathname === "/"  || actions[url.pathname] == undefined ) {
-        loadFile (url, response);
-        return;
-    }
-    
-    var cookies = new Cookies(request, response);
-    var clientID = getCurrentClientID(cookies);
-        
-    if(url.pathname == '/startSourceEvent') {
-        //console.log("action is startSourceEvent");
-        actions[url.pathname](clientID, request, response);
-        return;
-    }
-
+function checkForEventStream(clientID, response) {
     if (!clients[clientID].eventStream ) {
-         console.log("Send notEventSourceError back to user.");
-         response.writeHead(200, {'notEventSourceError': 'No socket for client...' });
-         response.end();
-         return;
-    }
-        
-    actions[url.pathname](clientID, request, response);
+      console.log("Send notEventSourceError back to user.");
+      response.writeHead(200, {'notEventSourceError': 'No socket for client...' });
+      response.end();
+      return false;
+   }
+   return true;
 }
 
-//<!--
-// var http = require('http') 
-// , connect = require('connect');
-// var logger = setup;
-// var app = connect()
-//     .use(logger(':method :url'));
-// app.use('/admin', restrict);
-// app.use('/admin', admin);
-// app.use(hello);
-//
-// http.createServer(app).listen(3000); -->
+function unhandled(request, response, next) {
+    var url = require('url').parse(request.url).pathname;
+    if (url == '/chat' || url == 'interrupt' || url == '/restart') {
+        next();
+        return;
+    }
+    console.log("User requested something we don't serve");
+    console.log(request.url);
+}
 
 var app = connect()
     .use(connect.logger('dev'))
     .use(connect.favicon())
     .use(connect.static('public'))
-    .use(M2Master);
+    .use('/var', connect.static('/var')) // M2 creates temporary files (like created by Graphs.m2) here on MacOS
+    .use('/tmp', connect.static('/tmp')) // and here on Ubuntu
+    .use('/admin', stats)
+    .use('/image', imageAction)
+    .use('/startSourceEvent', startSource)
+    .use('/chat', chatAction)
+    .use('/interrupt', interruptAction)
+    .use('/restart', restartAction)
+    .use(unhandled)
+    ;
+    //.use(connect.errorHandler());
 console.log("Listening on port " + port + "...");
 http.createServer(app).listen(port);
 

@@ -117,7 +117,7 @@ var stats = function(request, response, next) {
      var currentUsers = 0;
      for( var c in clients) {
          if(clients.hasOwnProperty(c))
-                 currentUsers = currentUsers + 1;
+            currentUsers = currentUsers + 1;
      }
      response.write('<head><link rel="stylesheet" href="m2.css" type="text/css" media="screen"></head>' );
      response.write('<h1>Macaulay2 User Statistics</h1>');
@@ -160,7 +160,7 @@ startSource = function( request, response) {
 
 chatAction = function( request, response) {
     var clientID = getCurrentClientID(request, response);
-    if (!checkForEventStream(clientID)) {return false};
+    if (!checkForEventStream(clientID, response)) {return false};
     request.setEncoding("utf8");
     var body = "";
     // When we get a chunk of data, add it to the body
@@ -198,7 +198,7 @@ chatAction = function( request, response) {
 
 restartAction = function(request, response) {
     var clientID = getCurrentClientID(request, response);
-    if (!checkForEventStream(clientID)) {return false};
+    if (!checkForEventStream(clientID, response)) {return false};
     var client = clients[clientID];
     console.log("received: /restart from " + clientID);
     if (client.m2) { 
@@ -214,7 +214,7 @@ restartAction = function(request, response) {
 
 interruptAction = function(request, response)  {
     var clientID = getCurrentClientID(request, response);
-    if (!checkForEventStream(clientID)) {return false};
+    if (!checkForEventStream(clientID, response)) {return false};
     console.log("received: /interrupt from " + clientID);
     if (clients[clientID] && clients[clientID].m2) {
         clients[clientID].m2.kill('SIGINT');
@@ -245,7 +245,9 @@ findClientID = function(pid){
 // return PID extracted from pathname for image displaying
 parseUrlForPid = function(url) {
     console.log(url);
-    var pid = url.match(/^\/(\d+)\//);
+    var pid = url.match(/\/M2-(\d+)-/);
+    //var pid = url.match(/^\/(\d+)\//);
+    
     //console.log( pid );
     if (!pid) {
         console.log("error, didn't get PID in image url");
@@ -301,7 +303,7 @@ imageAction = function(request, response, next) {
   
 };
 
-function checkForEventStream(clientID) {
+function checkForEventStream(clientID, response) {
     if (!clients[clientID].eventStream ) {
       console.log("Send notEventSourceError back to user.");
       response.writeHead(200, {'notEventSourceError': 'No socket for client...' });

@@ -80,13 +80,42 @@ When it's done install the kernel for the master jail:
 
 \begin{verbatim}
 sudo make installworld DESTDIR=/jails/master
+sudo make distribution DESTDIR=/jails/master
 \end{verbatim}
 
+Now start the jail
+
+\begin{verbatim}
+sudo jail -c path=/jails/master command=/bin/sh
+\end{verbatim}
+
+The reason we don't use ezjail to create and start the basejail is that we want to install stuff in it, but not have the portstree. 
+So we will manually map the portstree into this jail and install M2.
+
+\section{Installing ezjail}
 Install the port for ezjail
 
 \begin{verbatim}
 sudo portmaster sysutils/ezjail
 \end{verbatim}
+
+In the file /usr/local/etc/ezjail.conf add the lines
+
+\begin{verbatim}
+ezjail_jaildir=/jails
+ezjail_jailbase=${ezjail_jaildir}/master
+ezjail_use_zfs="YES"
+ezjail_jailzfs="tank/root/jails"
+\end{verbatim}
+
+Now we can create and start a first experimental jail
+
+\begin{verbatim}
+sudo ezjail-admin create -r /jails/first first 127.0.0.37
+sudo ezjail-admin onestart first
+jls
+\end{verbatim}
+
 
 \section{Macaulay2}
 Install Macaulay2

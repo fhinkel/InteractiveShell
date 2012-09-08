@@ -98,7 +98,8 @@ startM2 = function(client) {
 
 };
 
-getCurrentClientID = function(cookies) {
+getCurrentClientID = function(request, response) {
+    var cookies = new Cookies(request, response);
     var clientID = cookies.get("tryM2");
     //console.log("Client has cookie value: " + clientID);
 
@@ -243,7 +244,7 @@ findClientID = function(pid){
 // return PID extracted from pathname for image displaying
 parseUrlForPid = function(url) {
     console.log(url);
-    var pid = url.match(/\/image\/(\d+)\//);
+    var pid = url.match(/^\/(\d+)\//);
     //console.log( pid );
     if (!pid) {
         console.log("error, didn't get PID in image url");
@@ -255,7 +256,7 @@ parseUrlForPid = function(url) {
 
 // return path to image
 parseUrlForPath = function(url) {
-    var imagePath = url.match(/\/image\/\d+\/(.*)/);
+    var imagePath = url.match(/^\/\d+\/(.*)/);
     console.log(imagePath);
     if (!imagePath) {
         throw("Did not get imagePath in image url");
@@ -264,7 +265,8 @@ parseUrlForPath = function(url) {
     return imagePath[1];
 }
 
-imageAction = function(url, response) {
+imageAction = function(request, response, next) {
+    var url = require('url').parse(request.url).pathname;
     response.writeHead(200);  
     response.end();
     
@@ -301,27 +303,11 @@ var actions = [];
 actions['/chat'] = chatAction;
 actions['/restart'] = restartAction;
 actions['/interrupt'] = interruptAction;
-actions['/'] = false;
 actions['/startSourceEvent'] = startSource;
-actions['/admin'] = false;
-actions['/image'] = false;
 
 
 function M2Master(request, response, next) {
-    //console.log( "got on");
-    
-    for( var c in request) {
-        if(request.hasOwnProperty(c))
-            console.log(c + ": " + request[c]);
-    }
-    
     var url = require('url').parse(request.url);
-    
-    if ( /^\/image/.test(url.pathname) ){
-        console.log("Server got a request for /image from the open program");
-        imageAction(url.pathname, response);
-        return;
-    }
  
     if ( actions[url.pathname] == undefined ) {
         console.log("Unknown action ***************************");
@@ -329,8 +315,7 @@ function M2Master(request, response, next) {
         return;
     }
     
-    var cookies = new Cookies(request, response);
-    var clientID = getCurrentClientID(cookies);
+    var clientID = getCurrentClientID(request, response);
         
     if(url.pathname == '/startSourceEvent') {
         //console.log("action is startSourceEvent");
@@ -357,6 +342,7 @@ var app = connect()
     .use('/var', connect.static('/var')) // M2 creates temporary files (like created by Graphs.m2) here on MacOS
     .use('/tmp', connect.static('/tmp')) // and here on Ubuntu
     .use('/admin', stats)
+    .use('/image', imageAction)
     .use(M2Master)
     .use(connect.errorHandler());
 console.log("Listening on port " + port + "...");

@@ -129,7 +129,26 @@ Install Macaulay2
   sudo portmaster devel/bison
   sudo portmaster archivers/gtar
   sudo portmaster math/lapack  # sucks in gcc46, gmp, mpfr, ...
+  cd /usr/local/bin
+  sudo ln -s gfortran46 gfortran
+  sudo portmaster textproc/libxml2
+
 \end{verbatim}
+
+problems: (1) libxml2 parser.h.  Fixed by doing two things: adding
+CPPFLAGS=-I/usr/local/include/libxml2 to configure line
+and by editing /usr/local/include/libxml2/libxml/xmlversion.h to change ICONV
+variable to be 0 not 1.
+
+(2) also add CC=gcc46 CXX=g++46 to the configure line, since lapack being
+compiled with newer gcc was causing conflicting types for variables.
+(alternatively: install g95, and add LDFLAGS=-L/usr/local/lib to configure
+line.  This is what I am trying now).
+
+(3) configure script itself needs to be bash, not sh.
+
+(4) needed to first run 'gmake' in ntl build/ntl-5xx/src directory, and then
+gmake again...
 
 \section{tryM2}
 \begin{verbatim}

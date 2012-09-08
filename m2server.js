@@ -133,13 +133,13 @@ setInterval(function() {
 
 loadFile = function(url, response) {
     var filename = "";
-    if (/\.jpg/.test(url.pathname) && /\/tmp\//.test(url.pathname)) {
+    if (/\.jpg/.test(url.pathname) && (/\/tmp\//.test(url.pathname) || /\/var\//.test(url.pathname))) {
         filename = url.pathname;
         console.log("Request for jpg inside sandbox dir: "+ filename );       
         filename = sandboxDir + filename;
         filename = require('path').normalize(filename);
-        if (filename.indexOf(sandboxDir + "tmp/") != 0 ) {
-            console.log( "requested file, " + filename + " is not in " + sandboxDir + "tmp/");
+        if ((filename.indexOf(sandboxDir + "tmp/") != 0 ) && (filename.indexOf(sandboxDir + "var/") != 0))  {
+            console.log( "requested file, " + filename + " is not in " + sandboxDir + "tmp/ or var/");
             response.writeHead(404,{"Content-Type": "text/html"});
             response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
             response.end();

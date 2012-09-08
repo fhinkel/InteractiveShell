@@ -138,37 +138,7 @@ setInterval(function() {
     }
 }, 20000);
 
-loadFile = function(url, response) {
-    var filename = "";
-    if (/\.jpg/.test(url.pathname) && (/\/tmp\//.test(url.pathname) || /\/var\//.test(url.pathname))) {
-        filename = url.pathname;
-        console.log("Request for jpg inside sandbox dir: "+ filename );       
-        filename = sandboxDir + filename;
-        filename = require('path').normalize(filename);
-        if ((filename.indexOf(sandboxDir + "tmp/") != 0 ) && (filename.indexOf(sandboxDir + "var/") != 0))  {
-            console.log( "requested file, " + filename + " is not in " + sandboxDir + "tmp/ or var/");
-            response.writeHead(404,{"Content-Type": "text/html"});
-            response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
-            response.end();
-            return;
-        }
-         
-        if ( require('path').existsSync(filename)) {
-            data = require('fs').readFileSync(filename);
-            response.writeHead(200, {"Content-Type": "image/jpg"});
-            response.write(data);
-        }
-        else {
-            console.log("There was an error opening the file: " + filename);
-            response.writeHead(404,{"Content-Type": "text/html"});
-            response.write( '<h3>Page not found. Return to <a href="/">TryM2</a></h3>');
-        }
-        response.end();
-        return;
-    }
 
-    throw new Error("Why are we here???");
-}
 
 // Client starts eventStream to obtain M2 output and start M2
 startSource = function(clientID, request, response) {
@@ -351,9 +321,8 @@ function M2Master(request, response) {
         return;
     }
  
-    if (url.pathname === "/"  || actions[url.pathname] == undefined ) {
+    if ( actions[url.pathname] == undefined ) {
         console.log("do we ever get this?***************************");
-        loadFile (url, response);
         return;
     }
     
@@ -376,22 +345,13 @@ function M2Master(request, response) {
     actions[url.pathname](clientID, request, response);
 }
 
-//<!--
-// var http = require('http') 
-// , connect = require('connect');
-// var logger = setup;
-// var app = connect()
-//     .use(logger(':method :url'));
-// app.use('/admin', restrict);
-// app.use('/admin', admin);
-// app.use(hello);
-//
-// http.createServer(app).listen(3000); -->
 
 var app = connect()
     .use(connect.logger('dev'))
     .use(connect.favicon())
     .use(connect.static('public'))
+    .use('/var', connect.static('/var')) // M2 creates temporary files (like created by Graphs.m2) here on MacOS
+    .use('/tmp', connect.static('/tmp')) // and here on Ubuntu
     .use(M2Master);
 console.log("Listening on port " + port + "...");
 http.createServer(app).listen(port);

@@ -261,7 +261,7 @@ The clone will also need other files. So first I copy the complete master direct
 cd fakeroots
 sudo cp -rf master/* clone
 cd clone
-sudo rm -rf bin sbin usr srv proc sys root boot run
+sudo rm -rf bin sbin usr srv proc sys boot run M2
 \end{verbatim}
 
 Start the clone and check it
@@ -276,6 +276,10 @@ should yield
 \begin{verbatim}
 touch: cannot touch `/bin/bla': Read-only file system
 \end{verbatim}
+
+\subsection{todo}
+
+Store the configuration files in a location such that copyfiles fetches them every time we start. I.e. also modify copyfiles accordingly.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

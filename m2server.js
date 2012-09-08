@@ -167,7 +167,7 @@ loadFile = function(url, response) {
         return;
     }
 
-    console.log("User requested: " + url.pathname);
+    //console.log("User requested: " + url.pathname);
     // If the request was for "/", send index.html
     if (url.pathname === "/" ) {  
         filename = __dirname + "/index.html";
@@ -184,7 +184,7 @@ loadFile = function(url, response) {
         response.end();
         return;
     }
-    console.log("We are trying to serve: " + filename);
+    //console.log("We are trying to serve: " + filename);
 
     var ext = require('path').extname(filename);
     var contentType = "text/html";
@@ -433,8 +433,10 @@ function M2Master(request, response) {
 //
 // http.createServer(app).listen(3000); -->
 
-var app = connect();
-app.use(M2Master);
+var app = connect()
+    .use(connect.logger('dev'))
+    .use(connect.favicon())
+    .use(M2Master);
 console.log("Listening on port " + port + "...");
 http.createServer(app).listen(port);
 

@@ -110,7 +110,7 @@ getCurrentClientID = function(cookies) {
     return clientID;
 };
 
-var stats = function(response) {
+var stats = function(request, response, next) {
     // to do: authorization
      response.writeHead(200, {"Content-Type": "text/html"});
      var currentUsers = 0;
@@ -306,14 +306,16 @@ actions['/startSourceEvent'] = startSource;
 actions['/admin'] = false;
 actions['/image'] = false;
 
-function M2Master(request, response) {
+
+function M2Master(request, response, next) {
     //console.log( "got on");
-    var url = require('url').parse(request.url);
     
-    if (url.pathname === "/admin") {
-        stats(response);
-        return;
+    for( var c in request) {
+        if(request.hasOwnProperty(c))
+            console.log(c + ": " + request[c]);
     }
+    
+    var url = require('url').parse(request.url);
     
     if ( /^\/image/.test(url.pathname) ){
         console.log("Server got a request for /image from the open program");
@@ -322,7 +324,8 @@ function M2Master(request, response) {
     }
  
     if ( actions[url.pathname] == undefined ) {
-        console.log("do we ever get this?***************************");
+        console.log("Unknown action ***************************");
+        next();
         return;
     }
     
@@ -342,6 +345,7 @@ function M2Master(request, response) {
          return;
     }
         
+    // restart, interrupt, or chat
     actions[url.pathname](clientID, request, response);
 }
 
@@ -352,7 +356,9 @@ var app = connect()
     .use(connect.static('public'))
     .use('/var', connect.static('/var')) // M2 creates temporary files (like created by Graphs.m2) here on MacOS
     .use('/tmp', connect.static('/tmp')) // and here on Ubuntu
-    .use(M2Master);
+    .use('/admin', stats)
+    .use(M2Master)
+    .use(connect.errorHandler());
 console.log("Listening on port " + port + "...");
 http.createServer(app).listen(port);
 

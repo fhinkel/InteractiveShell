@@ -1,0 +1,321 @@
+\documentclass[a4paper]{article}
+\usepackage{verbatim}
+
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%%  Preparation
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Preparation}
+
+Install the following
+
+\begin{verbatim}
+sudo apt-get install schroot debootstrap
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%%  The master
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Creating the master}
+\subsection{Building precise}
+First we don't want anything from the outside world going into the master.
+Assume we are in a folder 'fakeroots', create a folder for the master
+
+\begin{verbatim}
+cd fakeroots
+mkdir master
+\end{verbatim}
+
+Now install precise into this folder
+
+\begin{verbatim}
+sudo debootstrap --variant=buildd --arch=amd64 precise 
+   path2master/master 
+   http://archive.ubuntu.com/ubuntu
+\end{verbatim}
+
+(all in one line)
+Replace precise by another version if needed.
+
+Go into the folder
+
+\begin{verbatim}
+cd path2master/master/etc/apt
+\end{verbatim}
+
+and modify the sources.list according to your needs. In my case I used
+
+\begin{verbatim}
+http://repogen.simplylinux.ch/
+\end{verbatim}
+
+\subsection{Creating the master profile}
+
+Start by duplicating the default profile
+
+\begin{verbatim}
+cd /etc/schroot
+sudo mkdir master
+sudo cp default/* master
+\end{verbatim}
+
+Now we need to modify the profile for not getting some files from the outside
+
+\begin{verbatim}
+cd /etc/schroot/master
+sudo vim copyfiles
+sudo vim nssdatabases
+sudo vim fstab
+\end{verbatim}
+
+Comment out all lines in these files, except the line with /proc in fstab. Then schroot won't copy the passwd file and /proc won't be mounted from the outside.
+
+Modify the configuration file to have the correct paths
+
+\begin{verbatim}
+sudo vim /etc/schroot/master/config
+\end{verbatim}
+
+it should look like
+
+\begin{verbatim}
+# Settings for "master" profile.
+FSTAB="/etc/schroot/master/fstab"
+COPYFILES="/etc/schroot/master/copyfiles"
+NSSDATABASES="/etc/schroot/master/nssdatabases"
+\end{verbatim}
+
+Next I created the configuration file
+
+\begin{verbatim}
+cd /etc/schroot/chroot.d
+touch master.conf
+\end{verbatim}
+
+And filled it with the following content
+
+\begin{verbatim}
+[master]
+description=Ubuntu precise pangolin master chroot
+directory=path2master/master
+root-users=lars <- your username here.
+type=directory
+users=m2user
+script-config=master/config <- total path doesn't work
+\end{verbatim}
+
+Note that apparently all the users mentioned here have to exist on the outside as well.
+We definetely have to modify the passwd file, since at this point it is a copy from the outside.
+
+\subsection{Installing M2 and other things}
+
+Move the M2 sources to a location (for example /home) inside the chroot:
+
+\begin{verbatim}
+sudo cp M2-1.4.0.1.tar.gz path2master/master/home/
+\end{verbatim}
+
+Now start the master schroot
+
+\begin{verbatim}
+schroot -c master -u root
+\end{verbatim}
+
+NO sudo in front of this command. Once inside, install everything you need using apt.
+Note that you might get an error message depending on whether the folder you start the schroot in also exists in the schroot environment or not.
+
+Inside the chroot
+
+\begin{verbatim}
+cd /home
+tar -xzf M2-1.4.0.1.tar.gz
+cd /
+mkdir M2
+mv /home/installed/* M2
+rm -rf /home/installed/
+rm /home/M2-1.4.0.1.tar.gz
+apt-get update
+apt-get upgrade
+apt-get install vim
+vim /etc/profile
+\end{verbatim}
+
+At the end of this file add the line
+
+\begin{verbatim}
+PATH=$PATH:/M2/bin
+\end{verbatim}
+
+Close the file and the schroot (Ctrl+d). You can restart the schroot and check the PATH variable for correctness.
+
+Install all packages needed for M2. Start the schroot as root and inside
+
+\begin{verbatim}
+apt-get install libxml2
+M2
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%%  The Clone
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Cloning the master schroot}
+
+We want to prepare a profile for the clones
+
+\begin{verbatim}
+cd /etc/schroot
+sudo mkdir clone
+sudo cp master/* clone
+cd clone
+sudo vim config
+\end{verbatim}
+
+edit this to look like
+
+\begin{verbatim}
+# Settings for "clone" profile.
+FSTAB="/etc/schroot/clone/fstab"
+COPYFILES="/etc/schroot/clone/copyfiles"
+NSSDATABASES="/etc/schroot/clone/nssdatabases"
+\end{verbatim}
+
+\subsection{Readonly stuff from master}
+
+Edit the fstab to fetch the master files
+
+\begin{verbatim}
+sudo vim /etc/schroot/clone/fstab
+\end{verbatim}
+
+it should look like
+
+\begin{verbatim}
+# fstab: static file system information for chroots.
+# <file system>   <mount point>  <type>   <options>   <dump>   <pass>
+/proc      /proc    none    bind        0       0
+/proc      /proc    none    remount,bind,ro        0       0
+path2master/master/bin /bin  none  bind     0  0
+path2master/master/bin /bin  none  remount,bind,ro      0  0
+path2master/master/usr /usr  none  bind     0  0
+path2master/master/usr /usr  none  remount,bind,ro      0  0
+path2master/master/srv /srv  none  bind     0  0
+path2master/master/srv /srv  none  remount,bind,ro      0  0
+path2master/master/lib /lib  none  bind     0  0
+path2master/master/lib /lib  none  remount,bind,ro      0  0
+path2master/master/sys /sys  none  bind     0  0
+path2master/master/sys /sys  none  remount,bind,ro      0  0
+path2master/master/boot   /boot none  bind     0  0
+path2master/master/boot   /boot none  remount,bind,ro      0  0
+path2master/master/run /run  none  bind     0  0
+path2master/master/run /run  none  remount,bind,ro      0  0
+path2master/master/M2 /M2  none  bind     0  0
+path2master/master/M2 /M2  none  remount,bind,ro      0  0
+\end{verbatim}
+
+\subsection{Configuring the clone}
+
+Create a folder for the clone (maybe inside fakeroots)
+
+\begin{verbatim}
+cd fakeroots
+mkdir clone
+\end{verbatim}
+
+Edit the clone chroot config
+
+\begin{verbatim}
+cd /etc/schroot/chroot.d
+sudo vim clone.conf
+\end{verbatim}
+
+to look like
+
+\begin{verbatim}
+[clone]
+description=Ubuntu precise pangolin clone chroot
+directory=path2clone/clone
+root-users=lars
+type=directory
+users=m2user
+script-config=clone/config
+\end{verbatim}
+
+\subsection{First test of the clone}
+
+The clone will also need other files. So first I copy the complete master directory, then I remove certain folders
+
+\begin{verbatim}
+cd fakeroots
+sudo cp -rf master/* clone
+cd clone
+sudo rm -rf bin sbin usr srv proc sys root boot run
+\end{verbatim}
+
+Start the clone and check it
+
+\begin{verbatim}
+schroot -c clone -u root
+touch /bin/bla
+\end{verbatim}
+
+should yield
+
+\begin{verbatim}
+touch: cannot touch `/bin/bla': Read-only file system
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%%  Schroot Commands
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Schroot Commands}
+One can list all schroots with
+
+\begin{verbatim}
+schroot -l
+\end{verbatim}
+
+Kill all schroots with
+
+\begin{verbatim}
+schroot -e --all-sessions
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%%  Possible Traps
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Possible Traps}
+\begin{itemize}
+\item Look at /etc/passwd. For some reason all users of the top system appear here. This might be good for others but not for us.
+
+One can resolve this by manipulating the files in /etc/schroot/default. In this case the nssdatabases file is the one to be manipulated.
+\item The shell via ssh looks weird.
+\item We want different ports for all schroots, but we only have one file we can change.
+\end{itemize}
+
+\section{Things to delete}
+\begin{itemize}
+\item[sbin] ctrlaltdel, shutdown, reboot, restart, fdisk. Maybe don't mount this folder at all.
+\item[/usr/sbin] Maybe don't mount this folder at all.
+\end{itemize}
+\end{document}

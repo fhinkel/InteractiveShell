@@ -248,9 +248,11 @@ findClientID = function(pid){
 // return PID extracted from pathname for image displaying
 parseUrlForPid = function(url) {
     console.log(url);
-    var pid = url.match(/\/M2-(\d+)-/);
-    //var pid = url.match(/^\/(\d+)\//);
-    
+    if (SCHROOT) {
+        var pid = url.match(/^\/(\d+)\//);
+    } else {
+        pid = url.match(/\/M2-(\d+)-/);
+    }
     //console.log( pid );
     if (!pid) {
         console.log("error, didn't get PID in image url");

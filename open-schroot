@@ -1,0 +1,7 @@
+#echo $1
+#echo "My PID" 
+#echo $$
+echo "parent PID" 
+parentID=`ps -p $PPID -o ppid=`
+M2parentID=`ps -p $parentID -o ppid=`
+curl -s http://localhost:8002/image/$M2parentID/$1 

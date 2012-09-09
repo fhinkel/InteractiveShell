@@ -64,7 +64,8 @@ startChildProcess = function(clientID) {
         var sName = clientID; // name of schroot
         console.log("Spawning new schroot process named " + sName + ".");
 
-        require('child_process').exec('schroot', ['-c', 'clone', '-n', sName, '-b'], function() {
+        //require('child_process').exec('schroot', ['-c', 'clone', '-n', sName, '-b'], function() {
+        require('child_process').exec('schroot -c clone -n '+ sName + ' -b', function() {
             var filename = "/var/lib/schroot/mount/" + sName + "/home/franzi/sName.txt";
              // TODO copy some files
             // create a file inside schroot directory to allow schroot know its own name

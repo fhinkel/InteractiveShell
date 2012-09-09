@@ -57,9 +57,6 @@ startUser = function(cookies) {
     clients[clientID].clientID = clientID;
     return clientID;
 }
-
-
-
        
 startChildProcess = function(clientID) {
     var spawn = require('child_process').spawn;
@@ -67,22 +64,21 @@ startChildProcess = function(clientID) {
         var sName = clientID; // name of schroot
         console.log("Spawning new schroot process named " + sName + ".");
 
-        spawn('schroot', ['-c', 'clone', '-n', sName, '-b'], function() {
-            var filename = "/var/lib/schroot/mount/" + sName + "/home/franzi/sName.txt";
-             // TODO copy some files
-            // create a file inside schroot directory to allow schroot know its own name
-            require('fs').writeFileSync(filename, sName, function(err) {
-                if(err) {
-                    console.log("failing to write the file " + filename);
-                    console.log(err);
-                } else {
-                    console.log("wrote schroot's name into " + filename);
-                }
-            });
-
-            var m2 = spawn('schroot', ['-c', sName, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
-            initializeRunningM2(m2, clientID);
+        spawn('schroot', ['-c', 'clone', '-n', sName, '-b']);
+        var filename = "/var/lib/schroot/mount/" + sName + "/home/franzi/sName.txt";
+         // TODO copy some files
+        // create a file inside schroot directory to allow schroot know its own name
+        require('fs').writeFileSync(filename, sName, function(err) {
+            if(err) {
+                console.log("failing to write the file " + filename);
+                console.log(err);
+            } else {
+                console.log("wrote schroot's name into " + filename);
+            }
         });
+
+        var m2 = spawn('schroot', ['-c', sName, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
+        initializeRunningM2(m2, clientID);
     } else {
         console.log("Spawning new M2 process...");
         m2 = spawn('M2');

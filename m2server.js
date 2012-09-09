@@ -77,9 +77,10 @@ startChildProcess = function(clientID) {
                     console.log("wrote schroot's name into " + filename);
                 }
             }); 
+            var m2 = spawn('schroot', ['-c', sName, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
+            
         });
 
-        var m2 = spawn('schroot', ['-c', sName, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
         //var m2 = spawn('schroot', ['-c', 'clone', '-u', 'franzi', '-d', '/home/franzi/', '/M2/bin/M2']);
     } else {
         console.log("spawning new M2 process...");

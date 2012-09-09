@@ -63,19 +63,22 @@ startChildProcess = function(clientID) {
     if (SCHROOT) {
         var sName = clientID; // name of schroot
         console.log("spawning new schroot process named " + sName + ".");
-        spawn('schroot', ['-c', 'clone', '-n', sName, '-b']);
-        // TODO copy some files
-        // create a file inside schroot directory to allow schroot know its own name
-        var fs = require('fs');
-        var filename = "/var/lib/schroot/mount/" + sName + "/home/franzi/sName.txt";
-        fs.writeFile(filename, sName, function(err) {
-            if(err) {
-                console.log("failing to write the file " + filename);
-                console.log(err);
-            } else {
-                console.log("wrote schroot's name into " + filename);
-            }
+        spawn('schroot', ['-c', 'clone', '-n', sName, '-b'], function(){
+            // TODO copy some files
+            // create a file inside schroot directory to allow schroot know its own name
+            var fs = require('fs');
+
+            var filename = "/var/lib/schroot/mount/" + sName + "/home/franzi/sName.txt";
+            fs.writeFileSync(filename, sName, function(err) {
+                if(err) {
+                    console.log("failing to write the file " + filename);
+                    console.log(err);
+                } else {
+                    console.log("wrote schroot's name into " + filename);
+                }
+            }); 
         });
+
         var m2 = spawn('schroot', ['-c', sName, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
         //var m2 = spawn('schroot', ['-c', 'clone', '-u', 'franzi', '-d', '/home/franzi/', '/M2/bin/M2']);
     } else {

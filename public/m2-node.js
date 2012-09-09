@@ -187,7 +187,7 @@ $(document).ready(function () {
         onExtClose: function () {}
     });
     
-    $('#M2In').val("Evaluate a line by typing Shift+Enter or by clicking on Evaluate.\nHere are some sample commands:\n---------------\nR = ZZ/101[a,b,c]\nS = ZZ/32003[vars(1..10)]\nQQ[x_1..x_6]\n");
+    $('#M2In').val("Evaluate a line by typing Shift+Enter or by clicking on Evaluate.\nHere are some sample commands:\n---------------\nR = ZZ/101[a,b,c]\nS = ZZ/32003[vars(1..10)]\nQQ[x_1..x_6]\n\nS = ZZ/32003[vars(1..13)]\nres coker vars S\n");
     
     //$('#M2In').addClass('inactive');
     //$('#M2In').focus(function() {

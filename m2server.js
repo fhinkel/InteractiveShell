@@ -70,12 +70,13 @@ startChildProcess = function(clientID) {
         var filename = "/var/lib/schroot/mount/" + sName + "/home/franzi/sName.txt";
         fs.writeFile(filename, sName, function(err) {
             if(err) {
+                console.log("failing to write the file " + filename);
                 console.log(err);
             } else {
                 console.log("wrote schroot's name into " + filename);
             }
         });
-        var m2 = spawn('schroot', ['-c', sName, '-u', 'franzi', '-r', '-d', '/home/franzi/', '/M2/bin/M2']);
+        var m2 = spawn('schroot', ['-c', sName, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
         //var m2 = spawn('schroot', ['-c', 'clone', '-u', 'franzi', '-d', '/home/franzi/', '/M2/bin/M2']);
     } else {
         console.log("spawning new M2 process...");

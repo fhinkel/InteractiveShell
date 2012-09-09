@@ -233,7 +233,7 @@ chatAction = function( request, response) {
             console.log("No M2 object for client " + clientID + ", starting M2.");
             startM2(clients[clientID]);                    
         }
-        if (!clients[clientID].m2.running) {
+        if (clients[clientID].m2 && !clients[clientID].m2.running) {
             console.log("No running M2 for client " + clientID + ", waiting for user to send /restart.");
             response.writeHead(200);  
             response.end();

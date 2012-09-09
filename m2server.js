@@ -61,15 +61,14 @@ startUser = function(cookies) {
 startChildProcess = function(clientID) {
     var spawn = require('child_process').spawn;
     if (SCHROOT) {
-        var sName = clientID; // name of schroot
-        console.log("Spawning new schroot process named " + sName + ".");
+        console.log("Spawning new schroot process named " + clientID + ".");
 
-        //require('child_process').exec('schroot', ['-c', 'clone', '-n', sName, '-b'], function() {
-        require('child_process').exec('schroot -c clone -n '+ sName + ' -b', function() {
-            var filename = "/var/lib/schroot/mount/" + sName + "/home/franzi/sName.txt";
+        //require('child_process').exec('schroot', ['-c', 'clone', '-n', clientID, '-b'], function() {
+        require('child_process').exec('schroot -c clone -n '+ clientID + ' -b', function() {
+            var filename = "/var/lib/schroot/mount/" + clientID + "/home/franzi/sName.txt";
              // TODO copy some files
             // create a file inside schroot directory to allow schroot know its own name
-            require('fs').writeFile(filename, sName, function(err) {
+            require('fs').writeFile(filename, clientID, function(err) {
                 if(err) {
                     console.log("failing to write the file " + filename);
                     console.log(err);
@@ -78,7 +77,7 @@ startChildProcess = function(clientID) {
                 }
             });
 
-            var m2 = spawn('schroot', ['-c', sName, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
+            var m2 = spawn('schroot', ['-c', clientID, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
             initializeRunningM2(m2, clientID);
         });
     } else {
@@ -253,7 +252,7 @@ restartAction = function(request, response) {
         client.m2.kill(); 
         console.log("In restartAction, killed child process with PID " + client.m2.pid);
         if (SCHROOT) {
-            spawn('schroot', ['-c', sName, '-e']); // this unmounts the schroot
+            spawn('schroot', ['-c', clientID, '-e']); // this unmounts the schroot
         }         
         client.m2 = null;
     }

@@ -44,6 +44,7 @@ var clients = {};
 function Client(m2process, resp) {
     this.m2 = m2process;
     this.eventStream = resp;
+    this.clientID = null;
 }
 
 startUser = function(cookies) {
@@ -53,15 +54,31 @@ startUser = function(cookies) {
     clientID = "user" + clientID.toString(10);
     cookies.set( "tryM2", clientID, { httpOnly: false } );
     clients[clientID] = new Client(); 
+    clients[clientID].clientID = clientID;
     return clientID;
 }
 
-startM2Process = function() {
+startChildProcess = function(clientID) {
     var spawn = require('child_process').spawn;
-    console.log("spawning new M2 process...");
     if (SCHROOT) {
-        var m2 = spawn('schroot', ['-c', 'clone', '-u', 'franzi', '-d', '/home/franzi/', '/M2/bin/M2']);
+        var sName = clientID; // name of schroot
+        console.log("spawning new schroot process named " + sName + ".");
+        spawn('schroot', ['-c', 'clone', '-n', sName, '-b']);
+        // TODO copy some files
+        // create a file inside schroot directory to allow schroot know its own name
+        var fs = require('fs');
+        var filename = "/var/lib/schroot/mount/" + sName + "/home/franzi/sName.txt";
+        fs.writeFile(filename, sName, function(err) {
+            if(err) {
+                console.log(err);
+            } else {
+                console.log("wrote schroot's name into " + filename);
+            }
+        });
+        var m2 = spawn('schroot', ['-c', sName, '-u', 'franzi', '-r', '-d', '/home/franzi/', '/M2/bin/M2']);
+        //var m2 = spawn('schroot', ['-c', 'clone', '-u', 'franzi', '-d', '/home/franzi/', '/M2/bin/M2']);
     } else {
+        console.log("spawning new M2 process...");
         m2 = spawn('M2'); 
     }
     m2.running = true;
@@ -73,14 +90,14 @@ startM2Process = function() {
         console.log("M2 exited");
     });
     return m2;
-};
+}
 
 // can only be called when client.eventStream is set
 // if client.m2 is not null, kill it, then start a new process
 // attach M2 output to client.eventStream
 startM2 = function(client) {
     if (!client.m2) { 
-        client.m2 = startM2Process();   
+        client.m2 = startChildProcess(client.clientID);   
     }
     // client is an object of type Client
 
@@ -206,7 +223,10 @@ restartAction = function(request, response) {
     console.log("received: /restart from " + clientID);
     if (client.m2) { 
         client.m2.kill(); 
-        console.log("In restartAction, killed M2 with PID " + client.m2.pid);         
+        console.log("In restartAction, killed child process with PID " + client.m2.pid);
+        if (SCHROOT) {
+            spawn('schroot', ['-c', sName, '-e']); // this unmounts the schroot
+        }         
         client.m2 = null;
     }
     startM2(client);

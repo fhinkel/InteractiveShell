@@ -58,51 +58,74 @@ startUser = function(cookies) {
     return clientID;
 }
 
+
+
+       
 startChildProcess = function(clientID) {
     var spawn = require('child_process').spawn;
     if (SCHROOT) {
         var sName = clientID; // name of schroot
-        console.log("spawning new schroot process named " + sName + ".");
-        spawn('schroot', ['-c', 'clone', '-n', sName, '-b'], function(){
-            // TODO copy some files
-            // create a file inside schroot directory to allow schroot know its own name
-            var fs = require('fs');
-
-            var filename = "/var/lib/schroot/mount/" + sName + "/home/franzi/sName.txt";
-            fs.writeFileSync(filename, sName, function(err) {
-                if(err) {
-                    console.log("failing to write the file " + filename);
-                    console.log(err);
-                } else {
-                    console.log("wrote schroot's name into " + filename);
+        console.log("Spawning new schroot process named " + sName + ".");
+        var tasks = [
+            function(sName) {
+                spawn('schroot', ['-c', 'clone', '-n', sName, '-b'], function() {
+                    next(sName);
                 }
-            }); 
-            var m2 = spawn('schroot', ['-c', sName, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
-            
-        });
-
-        //var m2 = spawn('schroot', ['-c', 'clone', '-u', 'franzi', '-d', '/home/franzi/', '/M2/bin/M2']);
+            },
+            function(sName) {
+                var filename = "/var/lib/schroot/mount/" + sName + "/home/franzi/sName.txt";
+                 // TODO copy some files
+                // create a file inside schroot directory to allow schroot know its own name
+                require('fs').writeFileSync(filename, sName, function(err) {
+                    if(err) {
+                        console.log("failing to write the file " + filename);
+                        console.log(err);
+                    } else {
+                        console.log("wrote schroot's name into " + filename);
+                    }
+                });
+                next(sName);
+            },
+            function(sName) {
+                var m2 = spawn('schroot', ['-c', sName, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
+                initializeRunningM2(m2, clientID);
+                next(sName);
+            }
+        ];
+        
+        function next (sName) {
+            var currentTask = tasks.shift();
+            if (currentTask) {
+                currentTask(sName);
+            }
+        }
+        next(sName);
     } else {
-        console.log("spawning new M2 process...");
-        m2 = spawn('M2'); 
+        console.log("Spawning new M2 process...");
+        m2 = spawn('M2');
+        initializeRunningM2(m2, clientID);
     }
-    m2.running = true;
-    m2.stdout.setEncoding("utf8");
-    m2.stderr.setEncoding("utf8");
-    console.log('Spawned m2 pid: ' + m2.pid);
-    m2.on('exit', function(code, signal) {
-        m2.running = false;
-        console.log("M2 exited");
-    });
-    return m2;
 }
+
+initializeRunningM2 = function(m2, clientID) {
+     m2.running = true;
+     m2.stdout.setEncoding("utf8");
+     m2.stderr.setEncoding("utf8");
+     console.log('Spawned m2 pid: ' + m2.pid);
+     m2.on('exit', function(code, signal) {
+         m2.running = false;
+         console.log("M2 exited");
+     });
+     clients[cliendID].m2 = m2;
+}
+
 
 // can only be called when client.eventStream is set
 // if client.m2 is not null, kill it, then start a new process
 // attach M2 output to client.eventStream
 startM2 = function(client) {
     if (!client.m2) { 
-        client.m2 = startChildProcess(client.clientID);   
+        startChildProcess(client.clientID);   
     }
     // client is an object of type Client
 

@@ -28,6 +28,8 @@ var http = require('http')
     , connect = require('connect')
     , Cookies = require('cookies');
     
+var SCHROOT = false; // start with --schroot on server
+    
 
 
 // The HTML file for the chat client. Used below.
@@ -57,10 +59,11 @@ startUser = function(cookies) {
 startM2Process = function() {
     var spawn = require('child_process').spawn;
     console.log("spawning new M2 process...");
-    var m2 = spawn('schroot', ['-c', 'clone', '-u', 'franzi', '-d', '/home/franzi/', '/M2/bin/M2']);
-    //var m2 = spawn('sudo', ['../sandbox/sandbox', '../../sandbox-dir', 'bin/M2', '-q', '-e', 'limitResources()']);
-    //var m2 = spawn('../sandbox/sandbox', ['../../sandbox-dir', 'bin/M2', '-q', '--read-only-files', '-e', 'limitProcesses 0; limitFiles 25']);
-    // sudo env -i ./sandbox sandbox-dir /bin/M2 -q --read-only-files -e 'limitProcesses 0; limitFiles 25'
+    if (SCHROOT) {
+        var m2 = spawn('schroot', ['-c', 'clone', '-u', 'franzi', '-d', '/home/franzi/', '/M2/bin/M2']);
+    } else {
+        m2 = spawn('M2'); 
+    }
     m2.running = true;
     m2.stdout.setEncoding("utf8");
     m2.stderr.setEncoding("utf8");
@@ -322,6 +325,13 @@ function unhandled(request, response, next) {
     console.log("User requested something we don't serve");
     console.log(request.url);
 }
+
+// when run in production, work with schroots, see startM2Process()
+if( process.argv[2] && process.argv[2]=='--schroot') {
+    console.log('Running with schroots.');
+    SCHROOT=true;
+}
+
 
 var app = connect()
     .use(connect.logger('dev'))

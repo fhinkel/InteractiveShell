@@ -70,7 +70,7 @@ startChildProcess = function(clientID) {
             function(sName) {
                 spawn('schroot', ['-c', 'clone', '-n', sName, '-b'], function() {
                     next(sName);
-                }
+                });
             },
             function(sName) {
                 var filename = "/var/lib/schroot/mount/" + sName + "/home/franzi/sName.txt";

@@ -91,7 +91,7 @@ initializeRunningM2 = function(m2, clientID) {
      m2.running = true;
      m2.stdout.setEncoding("utf8");
      m2.stderr.setEncoding("utf8");
-     console.log('Spawned m2 pid: ' + m2.pid);
+     //console.log('Spawned m2 pid: ' + m2.pid);
      m2.on('exit', function(code, signal) {
          m2.running = false;
          console.log("M2 exited");
@@ -252,7 +252,7 @@ restartAction = function(request, response) {
         client.m2.kill(); 
         console.log("In restartAction, killed child process with PID " + client.m2.pid);
         if (SCHROOT) {
-            spawn('schroot', ['-c', clientID, '-e']); // this unmounts the schroot
+            require('child_process').spawn('schroot', ['-c', clientID, '-e']); // this unmounts the schroot
         }         
         client.m2 = null;
     }

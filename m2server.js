@@ -231,31 +231,37 @@ chatAction = function( request, response) {
     request.on("end", function() { 
         if(!clients[clientID].m2) {
             console.log("No M2 object for client " + clientID + ", starting M2.");
-            startM2(clients[clientID]);                    
+            startM2(clients[clientID], function() {
+                readM2Commands(clientID, body, response);
+            });                    
+        } else {
+            console.log("clients[clientID].m2 not null.");
+            readM2Commands(clientID, body, response);
         }
-        if (clients[clientID].m2 && !clients[clientID].m2.running) {
-            console.log("No running M2 for client " + clientID + ", waiting for user to send /restart.");
-            response.writeHead(200);  
-            response.end();
-            return;
-        }               
-        try {
-            console.log("M2 input: " + body);
-            clients[clientID].m2.stdin.write(body);
-        }
-        catch (err) {
-            console.log("Internal error: nothing to write to?!");
-            throw ("Internal error: nothing to write to?!");
-            // send error back to user, user needs to start eventStream and resend 'body'
-            //response.writeHead(200, {
-            //  'notEventSourceError': 'No socket for client...' });
-            //response.end();
-            return;
-        }
-        response.writeHead(200);  
-        response.end();
     });
 };
+
+readM2Commands = function( clientID, body, response ) {
+    if (clients[clientID].m2 && !clients[clientID].m2.running) {
+        console.log("No running M2 for client " + clientID + ", waiting for user to send /restart.");
+        response.writeHead(200);  
+        response.end();
+        return;
+    }               
+    try {
+        console.log("M2 input: " + body);
+        clients[clientID].m2.stdin.write(body);
+    }
+    catch (err) {
+        console.log(err);
+        console.log("Internal error: nothing to write to?!");
+        throw ("Internal error: nothing to write to?!");
+        return;
+    }
+    response.writeHead(200);  
+    response.end();
+};
+
 
 restartAction = function(request, response) {
     var clientID = getCurrentClientID(request, response);

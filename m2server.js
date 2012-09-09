@@ -116,7 +116,22 @@ initializeRunningM2 = function(m2, clientID) {
          m2.running = false;
          console.log("M2 exited");
      });
-     clients[cliendID].m2 = m2;
+     var client = clients[clientID];
+     client.m2 = m2;
+     var ondata = function(data) {
+         console.log('ondata: ' + data);
+         message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
+         if (!client.eventStream) { // fatal error, should not happen
+             console.log("Error: No event stream in Start M2");
+             throw "Error: No client.eventStream in Start M2";
+         }
+         client.eventStream.write(message);           
+     };
+     console.log("Bind stdout to client's m2");
+     client.m2.stdout.removeAllListeners('data');
+     client.m2.stderr.removeAllListeners('data');
+     client.m2.stdout.on('data', ondata);
+     client.m2.stderr.on('data', ondata);
 }
 
 
@@ -126,24 +141,22 @@ initializeRunningM2 = function(m2, clientID) {
 startM2 = function(client) {
     if (!client.m2) { 
         startChildProcess(client.clientID);   
+    } else {
+        var ondata = function(data) {
+            console.log('ondata: ' + data);
+            message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
+            if (!client.eventStream) { // fatal error, should not happen
+                console.log("Error: No event stream in Start M2");
+                throw "Error: No client.eventStream in Start M2";
+            }
+            client.eventStream.write(message);           
+        };
+        console.log("Bind stdout to client's m2");
+        client.m2.stdout.removeAllListeners('data');
+        client.m2.stderr.removeAllListeners('data');
+        client.m2.stdout.on('data', ondata);
+        client.m2.stderr.on('data', ondata);
     }
-    // client is an object of type Client
-
-    console.log("starting sending M2 output to eventStream");
-    var ondata = function(data) {
-        console.log('ondata: ' + data);
-        message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
-        if (!client.eventStream) { // fatal error, should not happen
-            console.log("Error: No event stream in Start M2");
-            throw "Error: No client.eventStream in Start M2";
-        }
-        client.eventStream.write(message);           
-    };
-    client.m2.stdout.removeAllListeners('data');
-    client.m2.stderr.removeAllListeners('data');
-    client.m2.stdout.on('data', ondata);
-    client.m2.stderr.on('data', ondata);
-
 };
 
 getCurrentClientID = function(request, response) {

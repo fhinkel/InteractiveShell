@@ -69,7 +69,7 @@ startChildProcess = function(clientID) {
             var filename = "/var/lib/schroot/mount/" + sName + "/home/franzi/sName.txt";
              // TODO copy some files
             // create a file inside schroot directory to allow schroot know its own name
-            require('fs').writeFileSync(filename, sName, function(err) {
+            require('fs').writeFile(filename, sName, function(err) {
                 if(err) {
                     console.log("failing to write the file " + filename);
                     console.log(err);

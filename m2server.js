@@ -28,6 +28,8 @@ var http = require('http')
     , connect = require('connect')
     , Cookies = require('cookies');
     
+var SCHROOT = false; // start with --schroot on server
+    
 
 
 // The HTML file for the chat client. Used below.
@@ -42,6 +44,7 @@ var clients = {};
 function Client(m2process, resp) {
     this.m2 = m2process;
     this.eventStream = resp;
+    this.clientID = null;
 }
 
 startUser = function(cookies) {
@@ -51,51 +54,98 @@ startUser = function(cookies) {
     clientID = "user" + clientID.toString(10);
     cookies.set( "tryM2", clientID, { httpOnly: false } );
     clients[clientID] = new Client(); 
+    clients[clientID].clientID = clientID;
     return clientID;
 }
 
-startM2Process = function() {
-    var spawn = require('child_process').spawn;
-    console.log("spawning new M2 process...");
-    var m2 = spawn('schroot', ['-c', 'clone', '-u', 'franzi', '-d', '/home/franzi/', '/M2/bin/M2']);
-    //var m2 = spawn('sudo', ['../sandbox/sandbox', '../../sandbox-dir', 'bin/M2', '-q', '-e', 'limitResources()']);
-    //var m2 = spawn('../sandbox/sandbox', ['../../sandbox-dir', 'bin/M2', '-q', '--read-only-files', '-e', 'limitProcesses 0; limitFiles 25']);
-    // sudo env -i ./sandbox sandbox-dir /bin/M2 -q --read-only-files -e 'limitProcesses 0; limitFiles 25'
-    m2.running = true;
+initializeRunningM2 = function(m2, clientID) {
     m2.stdout.setEncoding("utf8");
     m2.stderr.setEncoding("utf8");
-    console.log('Spawned m2 pid: ' + m2.pid);
-    m2.on('exit', function(code, signal) {
-        m2.running = false;
-        console.log("M2 exited");
-    });
-    return m2;
+    //console.log('Spawned m2 pid: ' + m2.pid);
+    //    m2.on('exit', function(code, signal) {
+    //	m2.running = false;
+    //	console.log("M2 exited");
+    //      });
+    clients[clientID].m2 = m2;
 };
 
-// can only be called when client.eventStream is set
-// if client.m2 is not null, kill it, then start a new process
-// attach M2 output to client.eventStream
-startM2 = function(client) {
-    if (!client.m2) { 
-        client.m2 = startM2Process();   
+m2Start = function(clientID, callbackFcn) {
+    var spawn = require('child_process').spawn;
+    if (SCHROOT) {
+        console.log("Spawning new schroot process named " + clientID + ".");
+        var e = require('child_process').exec('schroot -c clone -n '+ clientID + ' -b', function() {
+            console.log("PID of exec that begins a schroot: " + e.pid);
+            var filename = "/var/lib/schroot/mount/" + clientID + "/home/franzi/sName.txt";
+             // TODO copy some files
+            // create a file inside schroot directory to allow schroot know its own name
+            require('fs').writeFile(filename, clientID, function(err) {
+                if(err) {
+                    console.log("failing to write the file " + filename);
+                    console.log(err);
+                } else {
+                    console.log("wrote schroot's name into " + filename);
+                }
+            });
+
+            var m2 = spawn('schroot', ['-c', clientID, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
+            console.log("PID of schroot: " + m2.pid);
+            require('child_process').exec('ps --ppid ' + m2.pid + ' -o pid=', // command line argument directly in string
+              function (error, stdout, stderr) {      // one easy function to capture data/errors
+                console.log('ps stdout: ' + stdout);
+                var m2Pid =  stdout;
+                
+                console.log('ps stderr: ' + stderr);
+                if (error !== null) {
+                  console.log('ps exec error: ' + error);
+                }
+                console.log("m2 pid: " + m2Pid);
+                
+            });
+
+	        callbackFcn(m2, clientID);
+        });
+    } else {
+        console.log("Spawning new M2 process...");
+        m2 = spawn('M2');
+	    callbackFcn(m2, clientID);
     }
-    // client is an object of type Client
+}
 
-    console.log("starting sending M2 output to eventStream");
-    var ondata = function(data) {
-        console.log('ondata: ' + data);
-        message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
-        if (!client.eventStream) { // fatal error, should not happen
-            console.log("Error: No event stream in Start M2");
-            throw "Error: No client.eventStream in Start M2";
-        }
-        client.eventStream.write(message);           
-    };
-    client.m2.stdout.removeAllListeners('data');
-    client.m2.stderr.removeAllListeners('data');
-    client.m2.stdout.on('data', ondata);
-    client.m2.stderr.on('data', ondata);
+m2ConnectStream = function(clientID) {
+     var client = clients[clientID];
+     var ondata = function(data) {
+         console.log('ondata: ' + data);
+         message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
+         if (!client.eventStream) { // fatal error, should not happen
+             console.log("Error: No event stream in Start M2");
+             throw "Error: No client.eventStream in Start M2";
+         }
+         client.eventStream.write(message);           
+     };
+     console.log("Bind stdout to client's m2");
+     client.m2.stdout.removeAllListeners('data');
+     client.m2.stderr.removeAllListeners('data');
+     client.m2.stdout.on('data', ondata);
+     client.m2.stderr.on('data', ondata);
+};
 
+m2AssureRunning = function(clientID, callbackFcn) {
+    // clientID: name of the desired client
+    // callbackFcn: function(clientID) {} which is to be called once
+    //   we are assured that M2 is running.
+    // Caveat: It is possible to kill m2 after being being assured that it is
+    //   there, so there is a possibility for a problem here.  We need to consider that? TODO
+
+    var client = clients[clientID];
+    if (!client.m2) {
+        m2Start(clientID, function(m2) {
+	        initializeRunningM2(m2, clientID);
+	        m2ConnectStream(clientID);
+	        callbackFcn(clientID);
+	    });
+    } else {
+        callbackFcn(clientID);
+    }
 };
 
 getCurrentClientID = function(request, response) {
@@ -139,15 +189,13 @@ setInterval(function() {
     }
 }, 20000);
 
-
-
 // Client starts eventStream to obtain M2 output and start M2
 startSource = function( request, response) {
     var clientID = getCurrentClientID(request, response);
     response.writeHead(200, {'Content-Type': "text/event-stream" });
     if (!clients[clientID].eventStream) {
         clients[clientID].eventStream = response;
-        startM2(clients[clientID]);
+	m2AssureRunning(clientID, m2ConnectStream);
     }
 
     // If the client closes the connection, remove client from the list of active clients
@@ -168,33 +216,29 @@ chatAction = function( request, response) {
             
     // Send input to M2 when we have received the complete body
     request.on("end", function() { 
-        if(!clients[clientID].m2) {
-            console.log("No M2 object for client " + clientID + ", starting M2.");
-            startM2(clients[clientID]);                    
-        }
-        if (!clients[clientID].m2.running) {
-            console.log("No running M2 for client " + clientID + ", waiting for user to send /restart.");
-            response.writeHead(200);  
-            response.end();
-            return;
-        }               
-        try {
-            console.log("M2 input: " + body);
-            clients[clientID].m2.stdin.write(body);
-        }
-        catch (err) {
-            console.log("Internal error: nothing to write to?!");
-            throw ("Internal error: nothing to write to?!");
-            // send error back to user, user needs to start eventStream and resend 'body'
-            //response.writeHead(200, {
-            //  'notEventSourceError': 'No socket for client...' });
-            //response.end();
-            return;
-        }
-        response.writeHead(200);  
-        response.end();
+	m2ProcessInput(clientID, body, response);
+      });
+};
+
+m2ProcessInput = function( clientID, body, response ) {
+    // this starts m2 if needed, and when it is done, calls callback
+    console.log("entered m2ProcessInput");
+    m2AssureRunning(clientID, function() {
+	try {
+	  console.log("M2 input: " + body);
+	  clients[clientID].m2.stdin.write(body);
+	}
+	catch (err) {
+	    console.log(err);
+	    console.log("Internal error: nothing to write to?!");
+	    throw ("Internal error: nothing to write to?!");
+	    return;
+	}
+	response.writeHead(200);  
+	response.end();
     });
 };
+
 
 restartAction = function(request, response) {
     var clientID = getCurrentClientID(request, response);
@@ -203,10 +247,16 @@ restartAction = function(request, response) {
     console.log("received: /restart from " + clientID);
     if (client.m2) { 
         client.m2.kill(); 
-        console.log("In restartAction, killed M2 with PID " + client.m2.pid);         
+        console.log("In restartAction, killed child process with PID " + client.m2.pid);
+        if (SCHROOT) {
+            require('child_process').spawn('schroot', ['-c', clientID, '-e']); // this unmounts the schroot
+        }         
         client.m2 = null;
     }
-    startM2(client);
+    m2Start(clientID, function(m2, clientID) {
+	initializeRunningM2(m2, clientID);
+	m2ConnectStream(clientID);
+      });
     response.writeHead(200);  
     response.end();
 };
@@ -224,7 +274,9 @@ interruptAction = function(request, response)  {
 };
 
 // returning clientID for a given M2 pid
+// This currently does not work when working inside a schroot, because pid is not the schroot's pid
 findClientID = function(pid){
+    //var pid1 = parseInt(pid,10);
     console.log("Searching for clientID whose M2 has PID " + pid);
     for (var prop in clients) {
         if (clients.hasOwnProperty(prop) && clients[prop] && clients[prop].m2) {
@@ -245,27 +297,31 @@ findClientID = function(pid){
 // return PID extracted from pathname for image displaying
 parseUrlForPid = function(url) {
     console.log(url);
-    var pid = url.match(/\/M2-(\d+)-/);
-    //var pid = url.match(/^\/(\d+)\//);
-    
+    if (SCHROOT) {
+        var pid = url.match(/^\/(user\d+)\//);
+    } else {
+        pid = url.match(/\/M2-(\d+)-/);
+    }
     //console.log( pid );
     if (!pid) {
         console.log("error, didn't get PID in image url");
         throw ("Did not get PID in image url");
     }
     console.log("PID = " + pid[1]);
-    return parseInt(pid[1],10);
+    return pid[1];
+    //return parseInt(pid[1],10);
 }
 
 // return path to image
 parseUrlForPath = function(url) {
-    var imagePath = url.match(/^\/\d+\/(.*)/);
+    var imagePath = url.match(/^\/(user)?\d+\/(.*)/);
     console.log(imagePath);
+    
     if (!imagePath) {
         throw("Did not get imagePath in image url");
     }
-    console.log("imagePath = " + imagePath[1]);
-    return imagePath[1];
+    console.log("imagePath = " + imagePath[2]);
+    return imagePath[2];
 }
 
 // we get a /image from our open script
@@ -278,12 +334,22 @@ imageAction = function(request, response, next) {
     try {
         var pid = parseUrlForPid(url);
         var path = parseUrlForPath(url); // a string
-        var clientID = findClientID(pid);
+        if (SCHROOT) {
+            var clientID = pid;
+        } else {
+            clientID = findClientID(pid);
+        }
+        
+        console.log("ClientID = " + clientID);
         
         client = clients[clientID];
           if (!client) {
               console.log("oops, no client");
               return;
+          }
+          
+          if (SCHROOT) {
+              path = "/var/lib/schroot/mount/" + clientID + path
           }
           console.log('we got a request for an image: ' + path + ", for clientID " + clientID);
           // parse request for PID and path to image
@@ -322,6 +388,13 @@ function unhandled(request, response, next) {
     console.log("User requested something we don't serve");
     console.log(request.url);
 }
+
+// when run in production, work with schroots, see startM2Process()
+if( process.argv[2] && process.argv[2]=='--schroot') {
+    console.log('Running with schroots.');
+    SCHROOT=true;
+}
+
 
 var app = connect()
     .use(connect.logger('dev'))

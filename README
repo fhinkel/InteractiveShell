@@ -1,3 +1,11 @@
+9/9/2012
+* use node.js connect()
+* change logic for startM2()
+
+9/9/2012
+Back to Ubuntu. We're using a virtual box and run the web server (node.js) in it. The M2's are started in schroots (secure chroots)
+
+
 9/6/2012
 For security reasons, we're moving to FreeBSD with jails instead of chroot: 
 * freebsd system working

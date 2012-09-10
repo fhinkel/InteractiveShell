@@ -39,6 +39,15 @@ var totalUsers = 0;
 // defined.
 var clients = {};
 
+function runShellCommand(cmd, callbackFcn) {
+    // runs a command, and calls the callbackFnc with the output from stdout
+    
+    require('child_process').exec( cmd, function(error, stdout, stderr) {
+        console.log("runShellCommand result:" + stdout);
+        callbackFcn(stdout);
+    }); 
+}
+
 function Client(m2process, resp) {
     this.m2 = m2process;
     this.eventStream = resp;
@@ -64,7 +73,7 @@ startUser = function(cookies, callbackFcn) {
                     console.log(err);
                 } else {
                     console.log("wrote schroot's name into " + filename);
-		    callbackFcn(clientID);
+    		    callbackFcn(clientID);
                 }
 	    });
 	});
@@ -77,10 +86,11 @@ startUser = function(cookies, callbackFcn) {
 m2Start = function(clientID) {
     var spawn = require('child_process').spawn;
     if (SCHROOT) {
-        var m2 = spawn(
-	    'schroot', 
-            ['-c', clientID, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
+        var m2 = spawn( 'schroot', ['-c', clientID, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
         console.log("PID of schroot: " + m2.pid);
+        runShellCommand('pgrep -P ' + m2.pid, function(m2Pid) {
+            console.log("PID of M2 inside schroot: " + m2Pid);
+        });
     } else {
         m2 = spawn('M2');
         console.log("Spawning new M2 process...");
@@ -235,13 +245,13 @@ restartAction = function(request, response) {
 
 interruptAction = function(request, response)  {
     assureClient(request, response, function (clientID) {
-	if (!checkForEventStream(clientID, response)) {return false};
-	console.log("received: /interrupt from " + clientID);
-	if (clients[clientID] && clients[clientID].m2) {
-            clients[clientID].m2.kill('SIGINT');
-	}
-	response.writeHead(200);  
-	response.end();
+	    if (!checkForEventStream(clientID, response)) {return false};
+    	console.log("received: /interrupt from " + clientID);
+    	if (clients[clientID] && clients[clientID].m2) {
+                clients[clientID].m2.kill('SIGINT');
+    	}
+    	response.writeHead(200);  
+    	response.end();
     });
 };
 

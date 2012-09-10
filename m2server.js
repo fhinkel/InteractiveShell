@@ -21,7 +21,7 @@
 // A message on /chat: start an event emitter, which will return the output of
 // the M2 process.
 
-var port = 8002; 
+var port = 3690; 
 var sandboxDir = "/";
 
 var http = require('http') 
@@ -87,12 +87,12 @@ m2Start = function(clientID, callbackFcn) {
             });
 
             var m2 = spawn('schroot', ['-c', clientID, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
-	    callbackFcn(m2, clientID);
+	        callbackFcn(m2, clientID);
         });
     } else {
         console.log("Spawning new M2 process...");
         m2 = spawn('M2');
-	callbackFcn(m2, clientID);
+	    callbackFcn(m2, clientID);
     }
 }
 
@@ -124,12 +124,12 @@ m2AssureRunning = function(clientID, callbackFcn) {
     var client = clients[clientID];
     if (!client.m2) {
         m2Start(clientID, function(m2) {
-	    initializeRunningM2(m2, clientID);
-	    m2ConnectStream(clientID);
-	    callbackFcn(clientID);
-	})
+	        initializeRunningM2(m2, clientID);
+	        m2ConnectStream(clientID);
+	        callbackFcn(clientID);
+	    });
     } else {
-      callbackFcn(clientID);
+        callbackFcn(clientID);
     }
 };
 

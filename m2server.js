@@ -295,13 +295,14 @@ parseUrlForPid = function(url) {
 
 // return path to image
 parseUrlForPath = function(url) {
-    var imagePath = url.match(/^\/[user]\d+\/(.*)/);
+    var imagePath = url.match(/^\/(user)?\d+\/(.*)/);
     console.log(imagePath);
+    
     if (!imagePath) {
         throw("Did not get imagePath in image url");
     }
-    console.log("imagePath = " + imagePath[1]);
-    return imagePath[1];
+    console.log("imagePath = " + imagePath[2]);
+    return imagePath[2];
 }
 
 // we get a /image from our open script

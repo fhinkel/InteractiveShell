@@ -87,6 +87,7 @@ m2Start = function(clientID, callbackFcn) {
             });
 
             var m2 = spawn('schroot', ['-c', clientID, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
+            console.log("PID of spawn: " + m2.pid);
 	        callbackFcn(m2, clientID);
         });
     } else {
@@ -258,6 +259,7 @@ interruptAction = function(request, response)  {
 };
 
 // returning clientID for a given M2 pid
+// This currently does not work when working inside a schroot, because pid is not the schroot's pid
 findClientID = function(pid){
     //var pid1 = parseInt(pid,10);
     console.log("Searching for clientID whose M2 has PID " + pid);

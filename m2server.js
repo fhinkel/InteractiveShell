@@ -21,7 +21,7 @@
 // A message on /chat: start an event emitter, which will return the output of
 // the M2 process.
 
-var port = 3690; 
+var port = 8002; 
 var sandboxDir = "/";
 
 var http = require('http') 
@@ -280,7 +280,7 @@ findClientID = function(pid){
 parseUrlForPid = function(url) {
     console.log(url);
     if (SCHROOT) {
-        var pid = url.match(/^\/(\d+)\//);
+        var pid = url.match(/^\/user(\d+)\//);
     } else {
         pid = url.match(/\/M2-(\d+)-/);
     }

@@ -57,13 +57,22 @@ startUser = function(cookies) {
     clients[clientID].clientID = clientID;
     return clientID;
 }
-       
-startChildProcess = function(clientID) {
+
+initializeRunningM2 = function(m2, clientID) {
+    m2.stdout.setEncoding("utf8");
+    m2.stderr.setEncoding("utf8");
+    //console.log('Spawned m2 pid: ' + m2.pid);
+    //    m2.on('exit', function(code, signal) {
+    //	m2.running = false;
+    //	console.log("M2 exited");
+    //      });
+    clients[clientID].m2 = m2;
+};
+
+m2Start = function(clientID, callbackFcn) {
     var spawn = require('child_process').spawn;
     if (SCHROOT) {
         console.log("Spawning new schroot process named " + clientID + ".");
-
-        //require('child_process').exec('schroot', ['-c', 'clone', '-n', clientID, '-b'], function() {
         require('child_process').exec('schroot -c clone -n '+ clientID + ' -b', function() {
             var filename = "/var/lib/schroot/mount/" + clientID + "/home/franzi/sName.txt";
              // TODO copy some files
@@ -78,26 +87,17 @@ startChildProcess = function(clientID) {
             });
 
             var m2 = spawn('schroot', ['-c', clientID, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
-            initializeRunningM2(m2, clientID);
+	    callbackFcn(m2, clientID);
         });
     } else {
         console.log("Spawning new M2 process...");
         m2 = spawn('M2');
-        initializeRunningM2(m2, clientID);
+	callbackFcn(m2, clientID);
     }
 }
 
-initializeRunningM2 = function(m2, clientID) {
-     m2.running = true;
-     m2.stdout.setEncoding("utf8");
-     m2.stderr.setEncoding("utf8");
-     //console.log('Spawned m2 pid: ' + m2.pid);
-     m2.on('exit', function(code, signal) {
-         m2.running = false;
-         console.log("M2 exited");
-     });
+m2ConnectStream = function(clientID) {
      var client = clients[clientID];
-     client.m2 = m2;
      var ondata = function(data) {
          console.log('ondata: ' + data);
          message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
@@ -112,30 +112,24 @@ initializeRunningM2 = function(m2, clientID) {
      client.m2.stderr.removeAllListeners('data');
      client.m2.stdout.on('data', ondata);
      client.m2.stderr.on('data', ondata);
-}
+};
 
+m2AssureRunning = function(clientID, callbackFcn) {
+    // clientID: name of the desired client
+    // callbackFcn: function(clientID) {} which is to be called once
+    //   we are assured that M2 is running.
+    // Caveat: It is possible to kill m2 after being being assured that it is
+    //   there, so there is a possibility for a problem here.  We need to consider that? TODO
 
-// can only be called when client.eventStream is set
-// if client.m2 is not null, kill it, then start a new process
-// attach M2 output to client.eventStream
-startM2 = function(client) {
-    if (!client.m2) { 
-        startChildProcess(client.clientID);   
+    var client = clients[clientID];
+    if (!client.m2) {
+        m2Start(clientID, function(m2) {
+	    initializeRunningM2(m2, clientID);
+	    m2ConnectStream(clientID);
+	    callbackFcn(clientID);
+	})
     } else {
-        var ondata = function(data) {
-            console.log('ondata: ' + data);
-            message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
-            if (!client.eventStream) { // fatal error, should not happen
-                console.log("Error: No event stream in Start M2");
-                throw "Error: No client.eventStream in Start M2";
-            }
-            client.eventStream.write(message);           
-        };
-        console.log("Bind stdout to client's m2");
-        client.m2.stdout.removeAllListeners('data');
-        client.m2.stderr.removeAllListeners('data');
-        client.m2.stdout.on('data', ondata);
-        client.m2.stderr.on('data', ondata);
+      callbackFcn(clientID);
     }
 };
 
@@ -180,15 +174,13 @@ setInterval(function() {
     }
 }, 20000);
 
-
-
 // Client starts eventStream to obtain M2 output and start M2
 startSource = function( request, response) {
     var clientID = getCurrentClientID(request, response);
     response.writeHead(200, {'Content-Type': "text/event-stream" });
     if (!clients[clientID].eventStream) {
         clients[clientID].eventStream = response;
-        startM2(clients[clientID]);
+	m2AssureRunning(clientID, m2ConnectStream);
     }
 
     // If the client closes the connection, remove client from the list of active clients
@@ -209,39 +201,28 @@ chatAction = function( request, response) {
             
     // Send input to M2 when we have received the complete body
     request.on("end", function() { 
-        if(!clients[clientID].m2) {
-            console.log("No M2 object for client " + clientID + ", starting M2.");
-            startM2(clients[clientID], function() {
-                readM2Commands(clientID, body, response);
-            });                    
-        } else {
-            console.log("clients[clientID].m2 not null.");
-            readM2Commands(clientID, body, response);
-        }
+	m2ProcessInput(clientID, body, response);
+      });
+};
+
+m2ProcessInput = function( clientID, body, response ) {
+    // this starts m2 if needed, and when it is done, calls callback
+    console.log("entered m2ProcessInput");
+    m2AssureRunning(clientID, function() {
+	try {
+	  console.log("M2 input: " + body);
+	  clients[clientID].m2.stdin.write(body);
+	}
+	catch (err) {
+	    console.log(err);
+	    console.log("Internal error: nothing to write to?!");
+	    throw ("Internal error: nothing to write to?!");
+	    return;
+	}
+	response.writeHead(200);  
+	response.end();
     });
 };
-
-readM2Commands = function( clientID, body, response ) {
-    if (clients[clientID].m2 && !clients[clientID].m2.running) {
-        console.log("No running M2 for client " + clientID + ", waiting for user to send /restart.");
-        response.writeHead(200);  
-        response.end();
-        return;
-    }               
-    try {
-        console.log("M2 input: " + body);
-        clients[clientID].m2.stdin.write(body);
-    }
-    catch (err) {
-        console.log(err);
-        console.log("Internal error: nothing to write to?!");
-        throw ("Internal error: nothing to write to?!");
-        return;
-    }
-    response.writeHead(200);  
-    response.end();
-};
-
 
 restartAction = function(request, response) {
     var clientID = getCurrentClientID(request, response);
@@ -256,7 +237,10 @@ restartAction = function(request, response) {
         }         
         client.m2 = null;
     }
-    startM2(client);
+    m2Start(clientID, function(m2, clientID) {
+	initializeRunningM2(m2, clientID);
+	m2ConnectStream(clientID);
+      });
     response.writeHead(200);  
     response.end();
 };

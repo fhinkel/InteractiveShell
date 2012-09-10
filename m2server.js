@@ -295,7 +295,7 @@ parseUrlForPid = function(url) {
 
 // return path to image
 parseUrlForPath = function(url) {
-    var imagePath = url.match(/^\/\d+\/(.*)/);
+    var imagePath = url.match(/^\/[user]\d+\/(.*)/);
     console.log(imagePath);
     if (!imagePath) {
         throw("Did not get imagePath in image url");

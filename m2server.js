@@ -259,6 +259,7 @@ interruptAction = function(request, response)  {
 
 // returning clientID for a given M2 pid
 findClientID = function(pid){
+    //var pid1 = parseInt(pid,10);
     console.log("Searching for clientID whose M2 has PID " + pid);
     for (var prop in clients) {
         if (clients.hasOwnProperty(prop) && clients[prop] && clients[prop].m2) {
@@ -280,7 +281,7 @@ findClientID = function(pid){
 parseUrlForPid = function(url) {
     console.log(url);
     if (SCHROOT) {
-        var pid = url.match(/^\/user(\d+)\//);
+        var pid = url.match(/^\/(user\d+)\//);
     } else {
         pid = url.match(/\/M2-(\d+)-/);
     }
@@ -290,7 +291,8 @@ parseUrlForPid = function(url) {
         throw ("Did not get PID in image url");
     }
     console.log("PID = " + pid[1]);
-    return parseInt(pid[1],10);
+    return pid[1];
+    //return parseInt(pid[1],10);
 }
 
 // return path to image
@@ -315,7 +317,13 @@ imageAction = function(request, response, next) {
     try {
         var pid = parseUrlForPid(url);
         var path = parseUrlForPath(url); // a string
-        var clientID = findClientID(pid);
+        if (SCHROOT) {
+            var clientID = pid;
+        } else {
+            clientID = findClientID(pid);
+        }
+        
+        console.log("ClientID = " + clientID);
         
         client = clients[clientID];
           if (!client) {

@@ -88,7 +88,12 @@ m2Start = function(clientID, callbackFcn) {
             });
 
             var m2 = spawn('schroot', ['-c', clientID, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
-            console.log("PID of spawn: " + m2.pid);
+            console.log("PID of schroot: " + m2.pid);
+            var ps = spawn('ps', ['--ppid', m2.pid, '-o', 'pid=']);
+            ps.stdout.on('data', function (data) {
+              console.log('M2 pid should be: ' + data);
+              var m2Pid = data;
+            });
 	        callbackFcn(m2, clientID);
         });
     } else {
@@ -225,6 +230,7 @@ m2ProcessInput = function( clientID, body, response ) {
 	response.end();
     });
 };
+
 
 restartAction = function(request, response) {
     var clientID = getCurrentClientID(request, response);

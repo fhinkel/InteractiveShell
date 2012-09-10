@@ -89,11 +89,16 @@ m2Start = function(clientID, callbackFcn) {
 
             var m2 = spawn('schroot', ['-c', clientID, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
             console.log("PID of schroot: " + m2.pid);
-            var ps = spawn('ps', ['--ppid', m2.pid, '-o', 'pid=']);
-            ps.stdout.on('data', function (data) {
-              console.log('M2 pid should be: ' + data);
-              var m2Pid = data;
+            exec('ps', // command line argument directly in string
+              function (error, stdout, stderr) {      // one easy function to capture data/errors
+                console.log('ps stdout: ' + stdout);
+                console.log('ps stderr: ' + stderr);
+                if (error !== null) {
+                  console.log('ps exec error: ' + error);
+                }
+                var m2Pid = data;
             });
+
 	        callbackFcn(m2, clientID);
         });
     } else {

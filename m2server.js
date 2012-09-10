@@ -89,7 +89,7 @@ m2Start = function(clientID, callbackFcn) {
 
             var m2 = spawn('schroot', ['-c', clientID, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
             console.log("PID of schroot: " + m2.pid);
-            require('child_process').exec('ps --ppid' + m2.pid + '-o pid=', // command line argument directly in string
+            require('child_process').exec('ps --ppid ' + m2.pid + ' -o pid=', // command line argument directly in string
               function (error, stdout, stderr) {      // one easy function to capture data/errors
                 console.log('ps stdout: ' + stdout);
                 var m2Pid =  stdout;

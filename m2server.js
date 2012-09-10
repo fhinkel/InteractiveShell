@@ -74,7 +74,7 @@ m2Start = function(clientID, callbackFcn) {
     if (SCHROOT) {
         console.log("Spawning new schroot process named " + clientID + ".");
         var e = require('child_process').exec('schroot -c clone -n '+ clientID + ' -b', function() {
-            console.log("PID of exec that begins a schroot: " + e.log);
+            console.log("PID of exec that begins a schroot: " + e.pid);
             var filename = "/var/lib/schroot/mount/" + clientID + "/home/franzi/sName.txt";
              // TODO copy some files
             // create a file inside schroot directory to allow schroot know its own name

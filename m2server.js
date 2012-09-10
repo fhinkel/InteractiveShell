@@ -330,6 +330,10 @@ imageAction = function(request, response, next) {
               console.log("oops, no client");
               return;
           }
+          
+          if (SCHROOT) {
+              path = "/var/lib/schroot/mount/" + clientID + path
+          }
           console.log('we got a request for an image: ' + path + ", for clientID " + clientID);
           // parse request for PID and path to image
 

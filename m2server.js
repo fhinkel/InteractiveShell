@@ -73,7 +73,7 @@ startUser = function(cookies, callbackFcn) {
                     console.log(err);
                 } else {
                     console.log("wrote schroot's name into " + filename);
-                    //require('fs').chmod(filename, 0444, function(error) {
+                    require('fs').chmod(filename, 0444, function(error) {
                        console.log("chmod: " + error) 
                     });
         		    callbackFcn(clientID);

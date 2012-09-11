@@ -388,8 +388,6 @@ if( process.argv[2] && process.argv[2]=='--schroot') {
 function uploadM2Package(request, response, next) {
     console.log("start upload function");
     assureClient(request, response, function(clientID) {
-    	if (!checkForEventStream(clientID, response)) {return false};
-    	var client = clients[clientID];
     	console.log("received: /upload from " + clientID);
     	var formidable = require('formidable');
         var form = new formidable.IncomingForm;
@@ -400,10 +398,10 @@ function uploadM2Package(request, response, next) {
         form.parse(request, function(error, fields, files) {
             console.log(fields);
             console.log(files);
+	    response.writeHead(200, {"Content-Type": "text/html"});
             response.end('upload complete!');
         });
-        response.writeHead(200, {"Content-Type": "text/html"});
-    	response.end();
+
     });
     
 };

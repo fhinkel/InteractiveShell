@@ -383,13 +383,37 @@ function unhandled(request, response, next) {
 if( process.argv[2] && process.argv[2]=='--schroot') {
     console.log('Running with schroots.');
     SCHROOT=true;
-}
+};
+
+function uploadM2Package(request, response, next) {
+    console.log("start upload function");
+    assureClient(request, response, function(clientID) {
+    	if (!checkForEventStream(clientID, response)) {return false};
+    	var client = clients[clientID];
+    	console.log("received: /upload from " + clientID);
+    	var formidable = require('formidable');
+        var form = new formidable.IncomingForm;
+        if (SCHROOT) {
+            var path = "/var/lib/schroot/mount/" + clientID + "/home/franzi/";
+            form.uploadDir = path;
+        } 
+        form.parse(request, function(error, fields, files) {
+            console.log(fields);
+            console.log(files);
+            response.end('upload complete!');
+        });
+        response.writeHead(200, {"Content-Type": "text/html"});
+    	response.end();
+    });
+    
+};
 
 
 var app = connect()
     .use(connect.logger('dev'))
     .use(connect.favicon())
     .use(connect.static('public'))
+    .use('/upload', uploadM2Package)
     .use('/var', connect.static('/var')) // M2 creates temporary files (like created by Graphs.m2) here on MacOS
     .use('/tmp', connect.static('/tmp')) // and here on Ubuntu
     .use('/admin', stats)

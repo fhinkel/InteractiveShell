@@ -254,8 +254,9 @@ $("#tutorial").html("<div class='lesson' lessonid='1'>  <div><br>Get started by 
     //$("#Upload").live("click", trym2.uploadCallback );
     $("#Upload").live("click", function() {
         var formData = new FormData();
+        var fileName = $('#fileNameField').val();
         console.log("process form " + $('#fileNameField')[0].files[0]);
-	formData.append('file', $('#fileNameField')[0].files[0]);
+    	formData.append('file', $('#fileNameField')[0].files[0]);
         $.ajax({
             url: '/upload',
             type: 'POST',
@@ -263,7 +264,15 @@ $("#tutorial").html("<div class='lesson' lessonid='1'>  <div><br>Get started by 
             cache: false,
             contentType: false,
             processData: false,
-	    success: function(data) { console.log("File uploaded successfully!" + data); }
+            statusCode: {
+                403: function() {
+                    alert("Select a file first.");
+                }
+            },
+    	    success: function(data) { 
+	        console.log("File uploaded successfully!" + data); 
+	        $("#Upload").parent().after("<div><i>" + fileName + "</i> has been uploaded and you can use it load it in your Macaulay2 session (use the input terminal).</div>");
+	        }
         });
         return false;
     } );

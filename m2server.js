@@ -391,14 +391,18 @@ function uploadM2Package(request, response, next) {
     	console.log("received: /upload from " + clientID);
     	var formidable = require('formidable');
         var form = new formidable.IncomingForm;
+	if (SCHROOT) {
+	    var schrootPath = "/var/lib/schroot/mount/" + clientID + "/home/franzi/"; 
+	    form.uploadDir = schrootPath;
+	}
         form.parse(request, function(error, fields, files) {
             console.log(fields);
             console.log(files);
 	    console.log("path=" + files.file.path + " filename = " + files.file.name);
 	    if (SCHROOT) {
-	      var newpath = "/var/lib/schroot/mount/" + clientID + "/home/franzi/";
+		var newpath = schrootPath;
 	    } else {
-	      newpath = "/tmp/";
+		newpath = "/tmp/";
 	    }
 	    require('fs').renameSync(files.file.path, newpath + files.file.name);
 	    response.writeHead(200, {"Content-Type": "text/html"});

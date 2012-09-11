@@ -397,38 +397,43 @@ function uploadM2Package(request, response, next) {
     	    var schrootPath = "/var/lib/schroot/mount/" + clientID + "/home/franzi/"; 
     	    form.uploadDir = schrootPath;
     	}
-        form.parse(request, function(error, fields, files) {
-            if (error) {
-                console.log("Error in uploading: " + error);
-                response.writeHead(403, {"Content-Type": "text/html"});
-                response.end('Upload failed: ' + error);
-                return;
-            }
-            if (!files.file) {
-                response.writeHead(403, {"Content-Type": "text/html"});
-                response.end('Nothing to upload');
-                return;
-            }
-            console.log(fields);
-            console.log(files);
-            console.log("path=" + files.file.path + " filename = " + files.file.name);
-            if (SCHROOT) {
-    	        var newpath = schrootPath;
-            } else {
-        		newpath = "/tmp/";
-    	    }
-//    	    require('fs').renameSync(files.file.path, newpath + files.file.name);
-            require('fs').rename(files.file.path, newpath + files.file.name, function(error) {
-		if (error) {
-			console.log("Error in renaming file: " + error);
-			response.writeHead(403, {"Content-Type": "text/html"});
-			response.end('rename failed: ' + error);
-			return;
-}
-            });
-    	    response.writeHead(200, {"Content-Type": "text/html"});
-            response.end('upload complete!');
-    	});
+    	try
+            form.parse(request, function(error, fields, files) {
+                if (error) {
+                    console.log("Error in uploading: " + error);
+                    response.writeHead(403, {"Content-Type": "text/html"});
+                    response.end('Upload failed: ' + error);
+                    return;
+                }
+                if (!files.file) {
+                    response.writeHead(403, {"Content-Type": "text/html"});
+                    response.end('Nothing to upload');
+                    return;
+                }
+                console.log(fields);
+                console.log(files);
+                console.log("path=" + files.file.path + " filename = " + files.file.name);
+                if (SCHROOT) {
+        	        var newpath = schrootPath;
+                } else {
+            		newpath = "/tmp/";
+        	    }
+    //    	    require('fs').renameSync(files.file.path, newpath + files.file.name);
+                require('fs').rename(files.file.path, newpath + files.file.name, function(error) {
+    		        if (error) {
+            			console.log("Error in renaming file: " + error);
+            			response.writeHead(403, {"Content-Type": "text/html"});
+            			response.end('rename failed: ' + error);
+            			return;
+                    }
+                });
+        	    response.writeHead(200, {"Content-Type": "text/html"});
+                response.end('upload complete!');
+        	});
+    	} catch(error) {
+    	    console.log("From parse threw an error: " + error);
+
+    	}
     });
 };
 

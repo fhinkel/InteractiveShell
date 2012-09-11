@@ -391,10 +391,6 @@ function uploadM2Package(request, response, next) {
     	console.log("received: /upload from " + clientID);
     	var formidable = require('formidable');
         var form = new formidable.IncomingForm;
-        if (SCHROOT) {
-            form.uploadDir = path;
-        }
-
         form.parse(request, function(error, fields, files) {
             console.log(fields);
             console.log(files);

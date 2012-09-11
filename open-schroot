@@ -4,5 +4,5 @@
 #echo "parent PID" 
 #parentID=`ps -p $PPID -o ppid=`
 #M2parentID=`ps -p $parentID -o ppid=`
-schrootID=`cat /home/franzi/sName.txt`
+schrootID=`cat /home/m2user/sName.txt`
 curl -s http://localhost:8002/image/$schrootID/$1 

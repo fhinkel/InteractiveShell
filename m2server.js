@@ -30,8 +30,6 @@ var http = require('http')
     
 var SCHROOT = false; // start with --schroot on server
     
-
-
 // The HTML file for the chat client. Used below.
 //var clientui = require('fs').readFileSync("index.html");
 var totalUsers = 0;
@@ -41,13 +39,22 @@ var totalUsers = 0;
 // defined.
 var clients = {};
 
+function runShellCommand(cmd, callbackFcn) {
+    // runs a command, and calls the callbackFnc with the output from stdout
+    
+    require('child_process').exec( cmd, function(error, stdout, stderr) {
+        //console.log("runShellCommand result:" + stdout);
+        callbackFcn(stdout);
+    }); 
+}
+
 function Client(m2process, resp) {
     this.m2 = m2process;
     this.eventStream = resp;
     this.clientID = null;
 }
 
-startUser = function(cookies) {
+startUser = function(cookies, callbackFcn) {
     totalUsers = totalUsers + 1;
     var clientID = Math.random()*1000000;
     clientID = Math.floor(clientID);
@@ -55,60 +62,41 @@ startUser = function(cookies) {
     cookies.set( "tryM2", clientID, { httpOnly: false } );
     clients[clientID] = new Client(); 
     clients[clientID].clientID = clientID;
-    return clientID;
-}
-
-initializeRunningM2 = function(m2, clientID) {
-    m2.stdout.setEncoding("utf8");
-    m2.stderr.setEncoding("utf8");
-    //console.log('Spawned m2 pid: ' + m2.pid);
-    //    m2.on('exit', function(code, signal) {
-    //	m2.running = false;
-    //	console.log("M2 exited");
-    //      });
-    clients[clientID].m2 = m2;
-};
-
-m2Start = function(clientID, callbackFcn) {
-    var spawn = require('child_process').spawn;
     if (SCHROOT) {
-        console.log("Spawning new schroot process named " + clientID + ".");
-        var e = require('child_process').exec('schroot -c clone -n '+ clientID + ' -b', function() {
-            console.log("PID of exec that begins a schroot: " + e.pid);
+	console.log("Spawning new schroot process named " + clientID + ".");
+	require('child_process').exec('schroot -c clone -n '+ clientID + ' -b', function() {
             var filename = "/var/lib/schroot/mount/" + clientID + "/home/franzi/sName.txt";
-             // TODO copy some files
-            // create a file inside schroot directory to allow schroot know its own name
+            // create a file inside schroot directory to allow schroot know its own name needed for open-schroot when sending /image
             require('fs').writeFile(filename, clientID, function(err) {
                 if(err) {
                     console.log("failing to write the file " + filename);
                     console.log(err);
                 } else {
                     console.log("wrote schroot's name into " + filename);
+                    require('fs').chmod(filename, 0444, function(error) {
+                       console.log("chmod: " + error) 
+                    });
+        		    callbackFcn(clientID);
                 }
-            });
-
-            var m2 = spawn('schroot', ['-c', clientID, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
-            console.log("PID of schroot: " + m2.pid);
-            require('child_process').exec('ps --ppid ' + m2.pid + ' -o pid=', // command line argument directly in string
-              function (error, stdout, stderr) {      // one easy function to capture data/errors
-                console.log('ps stdout: ' + stdout);
-                var m2Pid =  stdout;
-                
-                console.log('ps stderr: ' + stderr);
-                if (error !== null) {
-                  console.log('ps exec error: ' + error);
-                }
-                console.log("m2 pid: " + m2Pid);
-                
-            });
-
-	        callbackFcn(m2, clientID);
-        });
+	    });
+	});
     } else {
-        console.log("Spawning new M2 process...");
-        m2 = spawn('M2');
-	    callbackFcn(m2, clientID);
+	callbackFcn(clientID);
     }
+    return clientID;
+}
+
+m2Start = function(clientID) {
+    var spawn = require('child_process').spawn;
+    if (SCHROOT) {
+	    var m2 = require('child_process').spawn( 'schroot', ['-c', clientID, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
+    } else {
+        m2 = spawn('M2');
+        console.log("Spawning new M2 process...");
+    }
+    m2.stdout.setEncoding("utf8");
+    m2.stderr.setEncoding("utf8");
+    return m2;
 }
 
 m2ConnectStream = function(clientID) {
@@ -129,26 +117,19 @@ m2ConnectStream = function(clientID) {
      client.m2.stderr.on('data', ondata);
 };
 
-m2AssureRunning = function(clientID, callbackFcn) {
+m2AssureRunning = function(clientID) {
     // clientID: name of the desired client
-    // callbackFcn: function(clientID) {} which is to be called once
-    //   we are assured that M2 is running.
     // Caveat: It is possible to kill m2 after being being assured that it is
     //   there, so there is a possibility for a problem here.  We need to consider that? TODO
 
     var client = clients[clientID];
     if (!client.m2) {
-        m2Start(clientID, function(m2) {
-	        initializeRunningM2(m2, clientID);
-	        m2ConnectStream(clientID);
-	        callbackFcn(clientID);
-	    });
-    } else {
-        callbackFcn(clientID);
+        client.m2 = m2Start(clientID);
+	    m2ConnectStream(clientID);
     }
 };
 
-getCurrentClientID = function(request, response) {
+assureClient = function(request, response, callbackFcn) {
     var cookies = new Cookies(request, response);
     var clientID = cookies.get("tryM2");
     //console.log("Client has cookie value: " + clientID);
@@ -156,9 +137,10 @@ getCurrentClientID = function(request, response) {
     // Start new user for users coming with invalid, i.e., old, cookie
     if (!clients[clientID]) {
         console.log("startUser");
-        clientID = startUser(cookies);
+        clientID = startUser(cookies, callbackFcn);
+    } else {
+	callbackFcn(clientID);
     }
-    return clientID;
 };
 
 var stats = function(request, response, next) {
@@ -191,86 +173,97 @@ setInterval(function() {
 
 // Client starts eventStream to obtain M2 output and start M2
 startSource = function( request, response) {
-    var clientID = getCurrentClientID(request, response);
-    response.writeHead(200, {'Content-Type': "text/event-stream" });
-    if (!clients[clientID].eventStream) {
-        clients[clientID].eventStream = response;
-	m2AssureRunning(clientID, m2ConnectStream);
-    }
-
-    // If the client closes the connection, remove client from the list of active clients
-    request.connection.on("end", function() {
-        console.log("close connection: clients[" + clientID + "]");
-        clients[clientID].eventStream = null;
-        response.end();
+    assureClient(request, response, function (clientID) {
+    	response.writeHead(200, {'Content-Type': "text/event-stream" });
+    	if (!clients[clientID].eventStream) {
+            clients[clientID].eventStream = response;
+            m2AssureRunning(clientID);
+            m2ConnectStream(clientID);
+    	}
+    	// If the client closes the connection, remove client from the list of active clients
+    	request.connection.on("end", function() {
+                console.log("close connection: clients[" + clientID + "]");
+                clients[clientID].eventStream = null;
+                response.end();
+    	});
     });
 };
 
 chatAction = function( request, response) {
-    var clientID = getCurrentClientID(request, response);
-    if (!checkForEventStream(clientID, response)) {return false};
-    request.setEncoding("utf8");
-    var body = "";
-    // When we get a chunk of data, add it to the body
-    request.on("data", function(chunk) { body += chunk; });
-            
-    // Send input to M2 when we have received the complete body
-    request.on("end", function() { 
-	m2ProcessInput(clientID, body, response);
-      });
+    assureClient(request, response, function (clientID) {
+    	if (!checkForEventStream(clientID, response)) {return false};
+    	request.setEncoding("utf8");
+    	var body = "";
+    	// When we get a chunk of data, add it to the body
+    	request.on("data", function(chunk) { body += chunk; });
+        
+    	// Send input to M2 when we have received the complete body
+    	request.on("end", function() { 
+    	    m2ProcessInput(clientID, body, response);
+    	});
+    });
 };
 
 m2ProcessInput = function( clientID, body, response ) {
     // this starts m2 if needed, and when it is done, calls callback
     console.log("entered m2ProcessInput");
-    m2AssureRunning(clientID, function() {
-	try {
-	  console.log("M2 input: " + body);
-	  clients[clientID].m2.stdin.write(body);
+    m2AssureRunning(clientID);
+
+    try {
+	    console.log("M2 input: " + body);
+	    clients[clientID].m2.stdin.write(body);
+    }
+        catch (err) {
+    	console.log(err);
+    	console.log("Internal error: nothing to write to?!");
+    	throw ("Internal error: nothing to write to?!");
+    	return;
+    }
+    response.writeHead(200);  
+    response.end();
+};
+
+// kill signal is sent to schroot, which results in killing M2
+restartAction = function(request, response) {
+    assureClient(request, response, function(clientID) {
+	if (!checkForEventStream(clientID, response)) {return false};
+	var client = clients[clientID];
+	console.log("received: /restart from " + clientID);
+	if (client.m2) { 
+        client.m2.kill(); 
+        console.log("In restartAction, killed child process with PID " + client.m2.pid);
+        client.m2 = null;
 	}
-	catch (err) {
-	    console.log(err);
-	    console.log("Internal error: nothing to write to?!");
-	    throw ("Internal error: nothing to write to?!");
-	    return;
-	}
+	client.m2 = m2Start(clientID);
+	m2ConnectStream(clientID);
 	response.writeHead(200);  
 	response.end();
     });
 };
 
-
-restartAction = function(request, response) {
-    var clientID = getCurrentClientID(request, response);
-    if (!checkForEventStream(clientID, response)) {return false};
-    var client = clients[clientID];
-    console.log("received: /restart from " + clientID);
-    if (client.m2) { 
-        client.m2.kill(); 
-        console.log("In restartAction, killed child process with PID " + client.m2.pid);
-        if (SCHROOT) {
-            require('child_process').spawn('schroot', ['-c', clientID, '-e']); // this unmounts the schroot
-        }         
-        client.m2 = null;
-    }
-    m2Start(clientID, function(m2, clientID) {
-	initializeRunningM2(m2, clientID);
-	m2ConnectStream(clientID);
-      });
-    response.writeHead(200);  
-    response.end();
-};
-
-
+// SCHROOT: when using child.kill('SIGINT'), the signal is sent to schroot, where it is useless, instead, find actual PID of M2. 
 interruptAction = function(request, response)  {
-    var clientID = getCurrentClientID(request, response);
-    if (!checkForEventStream(clientID, response)) {return false};
-    console.log("received: /interrupt from " + clientID);
-    if (clients[clientID] && clients[clientID].m2) {
-        clients[clientID].m2.kill('SIGINT');
-    }
-    response.writeHead(200);  
-    response.end();
+    assureClient(request, response, function (clientID) {
+	    if (!checkForEventStream(clientID, response)) {return false};
+    	console.log("received: /interrupt from " + clientID);
+    	if (clients[clientID] && clients[clientID].m2) {
+            var m2 = clients[clientID].m2;
+            if (SCHROOT) {
+    	        runShellCommand('pgrep -P ' + m2.pid, function(m2Pid) {
+    		    	console.log("PID of M2 inside schroot: " + m2Pid);
+    			    var cmd = 'kill -s INT ' + m2Pid;
+    			    console.log( "cmd: " + cmd );
+    			    runShellCommand(cmd, function(res) {
+    				    console.log("SIGINT has been sent to M2 " + m2Pid + ".");
+    			    });
+    	        });
+            } else {
+                m2.kill('SIGINT');
+            }
+    	}
+    	response.writeHead(200);  
+    	response.end();
+    });
 };
 
 // returning clientID for a given M2 pid
@@ -393,13 +386,67 @@ function unhandled(request, response, next) {
 if( process.argv[2] && process.argv[2]=='--schroot') {
     console.log('Running with schroots.');
     SCHROOT=true;
-}
+};
+
+function uploadM2Package(request, response, next) {
+    assureClient(request, response, function(clientID) {
+    	console.log("received: /upload from " + clientID);
+    	var formidable = require('formidable');
+        var form = new formidable.IncomingForm;
+    	if (SCHROOT) {
+    	    var schrootPath = "/var/lib/schroot/mount/" + clientID + "/home/franzi/"; 
+    	    form.uploadDir = schrootPath;
+    	}
+    	try {
+    	    console.log("Entering form.parse");
+            form.parse(request, function(error, fields, files) {
+                console.log("Starting callback in form.parse");
+                if (error) {
+                    console.log("Error in uploading: " + error);
+                    response.writeHead(403, {"Content-Type": "text/html"});
+                    response.end('Upload failed: ' + error);
+                    return;
+                }
+                console.log("check for file name being passed");
+                if (!files.file) {
+                    response.writeHead(403, {"Content-Type": "text/html"});
+                    response.end('Nothing to upload');
+                    return;
+                }
+                
+                console.log(fields);
+                console.log(files);
+                console.log("path=" + files.file.path + " filename = " + files.file.name);
+                if (SCHROOT) {
+        	        var newpath = schrootPath;
+                } else {
+            		newpath = "/tmp/";
+        	    }
+    //    	    require('fs').renameSync(files.file.path, newpath + files.file.name);
+                require('fs').rename(files.file.path, newpath + files.file.name, function(error) {
+    		        if (error) {
+            			console.log("Error in renaming file: " + error);
+            			response.writeHead(403, {"Content-Type": "text/html"});
+            			response.end('rename failed: ' + error);
+            			return;
+                    }
+                });
+        	    response.writeHead(200, {"Content-Type": "text/html"});
+                response.end('upload complete!');
+        	});
+    	} catch(error) {
+    	    console.log("From parse threw an error: " + error);
+
+    	}
+    });
+};
 
 
 var app = connect()
     .use(connect.logger('dev'))
     .use(connect.favicon())
     .use(connect.static('public'))
+    .use('/upload', uploadM2Package)
     .use('/var', connect.static('/var')) // M2 creates temporary files (like created by Graphs.m2) here on MacOS
     .use('/tmp', connect.static('/tmp')) // and here on Ubuntu
     .use('/admin', stats)
@@ -414,6 +461,4 @@ var app = connect()
 console.log("Listening on port " + port + "...");
 http.createServer(app).listen(port);
 
-
-
-
+// Local Variables:                                                                                   // indent-tabs-mode: nil                                                                              // End:                                                                                                                                 

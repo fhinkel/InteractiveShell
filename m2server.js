@@ -122,7 +122,7 @@ m2AssureRunning = function(clientID) {
     var client = clients[clientID];
     if (!client.m2) {
         client.m2 = m2Start(clientID);
-	m2ConnectStream(clientID);
+	    m2ConnectStream(clientID);
     }
 };
 
@@ -171,33 +171,33 @@ setInterval(function() {
 // Client starts eventStream to obtain M2 output and start M2
 startSource = function( request, response) {
     assureClient(request, response, function (clientID) {
-	response.writeHead(200, {'Content-Type': "text/event-stream" });
-	if (!clients[clientID].eventStream) {
+    	response.writeHead(200, {'Content-Type': "text/event-stream" });
+    	if (!clients[clientID].eventStream) {
             clients[clientID].eventStream = response;
-	    m2AssureRunning(clientID);
-	    m2ConnectStream(clientID);
-	}
-	// If the client closes the connection, remove client from the list of active clients
-	request.connection.on("end", function() {
-            console.log("close connection: clients[" + clientID + "]");
-            clients[clientID].eventStream = null;
-            response.end();
-	});
+            m2AssureRunning(clientID);
+            m2ConnectStream(clientID);
+    	}
+    	// If the client closes the connection, remove client from the list of active clients
+    	request.connection.on("end", function() {
+                console.log("close connection: clients[" + clientID + "]");
+                clients[clientID].eventStream = null;
+                response.end();
+    	});
     });
 };
 
 chatAction = function( request, response) {
     assureClient(request, response, function (clientID) {
-	if (!checkForEventStream(clientID, response)) {return false};
-	request.setEncoding("utf8");
-	var body = "";
-	// When we get a chunk of data, add it to the body
-	request.on("data", function(chunk) { body += chunk; });
+    	if (!checkForEventStream(clientID, response)) {return false};
+    	request.setEncoding("utf8");
+    	var body = "";
+    	// When we get a chunk of data, add it to the body
+    	request.on("data", function(chunk) { body += chunk; });
         
-	// Send input to M2 when we have received the complete body
-	request.on("end", function() { 
-	    m2ProcessInput(clientID, body, response);
-	});
+    	// Send input to M2 when we have received the complete body
+    	request.on("end", function() { 
+    	    m2ProcessInput(clientID, body, response);
+    	});
     });
 };
 
@@ -207,29 +207,29 @@ m2ProcessInput = function( clientID, body, response ) {
     m2AssureRunning(clientID);
 
     try {
-	console.log("M2 input: " + body);
-	clients[clientID].m2.stdin.write(body);
+	    console.log("M2 input: " + body);
+	    clients[clientID].m2.stdin.write(body);
     }
-    catch (err) {
-	console.log(err);
-	console.log("Internal error: nothing to write to?!");
-	throw ("Internal error: nothing to write to?!");
-	return;
+        catch (err) {
+    	console.log(err);
+    	console.log("Internal error: nothing to write to?!");
+    	throw ("Internal error: nothing to write to?!");
+    	return;
     }
     response.writeHead(200);  
     response.end();
 };
 
-
+// kill signal is sent to schroot, which results in killing M2
 restartAction = function(request, response) {
     assureClient(request, response, function(clientID) {
 	if (!checkForEventStream(clientID, response)) {return false};
 	var client = clients[clientID];
 	console.log("received: /restart from " + clientID);
 	if (client.m2) { 
-            client.m2.kill(); 
-            console.log("In restartAction, killed child process with PID " + client.m2.pid);
-            client.m2 = null;
+        client.m2.kill(); 
+        console.log("In restartAction, killed child process with PID " + client.m2.pid);
+        client.m2 = null;
 	}
 	client.m2 = m2Start(clientID);
 	m2ConnectStream(clientID);
@@ -238,7 +238,7 @@ restartAction = function(request, response) {
     });
 };
 
-
+// SCHROOT: when using child.kill('SIGINT'), the signal is sent to schroot, where it is useless, instead, find actual PID of M2. 
 interruptAction = function(request, response)  {
     assureClient(request, response, function (clientID) {
 	    if (!checkForEventStream(clientID, response)) {return false};

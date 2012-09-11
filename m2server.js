@@ -66,14 +66,17 @@ startUser = function(cookies, callbackFcn) {
 	console.log("Spawning new schroot process named " + clientID + ".");
 	require('child_process').exec('schroot -c clone -n '+ clientID + ' -b', function() {
             var filename = "/var/lib/schroot/mount/" + clientID + "/home/franzi/sName.txt";
-            // create a file inside schroot directory to allow schroot know its own name
+            // create a file inside schroot directory to allow schroot know its own name needed for open-schroot when sending /image
             require('fs').writeFile(filename, clientID, function(err) {
                 if(err) {
                     console.log("failing to write the file " + filename);
                     console.log(err);
                 } else {
                     console.log("wrote schroot's name into " + filename);
-    		    callbackFcn(clientID);
+                    require('fs').chmod(filename, 444, function(error) {
+                       console.log("chmod: " + error) 
+                    });
+        		    callbackFcn(clientID);
                 }
 	    });
 	});

@@ -1,4 +1,4 @@
-// September 2012, Franziska Hinkelmann, Mike Stillman, and Lars Kastner
+m2user// September 2012, Franziska Hinkelmann, Mike Stillman, and Lars Kastner
 //
 // This is server-side JavaScript, intended to be run with Node.js.
 // This file defines a Node.js server for serving 'tryM2'.
@@ -65,7 +65,7 @@ startUser = function(cookies, callbackFcn) {
     if (SCHROOT) {
 	console.log("Spawning new schroot process named " + clientID + ".");
 	require('child_process').exec('schroot -c clone -n '+ clientID + ' -b', function() {
-            var filename = "/var/lib/schroot/mount/" + clientID + "/home/franzi/sName.txt";
+            var filename = "/var/lib/schroot/mount/" + clientID + "/home/m2user/sName.txt";
             // create a file inside schroot directory to allow schroot know its own name needed for open-schroot when sending /image
             require('fs').writeFile(filename, clientID, function(err) {
                 if(err) {
@@ -89,8 +89,8 @@ startUser = function(cookies, callbackFcn) {
 m2Start = function(clientID) {
     var spawn = require('child_process').spawn;
     if (SCHROOT) {
-//	    var m2 = require('child_process').spawn( 'schroot', ['-c', clientID, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
-	var m2 = require('child_process').spawn( 'schroot', ['-c', clientID, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
+//	    var m2 = require('child_process').spawn( 'schroot', ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/M2/bin/M2']);
+	var m2 = require('child_process').spawn( 'schroot', ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
     } else {
         m2 = spawn('M2');
         console.log("Spawning new M2 process...");
@@ -395,7 +395,7 @@ function uploadM2Package(request, response, next) {
     	var formidable = require('formidable');
         var form = new formidable.IncomingForm;
     	if (SCHROOT) {
-    	    var schrootPath = "/var/lib/schroot/mount/" + clientID + "/home/franzi/"; 
+    	    var schrootPath = "/var/lib/schroot/mount/" + clientID + "/home/m2user/"; 
     	    form.uploadDir = schrootPath;
     	}
 	form.on('field', function(field, value) {

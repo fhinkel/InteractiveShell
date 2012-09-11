@@ -400,6 +400,8 @@ function uploadM2Package(request, response, next) {
         form.parse(request, function(error, fields, files) {
             if (error) {
                 console.log("Error in uploading: " + error);
+                response.writeHead(403, {"Content-Type": "text/html"});
+                response.end('Upload failed: ' + error);
                 return;
             }
             if (!files.file) {
@@ -415,7 +417,15 @@ function uploadM2Package(request, response, next) {
             } else {
         		newpath = "/tmp/";
     	    }
-    	    require('fs').renameSync(files.file.path, newpath + files.file.name);
+//    	    require('fs').renameSync(files.file.path, newpath + files.file.name);
+            require('fs').rename(files.file.path, newpath + files.file.name, function(error) {
+		if (error) {
+			console.log("Error in renaming file: " + error);
+			response.writeHead(403, {"Content-Type": "text/html"});
+			response.end('rename failed: ' + error);
+			return;
+}
+            });
     	    response.writeHead(200, {"Content-Type": "text/html"});
             response.end('upload complete!');
     	});

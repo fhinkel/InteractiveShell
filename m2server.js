@@ -73,7 +73,7 @@ startUser = function(cookies, callbackFcn) {
                     console.log(err);
                 } else {
                     console.log("wrote schroot's name into " + filename);
-                    require('fs').chmod(filename, 0444, function(error) {
+                    //require('fs').chmod(filename, 0444, function(error) {
                        console.log("chmod: " + error) 
                     });
         		    callbackFcn(clientID);
@@ -389,7 +389,6 @@ if( process.argv[2] && process.argv[2]=='--schroot') {
 };
 
 function uploadM2Package(request, response, next) {
-    console.log("start upload function");
     assureClient(request, response, function(clientID) {
     	console.log("received: /upload from " + clientID);
     	var formidable = require('formidable');
@@ -399,10 +398,15 @@ function uploadM2Package(request, response, next) {
     	    form.uploadDir = schrootPath;
     	}
         form.parse(request, function(error, fields, files) {
+            if (error) {
+                console.log("Error in uploading: " + error);
+                return;
+            }
             if (!files.file) {
                 response.writeHead(403, {"Content-Type": "text/html"});
                 response.end('Nothing to upload');
-                return;}
+                return;
+            }
             console.log(fields);
             console.log(files);
             console.log("path=" + files.file.path + " filename = " + files.file.name);

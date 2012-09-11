@@ -1,4 +1,4 @@
-m2user// September 2012, Franziska Hinkelmann, Mike Stillman, and Lars Kastner
+// September 2012, Franziska Hinkelmann, Mike Stillman, and Lars Kastner
 //
 // This is server-side JavaScript, intended to be run with Node.js.
 // This file defines a Node.js server for serving 'tryM2'.

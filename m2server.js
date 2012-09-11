@@ -43,7 +43,7 @@ function runShellCommand(cmd, callbackFcn) {
     // runs a command, and calls the callbackFnc with the output from stdout
     
     require('child_process').exec( cmd, function(error, stdout, stderr) {
-        console.log("runShellCommand result:" + stdout);
+        //console.log("runShellCommand result:" + stdout);
         callbackFcn(stdout);
     }); 
 }
@@ -86,11 +86,7 @@ startUser = function(cookies, callbackFcn) {
 m2Start = function(clientID) {
     var spawn = require('child_process').spawn;
     if (SCHROOT) {
-        var m2 = spawn( 'schroot', ['-c', clientID, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
-        console.log("PID of schroot: " + m2.pid);
-        runShellCommand('pgrep -P ' + m2.pid, function(m2Pid) {
-            console.log("PID of M2 inside schroot: " + m2Pid);
-        });
+	    var m2 = require('child_process').spawn( 'schroot', ['-c', clientID, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
     } else {
         m2 = spawn('M2');
         console.log("Spawning new M2 process...");
@@ -248,7 +244,15 @@ interruptAction = function(request, response)  {
 	    if (!checkForEventStream(clientID, response)) {return false};
     	console.log("received: /interrupt from " + clientID);
     	if (clients[clientID] && clients[clientID].m2) {
-                clients[clientID].m2.kill('SIGINT');
+            var m2 = clients[clientID].m2;
+	    runShellCommand('pgrep -P ' + m2.pid, function(m2Pid) {
+		    	console.log("PID of M2 inside schroot: " + m2Pid);
+			var cmd = 'kill -s INT ' + m2Pid;
+			console.log( "cmd: " + cmd );
+			runShellCommand(cmd, function(res) {
+				console.log("SIGINT has been sent to M2 " + m2Pid + ".");
+			});
+	    });
     	}
     	response.writeHead(200);  
     	response.end();

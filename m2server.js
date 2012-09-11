@@ -245,14 +245,18 @@ interruptAction = function(request, response)  {
     	console.log("received: /interrupt from " + clientID);
     	if (clients[clientID] && clients[clientID].m2) {
             var m2 = clients[clientID].m2;
-	    runShellCommand('pgrep -P ' + m2.pid, function(m2Pid) {
-		    	console.log("PID of M2 inside schroot: " + m2Pid);
-			var cmd = 'kill -s INT ' + m2Pid;
-			console.log( "cmd: " + cmd );
-			runShellCommand(cmd, function(res) {
-				console.log("SIGINT has been sent to M2 " + m2Pid + ".");
-			});
-	    });
+            if (SCHROOT) {
+    	        runShellCommand('pgrep -P ' + m2.pid, function(m2Pid) {
+    		    	console.log("PID of M2 inside schroot: " + m2Pid);
+    			    var cmd = 'kill -s INT ' + m2Pid;
+    			    console.log( "cmd: " + cmd );
+    			    runShellCommand(cmd, function(res) {
+    				    console.log("SIGINT has been sent to M2 " + m2Pid + ".");
+    			    });
+    	        });
+            } else {
+                m2.kill('SIGINT');
+            }
     	}
     	response.writeHead(200);  
     	response.end();

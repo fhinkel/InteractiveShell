@@ -392,16 +392,22 @@ function uploadM2Package(request, response, next) {
     	var formidable = require('formidable');
         var form = new formidable.IncomingForm;
         if (SCHROOT) {
-            var path = "/var/lib/schroot/mount/" + clientID + "/home/franzi/";
             form.uploadDir = path;
-        } 
+        }
+
         form.parse(request, function(error, fields, files) {
             console.log(fields);
             console.log(files);
+	    console.log("path=" + files.file.path + " filename = " + files.file.name);
+	    if (SCHROOT) {
+	      var newpath = "/var/lib/schroot/mount/" + clientID + "/home/franzi/";
+	    } else {
+	      newpath = "/tmp/";
+	    }
+	    require('fs').renameSync(files.file.path, newpath + files.file.name);
 	    response.writeHead(200, {"Content-Type": "text/html"});
             response.end('upload complete!');
-        });
-
+	  });
     });
     
 };

@@ -148,7 +148,7 @@ assureClient = function(request, response, callbackFcn) {
     // Start new user for users coming with invalid, i.e., old, cookie
     if (!clients[clientID]) {
         console.log("startUser");
-        console.dir(request);
+        console.dir(response);
         clientID = startUser(cookies, request, callbackFcn);
     } else {
 	callbackFcn(clientID);

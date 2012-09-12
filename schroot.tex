@@ -239,7 +239,7 @@ Now for the editing
 vim schroot-source/schroot_1.4.25/bin/schroot-mount/schroot-mount-main.cc
 \end{verbatim}
 
-Go to the action_mount method and after the line
+Go to the action\_mount method and after the line
 
 \begin{verbatim}
 d = std::string("/") + d;
@@ -438,12 +438,14 @@ Instead we build a short startup script limitedM2.sh
 \begin{verbatim}
 #!/bin/bash
 ulimit -S -u 200
+ulimit -H -u 200
 ulimit -S -m 300000
+ulimit -H -m 300000
 ulimit -a
 /M2/bin/M2
 \end{verbatim}
 
-and place it in the M2 directory. Of course we choose permissions and ownership that make sense, even though it is ro from the inside of the schroot.
+and place it in the M2 directory. The hard limits cannot be changed to a higher number by the user. The user can only lower hard limits. Of course we choose permissions and ownership that make sense, even though it is ro from the inside of the schroot.
 
 Now starting M2 in the schroot should be done like
 

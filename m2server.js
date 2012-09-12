@@ -392,7 +392,7 @@ function unhandled(request, response, next) {
 function uploadM2Package(request, response, next) {
     assureClient(request, response, function(clientID) {
     	console.log("received: /upload from " + clientID);
-    	var formidable = require('formidable');
+    	var formidable = require('./node-formidable');
         var form = new formidable.IncomingForm;
     	if (SCHROOT) {
     	    var schrootPath = "/var/lib/schroot/mount/" + clientID + "/home/m2user/"; 

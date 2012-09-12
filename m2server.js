@@ -114,7 +114,6 @@ m2Start = function(clientID) {
 m2ConnectStream = function(clientID) {
      var client = clients[clientID];
      var ondata = function(data) {
-         logClient(clientID, 'ondata: ' + data);
          if (SCHROOT) {
              // We are touching this file, so that a cron job can 
              // look at these to see which sessions have been inactive
@@ -124,6 +123,8 @@ m2ConnectStream = function(clientID) {
                      }
                  });
          }
+         var data1 = data.replace(/\n$/, "");
+         logClient(clientID, "data: " + data1.replace(/\n+/g, "\n" + clientID + ": data: "));
          message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
          if (!client.eventStream) { // fatal error, should not happen
              logClient(clientID, "Error: No event stream in Start M2");
@@ -303,7 +304,7 @@ findClientID = function(pid){
 
 // return PID extracted from pathname for image displaying
 parseUrlForPid = function(url) {
-    console.log(url);
+    //console.log(url);
     if (SCHROOT) {
         var pid = url.match(/^\/(user\d+)\//);
     } else {
@@ -314,20 +315,19 @@ parseUrlForPid = function(url) {
         console.log("error, didn't get PID in image url");
         throw ("Did not get PID in image url");
     }
-    console.log("PID = " + pid[1]);
+    //console.log("PID = " + pid[1]);
     return pid[1];
-    //return parseInt(pid[1],10);
 }
 
 // return path to image
 parseUrlForPath = function(url) {
     var imagePath = url.match(/^\/(user)?\d+\/(.*)/);
-    console.log(imagePath);
+    //console.log(imagePath);
     
     if (!imagePath) {
         throw("Did not get imagePath in image url");
     }
-    console.log("imagePath = " + imagePath[2]);
+    //console.log("imagePath = " + imagePath[2]);
     return imagePath[2];
 }
 
@@ -363,7 +363,7 @@ imageAction = function(request, response, next) {
               logClient(clientID, "Error: No event stream");
           }
           else {
-              logClient(clientID, "Sent image message: " + message);
+              //logClient(clientID, "Sent image message: " + message);
               client.eventStream.write(message);           
           }
     }

@@ -71,7 +71,7 @@ startUser = function(cookies, request, callbackFcn) {
     cookies.set( "tryM2", clientID, { httpOnly: false } );
     clients[clientID] = new Client(); 
     clients[clientID].clientID = clientID;
-    logClient(clientID, "New user: IP=" + request.headers['x-forwarded-for'] + " UserAgent=" + request.headers['user-agent'] + ".");
+    logClient(clientID, "New user: " + " UserAgent=" + request.headers['user-agent'] + ".");
     if (SCHROOT) {
         logClient(clientID, "Spawning new schroot process named " + clientID + ".");
         require('child_process').exec('schroot -c clone -n '+ clientID + ' -b', function() {
@@ -103,7 +103,7 @@ m2Start = function(clientID) {
 	var m2 = require('child_process').spawn( 'schroot', ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
     } else {
         m2 = spawn('M2');
-        console.log("Spawning new M2 process...");
+        logClient(clientID, "Spawning new M2 process...");
     }
     m2.stdout.setEncoding("utf8");
     m2.stderr.setEncoding("utf8");
@@ -113,7 +113,12 @@ m2Start = function(clientID) {
 m2ConnectStream = function(clientID) {
      var client = clients[clientID];
      var ondata = function(data) {
-         console.log('ondata: ' + data);
+         logClient(clientID, 'ondata: ' + data);
+         fs.writeFile("/home/m2user/sessions/" + clientID, "", function (error) {
+                 if (error) {
+                     logClient(clientID, "Error: Cannot touch sessions file");
+                 }
+             });
          message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
          if (!client.eventStream) { // fatal error, should not happen
              console.log("Error: No event stream in Start M2");
@@ -147,8 +152,6 @@ assureClient = function(request, response, callbackFcn) {
 
     // Start new user for users coming with invalid, i.e., old, cookie
     if (!clients[clientID]) {
-        console.log("startUser");
-        console.dir(response);
         clientID = startUser(cookies, request,  callbackFcn);
     } else {
 	callbackFcn(clientID);

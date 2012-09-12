@@ -388,71 +388,45 @@ function unhandled(request, response, next) {
         next();
         return;
     }
-    console.log("User requested something we don't serve");
-    console.log(request.url);
+    console.log("Request for something we don't serve: " + request.url);
 }
 
 function uploadM2Package(request, response, next) {
     assureClient(request, response, function(clientID) {
-    	console.log("received: /upload from " + clientID);
-    	var formidable = require('./node-formidable');
+        logClient(clientID, "received: /upload");
+        var formidable = require('./node-formidable');
         var form = new formidable.IncomingForm;
-    	if (SCHROOT) {
-    	    var schrootPath = "/var/lib/schroot/mount/" + clientID + "/home/m2user/"; 
-    	    form.uploadDir = schrootPath;
-    	}
-	form.on('field', function(field, value) {
-	    console.log('entering form.field cb');
-	    console.log(field);
-	    console.log(value);
-	});
-	form.on('file', function(name, file) {
-	    console.log('entering form.file cb');
-	    console.log(name);
-	    console.log(file);
-            if (SCHROOT) {
-        	var newpath = schrootPath;
-            } else {
-            	newpath = "/tmp/";
-            }
-            require('fs').rename(file.path, newpath+file.name,function(error) {
-    		if (error) {
-            	    console.log("Error in renaming file: " + error);
-            	    response.writeHead(403, {"Content-Type": "text/html"});
-            	    response.end('rename failed: ' + error);
-            	    return;
+        if (SCHROOT) {
+            var schrootPath = "/var/lib/schroot/mount/" + clientID + "/home/m2user/"; 
+            form.uploadDir = schrootPath;
+        }
+        form.on('file', function(name, file) {
+                if (SCHROOT) {
+                    var newpath = schrootPath;
+                } else {
+                    newpath = "/tmp/";
                 }
-            });
-	});
-	form.on('fileBegin', function(name, file) {
-	    console.log('entering form.fileBegin cb');
-	    console.log(name);
-	    console.log(file);
-	});
-	form.on('abort', function(error) {
-	    console.log('entering form.abort cb');
-	    console.log(error);
-	});
-	form.on('end', function() {
-	    console.log('entering form.end cb');
-            response.writeHead(200, {"Content-Type": "text/html"});
-            response.end('upload complete!');
+                fs.rename(file.path, newpath+file.name,function(error) {
+                        if (error) {
+                            logClient(clientID, "Error in renaming file: " + error);
+                            response.writeHead(500, {"Content-Type": "text/html"});
+                            response.end('rename failed: ' + error);
+                            return;
+                        }
+                    });
         });
-	form.on('error', function(error) {
-	    console.log('entering form.error cb');
-	    console.log('received error: ' + error);
-	    util.inspect(error);
-            response.writeHead(200, {"Content-Type": "text/html"});
-            response.end('Some error has occurred: ' + error);
-	});
-	
-    	try {
-    	    console.log("Entering form.parse");
-	    form.parse(request);
-    	} catch(error) {
-    	    console.log("From parse threw an error: " + error);
-    	}
-    });
+        form.on('end', function() {
+                response.writeHead(200, {"Content-Type": "text/html"});
+                response.end('upload complete!');
+            });
+        form.on('error', function(error) {
+                logClient(clientID, 'received error in upload: ' + error);
+                response.writeHead(200, {"Content-Type": "text/html"});
+                response.end('Some error has occurred: ' + error);
+            });
+        
+        form.parse(request);
+        });
 };
 
 
@@ -472,7 +446,7 @@ var app = connect()
     .use(unhandled)
     ;
     //.use(connect.errorHandler());
-console.log("Listening on port " + port + "...");
+console.log("Starting server.  Listening on port " + port + "...");
 http.createServer(app).listen(port);
 
 // Local Variables:

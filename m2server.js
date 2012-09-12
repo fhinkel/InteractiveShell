@@ -71,7 +71,7 @@ startUser = function(cookies, request, callbackFcn) {
     cookies.set( "tryM2", clientID, { httpOnly: false } );
     clients[clientID] = new Client(); 
     clients[clientID].clientID = clientID;
-    logClient(clientID, "New user: IP=" + request.connection.remoteAddress + " UserAgent=" + request.headers['user-agent'] + ".");
+    logClient(clientID, "New user: IP=" + request.headers['x-forwarded-for'] + " UserAgent=" + request.headers['user-agent'] + ".");
     if (SCHROOT) {
         logClient(clientID, "Spawning new schroot process named " + clientID + ".");
         require('child_process').exec('schroot -c clone -n '+ clientID + ' -b', function() {
@@ -149,7 +149,7 @@ assureClient = function(request, response, callbackFcn) {
     if (!clients[clientID]) {
         console.log("startUser");
         console.dir(response);
-        clientID = startUser(cookies, request, callbackFcn);
+        clientID = startUser(cookies, request,  callbackFcn);
     } else {
 	callbackFcn(clientID);
     }

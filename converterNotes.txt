@@ -1,4 +1,0 @@
-SUBSECTION: <h4>
-Anything inside 'Example' wrap each line into <code></code>
-\em is <i>
-Replace all 'Text' with <br>

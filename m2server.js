@@ -63,7 +63,7 @@ function Client(m2process, resp) {
     this.clientID = null;
 }
 
-startUser = function(cookies, callbackFcn) {
+startUser = function(cookies, request, callbackFcn) {
     totalUsers = totalUsers + 1;
     var clientID = Math.random()*1000000;
     clientID = Math.floor(clientID);
@@ -71,7 +71,7 @@ startUser = function(cookies, callbackFcn) {
     cookies.set( "tryM2", clientID, { httpOnly: false } );
     clients[clientID] = new Client(); 
     clients[clientID].clientID = clientID;
-    logClient(clientID, "New user.");
+    logClient(clientID, "New user: IP=" + request.connection.remoteAddress + " UserAgent=" + request.headers['user-agent'] + ".");
     if (SCHROOT) {
         logClient(clientID, "Spawning new schroot process named " + clientID + ".");
         require('child_process').exec('schroot -c clone -n '+ clientID + ' -b', function() {
@@ -149,7 +149,7 @@ assureClient = function(request, response, callbackFcn) {
     if (!clients[clientID]) {
         console.log("startUser");
         console.dir(request);
-        clientID = startUser(cookies, callbackFcn);
+        clientID = startUser(cookies, request, callbackFcn);
     } else {
 	callbackFcn(clientID);
     }

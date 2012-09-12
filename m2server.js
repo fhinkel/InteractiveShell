@@ -35,6 +35,9 @@ if( process.argv[2] && process.argv[2]=='--schroot') {
     SCHROOT=true;
 };
 
+function logClient(clientID, str) {
+  console.log(clientID + ": " + str);
+};
     
 // The HTML file for the chat client. Used below.
 //var clientui = require('fs').readFileSync("index.html");
@@ -68,26 +71,27 @@ startUser = function(cookies, callbackFcn) {
     cookies.set( "tryM2", clientID, { httpOnly: false } );
     clients[clientID] = new Client(); 
     clients[clientID].clientID = clientID;
+    logClient(clientID, "New user.");
     if (SCHROOT) {
-	console.log("Spawning new schroot process named " + clientID + ".");
-	require('child_process').exec('schroot -c clone -n '+ clientID + ' -b', function() {
+        logClient(clientID, "Spawning new schroot process named " + clientID + ".");
+        require('child_process').exec('schroot -c clone -n '+ clientID + ' -b', function() {
             var filename = "/var/lib/schroot/mount/" + clientID + "/home/m2user/sName.txt";
             // create a file inside schroot directory to allow schroot know its own name needed for open-schroot when sending /image
             require('fs').writeFile(filename, clientID, function(err) {
                 if(err) {
-                    console.log("failing to write the file " + filename);
-                    console.log(err);
+                    logClient(clientID, "failing to write the file " + filename);
+                    logClient(clientID, err);
                 } else {
-                    console.log("wrote schroot's name into " + filename);
+                    logClient(clientID, "wrote schroot's name into " + filename);
                     require('fs').chmod(filename, 0444, function(error) {
-                       console.log("chmod: " + error) 
+                        logClient(clientID, "chmod: " + error);
                     });
-        		    callbackFcn(clientID);
+                    callbackFcn(clientID);
                 }
-	    });
-	});
+            });
+        });
     } else {
-	callbackFcn(clientID);
+        callbackFcn(clientID);
     }
     return clientID;
 }
@@ -144,6 +148,7 @@ assureClient = function(request, response, callbackFcn) {
     // Start new user for users coming with invalid, i.e., old, cookie
     if (!clients[clientID]) {
         console.log("startUser");
+        console.dir(request);
         clientID = startUser(cookies, callbackFcn);
     } else {
 	callbackFcn(clientID);
@@ -472,4 +477,7 @@ var app = connect()
 console.log("Listening on port " + port + "...");
 http.createServer(app).listen(port);
 
-// Local Variables:                                                                                   // indent-tabs-mode: nil                                                                              // End:                                                                                                                                 
+// Local Variables:
+// indent-tabs-mode: nil
+// tab-width: 4
+// End:

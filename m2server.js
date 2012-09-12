@@ -116,6 +116,8 @@ m2ConnectStream = function(clientID) {
      var ondata = function(data) {
          logClient(clientID, 'ondata: ' + data);
          if (SCHROOT) {
+             // We are touching this file, so that a cron job can 
+             // look at these to see which sessions have been inactive
              fs.writeFile("/home/m2user/sessions/" + clientID, "", function (error) {
                      if (error) {
                          logClient(clientID, "Error: Cannot touch sessions file");
@@ -124,12 +126,11 @@ m2ConnectStream = function(clientID) {
          }
          message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
          if (!client.eventStream) { // fatal error, should not happen
-             console.log("Error: No event stream in Start M2");
+             logClient(clientID, "Error: No event stream in Start M2");
              throw "Error: No client.eventStream in Start M2";
          }
          client.eventStream.write(message);           
      };
-     console.log("Bind stdout to client's m2");
      client.m2.stdout.removeAllListeners('data');
      client.m2.stderr.removeAllListeners('data');
      client.m2.stdout.on('data', ondata);
@@ -200,7 +201,7 @@ startSource = function( request, response) {
     	}
     	// If the client closes the connection, remove client from the list of active clients
     	request.connection.on("end", function() {
-                console.log("close connection: clients[" + clientID + "]");
+                logClient(clientID, "event stream closed");
                 clients[clientID].eventStream = null;
                 response.end();
     	});
@@ -224,18 +225,16 @@ chatAction = function( request, response) {
 
 m2ProcessInput = function( clientID, body, response ) {
     // this starts m2 if needed, and when it is done, calls callback
-    console.log("entered m2ProcessInput");
     m2AssureRunning(clientID);
 
     try {
-	    console.log("M2 input: " + body);
+	    logClient(clientID, "M2 input: " + body);
 	    clients[clientID].m2.stdin.write(body);
     }
-        catch (err) {
-    	console.log(err);
-    	console.log("Internal error: nothing to write to?!");
-    	throw ("Internal error: nothing to write to?!");
-    	return;
+    catch (err) {
+        logClient(clientID, err);
+        throw ("Internal error: nothing to write to?!");
+        return;
     }
     response.writeHead(200);  
     response.end();
@@ -246,10 +245,10 @@ restartAction = function(request, response) {
     assureClient(request, response, function(clientID) {
 	if (!checkForEventStream(clientID, response)) {return false};
 	var client = clients[clientID];
-	console.log("received: /restart from " + clientID);
+	logClient(clientID, "received: /restart");
 	if (client.m2) { 
         client.m2.kill(); 
-        console.log("In restartAction, killed child process with PID " + client.m2.pid);
+        logClient(clientID, "In restartAction, killed child process with PID " + client.m2.pid);
         client.m2 = null;
 	}
 	client.m2 = m2Start(clientID);
@@ -263,16 +262,14 @@ restartAction = function(request, response) {
 interruptAction = function(request, response)  {
     assureClient(request, response, function (clientID) {
 	    if (!checkForEventStream(clientID, response)) {return false};
-    	console.log("received: /interrupt from " + clientID);
+    	logClient(clientID, "received: /interrupt");
     	if (clients[clientID] && clients[clientID].m2) {
             var m2 = clients[clientID].m2;
             if (SCHROOT) {
     	        runShellCommand('pgrep -P ' + m2.pid, function(m2Pid) {
-    		    	console.log("PID of M2 inside schroot: " + m2Pid);
-    			    var cmd = 'kill -s INT ' + m2Pid;
-    			    console.log( "cmd: " + cmd );
-    			    runShellCommand(cmd, function(res) {
-    				    console.log("SIGINT has been sent to M2 " + m2Pid + ".");
+                        logClient(clientID, "PID of M2 inside schroot: " + m2Pid);
+                        var cmd = 'kill -s INT ' + m2Pid;
+                        runShellCommand(cmd, function(res) {
     			    });
     	        });
             } else {
@@ -287,14 +284,13 @@ interruptAction = function(request, response)  {
 // returning clientID for a given M2 pid
 // This currently does not work when working inside a schroot, because pid is not the schroot's pid
 findClientID = function(pid){
-    //var pid1 = parseInt(pid,10);
-    console.log("Searching for clientID whose M2 has PID " + pid);
+    //console.log("Searching for clientID whose M2 has PID " + pid);
     for (var prop in clients) {
         if (clients.hasOwnProperty(prop) && clients[prop] && clients[prop].m2) {
             if (pid == clients[prop].m2.pid) {
-                console.log("We found the client! It is " + prop);
+                //console.log("We found the client! It is " + prop);
                 if (clients[prop].eventStream) {
-                    console.log("findClientID picked user with clientID " + prop);
+                    //console.log("findClientID picked user with clientID " + prop);
                     return prop;
                 } else {
                     throw ("Client " + clientID + " does not have an eventstream.");
@@ -350,42 +346,38 @@ imageAction = function(request, response, next) {
         } else {
             clientID = findClientID(pid);
         }
-        
-        console.log("ClientID = " + clientID);
+        logClient(clientID, "image " + url + " received");
         
         client = clients[clientID];
           if (!client) {
-              console.log("oops, no client");
+              logClient(clientID, "oops, no client");
               return;
           }
           
           if (SCHROOT) {
               path = "/var/lib/schroot/mount/" + clientID + path
           }
-          console.log('we got a request for an image: ' + path + ", for clientID " + clientID);
-          // parse request for PID and path to image
 
           message = 'event: image\r\ndata: ' + path + "\r\n\r\n";
           if (!client.eventStream) { // fatal error, should not happen
-              console.log("Error: No event stream in Start M2");
+              logClient(clientID, "Error: No event stream");
           }
           else {
-              console.log("Sent image message: " + message);
+              logClient(clientID, "Sent image message: " + message);
               client.eventStream.write(message);           
           }
     }
     catch (err) {
         console.log("Received invalid /image request: " + err);
     }
-  
 };
 
 function checkForEventStream(clientID, response) {
     if (!clients[clientID].eventStream ) {
-      console.log("Send notEventSourceError back to user.");
-      response.writeHead(200, {'notEventSourceError': 'No socket for client...' });
-      response.end();
-      return false;
+        logClient(clientID, "Send notEventSourceError back to user.");
+        response.writeHead(200, {'notEventSourceError': 'No socket for client...' });
+        response.end();
+        return false;
    }
    return true;
 }

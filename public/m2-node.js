@@ -212,12 +212,12 @@ $(document).ready(function () {
     });
 
     $('#help-dialog').dialog({
-        height: 340,
-        width: 460,
-        modal: true,
-        autoOpen: false
-    });
-    $('#help').click(trym2.helpScreen);
+            height: 340,
+            width: 460,
+            modal: true,
+            autoOpen: false
+        });
+        $('#help').click(trym2.helpScreen);
 
     //SyntaxHighlighter.all();
     

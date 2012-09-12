@@ -286,8 +286,8 @@ $("#tutorial").html("<div class='lesson' lessonid='1'>  <div><br>Get started by 
             contentType: false,
             processData: false,
             statusCode: {
-                403: function(data) {
-                    alert("Uploading failed, " + data);
+                500: function(data) {
+                    alert("Uploading failed.");
                 }
             },
     	    success: function(data) { 

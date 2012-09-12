@@ -65,15 +65,18 @@ startUser = function(cookies, callbackFcn) {
     if (SCHROOT) {
 	console.log("Spawning new schroot process named " + clientID + ".");
 	require('child_process').exec('schroot -c clone -n '+ clientID + ' -b', function() {
-            var filename = "/var/lib/schroot/mount/" + clientID + "/home/franzi/sName.txt";
-            // create a file inside schroot directory to allow schroot know its own name
+            var filename = "/var/lib/schroot/mount/" + clientID + "/home/m2user/sName.txt";
+            // create a file inside schroot directory to allow schroot know its own name needed for open-schroot when sending /image
             require('fs').writeFile(filename, clientID, function(err) {
                 if(err) {
                     console.log("failing to write the file " + filename);
                     console.log(err);
                 } else {
                     console.log("wrote schroot's name into " + filename);
-    		    callbackFcn(clientID);
+                    require('fs').chmod(filename, 0444, function(error) {
+                       console.log("chmod: " + error) 
+                    });
+        		    callbackFcn(clientID);
                 }
 	    });
 	});
@@ -86,7 +89,8 @@ startUser = function(cookies, callbackFcn) {
 m2Start = function(clientID) {
     var spawn = require('child_process').spawn;
     if (SCHROOT) {
-	    var m2 = require('child_process').spawn( 'schroot', ['-c', clientID, '-u', 'franzi', '-d', '/home/franzi/', '-r', '/M2/bin/M2']);
+//	    var m2 = require('child_process').spawn( 'schroot', ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/M2/bin/M2']);
+	var m2 = require('child_process').spawn( 'schroot', ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
     } else {
         m2 = spawn('M2');
         console.log("Spawning new M2 process...");
@@ -386,30 +390,74 @@ if( process.argv[2] && process.argv[2]=='--schroot') {
 };
 
 function uploadM2Package(request, response, next) {
-    console.log("start upload function");
     assureClient(request, response, function(clientID) {
     	console.log("received: /upload from " + clientID);
     	var formidable = require('formidable');
         var form = new formidable.IncomingForm;
-	if (SCHROOT) {
-	    var schrootPath = "/var/lib/schroot/mount/" + clientID + "/home/franzi/"; 
-	    form.uploadDir = schrootPath;
-	}
-        form.parse(request, function(error, fields, files) {
-            console.log(fields);
-            console.log(files);
-	    console.log("path=" + files.file.path + " filename = " + files.file.name);
-	    if (SCHROOT) {
-		var newpath = schrootPath;
-	    } else {
-		newpath = "/tmp/";
-	    }
-	    require('fs').renameSync(files.file.path, newpath + files.file.name);
-	    response.writeHead(200, {"Content-Type": "text/html"});
+    	if (SCHROOT) {
+    	    var schrootPath = "/var/lib/schroot/mount/" + clientID + "/home/m2user/"; 
+    	    form.uploadDir = schrootPath;
+    	}
+	form.on('field', function(field, value) {
+	    console.log('entering form.field cb');
+	    console.log(field);
+	    console.log(value);
+	});
+	form.on('file', function(name, file) {
+	    console.log('entering form.file cb');
+	    console.log(name);
+	    console.log(file);
+            if (SCHROOT) {
+        	var newpath = schrootPath;
+            } else {
+            	newpath = "/tmp/";
+            }
+            require('fs').rename(file.path, newpath+file.name,function(error) {
+    		if (error) {
+            	    console.log("Error in renaming file: " + error);
+            	    response.writeHead(403, {"Content-Type": "text/html"});
+            	    response.end('rename failed: ' + error);
+            	    return;
+                }
+            });
+	});
+	form.on('fileBegin', function(name, file) {
+	    console.log('entering form.fileBegin cb');
+	    console.log(name);
+	    console.log(file);
+	});
+	form.on('abort', function(error) {
+	    console.log('entering form.abort cb');
+	    console.log(error);
+	});
+	form.on('end', function() {
+	    console.log('entering form.end cb');
+	    process.removeAllListeners('uncaughtException');
+
+            response.writeHead(200, {"Content-Type": "text/html"});
             response.end('upload complete!');
-	  });
+        });
+	form.on('error', function(error) {
+	    console.log('entering form.error cb');
+	    console.log('received error: ' + error);
+	    util.inspect(error);
+            response.writeHead(200, {"Content-Type": "text/html"});
+            response.end('Some error has occurred: ' + error);
+	});
+	process.on('uncaughtException', function(error) {
+	    console.log('uncaughtException: ' + error);
+	    console.log(error.stack);
+            response.writeHead(403, {"Content-Type": "text/html"});
+            response.end('The file was unable to be uploaded.  Possibly it was too large');
+	});
+	
+    	try {
+    	    console.log("Entering form.parse");
+	    form.parse(request);
+    	} catch(error) {
+    	    console.log("From parse threw an error: " + error);
+    	}
     });
-    
 };
 
 

@@ -355,13 +355,17 @@ tmpfs   /home/lars      tmpfs   nodev,nosuid,size=32M,rw,uid=1000,gid=1000      
 tmpfs   /home/mike      tmpfs   nodev,nosuid,size=32M,rw,uid=1002,gid=1002      0       0
 
 # Mounting readonly folders writable
-tmpfs   /tmpetc tmpfs   nodev,nosuid,size=4M    0       0
+tmpfs   /tmpetc tmpfs   nodev,nosuid,size=4M,mode=755    0       0
 none    /etc    aufs    br:$FULL_MOUNT_PATH/tmpetc=rw:/fakeroots/master/etc=ro  0       0
-tmpfs   /tmproot        tmpfs   nodev,nosuid,size=4M    0       0
+tmpfs   /tmproot        tmpfs   nodev,nosuid,size=4M,mode=755    0       0
 none    /root   aufs    br:$FULL_MOUNT_PATH/tmproot=rw:/fakeroots/master/root=ro        0       0
 \end{verbatim}
 
 Please bear with me for not modifying the paths.
+
+A word on the gid and uid: Since the users come from the host system, I just took them from there.
+We set the mode of the /root and /etc folder by setting the mode on the corresponding /tmp folders.
+We don't want the user to be able to mess up the files there, even not temporary. Go on and try to touch something as a user.
 
 In the nssdatabases and copyfiles file comment out all lines.
 
@@ -415,6 +419,38 @@ touch: cannot touch `/bin/bla': Read-only file system
 \subsection{todo}
 
 Store the configuration files in a location such that copyfiles fetches them every time we start. I.e. also modify copyfiles accordingly.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%%  Limiting the resources
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Limiting the resources}
+
+The disk space is already limited by construction, since all directories are mounted ro and the temporary ones do have size restrictions on them.
+The hard part is limiting the memory and the number of processes.
+Changing the /etc/security/limits.conf won't work, since the schroot fetches the global limits and never actually considers that file.
+Instead we build a short startup script limitedM2.sh
+
+\begin{verbatim}
+#!/bin/bash
+ulimit -S -u 200
+ulimit -S -m 300000
+ulimit -a
+/M2/bin/M2
+\end{verbatim}
+
+and place it in the M2 directory. Of course we choose permissions and ownership that make sense, even though it is ro from the inside of the schroot.
+
+Now starting M2 in the schroot should be done like
+
+\begin{verbatim}
+schroot -b -c clone -n name   # Create the schroot
+schroot -c name -u user -d /home/user -r /bin/bash /M2/limited.sh
+\end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

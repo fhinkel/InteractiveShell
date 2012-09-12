@@ -3,26 +3,19 @@
 * change logic for startM2()
 
 9/9/2012
-Back to Ubuntu. We're using a virtual box and run the web server (node.js) in it. The M2's are started in schroots (secure chroots)
-
+We're using a virtual box and run the web server (node.js) in it. The M2's are started in schroots (secure chroots)
 
 9/6/2012
-For security reasons, we're moving to FreeBSD with jails instead of chroot: 
-* freebsd system working
-* M2 on it
-* node.js on it, npm
-* M2 in jail
-* connect jails, changing M2server code
-
-
+We considered jails in FreeBSD briefly, but decided to use Ubuntu schroots.
 
 8/31/2012
 * get it running on Mike's newest machine
 * maybe get MacOS 10 Server, can we sandbox it on there? 
 * get sandbox running on Lars' laptop
 
-* Security issues
-* upload a package, upload tutorials
+* Security issues: We are now using a startup script setting ulimits. Can these be overwritten from inside the schroot?
+* upload a package
+* upload tutorials 
 
 * use it in the cloud with more than 1 machine
 
@@ -46,14 +39,12 @@ Timer:
 Mike: get server ready for May visit
 
 4/17/2012
-Do not start a new user every time they leave the page:  
-- don't delete clientID right away from clients[], use a timer instead
+Do not start a new user every time they leave the page:  DONE
+- don't delete clientID right away from clients[] (DONE), use a timer instead  
 - Done: we are currently writing to many (dead) clients with ondata, we need to "unlink" previous on data calls first, before assigning them to new eventStreams
-- merged with original file: hack from this week is in m2server-4/17.js
 
 Still to do: 
-display image not in help box
-does this work in sandboxing?
+display image not in help box  DONE
 cronjob to cleanup /tmp (Maybe Lars?)
 /tmp should be only writable directory in sandbox
 make images work in sandbox and still have security (talk to Dan about allowing allowing restricted M2 to write)
@@ -131,13 +122,10 @@ re-arrange title, buttons, menu
     includes: not serving pages in /etc/...!
               denial of service attack
               running security screening tools (nlmp, or...?)
-              https protocol, more secure cookies/session
+              https protocol, more secure cookies/session  MOSTLY DONE
 
-  streamlining the M2 sandbox:
-    M2 process doesn't seem to get killed
-    SIGINT doesn't seem to be sent to M2 process (in /interrupt)
-    make sure that it works
-    limit resources
+  streamlining the M2 schroot:
+    limit resources  almost DONE
     ...
   
   server mechanics:
@@ -167,7 +155,6 @@ For version 1: See Mike's list
 
 2/23/2012
 - Talking about server pushing data to client rather than client pulling for data
-- Sandboxing: Jails (FreeBSD), AmazonS3, 
 
 2/21/2012
 Get "Next" button working again! - Done

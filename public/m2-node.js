@@ -264,15 +264,20 @@ $("#tutorial").html("<div class='lesson' lessonid='1'>  <div><br>Get started by 
     //$("#Upload").live("click", trym2.uploadCallback );
     $("#Upload").live("click", function() {
         var formData = new FormData();
+        var files = $('#fileNameField')[0].files;
+        if (files.length == 0 ) {
+            alert("Please select a file to upload.");
+            return false;
+        }
         var fileName = $('#fileNameField').val();
-        console.log("process form " + $('#fileNameField')[0].files[0]);
-    	formData.append('file', $('#fileNameField')[0].files[0]);
-	var filesize = $('#fileNameField')[0].files[0].size;
-	if (filesize > trym2.MAXFILESIZE)
-	  {
-	    alert("Your file is too big to upload.  Sorry!");
-	    return false;
-	  }
+        console.log("process form " + files[0]);
+    	formData.append('file', files[0]);
+    	var filesize = files[0].size;
+    	if (filesize > trym2.MAXFILESIZE)
+    	  {
+    	    alert("Your file is too big to upload.  Sorry!");
+    	    return false;
+    	  }
         $.ajax({
             url: '/upload',
             type: 'POST',

@@ -1,9 +1,19 @@
-/*global $, SyntaxHighlighter, alert, console, document, trym2, updateOrientation, window */
+/*global $, alert, console, document, trym2, updateOrientation, window */
 
 
 var trym2 = {
     lessonNr: 1,
     maxLesson: 1
+};
+
+trym2.MAXFILESIZE = 500000; // max size in bytes for file uploads
+
+trym2.inspect = function (obj) {
+    for (var prop in obj) {
+      if (obj.hasOwnProperty(prop)) {
+	console.log("inspect: " + prop + " : " + obj.prop);
+      }
+    }
 };
 
 trym2.scrollDown = function (area) {
@@ -212,12 +222,12 @@ $(document).ready(function () {
     });
 
     $('#help-dialog').dialog({
-        height: 340,
-        width: 460,
-        modal: true,
-        autoOpen: false
-    });
-    $('#help').click(trym2.helpScreen);
+            height: 340,
+            width: 460,
+            modal: true,
+            autoOpen: false
+        });
+        $('#help').click(trym2.helpScreen);
 
     //SyntaxHighlighter.all();
     
@@ -257,6 +267,12 @@ $("#tutorial").html("<div class='lesson' lessonid='1'>  <div><br>Get started by 
         var fileName = $('#fileNameField').val();
         console.log("process form " + $('#fileNameField')[0].files[0]);
     	formData.append('file', $('#fileNameField')[0].files[0]);
+	var filesize = $('#fileNameField')[0].files[0].size;
+	if (filesize > trym2.MAXFILESIZE)
+	  {
+	    alert("Your file is too big to upload.  Sorry!");
+	    return false;
+	  }
         $.ajax({
             url: '/upload',
             type: 'POST',
@@ -271,7 +287,7 @@ $("#tutorial").html("<div class='lesson' lessonid='1'>  <div><br>Get started by 
             },
     	    success: function(data) { 
 	        console.log("File uploaded successfully!" + data); 
-	            alert(fileName + " has been uploaded and you can use it load it in your Macaulay2 session (use the input terminal).");
+	            alert(fileName + " has been uploaded and you can use it by loading it into your Macaulay2 session (use the input terminal).");
 	        //$("#Upload").parent().after("<div><i>" + fileName + "</i> has been uploaded and you can use it load it in your Macaulay2 session (use the input terminal).</div>");
 	        }
         });

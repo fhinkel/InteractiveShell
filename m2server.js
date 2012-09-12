@@ -24,7 +24,8 @@
 var port = 8002; 
 var sandboxDir = "/";
 
-var http = require('http') 
+var http = require('http')
+    , fs = require('fs')
     , connect = require('connect')
     , Cookies = require('cookies');
     
@@ -114,11 +115,13 @@ m2ConnectStream = function(clientID) {
      var client = clients[clientID];
      var ondata = function(data) {
          logClient(clientID, 'ondata: ' + data);
-         fs.writeFile("/home/m2user/sessions/" + clientID, "", function (error) {
-                 if (error) {
-                     logClient(clientID, "Error: Cannot touch sessions file");
-                 }
-             });
+         if (SCHROOT) {
+             fs.writeFile("/home/m2user/sessions/" + clientID, "", function (error) {
+                     if (error) {
+                         logClient(clientID, "Error: Cannot touch sessions file");
+                     }
+                 });
+         }
          message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
          if (!client.eventStream) { // fatal error, should not happen
              console.log("Error: No event stream in Start M2");

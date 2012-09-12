@@ -28,7 +28,13 @@ var http = require('http')
     , connect = require('connect')
     , Cookies = require('cookies');
     
-var SCHROOT = false; // start with --schroot on server
+var SCHROOT = false; // if true: start with --schroot on server
+// when run in production, work with schroots, see startM2Process()
+if( process.argv[2] && process.argv[2]=='--schroot') {
+    console.log('Running with schroots.');
+    SCHROOT=true;
+};
+
     
 // The HTML file for the chat client. Used below.
 //var clientui = require('fs').readFileSync("index.html");
@@ -383,12 +389,6 @@ function unhandled(request, response, next) {
     console.log(request.url);
 }
 
-// when run in production, work with schroots, see startM2Process()
-if( process.argv[2] && process.argv[2]=='--schroot') {
-    console.log('Running with schroots.');
-    SCHROOT=true;
-};
-
 function uploadM2Package(request, response, next) {
     assureClient(request, response, function(clientID) {
     	console.log("received: /upload from " + clientID);
@@ -432,8 +432,6 @@ function uploadM2Package(request, response, next) {
 	});
 	form.on('end', function() {
 	    console.log('entering form.end cb');
-	    process.removeAllListeners('uncaughtException');
-
             response.writeHead(200, {"Content-Type": "text/html"});
             response.end('upload complete!');
         });
@@ -443,12 +441,6 @@ function uploadM2Package(request, response, next) {
 	    util.inspect(error);
             response.writeHead(200, {"Content-Type": "text/html"});
             response.end('Some error has occurred: ' + error);
-	});
-	process.on('uncaughtException', function(error) {
-	    console.log('uncaughtException: ' + error);
-	    console.log(error.stack);
-            response.writeHead(403, {"Content-Type": "text/html"});
-            response.end('The file was unable to be uploaded.  Possibly it was too large');
 	});
 	
     	try {

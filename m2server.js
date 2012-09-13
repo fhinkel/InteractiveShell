@@ -93,6 +93,7 @@ function Client(m2process, resp) {
     this.m2 = m2process;
     this.eventStream = resp;
     this.clientID = null;
+    this.recentlyRestarted = false; // we use this to keep from handling a bullet stream of restarts
 }
 
 startUser = function(cookies, request, callbackFcn) {
@@ -303,17 +304,27 @@ m2ProcessInput = function( clientID, body, response ) {
 // kill signal is sent to schroot, which results in killing M2
 restartAction = function(request, response) {
     assureClient(request, response, function(clientID) {
-	if (!checkForEventStream(clientID, response)) {return false};
-	var client = clients[clientID];
-	logClient(clientID, "received: /restart");
-	if (client.m2) { 
-        client.m2.kill(); 
-        logClient(clientID, "In restartAction, killed child process with PID " + client.m2.pid);
-	}
-	client.m2 = m2Start(clientID);
-	m2ConnectStream(clientID);
-	response.writeHead(200);  
-	response.end();
+        logClient(clientID, "received: /restart");
+        if (!checkForEventStream(clientID, response)) {
+            return false
+        }
+        var client = clients[clientID];
+        if (client.recentlyRestarted) {
+            logClient(clientID, "Ignore repeated restart request");
+            return;
+        }
+        client.recentlyRestarted = true;
+        setTimeOut(function() {
+                client.recentlyRestarted = false;
+            }, 1000);
+        if (client.m2) { 
+            client.m2.kill(); 
+            logClient(clientID, "In restartAction, killed child process with PID " + client.m2.pid);
+        }
+        client.m2 = m2Start(clientID);
+        m2ConnectStream(clientID);
+        response.writeHead(200);  
+        response.end();
     });
 };
 

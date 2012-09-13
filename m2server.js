@@ -131,11 +131,11 @@ startUser = function(cookies, request, callbackFcn) {
 m2Start = function(clientID) {
     var spawn = require('child_process').spawn;
     if (SCHROOT) {
-	var m2 = require('child_process').spawn( 'schroot', ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
-	m2.on('exit', function() {
-	    logClient(clientID, "Schroot exited.");
-	    delete clients[clientID];
-	});
+    	var m2 = require('child_process').spawn( 'schroot', ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
+    	m2.on('exit', function() {
+    	    logClient(clientID, "Schroot exited.");
+    	    delete clients[clientID];
+    	});
     } else {
         m2 = spawn('M2');
         logClient(clientID, "Spawning new M2 process...");
@@ -266,7 +266,7 @@ m2ProcessInput = function( clientID, body, response ) {
 	    logClient(clientID, "M2 input: " + body);
 	    clients[clientID].m2.stdin.write(body, function(err) {
 	        if (err) {
-    	        logClient("are we getting this error?" + err);
+    	        logClient("write failed: " + err);
 	        }
 	    });
     }

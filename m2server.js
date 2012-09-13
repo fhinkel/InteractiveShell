@@ -259,7 +259,9 @@ startSource = function( request, response) {
     	// If the client closes the connection, remove client from the list of active clients
     	request.connection.on("end", function() {
                 logClient(clientID, "event stream closed");
-                clients[clientID].eventStream = null;
+                if (clients[clientID]) {
+                    clients[clientID].eventStream = null;
+                }
                 response.end();
     	});
     });

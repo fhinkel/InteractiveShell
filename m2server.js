@@ -131,19 +131,24 @@ startUser = function(cookies, request, callbackFcn) {
 m2Start = function(clientID) {
     var spawn = require('child_process').spawn;
     if (SCHROOT) {
-    	var m2 = require('child_process').spawn( 'schroot', ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
+    	var m2 = require('child_process').spawn( 'schroot', 
+            ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
     } else {
         m2 = spawn('M2');
         logClient(clientID, "Spawning new M2 process...");
     }
     m2.on('exit', function() {
-    	logClient(clientID, "M2 exited.");
+        // the schroot might still be valid or unmounted
+        logClient(clientID, "M2 exited.");
         var client = clients[clientID];
         client.m2.stdout.removeAllListeners('data');
         client.m2.stderr.removeAllListeners('data');
         client.m2 = null;
-        client.eventStream = null;
-        delete clients[clientID];
+        // if the following file doesn't exist, that means the schroot was
+        // stopped and unmounted (generally by an external cron job)
+        if (SCHROOT && !fs.existsSync("/home/m2user/sessions/" + clientID)) {
+            delete clients[clientID];
+        }
     });
     m2.stdout.setEncoding("utf8");
     m2.stderr.setEncoding("utf8");
@@ -152,6 +157,7 @@ m2Start = function(clientID) {
 
 m2ConnectStream = function(clientID) {
      var client = clients[clientID];
+     if (!client) return;
      var ondata = function(data) {
          if (SCHROOT) {
              // We are touching this file, so that a cron job can 
@@ -248,7 +254,7 @@ startSource = function( request, response) {
     });
 };
 
-chatAction = function( request, response) {
+m2InputAction = function( request, response) {
     assureClient(request, response, function (clientID) {
     	if (!checkForEventStream(clientID, response)) {return false};
     	request.setEncoding("utf8");
@@ -277,8 +283,8 @@ m2ProcessInput = function( clientID, body, response ) {
     }
     catch (err) {
         logClient(clientID, err);
-        throw ("Internal error: nothing to write to?!");
-        return;
+        // At this point, there was some problem writing to the m2 process
+        // we just return.
     }
     response.writeHead(200);  
     response.end();
@@ -293,7 +299,6 @@ restartAction = function(request, response) {
 	if (client.m2) { 
         client.m2.kill(); 
         logClient(clientID, "In restartAction, killed child process with PID " + client.m2.pid);
-        client.m2 = null;
 	}
 	client.m2 = m2Start(clientID);
 	m2ConnectStream(clientID);
@@ -483,7 +488,7 @@ var app = connect()
     .use('/admin', stats)
     .use('/image', imageAction)
     .use('/startSourceEvent', startSource)
-    .use('/chat', chatAction)
+    .use('/chat', m2InputAction)
     .use('/interrupt', interruptAction)
     .use('/restart', restartAction)
     .use(unhandled)

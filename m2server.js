@@ -142,7 +142,7 @@ m2Start = function(clientID) {
         // the schroot might still be valid or unmounted
         logClient(clientID, "M2 exited.");
         var client = clients[clientID];
-        if (client.m2) {
+        if (client && client.m2) {
             client.m2.stdout.removeAllListeners('data');
             client.m2.stderr.removeAllListeners('data');
         }

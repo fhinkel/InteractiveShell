@@ -55,7 +55,7 @@ pruneClients = function() {
     // run this when using schroot.
     // this loops through all clients, removing those whose 'schroot' system has been killed
     // externally (usually by a cron job)
-    console.log("Pruning clients...  Number of clients: " + clients.length);
+    console.log("Pruning clients...  Former clients: ");
     var clientID = null;
     for (clientID in clients) {
         if (clients.hasOwnProperty(clientID)) {
@@ -68,7 +68,7 @@ pruneClients = function() {
             delete clients[clientID];
         }
     }
-    console.log("Done pruning clients...  New number of clients: " + clients.length);
+    console.log("Done pruning clients...  Continuing clients:");
     for (clientID in clients) {
         if (clients.hasOwnProperty(clientID)) {
             console.log(clientID);
@@ -76,9 +76,9 @@ pruneClients = function() {
     }
 }
 
-//if (SCHROOT) {
-//    setInterval(pruneClients, 10000);
-//}
+if (SCHROOT) {
+    setInterval(pruneClients, 600000); // 10 minutes
+}
 
 function runShellCommand(cmd, callbackFcn) {
     // runs a command, and calls the callbackFnc with the output from stdout

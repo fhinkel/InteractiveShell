@@ -124,7 +124,7 @@ startUser = function(cookies, request, callbackFcn) {
         });
     } else {
         callbackFcn(clientID);
-    }
+a    }
     return clientID;
 }
 
@@ -141,13 +141,9 @@ m2Start = function(clientID) {
     m2.on('exit', function() {
         // the schroot might still be valid or unmounted
         logClient(clientID, "M2 exited.");
-        var client = clients[clientID];
-        if (client && client.m2) {
-            client.m2.stdout.removeAllListeners('data');
-            client.m2.stderr.removeAllListeners('data');
-            client.m2 = null;
-            
-        }
+        m2.stdout.removeAllListeners('data');
+        m2.stderr.removeAllListeners('data');
+
         // if the following file doesn't exist, that means the schroot was
         // stopped and unmounted (generally by an external cron job)
         if (SCHROOT && fs.existsSync("/home/m2user/sessions/" + clientID + ".kill")) {

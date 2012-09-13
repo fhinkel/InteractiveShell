@@ -306,11 +306,15 @@ restartAction = function(request, response) {
     assureClient(request, response, function(clientID) {
         logClient(clientID, "received: /restart");
         if (!checkForEventStream(clientID, response)) {
-            return false
+            response.writeHead(200);  
+            response.end();
+            return;
         }
         var client = clients[clientID];
         if (client.recentlyRestarted) {
             logClient(clientID, "Ignore repeated restart request");
+            response.writeHead(200);  
+            response.end();
             return;
         }
         client.recentlyRestarted = true;
@@ -331,8 +335,12 @@ restartAction = function(request, response) {
 // SCHROOT: when using child.kill('SIGINT'), the signal is sent to schroot, where it is useless, instead, find actual PID of M2. 
 interruptAction = function(request, response)  {
     assureClient(request, response, function (clientID) {
-	    if (!checkForEventStream(clientID, response)) {return false};
     	logClient(clientID, "received: /interrupt");
+	    if (!checkForEventStream(clientID, response)) {
+            response.writeHead(200);  
+            response.end();
+            return;
+        };
     	if (clients[clientID] && clients[clientID].m2) {
             var m2 = clients[clientID].m2;
             if (SCHROOT) {

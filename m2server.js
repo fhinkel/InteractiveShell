@@ -267,7 +267,9 @@ startSource = function( request, response) {
 
 m2InputAction = function( request, response) {
     assureClient(request, response, function (clientID) {
-    	if (!checkForEventStream(clientID, response)) {return false};
+    	if (!checkForEventStream(clientID, response)) {
+            return;
+        };
     	request.setEncoding("utf8");
     	var body = "";
     	// When we get a chunk of data, add it to the body
@@ -306,8 +308,6 @@ restartAction = function(request, response) {
     assureClient(request, response, function(clientID) {
         logClient(clientID, "received: /restart");
         if (!checkForEventStream(clientID, response)) {
-            response.writeHead(200);  
-            response.end();
             return;
         }
         var client = clients[clientID];
@@ -337,8 +337,6 @@ interruptAction = function(request, response)  {
     assureClient(request, response, function (clientID) {
     	logClient(clientID, "received: /interrupt");
 	    if (!checkForEventStream(clientID, response)) {
-            response.writeHead(200);  
-            response.end();
             return;
         };
         if (clients[clientID] && clients[clientID].recentlyRestarted) {

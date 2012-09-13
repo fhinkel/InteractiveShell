@@ -314,7 +314,7 @@ restartAction = function(request, response) {
             return;
         }
         client.recentlyRestarted = true;
-        setTimeOut(function() {
+        setTimeout(function() {
                 client.recentlyRestarted = false;
             }, 1000);
         if (client.m2) { 

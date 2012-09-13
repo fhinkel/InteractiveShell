@@ -145,8 +145,9 @@ m2Start = function(clientID) {
         if (client && client.m2) {
             client.m2.stdout.removeAllListeners('data');
             client.m2.stderr.removeAllListeners('data');
+            client.m2 = null;
+            
         }
-        client.m2 = null;
         // if the following file doesn't exist, that means the schroot was
         // stopped and unmounted (generally by an external cron job)
         if (SCHROOT && fs.existsSync("/home/m2user/sessions/" + clientID + ".kill")) {

@@ -341,6 +341,12 @@ interruptAction = function(request, response)  {
             response.end();
             return;
         };
+        if (clients[clientID] && clients[clientID].recentlyRestarted) {
+            logClient(clientID, "Ignore interrupt directly after restart");
+            response.writeHead(200);  
+            response.end();
+            return;
+        }
     	if (clients[clientID] && clients[clientID].m2) {
             var m2 = clients[clientID].m2;
             if (SCHROOT) {

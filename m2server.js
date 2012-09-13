@@ -3,7 +3,7 @@
 // This is server-side JavaScript, intended to be run with Node.js.
 // This file defines a Node.js server for serving 'tryM2'.
 //   run 
-//      node m2server.js
+//      node m2server.js --schroot
 // in a terminal in this directory.
 // Then in a browser, use: 
 //      http://localhost:8000/
@@ -20,6 +20,9 @@
 // A POST message on /chat: input should be Macaulay2 commands to perform.
 // A message on /chat: start an event emitter, which will return the output of
 // the M2 process.
+// /image is being called by the open script to tell the server where to find a jpg that the user created
+//
+// Using Node connect, but not express
 
 var port = 8002; 
 var sandboxDir = "/";
@@ -36,12 +39,11 @@ if( process.argv[2] && process.argv[2]=='--schroot') {
     SCHROOT=true;
 };
 
+// preamble every log with the client ID
 function logClient(clientID, str) {
   console.log(clientID + ": " + str);
 };
     
-// The HTML file for the chat client. Used below.
-//var clientui = require('fs').readFileSync("index.html");
 var totalUsers = 0;
 
 // An array of Client objects.  Each has an M2 process, and a response object
@@ -119,7 +121,6 @@ startUser = function(cookies, request, callbackFcn) {
 m2Start = function(clientID) {
     var spawn = require('child_process').spawn;
     if (SCHROOT) {
-//	    var m2 = require('child_process').spawn( 'schroot', ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/M2/bin/M2']);
 	var m2 = require('child_process').spawn( 'schroot', ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
     } else {
         m2 = spawn('M2');
@@ -249,7 +250,11 @@ m2ProcessInput = function( clientID, body, response ) {
 
     try {
 	    logClient(clientID, "M2 input: " + body);
-	    clients[clientID].m2.stdin.write(body);
+	    clients[clientID].m2.stdin.write(body, function(err) {
+	        if (err) {
+    	        logClient("are we getting this erro?" + err);
+	        }
+	    });
     }
     catch (err) {
         logClient(clientID, err);

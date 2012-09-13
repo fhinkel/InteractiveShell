@@ -132,14 +132,19 @@ m2Start = function(clientID) {
     var spawn = require('child_process').spawn;
     if (SCHROOT) {
     	var m2 = require('child_process').spawn( 'schroot', ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
-    	m2.on('exit', function() {
-    	    logClient(clientID, "Schroot exited.");
-    	    delete clients[clientID];
-    	});
     } else {
         m2 = spawn('M2');
         logClient(clientID, "Spawning new M2 process...");
     }
+    m2.on('exit', function() {
+    	logClient(clientID, "M2 exited.");
+        var client = clients[clientID];
+        client.m2.stdout.removeAllListeners('data');
+        client.m2.stderr.removeAllListeners('data');
+        client.m2 = null;
+        client.eventStream = null;
+        delete clients[clientID];
+    });
     m2.stdout.setEncoding("utf8");
     m2.stderr.setEncoding("utf8");
     return m2;

@@ -149,7 +149,7 @@ m2Start = function(clientID) {
         client.m2 = null;
         // if the following file doesn't exist, that means the schroot was
         // stopped and unmounted (generally by an external cron job)
-        if (SCHROOT && !fs.existsSync("/home/m2user/sessions/" + clientID)) {
+        if (SCHROOT && !fs.existsSync("/home/m2user/sessions/" + clientID + ".kill")) {
             delete clients[clientID];
         }
     });

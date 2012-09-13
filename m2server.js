@@ -137,12 +137,15 @@ m2Start = function(clientID) {
         m2 = spawn('M2');
         logClient(clientID, "Spawning new M2 process...");
     }
+    
     m2.on('exit', function() {
         // the schroot might still be valid or unmounted
         logClient(clientID, "M2 exited.");
         var client = clients[clientID];
-        client.m2.stdout.removeAllListeners('data');
-        client.m2.stderr.removeAllListeners('data');
+        if (client.m2) {
+            client.m2.stdout.removeAllListeners('data');
+            client.m2.stderr.removeAllListeners('data');
+        }
         client.m2 = null;
         // if the following file doesn't exist, that means the schroot was
         // stopped and unmounted (generally by an external cron job)
@@ -150,6 +153,7 @@ m2Start = function(clientID) {
             delete clients[clientID];
         }
     });
+    
     m2.stdout.setEncoding("utf8");
     m2.stderr.setEncoding("utf8");
     return m2;
@@ -158,6 +162,7 @@ m2Start = function(clientID) {
 m2ConnectStream = function(clientID) {
      var client = clients[clientID];
      if (!client) return;
+     
      var ondata = function(data) {
          if (SCHROOT) {
              // We are touching this file, so that a cron job can 
@@ -172,15 +177,18 @@ m2ConnectStream = function(clientID) {
          logClient(clientID, "data: " + data1.replace(/\n+/g, "\n" + clientID + ": data: "));
          message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
          if (!client.eventStream) { // fatal error, should not happen
-             logClient(clientID, "Error: No event stream in Start M2");
-             throw "Error: No client.eventStream in Start M2";
+             logClient(clientID, "Error: No event stream in m2ConnectStream");
+             return;
+             //throw "Error: No client.eventStream in Start M2";
          }
          client.eventStream.write(message);           
      };
-     client.m2.stdout.removeAllListeners('data');
-     client.m2.stderr.removeAllListeners('data');
-     client.m2.stdout.on('data', ondata);
-     client.m2.stderr.on('data', ondata);
+     if (client.m2) {
+         client.m2.stdout.removeAllListeners('data');
+         client.m2.stderr.removeAllListeners('data');
+         client.m2.stdout.on('data', ondata);
+         client.m2.stderr.on('data', ondata);
+     }
 };
 
 m2AssureRunning = function(clientID) {
@@ -189,6 +197,9 @@ m2AssureRunning = function(clientID) {
     //   there, so there is a possibility for a problem here.  We need to consider that? TODO
 
     var client = clients[clientID];
+    if (!client) {
+        return;
+    }
     if (!client.m2) {
         client.m2 = m2Start(clientID);
 	    m2ConnectStream(clientID);

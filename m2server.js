@@ -164,6 +164,15 @@ m2ConnectStream = function(clientID) {
      if (!client) return;
      
      var ondata = function(data) {
+         if (SCHROOT) {
+             // We are touching this file, so that a cron job can 
+             // look at these to see which sessions have been inactive
+             fs.writeFile("/home/m2user/sessions/" + clientID, "", function (error) {
+                     if (error) {
+                         logClient(clientID, "Error: Cannot touch sessions file");
+                     }
+                 });
+         }
          var data1 = data.replace(/\n$/, "");
          logClient(clientID, "data: " + data1.replace(/\n+/g, "\n" + clientID + ": data: "));
          message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
@@ -276,15 +285,6 @@ m2ProcessInput = function( clientID, body, response ) {
     m2AssureRunning(clientID);
 
     try {
-        if (SCHROOT) {
-            // We are touching this file, so that a cron job can 
-            // look at these to see which sessions have been inactive
-            fs.writeFile("/home/m2user/sessions/" + clientID, "", function (error) {
-                    if (error) {
-                        logClient(clientID, "Error: Cannot touch sessions file");
-                    }
-                });
-        }
 	    logClient(clientID, "M2 input: " + body);
 	    clients[clientID].m2.stdin.write(body, function(err) {
 	        if (err) {

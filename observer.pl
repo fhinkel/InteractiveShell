@@ -132,7 +132,7 @@ while(true){
    foreach my $s (@new_schroots){
       threads->create('observer',$s);
       #sleep 10;
-      print "$schroot: Starting observation.\n";
+      print "$s: Starting observation.\n";
       $observed_schroots_num++;
       push @observed_schroots, $s;
    }

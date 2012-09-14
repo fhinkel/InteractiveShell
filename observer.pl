@@ -21,13 +21,18 @@ $observed_schroots_num = 0;
 sub observer {
    my($schroot) = @_;
    my $pid = get_pid($schroot);
+   # If there is no schroot process, we assume the schroot is gone.
    if($pid == 0){
       print "$schroot: Unmounting schroot. Reason: Already killed.\n";
       @observed_schroots = grep($_ !~ m/$schroot/, @observed_schroots);
       $observed_schroots_num--;
       print $observed_schroots_num."\n";
-      system("touch /home/m2user/sessions/$schroot.kill");
-      system("rm /home/m2user/sessions/$schroot");
+      # Should we be doing the stuff below?
+      if(get_idle($schroot)>$max_idle_time){
+         system("touch /home/m2user/sessions/$schroot.kill");
+         system("rm /home/m2user/sessions/$schroot");
+         system("schroot -e -f -c $schroot");
+      }
       return;
    }
    my $process_sane = true;
@@ -49,7 +54,7 @@ sub observer {
    $observed_schroots_num--;
    system("touch /home/m2user/sessions/$schroot.kill");
    system("rm /home/m2user/sessions/$schroot");
-   system("schroot -e -c $schroot");
+   system("schroot -e -f -c $schroot");
 }
 
 # Get the PID of schroot:

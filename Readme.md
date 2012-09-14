@@ -2,7 +2,7 @@
 
 ## Purpose
 
-A node.js webserver that serves an interactive Macaulay2 shell. Security is provided by starting every Macaulay2 process in its own schroot. We recommend starting the webserver from inside a virtual box for added security. 
+A node.js webserver that serves an interactive [http://www.macaulay2.com](Macaulay2) shell. Security is provided by starting every Macaulay2 process in its own schroot. We recommend starting the webserver from inside a virtual box for added security. 
 
 [Macaulay2](http://www.macaulay2.com) is a software system devoted to supporting research in algebraic geometry and commutative algebra, whose creation has been funded by the National Science Foundation since 1992.
 
@@ -39,11 +39,11 @@ You probably want to run
 
     node m2server.js --schroot
     
-which will place every new user into its own (secure) chroot, thus not giving access to your system. Warning: Know what you are doing when you offer this service, we are not responsible if somebody finds a security hole!
+which will place every new user into its own (secure) chroot, thus not giving access to your system. Warning: Know what you are doing when you offer this service, we are not responsible if somebody finds a security hole! Follow the notes in schroot.tex
 
 You need 
 * node.js
-* Macaulay2
+* [http://www.macaulay2.com](Macaulay2)
 * patched formidable: [git@github.com:fhinkel/node-formidable.git](git@github.com:fhinkel/node-formidable.git)
 * different node packages, use npm install to get them (connect, cookies, )
 * [https://github.com/nodejitsu/forever](forever) to run server as a daemon.

@@ -24,4 +24,4 @@ Still a little hacked, but we think it's working.
 ## Usage
     node m2server.js --schroot
     
-By default, listening on port 8002. 
+By default, listening on port 8002. You can change this in m2server.js.

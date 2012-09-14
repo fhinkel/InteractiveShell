@@ -1,6 +1,15 @@
+9/13/2012
+General:
+* unit tests
+
+IPad use:
+* "keyboard" with buttons for (){}_#... to make iPad use easier
+
+
+
 9/9/2012
-* use node.js connect()
-* change logic for startM2()
+use node.js connect()
+change logic for startM2()
 
 9/9/2012
 We're using a virtual box and run the web server (node.js) in it. The M2's are started in schroots (secure chroots)
@@ -30,9 +39,9 @@ We considered jails in FreeBSD briefly, but decided to use Ubuntu schroots.
 * what happens when we quit the browser? 
 
 Timer: 
-- start timer when user leaves
-- destroy timer when user with same cookie comes back
-- Can we determine if M2 is currently running a calculation for a client?
+* start timer when user leaves  DONE
+* destroy timer when user with same cookie comes back  DONE
+* Can we determine if M2 is currently running a calculation for a client?  "DONE"
 
 
 
@@ -45,66 +54,42 @@ Do not start a new user every time they leave the page:  DONE
 
 Still to do: 
 display image not in help box  DONE
-cronjob to cleanup /tmp (Maybe Lars?)
-/tmp should be only writable directory in sandbox
+cronjob to cleanup /tmp (Maybe Lars?)  DONE
+/tmp should be only writable directory in sandbox  DONE
 make images work in sandbox and still have security (talk to Dan about allowing allowing restricted M2 to write)
 
 maybe work on Print and Don't reload when briefly navigating away from site
-Can we run a non-restricted M2 inside the sandbox and still be secure?
-
-
-4/3/2012
-source .profile because open is in export PATH=/Users/franzi/open-bin:$PATH
-goal for today: serve the right image, not a static one
+Can we run a non-restricted M2 inside the sandbox and still be secure?  MAYBE
 
 
 
 3/22/2012
 cleanup loadFiles for jpg
-get PID - find user by PID
+get PID - find user by PID  
 
 
 3/20/12
 app-armor?
 
-allowing the display of created jpg or png images (e.g. with Graphs.m2).
-  one possible design:
-    a. M2 places all such files into a specific directory, based on the pid (in chroot dir)
 
 
-  problem: the 'open' script which would communicate with the server, doesn't know who created
-    then picture. [it could do: curl localhost:8000/picture/$pid/a.jpg]
-      a. use getppid
-      b. does curl
-     m2server: handles /image/, findClientIDFromPID, gets actual file name (in sandbox), 
-       sends on the event stream for that client, an object of type image:
-     m2node: on client side, ondata routine needs to check the 'image' type, and if it is set, it loads the file
-       in a overlayed window (or whatever).
-
-
-Gwyn: 
+Gwyn suggestions: 
 ability to get worksheet uploaded
 print
-Dan: 2 dir's for packages: experimental
 users can start their own server
-want to be able to run programs e.g., gfan...
-be able to display jpg files and generate them as in posets package
+want to be able to run programs e.g., gfan...  DONE
+be able to display jpg files and generate them as in posets package DONE
 list of allowed commands  (like gfan etc)
-don't delete history on reload in input window
-ask David Cook about M2/gap
-test low memory conditions, gracefully telling the user 
-lots of users -> issues? 
-Save input and output windows
-sage - notebook doesn't run M2
-link for reporting issues, asking questions
-
-3/14/2012
-bug: website is unresponsive for minutes (?) when the connection was closed in between
-"keyboard" with buttons for (){}_#... to make iPad use easier
+don't delete history on reload in input window  NOT DONE/IMPOSSIBLE
+ask David Cook about M2/gap  NOT DONE
+test low memory conditions, gracefully telling the user  NOT DONE
+lots of users -> issues?  YES
+Save input and output windows  NOT DONE
+link for reporting issues, asking questions  NOT DONE
 
 
 3/13/2012
-multi-line <code>
+multi-line <code>  DONE
 
 
 Greg: 

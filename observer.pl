@@ -156,7 +156,7 @@ while(true){
       push @observed_schroots, $s;
       sleep 1;
    }
-   print "There are $observed_schroots_num active schroots.\n";
+   #print "There are $observed_schroots_num active schroots.\n";
    
    # If there are to many users:
    if($observed_schroots_num>$user_limit){

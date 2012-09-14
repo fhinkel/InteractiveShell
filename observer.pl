@@ -43,10 +43,10 @@ sub observer {
       $reason .= get_descendants($pid)>$desc_limit ? "ForkBomb":""; 
       # Eating away memory?
       $process_sane &= (get_memory($pid)>$mem_limit);
-      $reason &= get_memory($pid)>$mem_limit ? "Memory":"";
+      $reason .= get_memory($pid)>$mem_limit ? "Memory":"";
       # Sleeping?
       $process_sane &= (get_idle($schroot)>$max_idle_time);
-      $reason &= get_idle($schroot)>$max_idle_time ? "Idle":"";
+      $reason .= get_idle($schroot)>$max_idle_time ? "Idle":"";
       sleep 10;
    }
    print "$schroot: Unmounting schroot. Reason: $reason.\n";
@@ -115,7 +115,7 @@ sub get_memory {
          $result += get_memory_pid($p);
       }
    }
-   #print "$pid: is using ".$result."K memory.\n"; 
+   print "$pid: is using ".$result."K total memory.\n"; 
    return $result;
 }
 
@@ -129,9 +129,18 @@ sub get_descendants {
       $numdesc = $split[0];
    }
    close FH;
-   #print "$pid: $numdesc descendants.\n";
+   print "$pid: $numdesc descendants.\n";
    return $numdesc;
 }
+
+# Print total number of schroots every now and then:
+sub total_schroots {
+   while(true){
+      sleep 10;
+      print "There are $observed_schroots_num active schroots.\n";
+   }
+}
+threads->create('total_schroots');
 
 while(true){
    # Refresh the time:

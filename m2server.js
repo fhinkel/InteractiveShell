@@ -142,8 +142,8 @@ m2Start = function(clientID) {
     m2.on('exit', function(returnCode, signal) {
         // the schroot might still be valid or unmounted
         logClient(clientID, "M2 exited.");
-        logClient("returnCode: " + returnCode);
-        logClient("signal: " + signal);
+        logClient(clientID, "returnCode: " + returnCode);
+        logClient(clientID, "signal: " + signal);
         m2.stdout.removeAllListeners('data');
         m2.stderr.removeAllListeners('data');
 

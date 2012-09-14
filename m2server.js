@@ -189,21 +189,6 @@ m2ConnectStream = function(clientID) {
      }
 };
 
-m2AssureRunning = function(clientID) {
-    // clientID: name of the desired client
-    // Caveat: It is possible to kill m2 after being being assured that it is
-    //   there, so there is a possibility for a problem here.  We need to consider that? TODO
-
-    var client = clients[clientID];
-    if (!client) {
-        return;
-    }
-    if (!client.m2) {
-        client.m2 = m2Start(clientID);
-	    m2ConnectStream(clientID);
-    }
-};
-
 assureClient = function(request, response, callbackFcn) {
     var cookies = new Cookies(request, response);
     var clientID = cookies.get("tryM2");
@@ -251,7 +236,9 @@ startSource = function( request, response) {
     	response.writeHead(200, {'Content-Type': "text/event-stream" });
     	if (!clients[clientID].eventStream) {
             clients[clientID].eventStream = response;
-            m2AssureRunning(clientID);
+            if (!clients[clientID].m2) {
+                clients[clientID].m2 = m2Start(clientID);
+            }
             m2ConnectStream(clientID);
     	}
     	// If the client closes the connection, remove client from the list of active clients
@@ -283,11 +270,14 @@ m2InputAction = function( request, response) {
 };
 
 m2ProcessInput = function( clientID, body, response ) {
-    // this starts m2 if needed, and when it is done, calls callback
-    m2AssureRunning(clientID);
-
     try {
 	    logClient(clientID, "M2 input: " + body);
+        if (!clients[clientID] || !clients[clientID].m2 || !clients[clientID].m2.stdin.writable) {
+            // this user has been pruned out!  Simply return.
+            response.writeHead(200);  
+            response.end();
+            return;
+        }
 	    clients[clientID].m2.stdin.write(body, function(err) {
 	        if (err) {
     	        logClient("write failed: " + err);

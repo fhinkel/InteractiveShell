@@ -29,18 +29,22 @@ By default, listening on port 8002. You can change this in m2server.js.
 
 ## Installation
 You can run
+
     node m2server.js 
+    
 on your own machine visit the server on http://localhost:8002. If you have Macaulay2 installed, this gives you an (unsecured!) Macaulay2 shell. That means, through the browser you have access to your entire machine with the same permissions as the user that started m2server, i.e., you. 
 
 ### Secure server using schroots
 You probably want to run 
+
     node m2server.js --schroot
+    
 which will place every new user into its own (secure) chroot, thus not giving access to your system. Warning: Know what you are doing when you offer this service, we are not responsible if somebody finds a security hole!
 
 You need 
 * node.js
 * Macaulay2
-* patched formidable: git@github.com:fhinkel/node-formidable.git
+* patched formidable: [git@github.com:fhinkel/node-formidable.git](git@github.com:fhinkel/node-formidable.git)
 * different node packages, use npm install to get them (connect, cookies, )
 * forever to run server as a daemon
 

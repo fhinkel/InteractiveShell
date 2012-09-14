@@ -125,7 +125,7 @@ startUser = function(cookies, request, callbackFcn) {
         });
     } else {
         callbackFcn(clientID);
-a    }
+    }
     return clientID;
 }
 

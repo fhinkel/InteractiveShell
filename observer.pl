@@ -39,13 +39,13 @@ sub observer {
    my $reason;
    while($process_sane){
       # Fork bomb?
-      $process_sane &= (get_descendants($pid)>$desc_limit);
+      $process_sane &= !(get_descendants($pid)>$desc_limit);
       $reason .= get_descendants($pid)>$desc_limit ? "ForkBomb":""; 
       # Eating away memory?
-      $process_sane &= (get_memory($pid)>$mem_limit);
+      $process_sane &= !(get_memory($pid)>$mem_limit);
       $reason .= get_memory($pid)>$mem_limit ? "Memory":"";
       # Sleeping?
-      $process_sane &= (get_idle($schroot)>$max_idle_time);
+      $process_sane &= !(get_idle($schroot)>$max_idle_time);
       $reason .= get_idle($schroot)>$max_idle_time ? "Idle":"";
       sleep 1;
    }

@@ -16,8 +16,9 @@ Still a little hacked, but we think it's working.
 
 ## Features
 
-* Running inside secure chroots
-* Unrestricted Macaulay2, uploading Packages and other files is possible
+* Running inside schroots
+* Unrestricted Macaulay2 shell
+* Uploading Packages and other files is possible
 * Rendering JPGs with graphs.m2
 
 ## Usage

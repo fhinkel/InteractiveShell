@@ -3,7 +3,7 @@ use threads;
 # Some global variables:
 $desc_limit = 30;
 $max_idle_time = 61;
-$user_limit = 5;
+$user_limit = 4;
 $mem_limit = 500000000000000000;
 
 @observed_schroots = ();
@@ -16,15 +16,19 @@ sub observer {
       return;
    }
    my $process_sane = true;
+   my $reason;
    while($process_sane){
       # Fork bomb?
       $process_sane &= get_descendants($pid)>$desc_limit ? false:true;
+      $reason .= get_descendants($pid)>$desc_limit ? "ForkBomb":""; 
       # Eating away memory?
       $process_sane &= get_memory($pid)>$mem_limit ? false:true;
+      $reason &= get_memory($pid)>$mem_limit ? "Memory":"";
       # Sleeping?
       $process_sane &= get_idle($schroot)>$max_idle_time ? false:true;
+      $reason &= get_idle($schroot)>$max_idle_time ? "Idle":"";
    }
-   print "$schroot: Unmounting schroot.\n";
+   print "$schroot: Unmounting schroot. Reason: $reason.\n";
    @observed_schroots = grep($_ !~ m/$schroot/, @observed_schroots);
    $observed_schroots_num--;
    system("rm /home/m2user/sessions/$schroot.kill");
@@ -140,8 +144,8 @@ while(true){
    
    # If there are to many users:
    if(@observed_schroots_num>$user_limit){
-      print "Limit reached. Lowering time.\n";
       $max_idle_time--;
+      print "Limit reached. Lowering time. Time limit is now ".$max_idle.time.".\n";
    } else {
       $max_idle_time = 61;
    }

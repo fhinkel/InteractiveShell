@@ -2,7 +2,7 @@
 
 ## Purpose
 
-A node.js webserver that serves an interactive Macaulay2 shell. 
+A node.js webserver that serves an interactive Macaulay2 shell. Security is provided by starting every Macaulay2 process in its own schroot. We recommend starting the webserver from inside a virtual box for added security. 
 
 [Macaulay2](http://www.macaulay2.com) is a software system devoted to supporting research in algebraic geometry and commutative algebra, whose creation has been funded by the National Science Foundation since 1992.
 

@@ -12,8 +12,8 @@ my @observed_schroots : shared;
 my $observed_schroots_num : shared;
 
 $desc_limit = 30;
-$max_idle_time = 31;
-$user_limit = 3;
+$max_idle_time = 61;
+$user_limit = 5;
 $mem_limit = 500000000000000000;
 $observed_schroots_num = 0;
 

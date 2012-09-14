@@ -4,7 +4,7 @@
 
 A node.js webserver that serves an interactive [Macaulay2](http://www.macaulay2.com) command line. Security is provided by starting every Macaulay2 process in its own schroot. We recommend starting the webserver from inside a virtual box for added security. 
 
-[Macaulay2](http://www.macaulay2.com) is a software system devoted to supporting research in algebraic geometry and commutative algebra, whose creation has been funded by the National Science Foundation since 1992.
+[Macaulay2](http://www.macaulay2.com) is a software system devoted to supporting research in algebraic geometry and commutative algebra, whose creation and development have been funded by the National Science Foundation since 1992.
 
 To get started, select a tutorial. Click on any highlighted code, Macaulay2 will execute it. The result is displayed on the right. Alternatively, you can use the Input Terminal on the left to write your own commands. Execute a line by positioning your cursor on it and click on the Evaluate button (or type Shift-Enter). You can switch back to the tutorial at any time.
 
@@ -44,7 +44,7 @@ which will place every new user into its own (secure) chroot, thus not giving ac
 You need 
 * node.js
 * [Macaulay2](http://www.macaulay2.com)
-* patched formidable: (git@github.com:fhinkel/node-formidable.git)[git@github.com:fhinkel/node-formidable.git]
+* patched formidable: [https://github.com/fhinkel/node-formidable](https://github.com/fhinkel/node-formidable)
 * different node packages, use npm install to get them (connect, cookies, )
 * [forever](https://github.com/nodejitsu/forever) to run server as a daemon.
 

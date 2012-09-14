@@ -132,10 +132,11 @@ while(true){
    foreach my $s (@new_schroots){
       threads->create('observer',$s);
       #sleep 10;
+      print "$schroot: Starting observation.\n";
       $observed_schroots_num++;
       push @observed_schroots, $s;
    }
-   print "There are $observed_schroots_num active schroots.\n";
+   #print "There are $observed_schroots_num active schroots.\n";
    
    # If there are to many users:
    if(@observed_schroots_num>$user_limit){

@@ -60,32 +60,34 @@ sub observer {
 # Get the PID of schroot:
 sub get_pid {
    my($schroot) = @_;
+   my $result = 0;
    open FH, "ps aux | grep schroot|" or die "Unable to determine PID.";
    while(<FH>){
       if($_ =~ m/.*-c $schroot -u/){
          my @split = split(' ',$_);
          #print "$schroot: PID is ".$split[1]."\n";
-         return $split[1];
+         $result = $split[1];
       }
    }
-   return 0;
+   close FH;
+   return $result;
 }
 
 # Get the idle time of the schroot.
 sub get_idle {
    my($schroot) = @_;
+   my $result = 0;
    open FH, "ls -al /home/m2user/sessions | grep $schroot |" or die "Unable to find schroot file.";
    while(<FH>){
       if($_ !~ m/.*kill.*/){
          my @split = split(' ', $_);
          my($idle_min) = ($split[7] =~ m/.*:(.*)/);
-         my $result = $min>=$idle_min ? ($min-$idle_min):(60+$min-$idle_min);
-         print "$schroot: Idle time: $result\n";
-         return $result;
+         $result = $min>=$idle_min ? ($min-$idle_min):(60+$min-$idle_min);
       }
    }
    close FH;
-   return 0;
+   print "$schroot: Idle time: $result\n";
+   return $result;
 }
 
 # Get memory usage for PID.
@@ -100,6 +102,7 @@ sub get_memory_pid {
          $result += $split[4];
       }
    }
+   close FH;
    #print "$pid is using ".$result."K memory.\n";
    return $result;
 }
@@ -115,6 +118,7 @@ sub get_memory {
          $result += get_memory_pid($p);
       }
    }
+   close FH;
    print "$pid: is using ".$result."K total memory.\n"; 
    return $result;
 }

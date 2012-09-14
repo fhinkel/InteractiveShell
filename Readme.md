@@ -46,7 +46,7 @@ You need
 * Macaulay2
 * patched formidable: [git@github.com:fhinkel/node-formidable.git](git@github.com:fhinkel/node-formidable.git)
 * different node packages, use npm install to get them (connect, cookies, )
-* forever to run server as a daemon
+* [https://github.com/nodejitsu/forever](forever) to run server as a daemon.
 
 
 

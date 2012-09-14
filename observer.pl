@@ -4,24 +4,47 @@ use threads;
 $desc_limit = 30;
 $max_idle_time = 61;
 $user_limit = 5;
+$mem_limit = 500000000000000000;
 
 @observed_schroots = ();
 $observed_schroots_num = 0;
 
 sub observer {
    my($schroot) = @_;
-   my $pid = 0;
+   my $pid = get_pid($schroot);
+   if($pid == 0){
+      return;
+   }
    my $process_sane = true;
    while($process_sane){
       # Fork bomb?
       $process_sane &= get_descendants($pid)>$desc_limit ? false:true;
+      # Eating away memory?
       $process_sane &= get_memory($pid)>$mem_limit ? false:true;
+      # Sleeping?
       $process_sane &= get_idle($schroot)>$max_idle_time ? false:true;
    }
-   print "Unmounting schroot ".$schroot."\n";
+   print "$schroot: Unmounting schroot.\n";
    @observed_schroots = grep($_ !~ m/$schroot/, @observed_schroots);
    $observed_schroots_num--;
+   system("rm /home/m2user/sessions/$schroot.kill");
+   system("rm /home/m2user/sessions/$schroot");
+   system("schroot -e -c $schroot");
    sleep 1;
+}
+
+# Get the PID of schroot:
+sub get_pid {
+   my($schroot) = @_;
+   open FH, "ps aux | grep schroot|" or die "Unable to determine PID.";
+   while(<FH>){
+      if($_ =~ m/.*-c $schroot -u/){
+         my @split = split(' ',$_);
+         #print "$schroot: PID is ".$split[1]."\n";
+         return $split[1];
+      }
+   }
+   return 0;
 }
 
 # Get the idle time of the schroot.
@@ -33,6 +56,7 @@ sub get_idle {
          my @split = split(' ', $_);
          my($idle_min) = ($split[7] =~ m/.*:(.*)/);
          my $result = $min>=$idle_min ? ($min-$idle_min):(60+$min-$idle_min);
+         #print "$schroot: Idle time: $result\n";
          return $result;
       }
    }
@@ -40,10 +64,35 @@ sub get_idle {
    return 0;
 }
 
+# Get memory usage for PID.
+sub get_memory_pid {
+   my($pid) = @_;
+   open FH, "ps aux | grep $pid |" or die "Failed to open pipe.";
+   my $result=0;
+   while(<FH>){
+      my $current = $_;
+      my @split = split(' ',$current);
+      if($split[1] == $pid){
+         $result += $split[4];
+      }
+   }
+   #print "$pid is using ".$result."K memory.\n";
+   return $result;
+}
+
 # Get the memory of the process and all children of it.
 sub get_memory {
    my($pid) = @_;
-   return 0;
+   open FH, "pstree -pc $pid|" or die "Unable to get pids of descendants";
+   my $result = 0;
+   while(<FH>){
+      my @pids = $_ =~m/\(([^()]*)\)/g;
+      foreach my $p (@pids){
+         $result += get_memory_pid($p);
+      }
+   }
+   #print "$pid: is using ".$result."K memory.\n"; 
+   return $result;
 }
 
 # Get the number of descendants of a process.
@@ -56,6 +105,7 @@ sub get_descendants {
       $numdesc = $split[0];
    }
    close FH;
+   #print "$pid: $numdesc descendants.\n";
    return $numdesc;
 }
 
@@ -68,10 +118,11 @@ while(true){
    open FH, "ls /home/m2user/sessions | grep user |" or die "Failed to get sessions."; 
    while(<FH>){
       if($_ !~ m/.*kill.*/){
-         print $_."\n";
+         # print $_."\n";
          my $id = grep($_ =~ m/$_/, @observed_schroots);
          if($id == 0){
-            push @new_schroots, $_;
+            my @split = split(' ',$_);
+            push @new_schroots, $split[0];
          }
       }
    }
@@ -79,11 +130,13 @@ while(true){
 
    # Enter new schroots into the observed schroots:
    foreach my $s (@new_schroots){
-      thread->create('observe',$s);
+      threads->create('observer',$s);
+      #sleep 10;
       $observed_schroots_num++;
       push @observed_schroots, $s;
    }
-
+   print "There are $observed_schroots_num active schroots.\n";
+   
    # If there are to many users:
    if(@observed_schroots_num>$user_limit){
       print "Limit reached. Lowering time.\n";

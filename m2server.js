@@ -110,13 +110,13 @@ startUser = function(cookies, request, callbackFcn) {
         require('child_process').exec('schroot -c clone -n '+ clientID + ' -b', function() {
             var filename = "/var/lib/schroot/mount/" + clientID + "/home/m2user/sName.txt";
             // create a file inside schroot directory to allow schroot know its own name needed for open-schroot when sending /image
-            require('fs').writeFile(filename, clientID, function(err) {
+            fs.writeFile(filename, clientID, function(err) {
                 if(err) {
                     logClient(clientID, "failing to write the file " + filename);
                     logClient(clientID, err);
                 } else {
                     logClient(clientID, "wrote schroot's name into " + filename);
-                    require('fs').chmod(filename, 0444, function(error) {
+                    fs.chmod(filename, 0444, function(error) {
                         logClient(clientID, "chmod: " + error);
                     });
                     callbackFcn(clientID);

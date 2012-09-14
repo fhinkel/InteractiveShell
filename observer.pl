@@ -1,4 +1,6 @@
+# For threads.
 use threads;
+# For global variables.
 use threads::shared;
 
 # Some global variables:

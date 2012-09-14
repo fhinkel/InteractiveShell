@@ -1,40 +1,53 @@
 use threads;
+use threads::shared;
 
 # Some global variables:
-$desc_limit = 30;
-$max_idle_time = 61;
-$user_limit = 4;
-$mem_limit = 500000000000000000;
+my $desc_limit : shared;
+my $max_idle_time : shared;
+my $user_limit : shared;
+my $mem_limit : shared;
+my @observed_schroots : shared;
+my $observed_schroots_num : shared;
 
-@observed_schroots = ();
+$desc_limit = 30;
+$max_idle_time = 31;
+$user_limit = 3;
+$mem_limit = 500000000000000000;
 $observed_schroots_num = 0;
 
+# Method for observing a single schroot.
 sub observer {
    my($schroot) = @_;
    my $pid = get_pid($schroot);
    if($pid == 0){
+      print "$schroot: Unmounting schroot. Reason: Already killed.\n";
+      @observed_schroots = grep($_ !~ m/$schroot/, @observed_schroots);
+      $observed_schroots_num--;
+      print $observed_schroots_num."\n";
+      system("touch /home/m2user/sessions/$schroot.kill");
+      system("rm /home/m2user/sessions/$schroot");
       return;
    }
    my $process_sane = true;
    my $reason;
    while($process_sane){
       # Fork bomb?
-      $process_sane &= get_descendants($pid)>$desc_limit ? false:true;
+      $process_sane &= (get_descendants($pid)>$desc_limit);
       $reason .= get_descendants($pid)>$desc_limit ? "ForkBomb":""; 
       # Eating away memory?
-      $process_sane &= get_memory($pid)>$mem_limit ? false:true;
+      $process_sane &= (get_memory($pid)>$mem_limit);
       $reason &= get_memory($pid)>$mem_limit ? "Memory":"";
       # Sleeping?
-      $process_sane &= get_idle($schroot)>$max_idle_time ? false:true;
+      $process_sane &= (get_idle($schroot)>$max_idle_time);
       $reason &= get_idle($schroot)>$max_idle_time ? "Idle":"";
+      sleep 10;
    }
    print "$schroot: Unmounting schroot. Reason: $reason.\n";
    @observed_schroots = grep($_ !~ m/$schroot/, @observed_schroots);
    $observed_schroots_num--;
-   system("rm /home/m2user/sessions/$schroot.kill");
+   system("touch /home/m2user/sessions/$schroot.kill");
    system("rm /home/m2user/sessions/$schroot");
    system("schroot -e -c $schroot");
-   sleep 1;
 }
 
 # Get the PID of schroot:
@@ -60,7 +73,7 @@ sub get_idle {
          my @split = split(' ', $_);
          my($idle_min) = ($split[7] =~ m/.*:(.*)/);
          my $result = $min>=$idle_min ? ($min-$idle_min):(60+$min-$idle_min);
-         #print "$schroot: Idle time: $result\n";
+         print "$schroot: Idle time: $result\n";
          return $result;
       }
    }
@@ -134,18 +147,19 @@ while(true){
 
    # Enter new schroots into the observed schroots:
    foreach my $s (@new_schroots){
+      $observed_schroots_num++;
       threads->create('observer',$s);
       #sleep 10;
       print "$s: Starting observation.\n";
-      $observed_schroots_num++;
       push @observed_schroots, $s;
+      sleep 1;
    }
-   #print "There are $observed_schroots_num active schroots.\n";
+   print "There are $observed_schroots_num active schroots.\n";
    
    # If there are to many users:
-   if(@observed_schroots_num>$user_limit){
+   if($observed_schroots_num>$user_limit){
       $max_idle_time--;
-      print "Limit reached. Lowering time. Time limit is now ".$max_idle.time.".\n";
+      print "Limit reached. Lowering time. Time limit is now ".$max_idle_time.".\n";
    } else {
       $max_idle_time = 61;
    }

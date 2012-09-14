@@ -47,7 +47,7 @@ sub observer {
       # Sleeping?
       $process_sane &= (get_idle($schroot)>$max_idle_time);
       $reason .= get_idle($schroot)>$max_idle_time ? "Idle":"";
-      sleep 10;
+      sleep 1;
    }
    print "$schroot: Unmounting schroot. Reason: $reason.\n";
    @observed_schroots = grep($_ !~ m/$schroot/, @observed_schroots);
@@ -168,7 +168,6 @@ while(true){
       #sleep 10;
       print "$s: Starting observation.\n";
       push @observed_schroots, $s;
-      sleep 1;
    }
    #print "There are $observed_schroots_num active schroots.\n";
    

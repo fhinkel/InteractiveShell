@@ -132,16 +132,18 @@ startUser = function(cookies, request, callbackFcn) {
 m2Start = function(clientID) {
     var spawn = require('child_process').spawn;
     if (SCHROOT) {
-    	var m2 = require('child_process').spawn( 'schroot', 
+    	var m2 = spawn( 'schroot', 
             ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
     } else {
         m2 = spawn('M2');
         logClient(clientID, "Spawning new M2 process...");
     }
     
-    m2.on('exit', function() {
+    m2.on('exit', function(returnCode, signal) {
         // the schroot might still be valid or unmounted
         logClient(clientID, "M2 exited.");
+        logClient("returnCode: " + returnCode);
+        logClient("signal: " + signal);
         m2.stdout.removeAllListeners('data');
         m2.stderr.removeAllListeners('data');
 
@@ -161,10 +163,15 @@ m2ConnectStream = function(clientID) {
      var client = clients[clientID];
      if (!client) return;
      
+ 
      var ondata = function(data) {
          if (SCHROOT) {
+             
              // We are touching this file, so that a cron job can 
              // look at these to see which sessions have been inactive
+             //
+             // even when running M2 on the schroot failed we will receive data., i.e., we might get data such as "child terminated"
+             // Thus existens of the file does not neccesarily mean that M2 send us output.
              fs.writeFile("/home/m2user/sessions/" + clientID, "", function (error) {
                      if (error) {
                          logClient(clientID, "Error: Cannot touch sessions file");

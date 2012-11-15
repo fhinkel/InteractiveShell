@@ -1,3 +1,14 @@
+11/15/2012
+* how to restart the machine
+* how can we tackle the security issues we have? 
+    * problem: all users are the same user and can kill each other
+    * solution: - start m2server as root, 
+                - m2server creates users and lets schroots run as different users
+                - most changes for this would have to be in m2server.m2
+                - wen can use setpid to a random id, we probably also need to create a directory for that id where they can write to
+                - we need to make sure we're using the correct pids (interrupt etc)
+* when do we meet again? March (10-17 or 17-22) might be good days! :)
+
 9/13/2012
 General:
 * unit tests
@@ -23,7 +34,7 @@ We considered jails in FreeBSD briefly, but decided to use Ubuntu schroots.
 * get sandbox running on Lars' laptop
 
 * Security issues: We are now using a startup script setting ulimits. Can these be overwritten from inside the schroot?
-* upload a package
+* upload a package DONE
 * upload tutorials 
 
 * use it in the cloud with more than 1 machine
@@ -73,7 +84,7 @@ app-armor?
 
 
 
-Gwyn suggestions: 
+Gwyn's suggestions: 
 ability to get worksheet uploaded
 print
 users can start their own server

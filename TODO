@@ -1,4 +1,6 @@
 12/14/2012
+*we run the server with sudo, and then switch to one of 3 premade users, TODO: make a lot of users and have a mechanism in place that prevents users from getting a userID that's already in use. 
+* user currently has access to sName.txt, also open-schroot is probably not going to work any more, this affects /image
 
 
 

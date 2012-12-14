@@ -1,2 +1,2 @@
-schrootID=`cat /home/m2user/sName.txt`
+schrootID=`cat /rootstuff/sName.txt`
 curl -s http://localhost:8002/image/$schrootID/$1 

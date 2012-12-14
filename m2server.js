@@ -132,8 +132,12 @@ startUser = function(cookies, request, callbackFcn) {
 m2Start = function(clientID) {
     var spawn = require('child_process').spawn;
     if (SCHROOT) {
+        // TODO pick next available new user
+        var newUser = 'm21';
     	var m2 = spawn( 'schroot', 
-            ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
+    	    ['-c', clientID, '-u', newUser, '-d', '/home/' + newUser +'/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
+        
+           // ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
     } else {
         m2 = spawn('M2');
         logClient(clientID, "Spawning new M2 process...");

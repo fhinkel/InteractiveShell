@@ -151,7 +151,7 @@ m2Start = function(clientID) {
         var newUser = clients[clientID].userID;
         logClient(clientID, "newUser when starting M2: " + newUser );
     	var m2 = spawn( 'sudo',
-      [ '-u', newUser, 'schroot', '-c', clientID, '-u', newUser, '-d', '/home/' + newUser +'/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
+      [ '-u', newUser, 'schroot', '-c', clientID, '-u', newUser, '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
         
            // ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
     } else {

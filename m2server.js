@@ -116,6 +116,8 @@ startUser = function(cookies, request, callbackFcn) {
         newUserIndex = ( newUserIndex + 1 ) % newUsers.length;
         logClient(clientID, "experimental new user is " + newUser + " and the new index is " + newUserIndex);
         logClient(clientID, "Spawning new schroot process named " + clientID + ".");
+        // If we create a user and an own config file for this user the command needs to look like
+        // require('child_process').exec('sudo -u ' + newUser + ' schroot -c name_at_top_of_config -n '+ clientID + ' -b', function() {
         require('child_process').exec('sudo -u ' + newUser + ' schroot -c clone -n '+ clientID + ' -b', function() {
             var filename = "/var/lib/schroot/mount/" + clientID + "/rootstuff/sName.txt";
             // create a file inside schroot directory to allow schroot know its own name needed for open-schroot when sending /image

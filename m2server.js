@@ -47,7 +47,7 @@ function logClient(clientID, str) {
 var totalUsers = 0;
 
 // experimental hack
-var newUsers = ['m21', 'm22', 'm23']; //, 'm24', 'm25', 'm26', 'm27', 'm28', 'm29'];
+var newUsers = ['m21', 'm22', 'm23', 'm24', 'm25', 'm26', 'm27', 'm28', 'm29'];
 var newUserIndex = 0; 
 
 // An array of Client objects.  Each has an M2 process, and a response object

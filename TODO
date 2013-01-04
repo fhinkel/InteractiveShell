@@ -1,11 +1,18 @@
+12/14/2012
+*we run the server with sudo, and then switch to one of 3 premade users, TODO: make a lot of users and have a mechanism in place that prevents users from getting a userID that's already in use. 
+* user currently has access to sName.txt, also open-schroot is probably not going to work any more, this affects /image
+
+
+
+
 11/15/2012
 * how to restart the machine
 * how can we tackle the security issues we have? 
     * problem: all users are the same user and can kill each other
     * solution: - start m2server as root, 
-                - m2server creates users and lets schroots run as different users
+                - m2server creates users and let schroots run as different users
                 - most changes for this would have to be in m2server.m2
-                - wen can use setpid to a random id, we probably also need to create a directory for that id where they can write to
+                - we can use setpid to a random id, we probably also need to create a directory for that id where they can write to
                 - we need to make sure we're using the correct pids (interrupt etc)
 * when do we meet again? March (10-17 or 17-22) might be good days! :)
 

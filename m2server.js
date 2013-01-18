@@ -55,6 +55,22 @@ var newUserIndex = 0;
 // defined.
 var clients = {};
 
+
+
+
+prune = function() {
+// if we decide that a user is obsolete, we should
+// * call perl script with
+//      killall -u username
+//      schroot -e -c username 
+//      rm /etc/schroot/chroot.d/username.conf
+//      userdel username
+// * delete clients[clientID]
+}
+
+// deciding that a user is obsolete: 
+// set clients[clientID].timestamp (set by M2 output or the client's input)
+// in set time intervals, iterate over clients and if timestamp is too old or using too high resources, prune the client
 pruneClients = function() {
     // run this when using schroot.
     // this loops through all clients, removing those whose 'schroot' system has been killed
@@ -96,8 +112,8 @@ function runShellCommand(cmd, callbackFcn) {
 function Client(m2process, resp) {
     this.m2 = m2process;
     this.eventStream = resp;
-    this.clientID = null;
-    this.userID = null;
+    this.clientID = null; // generated randomly in startUser(), used for cookie
+    this.userID = null; // name of user on the system
     this.recentlyRestarted = false; // we use this to keep from handling a bullet stream of restarts
 }
 
@@ -105,6 +121,7 @@ startUser = function(cookies, request, callbackFcn) {
     totalUsers = totalUsers + 1;
     var clientID = Math.random()*1000000;
     clientID = Math.floor(clientID);
+    // TODO check that this ID is not already in use
     clientID = "user" + clientID.toString(10);
     cookies.set( "tryM2", clientID, { httpOnly: false } );
     clients[clientID] = new Client(); 
@@ -120,7 +137,7 @@ startUser = function(cookies, request, callbackFcn) {
         // require('child_process').exec('sudo -u ' + newUser + ' schroot -c name_at_top_of_config -n '+ clientID + ' -b', function() {
         require('child_process').exec('sudo -u ' + newUser + ' schroot -c clone -n '+ clientID + ' -b', function() {
             var filename = "/var/lib/schroot/mount/" + clientID + "/rootstuff/sName.txt";
-            // create a file inside schroot directory to allow schroot know its own name needed for open-schroot when sending /image
+            // create a file inside schroot directory to allow schroot to know its own name needed for open-schroot when sending /image
             fs.writeFile(filename, clientID, function(err) {
                 if(err) {
                     logClient(clientID, "failing to write the file " + filename);
@@ -227,7 +244,7 @@ assureClient = function(request, response, callbackFcn) {
     if (!clients[clientID]) {
         clientID = startUser(cookies, request,  callbackFcn);
     } else {
-	callbackFcn(clientID);
+	    callbackFcn(clientID);
     }
 };
 

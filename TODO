@@ -1,3 +1,8 @@
+we left the code in non-working state. We need to finish pruning
+eventually we need to write status_user.pl
+we need to work on createClient
+create username from clientID 
+
 1/18/13
 * figure out logic for deleting obsolete clients
 * new users on the system should be created as needed (with a max), not using a fixed number of pre-made users

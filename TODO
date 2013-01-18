@@ -1,3 +1,10 @@
+1/18/13
+* figure out logic for deleting obsolete clients
+* new users on the system should be created as needed (with a max), not using a fixed number of pre-made users
+* userID and clientID should be the same/based on the same random number
+* clientID should be checked whether it's already in use
+* when is a client obsolete?
+
 1/4/13
 * we need to fix upload - seems to be working again
 * but interrupt seems broken

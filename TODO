@@ -3,7 +3,8 @@
 * new users on the system should be created as needed (with a max), not using a fixed number of pre-made users
 * userID and clientID should be the same/based on the same random number
 * clientID should be checked whether it's already in use
-* when is a client obsolete?
+* when is a client obsolete? we need a perl routine that check for resources, m2server will call this script for every user and kill it if the script returns true
+* we need to figure out how to use timestamps
 
 1/4/13
 * we need to fix upload - seems to be working again

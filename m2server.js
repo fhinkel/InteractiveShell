@@ -57,35 +57,35 @@ var clients = {};
 
 
 
-
-prune = function() {
-// if we decide that a user is obsolete, we should
-// * call perl script with
-//      killall -u username
-//      schroot -e -c username 
-//      rm /etc/schroot/chroot.d/username.conf
-//      userdel username
-// * delete clients[clientID]
+// delete a user both from the system and the clients[]
+deleteClient = function(clientID) {
+    runShellCommand( 'remove_user.pl ' + clientID, function(ret) {
+        console.log("We removed client " + clientID + " with result: " + ret );
+    } );
+    delete clients[clientID];
 }
 
 // deciding that a user is obsolete: 
 // set clients[clientID].timestamp (set by M2 output or the client's input)
-// in set time intervals, iterate over clients and if timestamp is too old or using too high resources, prune the client
+// in set time intervals, iterate over clients and if timestamp is too old or using too high resources, delete the client
 pruneClients = function() {
     // run this when using schroot.
-    // this loops through all clients, removing those whose 'schroot' system has been killed
-    // externally (usually by a cron job)
+    // this loops through all clients, and checks their timestamp, also, it checks their resource usage with a perl script. Remove old or bad clients
     console.log("Pruning clients...  Former clients: ");
     var clientID = null;
+    var OLD = 60*60*24*7;
     for (clientID in clients) {
         if (clients.hasOwnProperty(clientID)) {
-            console.log(clientID);
-        }
-    }
-    for (clientID in clients) {
-        if (clients.hasOwnProperty(clientID) && 
-            ! (fs.existsSync('/home/m2user/sessions/' + clientID))) {
-            delete clients[clientID];
+            if (clients.timeStamp > OLD) {
+               deleteClient(clientID); 
+            } else {
+                 runShellCommand('status_user.pl ' + clientID, function(ret) {
+                     console.log ("Return value from status_user.pl: " + ret);
+                     if ret != '0' {
+                         deleteClient(clientID); 
+                     }
+                 }) 
+            } 
         }
     }
     console.log("Done pruning clients...  Continuing clients:");

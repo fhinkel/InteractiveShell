@@ -1,12 +1,12 @@
 #!/usr/bin/perl
 #create_user.pl
 
-# 1. End the schroot
-# 2. Delete the user
 
 $user = $ARGV[0];
 # print $user;
 
-# Remove the user:
+# TODO:
+# Check number of processes
+# Check memory usage
 print "0\n";
 

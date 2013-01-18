@@ -15,13 +15,13 @@ $user = $ARGV[0];
 # print $user;
 
 # Create the new user:
-# system "useradd $user";
+system "useradd $user -d /home/m2user";
 
 # Restrictions:
 # system "memory";
 # system "no_of_processes";
 
-open (CONFIG, ">>$user.conf");
+open (CONFIG, ">>/etc/schroot/chroot.d/$user.conf");
 print CONFIG "[$user]\n";
 print CONFIG "description=Ubuntu precise pangolin clone chroot\n";
 print CONFIG "directory=/fakeroots/clone\n";

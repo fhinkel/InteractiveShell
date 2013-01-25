@@ -59,7 +59,7 @@ var clients = {};
 
 // delete a user both from the system and the clients[]
 deleteClient = function(clientID) {
-    runShellCommand( 'remove_user.pl ' + clientID, function(ret) {
+    runShellCommand( 'perl-scripts/remove_user.pl ' + clientID, function(ret) {
         console.log("We removed client " + clientID + " with result: " + ret );
     } );
     delete clients[clientID];
@@ -73,15 +73,18 @@ pruneClients = function() {
     // this loops through all clients, and checks their timestamp, also, it checks their resource usage with a perl script. Remove old or bad clients
     console.log("Pruning clients...  Former clients: ");
     var clientID = null;
-    var OLD = 60*60*24*7;
+    var OLD = 1000*60*60*24*7; // week
+    var now = Date.now();
+    console.log("It is currently " + now + " milliseconds.");
+    var minAge = now - OLD;
     for (clientID in clients) {
         if (clients.hasOwnProperty(clientID)) {
-            if (clients.timeStamp > OLD) {
+            if (clients.lastActiveTime < minAge) {
                deleteClient(clientID); 
             } else {
-                 runShellCommand('status_user.pl ' + clientID, function(ret) {
+                 runShellCommand('perl-scripts/status_user.pl ' + clientID, function(ret) {
                      console.log ("Return value from status_user.pl: " + ret);
-                     if ret != '0' {
+                     if (ret != '0') {
                          deleteClient(clientID); 
                      }
                  }) 
@@ -115,6 +118,7 @@ function Client(m2process, resp) {
     this.clientID = null; // generated randomly in startUser(), used for cookie
     this.userID = null; // name of user on the system
     this.recentlyRestarted = false; // we use this to keep from handling a bullet stream of restarts
+    this.lastActiveTime = Date.now(); // milliseconds when client was last active
 }
 
 startUser = function(cookies, request, callbackFcn) {
@@ -126,6 +130,7 @@ startUser = function(cookies, request, callbackFcn) {
     cookies.set( "tryM2", clientID, { httpOnly: false } );
     clients[clientID] = new Client(); 
     clients[clientID].clientID = clientID;
+    console.log( "new client has lastActiveTime: " + clients[clientID].lastActiveTime + ". It is now " + Date.now() );
     logClient(clientID, "New user: " + " UserAgent=" + request.headers['user-agent'] + ".");
     if (SCHROOT) {
         var newUser = newUsers[newUserIndex];
@@ -204,19 +209,8 @@ m2ConnectStream = function(clientID) {
      
  
      var ondata = function(data) {
-         if (SCHROOT) {
-             
-             // We are touching this file, so that a cron job can 
-             // look at these to see which sessions have been inactive
-             //
-             // even when running M2 on the schroot failed we will receive data., i.e., we might get data such as "child terminated"
-             // Thus existens of the file does not neccesarily mean that M2 send us output.
-             fs.writeFile("/home/m2user/sessions/" + clientID, "", function (error) {
-                     if (error) {
-                         logClient(clientID, "Error: Cannot touch sessions file");
-                     }
-                 });
-         }
+         client.lastActiveTime = Date.now(); 
+         console.log( "set new time stamp " + client.lastActiveTime);
          var data1 = data.replace(/\n$/, "");
          logClient(clientID, "data: " + data1.replace(/\n+/g, "\n" + clientID + ": data: "));
          message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
@@ -324,6 +318,8 @@ m2ProcessInput = function( clientID, body, response ) {
             response.end();
             return;
         }
+        clients[clientID].lastActiveTime = Date.now(); 
+        console.log( "new timestamp in m2ProcessInput " + clients[clientID].lastActiveTime);
 	    clients[clientID].m2.stdin.write(body, function(err) {
 	        if (err) {
     	        logClient("write failed: " + err);
@@ -565,6 +561,7 @@ var app = connect()
     //.use(connect.errorHandler());
 console.log("Starting server.  Listening on port " + port + "...");
 http.createServer(app).listen(port);
+
 
 // Local Variables:
 // indent-tabs-mode: nil

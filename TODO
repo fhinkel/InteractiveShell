@@ -1,3 +1,8 @@
+1/25/13
+* Lars made changes to perl-scripts
+* We added times stamps in order to prune old clients
+
+
 we left the code in non-working state. We need to finish pruning
 eventually we need to write status_user.pl
 we need to work on createClient

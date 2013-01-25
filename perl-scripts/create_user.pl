@@ -15,10 +15,9 @@ $user = $ARGV[0];
 # print $user;
 
 # Create the new user:
-system "useradd $user -d /home/m2user";
-
-# Add user to group m2users:
-system "useradd -G m2users $user";
+system "useradd -G m2users $user -d /home/m2user";
+# -G: Add user to group
+# -d: set home folder
 
 # Restrictions:
 # system "memory";

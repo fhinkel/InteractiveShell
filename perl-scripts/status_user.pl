@@ -8,5 +8,7 @@ $user = $ARGV[0];
 # TODO:
 # Check number of processes
 # Check memory usage
-print "0\n";
+
+# return 0 if it is good
+print "0";
 

@@ -17,6 +17,9 @@ $user = $ARGV[0];
 # Create the new user:
 system "useradd $user -d /home/m2user";
 
+# Add user to group m2users:
+system "useradd -G m2users $user";
+
 # Restrictions:
 # system "memory";
 # system "no_of_processes";

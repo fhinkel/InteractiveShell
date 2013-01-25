@@ -80,8 +80,9 @@ pruneClients = function() {
                deleteClient(clientID); 
             } else {
                  runShellCommand('perl-scripts/status_user.pl ' + clientID, function(ret) {
-                     console.log ("Return value from status_user.pl: " + ret);
+                     console.log ("Return value from status_user.pl: .." + ret +"..");
                      if (ret != '0') {
+                         console.log( "removing user because of status_user.pl");
                          deleteClient(clientID); 
                      }
                  }) 

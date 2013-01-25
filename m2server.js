@@ -76,7 +76,8 @@ pruneClients = function() {
     var minAge = now - MAXAGE;
     for (clientID in clients) {
         if (clients.hasOwnProperty(clientID)) {
-            if (clients.lastActiveTime < minAge) {
+            console.log("*** lastActivetime: " clientID.lastActiveTime );
+            if (clientID.lastActiveTime < minAge) {
                deleteClient(clientID); 
             } else {
                  runShellCommand('perl-scripts/status_user.pl ' + clientID, function(ret) {
@@ -116,6 +117,7 @@ function Client(m2process, resp) {
     this.clientID = null; // generated randomly in startUser(), used for cookie and as user name on the system
     this.recentlyRestarted = false; // we use this to keep from handling a bullet stream of restarts
     this.lastActiveTime = Date.now(); // milliseconds when client was last active
+    console.log ("function Client()");
 }
 
 startUser = function(cookies, request, callbackFcn) {

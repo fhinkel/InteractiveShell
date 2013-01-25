@@ -26,6 +26,8 @@
 
 var port = 8002; 
 var sandboxDir = "/";
+var PRUNECLIENTINTERVAL = 1000*60*10; // 10 minutes
+var MAXAGE = 1000*60*60*24*7; // 1 week
 
 var http = require('http')
     , fs = require('fs')
@@ -73,10 +75,9 @@ pruneClients = function() {
     // this loops through all clients, and checks their timestamp, also, it checks their resource usage with a perl script. Remove old or bad clients
     console.log("Pruning clients...  Former clients: ");
     var clientID = null;
-    var OLD = 1000*60*60*24*7; // week
     var now = Date.now();
     console.log("It is currently " + now + " milliseconds.");
-    var minAge = now - OLD;
+    var minAge = now - MAXAGE;
     for (clientID in clients) {
         if (clients.hasOwnProperty(clientID)) {
             if (clients.lastActiveTime < minAge) {
@@ -100,7 +101,7 @@ pruneClients = function() {
 }
 
 if (SCHROOT) {
-    setInterval(pruneClients, 600000); // 10 minutes
+    setInterval(pruneClients, PRUNECLIENTINTERVAL); 
 }
 
 function runShellCommand(cmd, callbackFcn) {

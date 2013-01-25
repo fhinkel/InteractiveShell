@@ -26,8 +26,8 @@
 
 var port = 8002; 
 var sandboxDir = "/";
-var PRUNECLIENTINTERVAL = 1000*60*1; // 1 minutes
-var MAXAGE = 1000*60*2; // 2 minutes //*60*24*7; // 1 week
+var PRUNECLIENTINTERVAL = 1000*60*10; // 10 minutes
+var MAXAGE = 1000*60*60*24*7; // 1 week
 
 var http = require('http')
     , fs = require('fs')
@@ -76,12 +76,12 @@ pruneClients = function() {
     var minAge = now - MAXAGE;
     for (clientID in clients) {
         if (clients.hasOwnProperty(clientID)) {
-            console.log("*** lastActivetime: " + clients[clientID].lastActiveTime )
+            console.log("*** lastActivetime for user : " + clientID + " " + clients[clientID].lastActiveTime )
             if (clients[clientID].lastActiveTime < minAge) {
                deleteClient(clientID); 
             } else {
                  runShellCommand('perl-scripts/status_user.pl ' + clientID, function(ret) {
-                     console.log ("Return value from status_user.pl: .." + ret +"..");
+                     //console.log ("Return value from status_user.pl: .." + ret +"..");
                      if (ret != '0') {
                          console.log( "removing user because of status_user.pl");
                          deleteClient(clientID); 

@@ -7,7 +7,7 @@
 * eventually we need to write status_user.pl
 * need to check for identical random usernames
 
-* is deleting clients working?
+* is deleting clients working? Sort of 
 
 1/18/13
 * figure out logic for deleting obsolete clients

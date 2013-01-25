@@ -76,8 +76,8 @@ pruneClients = function() {
     var minAge = now - MAXAGE;
     for (clientID in clients) {
         if (clients.hasOwnProperty(clientID)) {
-            console.log("*** lastActivetime: " + clientID.lastActiveTime );
-            if (clientID.lastActiveTime < minAge) {
+            console.log("*** lastActivetime: " + clients[clientID].lastActiveTime )
+            if (clients[clientID].lastActiveTime < minAge) {
                deleteClient(clientID); 
             } else {
                  runShellCommand('perl-scripts/status_user.pl ' + clientID, function(ret) {

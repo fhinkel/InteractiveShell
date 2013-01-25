@@ -1,8 +1,26 @@
+we left the code in non-working state. We need to finish pruning
+eventually we need to write status_user.pl
+we need to work on createClient
+create username from clientID 
+
+1/18/13
+* figure out logic for deleting obsolete clients
+* new users on the system should be created as needed (with a max), not using a fixed number of pre-made users
+* userID and clientID should be the same/based on the same random number
+* clientID should be checked whether it's already in use
+* when is a client obsolete? we need a perl routine that check for resources, m2server will call this script for every user and kill it if the script returns true
+* we need to figure out how to use timestamps
+
+1/4/13
+* we need to fix upload - seems to be working again
+* but interrupt seems broken
+* what about prune clients? Are we still touching the sName.txt for this?
+* Security: can users upload executable files?
+* More reasonable error messages from M2 is needed when user reaches his disk quota
+
 12/14/2012
 *we run the server with sudo, and then switch to one of 3 premade users, TODO: make a lot of users and have a mechanism in place that prevents users from getting a userID that's already in use. 
 * user currently has access to sName.txt, also open-schroot is probably not going to work any more, this affects /image
-
-
 
 
 11/15/2012

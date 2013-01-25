@@ -12,8 +12,8 @@
 # 2. Delete the user
 
 $user = $ARGV[0];
-print "We are starting a new user: ";
-print $user;
+#print "We are starting a new user: ";
+#print $user;
 
 # Create the new user:
 system "useradd -G m2users $user -d /home/m2user";

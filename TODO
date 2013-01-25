@@ -2,14 +2,12 @@
 * Lars made changes to perl-scripts
 * We added times stamps in order to prune old clients
 * username and clientID is now the same thing, we got rid of the hack with an array of premade user names
+
 * we still need a max for total user number
-* 
+* eventually we need to write status_user.pl
+* need to check for identical random usernames
 
-
-we left the code in non-working state. We need to finish pruning
-eventually we need to write status_user.pl
-we need to work on createClient
-create username from clientID 
+* is deleting clients working?
 
 1/18/13
 * figure out logic for deleting obsolete clients

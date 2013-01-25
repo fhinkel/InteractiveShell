@@ -26,8 +26,8 @@
 
 var port = 8002; 
 var sandboxDir = "/";
-var PRUNECLIENTINTERVAL = 1000*60*10; // 10 minutes
-var MAXAGE = 1000*60*60*24*7; // 1 week
+var PRUNECLIENTINTERVAL = 1000*60*1; // 1 minutes
+var MAXAGE = 1000*60*2; // 2 minutes //*60*24*7; // 1 week
 
 var http = require('http')
     , fs = require('fs')
@@ -69,7 +69,7 @@ deleteClient = function(clientID) {
 pruneClients = function() {
     // run this when using schroot.
     // this loops through all clients, and checks their timestamp, also, it checks their resource usage with a perl script. Remove old or bad clients
-    console.log("Pruning clients...  Former clients: ");
+    console.log("Pruning clients...");
     var clientID = null;
     var now = Date.now();
     console.log("It is currently " + now + " milliseconds.");
@@ -122,16 +122,14 @@ startUser = function(cookies, request, callbackFcn) {
     var clientID = Math.random()*1000000;
     clientID = Math.floor(clientID);
     // TODO check that this ID is not already in use
-    //clientID = "user" + clientID.toString(10);
-    clientID = "u" + clientID.toString(10);
-    
+    clientID = "user" + clientID.toString(10);
     cookies.set( "tryM2", clientID, { httpOnly: false } );
     clients[clientID] = new Client(); 
     clients[clientID].clientID = clientID;
     logClient(clientID, "New user: " + " UserAgent=" + request.headers['user-agent'] + ".");
     if (SCHROOT) {
         runShellCommand('perl-scripts/create_user.pl ' + clientID, function(ret) {
-            console.log( "***" + ret );
+            //console.log( "***" + ret );
             logClient(clientID, "Spawning new schroot process named " + clientID + ".");
             // If we create a user and an own config file for this user the command needs to look like
             // require('child_process').exec('sudo -u ' + newUser + ' schroot -c name_at_top_of_config -n '+ clientID + ' -b', function() {

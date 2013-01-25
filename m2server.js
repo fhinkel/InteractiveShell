@@ -129,6 +129,7 @@ startUser = function(cookies, request, callbackFcn) {
     logClient(clientID, "New user: " + " UserAgent=" + request.headers['user-agent'] + ".");
     if (SCHROOT) {
         runShellCommand('perl-scripts/create_user.pl ' + clientID, function(ret) {
+            console.log( "***" + ret );
             logClient(clientID, "Spawning new schroot process named " + clientID + ".");
             // If we create a user and an own config file for this user the command needs to look like
             // require('child_process').exec('sudo -u ' + newUser + ' schroot -c name_at_top_of_config -n '+ clientID + ' -b', function() {
@@ -177,12 +178,6 @@ m2Start = function(clientID) {
         logClient(clientID, "signal: " + signal);
         m2.stdout.removeAllListeners('data');
         m2.stderr.removeAllListeners('data');
-
-        // if the following file doesn't exist, that means the schroot was
-        // stopped and unmounted (generally by an external cron job)
-        if (SCHROOT && fs.existsSync("/home/m2user/sessions/" + clientID + ".kill")) {
-            delete clients[clientID];
-        }
     });
     
     m2.stdout.setEncoding("utf8");
@@ -197,7 +192,6 @@ m2ConnectStream = function(clientID) {
  
      var ondata = function(data) {
          client.lastActiveTime = Date.now(); 
-         console.log( "set new time stamp " + client.lastActiveTime);
          var data1 = data.replace(/\n$/, "");
          logClient(clientID, "data: " + data1.replace(/\n+/g, "\n" + clientID + ": data: "));
          message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
@@ -306,7 +300,6 @@ m2ProcessInput = function( clientID, body, response ) {
             return;
         }
         clients[clientID].lastActiveTime = Date.now(); 
-        console.log( "new timestamp in m2ProcessInput " + clients[clientID].lastActiveTime);
 	    clients[clientID].m2.stdin.write(body, function(err) {
 	        if (err) {
     	        logClient("write failed: " + err);

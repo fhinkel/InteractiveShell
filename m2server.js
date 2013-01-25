@@ -122,7 +122,7 @@ startUser = function(cookies, request, callbackFcn) {
     var clientID = Math.random()*1000000;
     clientID = Math.floor(clientID);
     // TODO check that this ID is not already in use
-    clientID = "user" + clientID.toString(10);
+    //clientID = "user" + clientID.toString(10);
     clientID = "u" + clientID.toString(10);
     
     cookies.set( "tryM2", clientID, { httpOnly: false } );

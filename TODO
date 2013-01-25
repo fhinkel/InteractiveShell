@@ -1,3 +1,5 @@
+set max user limit
+
 1/25/13
 * Lars made changes to perl-scripts
 * We added times stamps in order to prune old clients
@@ -7,7 +9,7 @@
 * eventually we need to write status_user.pl
 * need to check for identical random usernames
 
-* is deleting clients working? Sort of 
+* is deleting clients working? Sort of we think
 
 1/18/13
 * figure out logic for deleting obsolete clients

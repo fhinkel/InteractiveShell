@@ -141,10 +141,6 @@ startUser = function(cookies, request, callbackFcn) {
                         logClient(clientID, err);
                     } else {
                         logClient(clientID, "wrote schroot's name into " + filename);
-                          runShellCommand('sudo whoami', function(ret) {
-                                                  logClient(clientID, "sudo whoami: " + ret);
-                                                  });
-
                         fs.exists(filename, function(error) {
                             logClient(clientID, "exists?: " + error);
                             });

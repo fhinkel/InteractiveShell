@@ -1,6 +1,9 @@
 1/25/13
 * Lars made changes to perl-scripts
 * We added times stamps in order to prune old clients
+* username and clientID is now the same thing, we got rid of the hack with an array of premade user names
+* we still need a max for total user number
+* 
 
 
 we left the code in non-working state. We need to finish pruning

@@ -46,17 +46,13 @@ function logClient(clientID, str) {
   console.log(clientID + ": " + str);
 };
     
-var totalUsers = 0;
+var totalUsers = 0; //only used for stats
 
-// experimental hack
-var newUsers = ['m21', 'm22', 'm23', 'm24', 'm25', 'm26', 'm27', 'm28', 'm29'];
-var newUserIndex = 0; 
 
 // An array of Client objects.  Each has an M2 process, and a response object
 // It is possible that this.m2 is not defined, and/or that this.eventStream is not
 // defined.
 var clients = {};
-
 
 
 // delete a user both from the system and the clients[]
@@ -116,8 +112,7 @@ function runShellCommand(cmd, callbackFcn) {
 function Client(m2process, resp) {
     this.m2 = m2process;
     this.eventStream = resp;
-    this.clientID = null; // generated randomly in startUser(), used for cookie
-    this.userID = null; // name of user on the system
+    this.clientID = null; // generated randomly in startUser(), used for cookie and as user name on the system
     this.recentlyRestarted = false; // we use this to keep from handling a bullet stream of restarts
     this.lastActiveTime = Date.now(); // milliseconds when client was last active
 }
@@ -131,37 +126,34 @@ startUser = function(cookies, request, callbackFcn) {
     cookies.set( "tryM2", clientID, { httpOnly: false } );
     clients[clientID] = new Client(); 
     clients[clientID].clientID = clientID;
-    console.log( "new client has lastActiveTime: " + clients[clientID].lastActiveTime + ". It is now " + Date.now() );
     logClient(clientID, "New user: " + " UserAgent=" + request.headers['user-agent'] + ".");
     if (SCHROOT) {
-        var newUser = newUsers[newUserIndex];
-        clients[clientID].userID = newUser;
-        newUserIndex = ( newUserIndex + 1 ) % newUsers.length;
-        logClient(clientID, "experimental new user is " + newUser + " and the new index is " + newUserIndex);
-        logClient(clientID, "Spawning new schroot process named " + clientID + ".");
-        // If we create a user and an own config file for this user the command needs to look like
-        // require('child_process').exec('sudo -u ' + newUser + ' schroot -c name_at_top_of_config -n '+ clientID + ' -b', function() {
-        require('child_process').exec('sudo -u ' + newUser + ' schroot -c clone -n '+ clientID + ' -b', function() {
-            var filename = "/var/lib/schroot/mount/" + clientID + "/rootstuff/sName.txt";
-            // create a file inside schroot directory to allow schroot to know its own name needed for open-schroot when sending /image
-            fs.writeFile(filename, clientID, function(err) {
-                if(err) {
-                    logClient(clientID, "failing to write the file " + filename);
-                    logClient(clientID, err);
-                } else {
-                    logClient(clientID, "wrote schroot's name into " + filename);
-                      runShellCommand('sudo whoami', function(ret) {
-                                              logClient(clientID, "sudo whoami: " + ret);
-                                              });
+        runShellCommand('perl-scripts/create_user.pl ' + clientID, function(ret) {
+            logClient(clientID, "Spawning new schroot process named " + clientID + ".");
+            // If we create a user and an own config file for this user the command needs to look like
+            // require('child_process').exec('sudo -u ' + newUser + ' schroot -c name_at_top_of_config -n '+ clientID + ' -b', function() {
+            require('child_process').exec('sudo -u ' + clientID + ' schroot -c ' + clientID + ' -n '+ clientID + ' -b', function() {
+                var filename = "/var/lib/schroot/mount/" + clientID + "/rootstuff/sName.txt";
+                // create a file inside schroot directory to allow schroot to know its own name needed for open-schroot when sending /image
+                fs.writeFile(filename, clientID, function(err) {
+                    if(err) {
+                        logClient(clientID, "failing to write the file " + filename);
+                        logClient(clientID, err);
+                    } else {
+                        logClient(clientID, "wrote schroot's name into " + filename);
+                          runShellCommand('sudo whoami', function(ret) {
+                                                  logClient(clientID, "sudo whoami: " + ret);
+                                                  });
 
-                    fs.exists(filename, function(error) {
-                        logClient(clientID, "exists?: " + error);
+                        fs.exists(filename, function(error) {
+                            logClient(clientID, "exists?: " + error);
+                            });
+                        fs.chmod(filename, 0444, function(error) {
+                            logClient(clientID, "chmod: " + error);
                         });
-                    fs.chmod(filename, 0444, function(error) {
-                        logClient(clientID, "chmod: " + error);
-                    });
-                    callbackFcn(clientID);
-                }
+                        callbackFcn(clientID);
+                    }
+                });
             });
         });
     } else {
@@ -173,10 +165,8 @@ startUser = function(cookies, request, callbackFcn) {
 m2Start = function(clientID) {
     var spawn = require('child_process').spawn;
     if (SCHROOT) {
-        var newUser = clients[clientID].userID;
-        logClient(clientID, "newUser when starting M2: " + newUser );
     	var m2 = spawn( 'sudo',
-      [ '-u', newUser, 'schroot', '-c', clientID, '-u', newUser, '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
+      [ '-u', clientID, 'schroot', '-c', clientID, '-u', clientID, '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
         
            // ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
     } else {

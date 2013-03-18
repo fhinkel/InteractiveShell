@@ -1,4 +1,36 @@
-set max user limit
+3/17/2013
+New TODO list:
+* manage user list: clean-users
+    background scripts: 
+      clean up script: for when the m2server goes down
+    status-user.pl  and call it from inside m2server
+       this is where we check resource limits
+* resource limitations
+    understand the nproc limit, perhaps use cgroups
+    how to determine the number of processes for a user?
+    memory limit for user, not for process
+* how to control virtualbox via command line
+* scripts or directions to recreatae the vbox server
+    includes: vbox, schroot, ...
+    this is partially written down in one of the tex files
+* Dan's emails: check them
+* update habanero, restart it
+* need test suite and perhaps testing framework
+* tutorials management strategy
+* writing tutorials
+* allow, if possible: in one browser, multiple sessions (one per tab, or window).
+* user interface elements:
+    download button
+    drop down menu doesn't fit the style
+    next and prev buttons sometimes disappear
+    resizing or changing fonts?  Can the user do this?
+* save, or print button
+* M2 help
+* ipad
+* update M2 on vbox to the latest version
+* write a jsag paper about this
+* secure cookies?  avoid spoofing of users?
+* check on: error messages from M2 getting out of sync? (From Dan's email)
 
 1/25/13
 * Lars made changes to perl-scripts
@@ -13,22 +45,22 @@ set max user limit
 
 1/18/13
 * figure out logic for deleting obsolete clients
-* new users on the system should be created as needed (with a max), not using a fixed number of pre-made users
-* userID and clientID should be the same/based on the same random number
-* clientID should be checked whether it's already in use
+* new users on the system should be created as needed (with a max), not using a fixed number of pre-made users DONE
+* userID and clientID should be the same/based on the same random number DONE
+* clientID should be checked whether it's already in use DONE?
 * when is a client obsolete? we need a perl routine that check for resources, m2server will call this script for every user and kill it if the script returns true
 * we need to figure out how to use timestamps
 
 1/4/13
-* we need to fix upload - seems to be working again
-* but interrupt seems broken
+* we need to fix upload - seems to be working again  DONE?  test it!
+* but interrupt seems broken 
 * what about prune clients? Are we still touching the sName.txt for this?
-* Security: can users upload executable files?
+* Security: can users upload executable files? YES
 * More reasonable error messages from M2 is needed when user reaches his disk quota
 
 12/14/2012
-*we run the server with sudo, and then switch to one of 3 premade users, TODO: make a lot of users and have a mechanism in place that prevents users from getting a userID that's already in use. 
-* user currently has access to sName.txt, also open-schroot is probably not going to work any more, this affects /image
+*we run the server with sudo, and then switch to one of 3 premade users, TODO: make a lot of users and have a mechanism in place that prevents users from getting a userID that's already in use. DONE
+* user currently has access to sName.txt, also open-schroot is probably not going to work any more, this affects /image  DONE
 
 
 11/15/2012
@@ -40,7 +72,7 @@ set max user limit
                 - most changes for this would have to be in m2server.m2
                 - we can use setpid to a random id, we probably also need to create a directory for that id where they can write to
                 - we need to make sure we're using the correct pids (interrupt etc)
-* when do we meet again? March (10-17 or 17-22) might be good days! :)
+* when do we meet again? March (10-17 or 17-22) might be good days! :)  DONE!
 
 9/13/2012
 General:

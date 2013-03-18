@@ -31,6 +31,27 @@ will list the running VMs or all vms.
 VBoxManage export machine name.ovf
 \end{verbatim}
 will export machine into file name.ovf.
+
+For starting the vm machine via command line use
+\begin{verbatim}
+VBoxManage startvm machine --type headless
+\end{verbatim}
+
+Modifying VMs is done via modifyvm:
+\begin{verbatim}
+VBoxManage modifyvm machine --option value
+\end{verbatim}
+
+Here is a very concrete example working on habanero. First log on to habanero via ssh. Then
+\begin{verbatim}
+sudo -u vmuser -i
+VBoxManage list vms
+VBoxManage showvminfo webm2
+VBoxManage modifyvm webm2 --memory 32768
+VBoxManage startvm webm2 --type headless
+VBoxManage controlvm webm2 poweroff
+\end{verbatim}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%

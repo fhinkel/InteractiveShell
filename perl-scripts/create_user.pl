@@ -33,3 +33,5 @@ print CONFIG "type=directory\n";
 print CONFIG "users=$user\n";
 print CONFIG "script-config=clone/config\n";
 close (CONFIG); 
+
+system "cgcreate -a $user -g memory:$user";

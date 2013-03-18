@@ -2,19 +2,20 @@
 New TODO list:
 * manage user list: clean-users
     background scripts: 
-      clean up script: for when the m2server goes down
+      clean up script: for when the m2server goes down  DONE
     status-user.pl  and call it from inside m2server
        this is where we check resource limits
 * resource limitations
-    understand the nproc limit, perhaps use cgroups
+    understand the nproc limit,  DONE
+    perhaps use cgroups  DONE
     how to determine the number of processes for a user?
-    memory limit for user, not for process
-* how to control virtualbox via command line
-* scripts or directions to recreatae the vbox server
+    memory limit for user, not for process  DONE
+* how to control virtualbox via command line  DONE
+* scripts or directions to recreate the vbox server
     includes: vbox, schroot, ...
     this is partially written down in one of the tex files
 * Dan's emails: check them
-* update habanero, restart it
+* update habanero, restart it  DONE
 * need test suite and perhaps testing framework
 * tutorials management strategy
 * writing tutorials

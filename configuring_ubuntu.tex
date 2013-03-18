@@ -50,8 +50,14 @@ VBoxManage showvminfo webm2
 VBoxManage modifyvm webm2 --memory 32768
 VBoxManage startvm webm2 --type headless
 VBoxManage controlvm webm2 poweroff
+VBoxManage clonevm webm2 --name "webm2_rescue" --register
 \end{verbatim}
 
+One can take a snapshot using
+\begin{verbatim}
+VBoxManage snapshot webm2 take name --description "Cool features."
+\end{verbatim}
+CAUTION: For some reason taking a snapshot of the running machine didn't work.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Starting the server at startup of vm

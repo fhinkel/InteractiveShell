@@ -93,6 +93,18 @@ sudo apt-get install cgroup-bin
 sudo reboot
 \end{verbatim}
 
+Now the create\_user.pl script will create a new cgroup for each user with the following lines:
+\begin{verbatim}
+system "cgcreate -a $user -g memory:$user";
+system "chown -R root:root /sys/fs/cgroups/memory/$user/";
+system "echo 500000000 > /cgroup/memory/$user/memory.limit_in_bytes";
+\end{verbatim}
+
+Then the schroot can be executed in the corresponding cgroup using
+\begin{verbatim}
+sudo cgexec -g memory:user sudo -u user schroot -c user -u user -d /home/m2user -r /bin/bash /M2/limitedM2.sh
+\end{verbatim}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%

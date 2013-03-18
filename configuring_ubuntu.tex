@@ -105,6 +105,11 @@ Then the schroot can be executed in the corresponding cgroup using
 sudo cgexec -g memory:user sudo -u user schroot -c user -u user -d /home/m2user -r /bin/bash /M2/limitedM2.sh
 \end{verbatim}
 
+If you want to see the tasks of a specific user:
+\begin{verbatim}
+cat /sys/fs/cgroup/memory/user/tasks
+\end{verbatim}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%

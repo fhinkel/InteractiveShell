@@ -1,1 +1,8 @@
-sockets/results_*
+*.log
+*.aux
+*.bbl
+*.blg
+*.toc
+*.ps
+*.pdf
+*.dvi

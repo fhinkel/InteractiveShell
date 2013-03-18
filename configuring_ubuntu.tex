@@ -52,6 +52,27 @@ VBoxManage startvm webm2 --type headless
 VBoxManage controlvm webm2 poweroff
 \end{verbatim}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Starting the server at startup of vm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Starting the server at startup of vm}
+Log onto the vm using ssh. Now edit the crontab of root:
+\begin{verbatim}
+sudo crontab -e
+\end{verbatim}
+At the end insert the line
+\begin{verbatim}
+@reboot export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:
+/usr/bin:/sbin:/bin:/M2/bin; cd /home/franzi/tryM2; /usr/local/bin/forever
+start -l /home/webm2.logs/forever.log -o /home/webm2.logs/out.log -e
+/home/webm2.logs/err.log --append m2server.js --schroot >>
+/home/webm2.logs/cron.log 2>&1
+\end{verbatim}
+Maybe the line breaks need to be removed if you are copying from this pdf.
+This will export a PATH to have all necessary commands available for the forever script, change into the directory with the node server and then start it.
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%

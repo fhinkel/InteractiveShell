@@ -35,3 +35,5 @@ print CONFIG "script-config=clone/config\n";
 close (CONFIG); 
 
 system "cgcreate -a $user -g memory:$user";
+system "chown -R root:root /sys/fs/cgroups/memory/$user/";
+system "echo 500000000 > /cgroup/memory/$user/memory.limit_in_bytes";

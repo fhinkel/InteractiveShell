@@ -12,4 +12,4 @@ system "killall -u $user";
 system "schroot -e -c $user";
 system "rm /etc/schroot/chroot.d/$user.conf";
 system "userdel $user";
-
+system "cgdelete memory:$user";

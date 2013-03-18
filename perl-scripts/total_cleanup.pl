@@ -5,6 +5,6 @@ $users = @users[@users-1];
 @users = split(",",$users);
 foreach my $u (@users){
    print $u,"\n";
-   system("perl remove_user.pl $user");
+   system("perl remove_user.pl $u");
 }
 

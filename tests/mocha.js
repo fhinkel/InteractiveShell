@@ -1,6 +1,6 @@
 var assert = require("assert");
 var http = require('http');
-var m2server = require('../m2server');
+var m2server = require('../m2server.js');
 
 describe('Array', function(){
   describe('#indexOf()', function(){
@@ -14,7 +14,7 @@ describe('Array', function(){
   })
 })
 
-describe('assert.not.equal', function() {
+describe('assert.notEqual', function() {
     it('should make 1 not equal to null', function() {
         assert.notEqual(1, null);
     })
@@ -22,10 +22,24 @@ describe('assert.not.equal', function() {
 
 
 describe('m2server', function(){
-    it('should be available as a variable', function(){
-        var server = new M2Server();
-        assert.notEqual(server, null);
-    })
+    describe('basic behavior', function() {
+        it('should be available as a variable', function(){
+            var server = new M2Server();
+            assert.notEqual(server, null);
+            server.close();
+        });
+        it('should have title Macaulay2', function(){
+            assert(false);
+        });
+    });
+    describe('M2', function() {
+        it('should be running', function(){
+            assert(false);
+        });
+        it('should calculate 2+2', function() {
+            assert(false);
+        });
+    });
 })
 
 describe('testserver', function() {

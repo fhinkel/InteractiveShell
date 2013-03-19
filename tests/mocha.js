@@ -14,11 +14,17 @@ describe('Array', function(){
   })
 })
 
+describe('assert.not.equal', function() {
+    it('should make 1 not equal to null', function() {
+        assert.notEqual(1, null);
+    })
+})
+
 
 describe('m2server', function(){
     it('should be available as a variable', function(){
-        m2server.listen(8080);
-        assert(true);
+        var server = new M2Server();
+        assert.notEqual(server, null);
     })
 })
 

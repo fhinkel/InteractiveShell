@@ -12,6 +12,9 @@
 # 2. Delete the user
 
 $user = $ARGV[0];
+
+$memlimit  =$ARGV[1];
+#print $memlimit;
 #print "We are starting a new user: ";
 #print $user;
 
@@ -24,6 +27,9 @@ system "useradd -G m2users $user -d /home/m2user";
 # system "memory";
 # system "no_of_processes";
 
+################################
+##  Schroot config
+################################
 open (CONFIG, ">>/etc/schroot/chroot.d/$user.conf");
 print CONFIG "[$user]\n";
 print CONFIG "description=Ubuntu precise pangolin clone chroot\n";
@@ -34,6 +40,15 @@ print CONFIG "users=$user\n";
 print CONFIG "script-config=clone/config\n";
 close (CONFIG); 
 
+
+
+################################
+##  Cgroup stuff
+################################
+
+# Creating a cgroup for the user:
 system "cgcreate -a $user -g memory:$user";
+# Root should own these files so that the user cannot modify them:
 system "chown -R root:root /sys/fs/cgroup/memory/$user/";
-system "echo 500000000 > /sys/fs/cgroup/memory/$user/memory.limit_in_bytes";
+# Setting memory limit to 500M:
+system "echo $memlimit > /sys/fs/cgroup/memory/$user/memory.limit_in_bytes";

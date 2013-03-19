@@ -34,6 +34,9 @@ print CONFIG "users=$user\n";
 print CONFIG "script-config=clone/config\n";
 close (CONFIG); 
 
+# Creating a cgroup for the user:
 system "cgcreate -a $user -g memory:$user";
+# Root should own these files so that the user cannot modify them:
 system "chown -R root:root /sys/fs/cgroup/memory/$user/";
+# Setting memory limit to 500M:
 system "echo 500000000 > /sys/fs/cgroup/memory/$user/memory.limit_in_bytes";

@@ -166,7 +166,7 @@ m2Start = function(clientID) {
     var spawn = require('child_process').spawn;
     if (SCHROOT) {
     	var m2 = spawn( 'sudo',
-      [ 'cgexec', '-g', 'memory:'+clientID, 'sudo', '-u', clientID, 'schroot', '-c', clientID, '-u', clientID, '-d', '/home/m2user/', '-r', '/M2/bin/M2']);
+      [ 'cgexec', '-g', 'cpu,memory:'+clientID, 'sudo', '-u', clientID, 'schroot', '-c', clientID, '-u', clientID, '-d', '/home/m2user/', '-r', '/M2/bin/M2']);
         
            // ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
     } else {

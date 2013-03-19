@@ -48,7 +48,7 @@ close (CONFIG);
 ################################
 
 # Creating a cgroup for the user:
-system "cgcreate -a root -g cpu, memory:$user";
+system "cgcreate -a root -g cpu,memory:$user";
 # Root should own these files so that the user cannot modify them:
 # system "chown -R root:root /sys/fs/cgroup/memory/$user/";
 # Setting memory limit to 500M:

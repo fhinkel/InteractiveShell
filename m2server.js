@@ -27,7 +27,10 @@
 var port = 8002; 
 var sandboxDir = "/";
 var userMemoryLimit = 500000000; // Corresponds to 500M memory
-var userCpuLimit = 256; // Corresponds to 25% CPU
+var userCpuLimit = 256; // Corresponds to 256 shares of the CPU.
+   // As stated wrongly on the internet this does NOT correspond to 25% CPU.
+   // The total number of shares is determined as the sum of all these limits,
+   // i.e. if there is only one user, he gets 100% CPU.
 var PRUNECLIENTINTERVAL = 1000*60*10; // 10 minutes
 var MAXAGE = 1000*60*60*24*7; // 1 week
 

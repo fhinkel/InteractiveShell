@@ -14,6 +14,7 @@
 $user = $ARGV[0];
 
 $memlimit  =$ARGV[1];
+$cpulimit  =$ARGV[2];
 #print $memlimit;
 #print "We are starting a new user: ";
 #print $user;
@@ -47,8 +48,9 @@ close (CONFIG);
 ################################
 
 # Creating a cgroup for the user:
-system "cgcreate -a $user -g memory:$user";
+system "cgcreate -a root -g cpu, memory:$user";
 # Root should own these files so that the user cannot modify them:
-system "chown -R root:root /sys/fs/cgroup/memory/$user/";
+# system "chown -R root:root /sys/fs/cgroup/memory/$user/";
 # Setting memory limit to 500M:
 system "echo $memlimit > /sys/fs/cgroup/memory/$user/memory.limit_in_bytes";
+system "echo $cpulimit > /sys/fs/cgroup/cpu/$user/cpu.shares";

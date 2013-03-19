@@ -3,8 +3,8 @@
 
 
 $user = $ARGV[0];
-$memory = system("ps -u $user -o vsz | awk '{s+=\$1} END {print s}'");
-print $memory,"\n";
+$memory = `ps -u $user -o vsz | awk '{s+=\$1} END {print s}'`;
+print $memory,$memory;
 # print $user;
 
 # TODO:

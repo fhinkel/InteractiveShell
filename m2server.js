@@ -26,7 +26,8 @@
 
 var port = 8002; 
 var sandboxDir = "/";
-var userMemoryLimit = 500000000;
+var userMemoryLimit = 500000000; // Corresponds to 500M memory
+var userCpuLimit = 256; // Corresponds to 25% CPU
 var PRUNECLIENTINTERVAL = 1000*60*10; // 10 minutes
 var MAXAGE = 1000*60*60*24*7; // 1 week
 
@@ -132,7 +133,7 @@ startUser = function(cookies, request, callbackFcn) {
     clients[clientID].clientID = clientID;
     logClient(clientID, "New user: " + " UserAgent=" + request.headers['user-agent'] + ".");
     if (SCHROOT) {
-        runShellCommand('perl-scripts/create_user.pl ' + clientID + ' ' + userMemoryLimit, function(ret) {
+        runShellCommand('perl-scripts/create_user.pl ' + clientID + ' ' + userMemoryLimit + ' ' + userCpuLimit, function(ret) {
             //console.log( "***" + ret );
             logClient(clientID, "Spawning new schroot process named " + clientID + ".");
             // If we create a user and an own config file for this user the command needs to look like

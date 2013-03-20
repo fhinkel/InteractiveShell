@@ -30,16 +30,20 @@ var http = require('http')
     , Cookies = require('cookies');
 
 
-var M2Server = function (options) {
-    var port = 8002, // default port number to use
-        userMemoryLimit = 500000000, // Corresponds to 500M memory
-        userCpuLimit = 256, // Corresponds to 256 shares of the CPU.
+// options is an object of options.  Here is the default list:
+
+var M2Server = function (overrideOptions) {
+    var options = {
+            port: 8002, // default port number to use
+            userMemoryLimit:  500000000, // Corresponds to 500M memory
+            userCpuLimit: 256, // Corresponds to 256 shares of the CPU.
                        // As stated wrongly on the internet this does NOT correspond to 25% CPU.
                        // The total number of shares is determined as the sum of all these limits,
                        // i.e. if there is only one user, he gets 100% CPU.
-        PRUNECLIENTINTERVAL = 1000*60*10, // 10 minutes
-        MAXAGE = 1000*60*60*24*7, // 1 week
-        SCHROOT = false, // if true: start with --schroot on server
+            PRUNECLIENTINTERVAL: 1000*60*10, // 10 minutes
+            MAXAGE: 1000*60*60*24*7, // 1 week
+            SCHROOT: false // if true: start with --schroot on server
+            },
 
         totalUsers = 0, //only used for stats: total # users since server started
 
@@ -47,7 +51,6 @@ var M2Server = function (options) {
         // It is possible that this.m2 is not defined, and/or that this.eventStream is not
         // defined.
         clients = {};
-
 
     // preamble every log with the client ID
     var logClient = function(clientID, str) {
@@ -72,7 +75,7 @@ var M2Server = function (options) {
         var clientID = null;
         var now = Date.now();
         console.log("It is currently " + now + " milliseconds.");
-        var minAge = now - MAXAGE;
+        var minAge = now - options.MAXAGE;
         for (clientID in clients) {
             if (clients.hasOwnProperty(clientID)) {
                 console.log("*** lastActivetime for user : " + clientID + " " + clients[clientID].lastActiveTime )
@@ -117,8 +120,8 @@ var M2Server = function (options) {
         clients[clientID] = new Client(); 
         clients[clientID].clientID = clientID;
         logClient(clientID, "New user: " + " UserAgent=" + request.headers['user-agent'] + ".");
-        if (SCHROOT) {
-            runShellCommand('perl-scripts/create_user.pl ' + clientID + ' ' + userMemoryLimit + ' ' + userCpuLimit, function(ret) {
+        if (options.SCHROOT) {
+            runShellCommand('perl-scripts/create_user.pl ' + clientID + ' ' + options.userMemoryLimit + ' ' + options.userCpuLimit, function(ret) {
                 //console.log( "***" + ret );
                 logClient(clientID, "Spawning new schroot process named " + clientID + ".");
                 // If we create a user and an own config file for this user the command needs to look like
@@ -151,7 +154,7 @@ var M2Server = function (options) {
     
     var m2Start = function(clientID) {
         var spawn = require('child_process').spawn;
-        if (SCHROOT) {
+        if (options.SCHROOT) {
     	    var m2 = spawn( 'sudo',
                             [ 'cgexec', '-g', 'cpu,memory:'+clientID, 'sudo', '-u', clientID, 'schroot', '-c', clientID, '-u', clientID, '-d', '/home/m2user/', '-r', '/M2/bin/M2']);
             
@@ -347,7 +350,7 @@ var M2Server = function (options) {
             }
     	    if (clients[clientID] && clients[clientID].m2) {
                 var m2 = clients[clientID].m2;
-                if (SCHROOT) {
+                if (options.SCHROOT) {
     	            runShellCommand('pgrep -P ' + m2.pid, function(m2Pid) {
                         logClient(clientID, "PID of M2 inside schroot: " + m2Pid);
                         var cmd = 'kill -s INT ' + m2Pid;
@@ -386,7 +389,7 @@ var M2Server = function (options) {
     // return PID extracted from pathname for image displaying
     var parseUrlForPid = function(url) {
         //console.log(url);
-        if (SCHROOT) {
+        if (options.SCHROOT) {
             var pid = url.match(/^\/(user\d+)\//);
         } else {
             pid = url.match(/\/M2-(\d+)-/);
@@ -422,7 +425,7 @@ var M2Server = function (options) {
         try {
             var pid = parseUrlForPid(url);
             var path = parseUrlForPath(url); // a string
-            if (SCHROOT) {
+            if (options.SCHROOT) {
                 var clientID = pid;
             } else {
                 clientID = findClientID(pid);
@@ -435,7 +438,7 @@ var M2Server = function (options) {
                 return;
             }
             
-            if (SCHROOT) {
+            if (options.SCHROOT) {
                 path = "/var/lib/schroot/mount/" + clientID + path
             }
             
@@ -477,12 +480,12 @@ var M2Server = function (options) {
             logClient(clientID, "received: /upload");
             var formidable = require('./node-formidable');
             var form = new formidable.IncomingForm;
-            if (SCHROOT) {
+            if (options.SCHROOT) {
                 var schrootPath = "/var/lib/schroot/mount/" + clientID + "/home/m2user/"; 
                 form.uploadDir = schrootPath;
             }
             form.on('file', function(name, file) {
-                if (SCHROOT) {
+                if (options.SCHROOT) {
                     var newpath = schrootPath;
                 } else {
                     newpath = "/tmp/";
@@ -531,11 +534,11 @@ var M2Server = function (options) {
         // when run in production, work with schroots, see startM2Process()
         if( process.argv[2] && process.argv[2]=='--schroot') {
             console.log('Running with schroots.');
-            SCHROOT=true;
+            options.SCHROOT=true;
         };
         
-        if (SCHROOT) {
-            setInterval(pruneClients, PRUNECLIENTINTERVAL); 
+        if (options.SCHROOT) {
+            setInterval(pruneClients, options.PRUNECLIENTINTERVAL); 
         }
         
         // Send a comment to the clients every 20 seconds so they don't 
@@ -546,17 +549,22 @@ var M2Server = function (options) {
         server = http.createServer(app);
     };
     
-    var listen = function(newport) {
-        if (newport !== undefined) {
-            port = newport;
-        }
+    var listen = function() {
         if (server === undefined) {
             initializeServer();
         }
-        console.log("M2 server listening on port " + port + "...");
-        return server.listen(port);
+        console.log("M2 server listening on port " + options.port + "...");
+        return server.listen(options.port);
     };
     var server;
+    
+    // Start of creation code
+    for (opt in overrideOptions) {
+        if (options.hasOwnProperty(opt)) {
+            options.opt = overrideOptions.opt;
+            console.log("m2server option: " + opt + " set to " + options.opt);
+        }
+    }
     initializeServer();
     return {
         server: server,

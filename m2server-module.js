@@ -488,6 +488,7 @@ var M2Server = function(overrideOptions) {
         return imagePath[2];
     };
 
+
     // we get a /image from our open script
     // imageAction finds the matching client by parsing the url, then sends the
     // address of the image to the client's eventStream
@@ -523,6 +524,12 @@ var M2Server = function(overrideOptions) {
         }
     };
 
+    var viewHelpAction = function(function(request, response, next) {
+        var url = require('url').parse(request.url).pathname;
+        response.writeHead(200);
+        response.end();
+        console.log("We received a viewHelp request!");
+    }
     var checkForEventStream = function(clientID, response) {
         if (!clients[clientID].eventStream) {
             logClient(clientID, "Send notEventSourceError back to user.");
@@ -595,10 +602,11 @@ var M2Server = function(overrideOptions) {
         .use(connect.static('public'))
         .use('/upload', uploadM2Package)
         .use('/var', connect.static('/var'))
-    // M2 creates temporary files (like created by Graphs.m2) here on MacOS
-    .use('/tmp', connect.static('/tmp'))
-    // and here on Ubuntu
-    .use('/admin', stats)
+        // M2 creates temporary files (like created by Graphs.m2) here on MacOS
+        .use('/tmp', connect.static('/tmp'))
+        // and here on Ubuntu
+        .use('/admin', stats)
+        .use('/viewHelp', viewHelpAction)
         .use('/image', imageAction)
         .use('/startSourceEvent', startSource)
         .use('/chat', m2InputAction)

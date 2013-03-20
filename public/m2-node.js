@@ -100,7 +100,7 @@ trym2.callback = function( url, msg ) {
                 }
             }
         };
-        xhr.send(msg);                            // Send the message        
+        xhr.send(msg);                            // Send the message
         return true;
     }  
 };
@@ -152,36 +152,39 @@ trym2.getLessonTitles = function (tutorialFile, callback) {
 
 // Register for notification of new messages using EventSource
 trym2.startEventSource = function () {
-    var chat = new EventSource("/startSourceEvent");
-    chat.addEventListener('image', function(event) {
-        var imageUrl = event.origin + event.data;
-        console.log("Image coming from: " + event.origin);
-        //console.log("We got an image! " + imageUrl);
-        if (imageUrl) {
-            console.log("We got an image! " + imageUrl);
-            $('<div title="Graph"><img src="' + imageUrl + '"/><div>').dialog({
-                height: 340,
-                width: 460,
-                modal: true,
-                autoOpen: true
-            });
-            //$("#help-dialog").dialog('open');
-            //$("#help-dialog").scrollTop(0);
-            //$('#help').click(trym2.helpScreen);
-            //$("#help-dialog").prepend('<h1>Fancy Image!</h1><img src="' + imageUrl + '"/>');
-            //trym2.helpScreen();
-        }
-    }, false);
-    chat.onmessage = function(event) {            // When a new message arrives
-         var msg = event.data;                     // Get text from event object
-         console.log(event);
+    if (!!window.EventSource) {
+        
+        var chat = new EventSource("/startSourceEvent");
+        chat.addEventListener('image', function(event) {
+            var imageUrl = event.origin + event.data;
+            console.log("Image coming from: " + event.origin);
+            //console.log("We got an image! " + imageUrl);
+            if (imageUrl) {
+                console.log("We got an image! " + imageUrl);
+                $('<div title="Graph"><img src="' + imageUrl + '"/><div>').dialog({
+                    height: 340,
+                    width: 460,
+                    modal: true,
+                    autoOpen: true
+                });
+                //$("#help-dialog").dialog('open');
+                //$("#help-dialog").scrollTop(0);
+                //$('#help').click(trym2.helpScreen);
+                //$("#help-dialog").prepend('<h1>Fancy Image!</h1><img src="' + imageUrl + '"/>');
+                //trym2.helpScreen();
+            }
+        }, false);
+        chat.onmessage = function(event) {            // When a new message arrives
+             var msg = event.data;                     // Get text from event object
+             console.log(event);
          
-         if (msg !== "") {
-                 //console.log("We got a chat message: " + msg);
-                 $("#M2Out").val($("#M2Out").val() + msg);
-                 trym2.scrollDown("#M2Out");
-         }
+             if (msg !== "") {
+                     //console.log("We got a chat message: " + msg);
+                     $("#M2Out").val($("#M2Out").val() + msg);
+                     trym2.scrollDown("#M2Out");
+             }
 
+         }
      }
 };
 
@@ -198,15 +201,7 @@ $(document).ready(function () {
     });
     
     $('#M2In').val("Evaluate a line by typing Shift+Enter or by clicking on Evaluate.\nHere are some sample commands:\n---------------\nR = ZZ/101[a,b,c]\nS = ZZ/32003[vars(1..10)]\nQQ[x_1..x_6]\n\nS = ZZ/32003[vars(1..13)]\nres coker vars S\n");
-    
-    //$('#M2In').addClass('inactive');
-    //$('#M2In').focus(function() {
-    //    $(this).removeClass('inactive'); 
-    //    if ($(this).val() == "Write an M2 command, e.g., 3+3, and hit Shift+Enter or click on Evaluate.") {
-    //        $(this).val('');
-    //    }
-    //});
-    //trym2.startEventSource();
+
     $('.submenuItem').live("click", function () {
         var i = 1,
             lessonId = $(this).attr('lessonid');
@@ -221,16 +216,15 @@ $(document).ready(function () {
         trym2.loadLesson(trym2.lessonNr);
     });
 
-    $('#help-dialog').dialog({
+    if (!!window.EventSource) {
+        $('#help-dialog').dialog({
             height: 340,
             width: 460,
             modal: true,
             autoOpen: false
-        });
+        });  
         $('#help').click(trym2.helpScreen);
-
-    //SyntaxHighlighter.all();
-    
+    }
     $("#send").click(trym2.sendCallback('#M2In'));
     $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
     $("#reset").click(trym2.callback('/restart'));
@@ -336,7 +330,7 @@ $("#tutorial").html("<div class='lesson' lessonid='1'>  <div><br>Get started by 
 
 
 
-    //updateOrientation();
+    //updateOrientation(); 
 });
 
 function updateOrientation() {

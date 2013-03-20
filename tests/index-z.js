@@ -1,8 +1,9 @@
 var Browser = require('zombie');
 var browser = new Browser({debug: false});
-browser.visit('http://localhost/~franzi/tryM2/tests/test2.html', function(e , b) {
+browser.visit('http://localhost/~franzi/tryM2/public/index.html', function(e , b) {
     console.log(b.errors);
     console.log(b.statusCode);
+    console.log(b.html());
 });
 
 

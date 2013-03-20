@@ -209,7 +209,7 @@ describe('regexsearch', function(){
         url = "file:///M2/share/doc/Macaulay2/Macaulay2Doc/html/_ring.html"
         imagePath = url.match(/^file:\/\/\/(.*)/);
         assert.equal(imagePath[1], "M2/share/doc/Macaulay2/Macaulay2Doc/html/_ring.html");
-        assert.equal(url.match(/^file:\/\/\/(.*)/)[1], "M2/share/doc/Macaulay2/Macaulay2Doc/html/_ring.html");
+        assert.equal(url.match(/^file:\/\/(.*)/)[1], "/M2/share/doc/Macaulay2/Macaulay2Doc/html/_ring.html");
     });
 })
 

@@ -7,13 +7,15 @@ var doc   = jsdom.jsdom(fs.readFileSync("test.html"), null, {
             MutationEvents           : '2.0',
         }
     });
-
+console.log("hello :( )");
 var window = doc.createWindow();
-jsdom.jQueryify(window, "http://code.jquery.com/jquery-1.5.min.js", function() {
+jsdom.jQueryify(window, function() {
+    console.log("wupp");
     console.log(window.document.innerHTML);
     //console.log(window.$().jquery); //jquery version
+    console.log("wupp");
 });
-
+console.log("tschuess :( )");
 /*
 var jsdom = require("jsdom");
 var window = jsdom.jsdom().createWindow();

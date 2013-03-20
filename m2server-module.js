@@ -565,12 +565,16 @@ var M2Server = function (options) {
         listen: function(port) { 
             console.log("m2server listening on port " + port);
             server.listen(port); 
+        },
+        close: function() {
+            server.close();
         }
     };
 }; // end of def of M2Server
 
-var m2server = M2Server();
-m2server.listen(8002);
+//var m2server = M2Server();
+//m2server.listen(8002);
+exports.M2Server = M2Server;
 
 // Local Variables:
 // indent-tabs-mode: nil

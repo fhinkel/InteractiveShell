@@ -529,6 +529,31 @@ var M2Server = function(overrideOptions) {
         response.writeHead(200);
         response.end();
         console.log("We received a viewHelp request!");
+        try {
+            var clientID = getClientIDFromUrl(url);
+            logClient(clientID, "viewHelp " + url + " received");
+
+            client = clients[clientID];
+            if (!client) {
+                logClient(clientID, "viewHelp request for invalid clientID");
+                return;
+            }
+
+            var path = parseUrlForPath(url); // a string
+            if (options.SCHROOT) {
+                path = "/var/lib/schroot/mount/" + clientID + path
+            }
+
+            message = 'event: viewHelp\r\ndata: ' + path + "\r\n\r\n";
+            if (!client.eventStream) { // fatal error, should not happen
+                logClient(clientID, "Error: No event stream");
+            } else {
+                //logClient(clientID, "Sent image message: " + message);
+                client.eventStream.write(message);
+            }
+        } catch (err) {
+            console.log("Received invalid /viewHelp request: " + err);
+        }
     }
     var checkForEventStream = function(clientID, response) {
         if (!clients[clientID].eventStream) {

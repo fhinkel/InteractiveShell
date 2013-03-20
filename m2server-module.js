@@ -29,25 +29,26 @@ var http = require('http')
     , connect = require('connect')
     , Cookies = require('cookies');
 
-
-var M2Server = function (options) {
-    var port = 8002, // default port number to use
-        userMemoryLimit = 500000000, // Corresponds to 500M memory
-        userCpuLimit = 256, // Corresponds to 256 shares of the CPU.
-                       // As stated wrongly on the internet this does NOT correspond to 25% CPU.
-                       // The total number of shares is determined as the sum of all these limits,
-                       // i.e. if there is only one user, he gets 100% CPU.
-        PRUNECLIENTINTERVAL = 1000*60*10, // 10 minutes
-        MAXAGE = 1000*60*60*24*7, // 1 week
-        SCHROOT = false, // if true: start with --schroot on server
+var M2Server = function (overrideOptions) {
+    var options = {
+            port: 8002, // default port number to use
+            userMemoryLimit:  500000000, // Corresponds to 500M memory
+            userCpuLimit: 256, // Corresponds to 256 shares of the CPU.
+                       // As stated wrongly on the internet this does NOT
+                       // correspond to 25% CPU.  The total number of shares is
+                       // determined as the sum of all these limits, i.e. if
+                       // there is only one user, he gets 100% CPU.
+            PRUNECLIENTINTERVAL: 1000*60*10, // 10 minutes
+            MAXAGE: 1000*60*60*24*7, // 1 week
+            SCHROOT: false // if true: start with --schroot on server
+            },
 
         totalUsers = 0, //only used for stats: total # users since server started
 
-        // An array of Client objects.  Each has an M2 process, and a response object
-        // It is possible that this.m2 is not defined, and/or that this.eventStream is not
-        // defined.
+        // An array of Client objects.  Each has an M2 process, and a response
+        // object It is possible that this.m2 is not defined, and/or that
+        // this.eventStream is not defined.
         clients = {};
-
 
     // preamble every log with the client ID
     var logClient = function(clientID, str) {
@@ -64,28 +65,23 @@ var M2Server = function (options) {
 
     // deciding that a user is obsolete: 
     // set clients[clientID].timestamp (set by M2 output or the client's input)
-    // in set time intervals, iterate over clients and if timestamp is too old or using too high resources, delete the client
+    // in set time intervals, iterate over clients and if timestamp is too old
+    // or using too high resources, delete the client
     var pruneClients = function() {
         // run this when using schroot.
-        // this loops through all clients, and checks their timestamp, also, it checks their resource usage with a perl script. Remove old or bad clients
+        // this loops through all clients, and checks their timestamp, also, it
+        // checks their resource usage with a perl script. Remove old or bad
+        // clients
         console.log("Pruning clients...");
         var clientID = null;
         var now = Date.now();
         console.log("It is currently " + now + " milliseconds.");
-        var minAge = now - MAXAGE;
+        var minAge = now - options.MAXAGE;
         for (clientID in clients) {
             if (clients.hasOwnProperty(clientID)) {
                 console.log("*** lastActivetime for user : " + clientID + " " + clients[clientID].lastActiveTime )
                 if (clients[clientID].lastActiveTime < minAge) {
                     deleteClient(clientID); 
-                } else {
-                    runShellCommand('perl-scripts/status_user.pl ' + clientID, function(ret) {
-                        //console.log ("Return value from status_user.pl: .." + ret +"..");
-                        if (ret != '0') {
-                            console.log( "removing user because of status_user.pl");
-                            deleteClient(clientID); 
-                        }
-                    }) 
                 } 
             }
         }
@@ -125,15 +121,23 @@ var M2Server = function (options) {
         clients[clientID] = new Client(); 
         clients[clientID].clientID = clientID;
         logClient(clientID, "New user: " + " UserAgent=" + request.headers['user-agent'] + ".");
-        if (SCHROOT) {
-            runShellCommand('perl-scripts/create_user.pl ' + clientID + ' ' + userMemoryLimit + ' ' + userCpuLimit, function(ret) {
+        if (options.SCHROOT) {
+            runShellCommand('perl-scripts/create_user.pl ' + clientID + ' ' + options.userMemoryLimit + ' ' + options.userCpuLimit, function(ret) {
                 //console.log( "***" + ret );
                 logClient(clientID, "Spawning new schroot process named " + clientID + ".");
-                // If we create a user and an own config file for this user the command needs to look like
-                // require('child_process').exec('sudo -u ' + newUser + ' schroot -c name_at_top_of_config -n '+ clientID + ' -b', function() {
+                /*
+                  The following command creates a schroot environment for the user.
+                  -c specifies the schroot type. This tells schroot to use the config file
+                     created by create_user.pl. The -c below at entering schroot is not the same.
+                  -n Sets the name of the schroot. This name will be used for the -c option
+                     below upon entering the schroot.
+                  -b is the begin flag.
+                */
                 require('child_process').exec('sudo -u ' + clientID + ' schroot -c ' + clientID + ' -n '+ clientID + ' -b', function() {
                     var filename = "/var/lib/schroot/mount/" + clientID + "/rootstuff/sName.txt";
-                    // create a file inside schroot directory to allow schroot to know its own name needed for open-schroot when sending /image
+                    // create a file inside schroot directory to allow schroot
+                    // to know its own name needed for open-schroot when
+                    // sending /image
                     fs.writeFile(filename, clientID, function(err) {
                         if(err) {
                             logClient(clientID, "failing to write the file " + filename);
@@ -159,11 +163,21 @@ var M2Server = function (options) {
     
     var m2Start = function(clientID) {
         var spawn = require('child_process').spawn;
-        if (SCHROOT) {
+        if (options.SCHROOT) {
+            /*
+               Starting M2 in a secure way requires several steps:
+               1. cgexec adds our process to two cgroups that create_user.pl created.
+                  cpu:clientID restricts the CPU shares of the user
+                  memory:clientID restricts the memory accessible by the user
+               2. schroot enters a secure chroot environment. No files from the actual
+                  system are available on the inside.
+                  -u specifies the username inside the schroot
+                  -c specifies the name of the schroot we want to enter
+                  -d specifies the directory inside the schroot we want to enter
+                  -r specifies the command to be run upon entering.
+            */
     	    var m2 = spawn( 'sudo',
                             [ 'cgexec', '-g', 'cpu,memory:'+clientID, 'sudo', '-u', clientID, 'schroot', '-c', clientID, '-u', clientID, '-d', '/home/m2user/', '-r', '/M2/bin/M2']);
-            
-            // ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
         } else {
             m2 = spawn('M2');
             logClient(clientID, "Spawning new M2 process...");
@@ -331,6 +345,9 @@ var M2Server = function (options) {
             }, 1000);
             if (client.m2) { 
                 client.m2.kill(); 
+                runShellCommand("killall -u " + clientID, function(ret) {
+                    console.log("We removed processes associates to " + clientID + " with result: " + ret );
+                });
                 logClient(clientID, "In restartAction, killed child process with PID " + client.m2.pid);
             }
             client.m2 = m2Start(clientID);
@@ -340,7 +357,8 @@ var M2Server = function (options) {
         });
     };
     
-    // SCHROOT: when using child.kill('SIGINT'), the signal is sent to schroot, where it is useless, instead, find actual PID of M2. 
+    // SCHROOT: when using child.kill('SIGINT'), the signal is sent to schroot,
+    // where it is useless, instead, find actual PID of M2. 
     var interruptAction = function(request, response)  {
         assureClient(request, response, function (clientID) {
     	    logClient(clientID, "received: /interrupt");
@@ -355,8 +373,15 @@ var M2Server = function (options) {
             }
     	    if (clients[clientID] && clients[clientID].m2) {
                 var m2 = clients[clientID].m2;
-                if (SCHROOT) {
-    	            runShellCommand('pgrep -P ' + m2.pid, function(m2Pid) {
+                if (options.SCHROOT) {
+                  /* To find the actual M2 we have to dig a little deeper:
+                     The m2.pid is the PID of the cgexec command.
+                     Using pgrep we gets the child process(es).
+                     In this case there is only one, namely the schroot.
+                     The child of the schroot then is M2 which we want to interrupt.
+                  */
+    	            runShellCommand('n=`pgrep -P ' + m2.pid +'`; n=`pgrep -P $n`; pgrep -P $n', function(m2Pid) {
+    	            //runShellCommand('pgrep -P `pgrep -P ' + m2.pid +'`', function(m2Pid) {
                         logClient(clientID, "PID of M2 inside schroot: " + m2Pid);
                         var cmd = 'kill -s INT ' + m2Pid;
                         runShellCommand(cmd, function(res) {
@@ -394,7 +419,7 @@ var M2Server = function (options) {
     // return PID extracted from pathname for image displaying
     var parseUrlForPid = function(url) {
         //console.log(url);
-        if (SCHROOT) {
+        if (options.SCHROOT) {
             var pid = url.match(/^\/(user\d+)\//);
         } else {
             pid = url.match(/\/M2-(\d+)-/);
@@ -421,7 +446,8 @@ var M2Server = function (options) {
     };
     
     // we get a /image from our open script
-    // imageAction finds the matching client by parsing the url, then sends the address of the image to the client's eventStream
+    // imageAction finds the matching client by parsing the url, then sends the
+    // address of the image to the client's eventStream
     var imageAction = function(request, response, next) {
         var url = require('url').parse(request.url).pathname;
         response.writeHead(200);  
@@ -430,7 +456,7 @@ var M2Server = function (options) {
         try {
             var pid = parseUrlForPid(url);
             var path = parseUrlForPath(url); // a string
-            if (SCHROOT) {
+            if (options.SCHROOT) {
                 var clientID = pid;
             } else {
                 clientID = findClientID(pid);
@@ -443,7 +469,7 @@ var M2Server = function (options) {
                 return;
             }
             
-            if (SCHROOT) {
+            if (options.SCHROOT) {
                 path = "/var/lib/schroot/mount/" + clientID + path
             }
             
@@ -485,12 +511,12 @@ var M2Server = function (options) {
             logClient(clientID, "received: /upload");
             var formidable = require('./node-formidable');
             var form = new formidable.IncomingForm;
-            if (SCHROOT) {
+            if (options.SCHROOT) {
                 var schrootPath = "/var/lib/schroot/mount/" + clientID + "/home/m2user/"; 
                 form.uploadDir = schrootPath;
             }
             form.on('file', function(name, file) {
-                if (SCHROOT) {
+                if (options.SCHROOT) {
                     var newpath = schrootPath;
                 } else {
                     newpath = "/tmp/";
@@ -537,35 +563,41 @@ var M2Server = function (options) {
     
     var initializeServer = function() {
         // when run in production, work with schroots, see startM2Process()
-        if( process.argv[2] && process.argv[2]=='--schroot') {
+        if (options.SCHROOT) {
             console.log('Running with schroots.');
-            SCHROOT=true;
-        };
-        
-        if (SCHROOT) {
-            setInterval(pruneClients, PRUNECLIENTINTERVAL); 
+            setInterval(pruneClients, options.PRUNECLIENTINTERVAL); 
         }
         
         // Send a comment to the clients every 20 seconds so they don't 
         // close the connection and then reconnect
         setInterval(keepEventStreamsAlive, 20000);
+
+        console.log("Starting M2 server.");
+        server = http.createServer(app);
     };
     
-    var listen = function(newport) {
-        if (newport !== undefined) {
-            port = newport;
+    var listen = function() {
+        if (server === undefined) {
+            initializeServer();
         }
-        console.log("Starting server.  Listening on port " + port + "...");
-        return http.createServer(app).listen(port);
+        console.log("M2 server listening on port " + options.port + "...");
+        return server.listen(options.port);
     };
-    var server = http.createServer(app);
+    var server;
+    
+    // Start of M2Server creation code
+    for (opt in overrideOptions) {
+        if (options.hasOwnProperty(opt)) {
+            options[opt] = overrideOptions[opt];
+            console.log("m2server option: " + opt + " set to " + options[opt]);
+        }
+    }
     initializeServer();
+    
+    // These are the methods available from the outside:
     return {
         server: server,
-        listen: function(port) { 
-            console.log("m2server listening on port " + port);
-            server.listen(port); 
-        },
+        listen: listen,
         close: function() {
             server.close();
         }

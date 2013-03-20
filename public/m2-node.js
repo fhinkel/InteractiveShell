@@ -169,11 +169,14 @@ trym2.startEventSource = function() {
                     modal: true,
                     autoOpen: true
                 });
-                //$("#help-dialog").dialog('open');
-                //$("#help-dialog").scrollTop(0);
-                //$('#help').click(trym2.helpScreen);
-                //$("#help-dialog").prepend('<h1>Fancy Image!</h1><img src="' + imageUrl + '"/>');
-                //trym2.helpScreen();
+            }
+        }, false);
+        chat.addEventListener('viewHelp', function(event) {
+            var helpUrl = event.origin + event.data;
+            console.log("viewHelp coming from: " + event.origin);
+            if (helpUrl) {
+                console.log("We got a viewHelp! " + helpUrl);
+                alert('<a href="' + helpUrl + '">' + helpUrl + '</a>');
             }
         }, false);
         chat.onmessage = function(event) { // When a new message arrives

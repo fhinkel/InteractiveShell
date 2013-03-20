@@ -176,7 +176,7 @@ trym2.startEventSource = function() {
             console.log("viewHelp coming from: " + event.origin);
             if (helpUrl) {
                 console.log("We got a viewHelp! " + helpUrl);
-                alert('<a href="' + helpUrl + '">' + helpUrl + '</a>');
+                alert('Help is available here: ' + helpUrl);
             }
         }, false);
         chat.onmessage = function(event) { // When a new message arrives

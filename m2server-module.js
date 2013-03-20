@@ -121,8 +121,14 @@ var M2Server = function (overrideOptions) {
             runShellCommand('perl-scripts/create_user.pl ' + clientID + ' ' + options.userMemoryLimit + ' ' + options.userCpuLimit, function(ret) {
                 //console.log( "***" + ret );
                 logClient(clientID, "Spawning new schroot process named " + clientID + ".");
-                // If we create a user and an own config file for this user the command needs to look like
-                // require('child_process').exec('sudo -u ' + newUser + ' schroot -c name_at_top_of_config -n '+ clientID + ' -b', function() {
+                /*
+                  The following command creates a schroot environment for the user.
+                  -c specifies the schroot type. This tells schroot to use the config file
+                     created by create_user.pl. The -c below at entering schroot is not the same.
+                  -n Sets the name of the schroot. This name will be used for the -c option
+                     below upon entering the schroot.
+                  -b is the begin flag.
+                */
                 require('child_process').exec('sudo -u ' + clientID + ' schroot -c ' + clientID + ' -n '+ clientID + ' -b', function() {
                     var filename = "/var/lib/schroot/mount/" + clientID + "/rootstuff/sName.txt";
                     // create a file inside schroot directory to allow schroot to know its own name needed for open-schroot when sending /image
@@ -152,6 +158,18 @@ var M2Server = function (overrideOptions) {
     var m2Start = function(clientID) {
         var spawn = require('child_process').spawn;
         if (options.SCHROOT) {
+            /*
+               Starting M2 in a secure way requires several steps:
+               1. cgexec adds our process to two cgroups that create_user.pl created.
+                  cpu:clientID restricts the CPU shares of the user
+                  memory:clientID restricts the memory accessible by the user
+               2. schroot enters a secure chroot environment. No files from the actual
+                  system are available on the inside.
+                  -u specifies the username inside the schroot
+                  -c specifies the name of the schroot we want to enter
+                  -d specifies the directory inside the schroot we want to enter
+                  -r specifies the command to be run upon entering.
+            */
     	    var m2 = spawn( 'sudo',
                             [ 'cgexec', '-g', 'cpu,memory:'+clientID, 'sudo', '-u', clientID, 'schroot', '-c', clientID, '-u', clientID, '-d', '/home/m2user/', '-r', '/M2/bin/M2']);
             
@@ -351,6 +369,12 @@ var M2Server = function (overrideOptions) {
     	    if (clients[clientID] && clients[clientID].m2) {
                 var m2 = clients[clientID].m2;
                 if (options.SCHROOT) {
+                  /* To find the actual M2 we have to dig a little deeper:
+                     The m2.pid is the PID of the cgexec command.
+                     Using pgrep we gets the child process(es).
+                     In this case there is only one, namely the schroot.
+                     The child of the schroot then is M2 which we want to interrupt.
+                  */
     	            runShellCommand('n=`pgrep -P ' + m2.pid +'`; n=`pgrep -P $n`; pgrep -P $n', function(m2Pid) {
     	            //runShellCommand('pgrep -P `pgrep -P ' + m2.pid +'`', function(m2Pid) {
                         logClient(clientID, "PID of M2 inside schroot: " + m2Pid);

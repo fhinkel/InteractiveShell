@@ -549,23 +549,26 @@ var M2Server = function (options) {
         // Send a comment to the clients every 20 seconds so they don't 
         // close the connection and then reconnect
         setInterval(keepEventStreamsAlive, 20000);
+
+        console.log("Starting M2 server.");
+        server = http.createServer(app);
     };
     
     var listen = function(newport) {
         if (newport !== undefined) {
             port = newport;
         }
-        console.log("Starting server.  Listening on port " + port + "...");
-        return http.createServer(app).listen(port);
+        if (server === undefined) {
+            initializeServer();
+        }
+        console.log("M2 server listening on port " + port + "...");
+        return server.listen(port);
     };
-    var server = http.createServer(app);
+    var server;
     initializeServer();
     return {
         server: server,
-        listen: function(port) { 
-            console.log("m2server listening on port " + port);
-            server.listen(port); 
-        },
+        listen: listen,
         close: function() {
             server.close();
         }

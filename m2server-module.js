@@ -532,12 +532,8 @@ var M2Server = function (overrideOptions) {
     
     var initializeServer = function() {
         // when run in production, work with schroots, see startM2Process()
-        if( process.argv[2] && process.argv[2]=='--schroot') {
-            console.log('Running with schroots.');
-            options.SCHROOT=true;
-        };
-        
         if (options.SCHROOT) {
+            console.log('Running with schroots.');
             setInterval(pruneClients, options.PRUNECLIENTINTERVAL); 
         }
         
@@ -558,11 +554,11 @@ var M2Server = function (overrideOptions) {
     };
     var server;
     
-    // Start of creation code
+    // Start of M2Server creation code
     for (opt in overrideOptions) {
         if (options.hasOwnProperty(opt)) {
-            options.opt = overrideOptions.opt;
-            console.log("m2server option: " + opt + " set to " + options.opt);
+            options[opt] = overrideOptions[opt];
+            console.log("m2server option: " + opt + " set to " + options[opt]);
         }
     }
     initializeServer();

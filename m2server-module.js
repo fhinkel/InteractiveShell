@@ -3,24 +3,29 @@
 // This is server-side JavaScript, intended to be run with Node.js.
 // This file defines a Node.js server for serving 'tryM2'.
 //   run 
-//      node m2server.js --schroot
+//       node m2server.js 
+//   or
+//       node m2server-schroot.js
 // in a terminal in this directory.
 // Then in a browser, use: 
 //      http://localhost:8002/
 // Required Node.js libraries: cookies.  Install via:
 //   npm install cookies, or sudo npm install -g cookies
 // Required on path: M2
-// We are using our own open script to make Graphs.m2 work (generate jpegs for users), please include the current directory in your path: 
+// We are using our own open script to make Graphs.m2 work (generate jpegs for
+// users), please include the current directory in your path: 
 // export PATH=.:$PATH
 
-// intended to run on (s)chrooted environment, where every user starts M2 in a separate schroot. 
+// intended to run on (s)chrooted environment, where every user starts M2 in a
+// separate schroot. 
 //
-// A message on / : possibly creates a cookie, and serves back index.html
-//   and related js/css/png files
-// A POST message on /chat: input should be Macaulay2 commands to perform.
-// A message on /chat: start an event emitter, which will return the output of
+// A message on / : possibly creates a cookie, and serves back index.html and
+// related js/css/png files
+// A POST message on /chat: input should be Macaulay2 commands to perform.  A
+// message on /chat: start an event emitter, which will return the output of
 // the M2 process.
-// /image is being called by the open script to tell the server where to find a jpg that the user created
+// image is being called by the open script to tell the server where to find a
+// jpg that the user created
 //
 // Using Node connect, but not express
 
@@ -79,7 +84,8 @@ var M2Server = function (overrideOptions) {
         var minAge = now - options.MAXAGE;
         for (clientID in clients) {
             if (clients.hasOwnProperty(clientID)) {
-                console.log("*** lastActivetime for user : " + clientID + " " + clients[clientID].lastActiveTime )
+                console.log("*** lastActivetime for user : " 
+                  + clientID + " " + clients[clientID].lastActiveTime )
                 if (clients[clientID].lastActiveTime < minAge) {
                     deleteClient(clientID); 
                 } 
@@ -105,8 +111,11 @@ var M2Server = function (overrideOptions) {
     var Client = function(m2process, resp) {
         this.m2 = m2process;
         this.eventStream = resp;
-        this.clientID = null; // generated randomly in startUser(), used for cookie and as user name on the system
-        this.recentlyRestarted = false; // we use this to keep from handling a bullet stream of restarts
+        this.clientID = null; 
+           // generated randomly in startUser(), used for cookie and as user name
+           // on the system
+        this.recentlyRestarted = false; 
+           // we use this to keep from handling a bullet stream of restarts
         this.lastActiveTime = Date.now(); // milliseconds when client was last active
         console.log ("function Client()");
     };
@@ -122,7 +131,9 @@ var M2Server = function (overrideOptions) {
         clients[clientID].clientID = clientID;
         logClient(clientID, "New user: " + " UserAgent=" + request.headers['user-agent'] + ".");
         if (options.SCHROOT) {
-            runShellCommand('perl-scripts/create_user.pl ' + clientID + ' ' + options.userMemoryLimit + ' ' + options.userCpuLimit, function(ret) {
+            runShellCommand('perl-scripts/create_user.pl ' 
+               + clientID + ' ' + options.userMemoryLimit + ' ' 
+               + options.userCpuLimit, function(ret) {
                 //console.log( "***" + ret );
                 logClient(clientID, "Spawning new schroot process named " + clientID + ".");
                 /*
@@ -133,7 +144,8 @@ var M2Server = function (overrideOptions) {
                      below upon entering the schroot.
                   -b is the begin flag.
                 */
-                require('child_process').exec('sudo -u ' + clientID + ' schroot -c ' + clientID + ' -n '+ clientID + ' -b', function() {
+                require('child_process').exec('sudo -u ' + clientID 
+                  + ' schroot -c ' + clientID + ' -n '+ clientID + ' -b', function() {
                     var filename = "/var/lib/schroot/mount/" + clientID + "/rootstuff/sName.txt";
                     // create a file inside schroot directory to allow schroot
                     // to know its own name needed for open-schroot when
@@ -176,8 +188,9 @@ var M2Server = function (overrideOptions) {
                   -d specifies the directory inside the schroot we want to enter
                   -r specifies the command to be run upon entering.
             */
-    	    var m2 = spawn( 'sudo',
-                            [ 'cgexec', '-g', 'cpu,memory:'+clientID, 'sudo', '-u', clientID, 'schroot', '-c', clientID, '-u', clientID, '-d', '/home/m2user/', '-r', '/M2/bin/M2']);
+    	    var m2 = spawn( 'sudo', [ 'cgexec', '-g', 'cpu,memory:'
+            + clientID, 'sudo', '-u', clientID, 'schroot', '-c', clientID, 
+            '-u', clientID, '-d', '/home/m2user/', '-r', '/M2/bin/M2']);
         } else {
             m2 = spawn('M2');
             logClient(clientID, "Spawning new M2 process...");
@@ -346,9 +359,11 @@ var M2Server = function (overrideOptions) {
             if (client.m2) { 
                 client.m2.kill(); 
                 runShellCommand("killall -u " + clientID, function(ret) {
-                    console.log("We removed processes associates to " + clientID + " with result: " + ret );
+                    console.log("We removed processes associates to " 
+                        + clientID + " with result: " + ret );
                 });
-                logClient(clientID, "In restartAction, killed child process with PID " + client.m2.pid);
+                logClient(clientID, "In restartAction, killed child process with PID " 
+                  + client.m2.pid);
             }
             client.m2 = m2Start(clientID);
             m2ConnectStream(clientID);
@@ -380,7 +395,8 @@ var M2Server = function (overrideOptions) {
                      In this case there is only one, namely the schroot.
                      The child of the schroot then is M2 which we want to interrupt.
                   */
-    	            runShellCommand('n=`pgrep -P ' + m2.pid +'`; n=`pgrep -P $n`; pgrep -P $n', function(m2Pid) {
+    	            runShellCommand('n=`pgrep -P ' + m2.pid 
+                     +'`; n=`pgrep -P $n`; pgrep -P $n', function(m2Pid) {
     	            //runShellCommand('pgrep -P `pgrep -P ' + m2.pid +'`', function(m2Pid) {
                         logClient(clientID, "PID of M2 inside schroot: " + m2Pid);
                         var cmd = 'kill -s INT ' + m2Pid;
@@ -397,7 +413,8 @@ var M2Server = function (overrideOptions) {
     };
     
     // returning clientID for a given M2 pid
-    // This currently does not work when working inside a schroot, because pid is not the schroot's pid
+    // This currently does not work when working inside a schroot, because pid
+    // is not the schroot's pid
     var findClientID = function(pid){
         //console.log("Searching for clientID whose M2 has PID " + pid);
         for (var prop in clients) {
@@ -551,8 +568,10 @@ var M2Server = function (overrideOptions) {
         .use(connect.favicon())
         .use(connect.static('public'))
         .use('/upload', uploadM2Package)
-        .use('/var', connect.static('/var')) // M2 creates temporary files (like created by Graphs.m2) here on MacOS
-        .use('/tmp', connect.static('/tmp')) // and here on Ubuntu
+        .use('/var', connect.static('/var')) 
+            // M2 creates temporary files (like created by Graphs.m2) here on MacOS
+        .use('/tmp', connect.static('/tmp')) 
+            // and here on Ubuntu
         .use('/admin', stats)
         .use('/image', imageAction)
         .use('/startSourceEvent', startSource)

@@ -29,9 +29,6 @@ var http = require('http')
     , connect = require('connect')
     , Cookies = require('cookies');
 
-
-// options is an object of options.  Here is the default list:
-
 var M2Server = function (overrideOptions) {
     var options = {
             port: 8002, // default port number to use
@@ -326,6 +323,9 @@ var M2Server = function (overrideOptions) {
             }, 1000);
             if (client.m2) { 
                 client.m2.kill(); 
+                runShellCommand("killall -u " + clientID, function(ret) {
+                    console.log("We removed processes associates to " + clientID + " with result: " + ret );
+                });
                 logClient(clientID, "In restartAction, killed child process with PID " + client.m2.pid);
             }
             client.m2 = m2Start(clientID);

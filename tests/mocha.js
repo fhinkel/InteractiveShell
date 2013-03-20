@@ -72,7 +72,7 @@ describe('m2server', function(){
             });
         });
     });
-    describe('JS on M2 website', function() {
+    /*describe('JS on M2 website', function() {
          it('should load content into lesson', function(done) {
              var fs = require('fs');
              var jsdom = require('jsdom');
@@ -94,7 +94,7 @@ describe('m2server', function(){
                  done();
              });
         });       
-    });
+    });*/
     describe('advanced behavior', function() {
         it('should be running M2', function(){
             //assert(false);

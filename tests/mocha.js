@@ -88,7 +88,7 @@ describe('m2server', function(){
                  //console.log(window.document.innerHTML);
                  var $ = window.jQuery;
                  var s = $("#lesson").text();
-                 console.log("Lesson:" + s + ":");
+                 //console.log("Lesson:" + s + ":");
                  assert.notEqual(s, "");
                  assert(s.match(/^  Get started by selecting a tutorial or by using the Input Terminal. Have fun!  needsPacka/)); 
                  done();
@@ -156,7 +156,7 @@ describe('jsdom', function(){
 
           var window = doc.createWindow();
           jsdom.jQueryify(window, "http://code.jquery.com/jquery-1.5.min.js", function() {
-              console.log(window.$().jquery); //jquery version
+              //console.log(window.$().jquery); //jquery version
               var $ = window.jQuery;
               assert.equal($("h1").text(), 'BeforeExternalAfter');
               done();
@@ -224,7 +224,7 @@ describe('testserver', function() {
     it("Should fetch Hello World", function(done) {
         http.get("http://localhost:1337/", function(res) {
             res.on('data', function(body) {
-                console.log(body);
+                //console.log(body);
                 assert.equal(body, "Hello World\n");
                 done();
             });

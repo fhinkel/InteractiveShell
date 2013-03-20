@@ -535,7 +535,7 @@ var M2Server = function (options) {
     ;
     //.use(connect.errorHandler());
     
-    var makeServer = function() {
+    var initializeServer = function() {
         // when run in production, work with schroots, see startM2Process()
         if( process.argv[2] && process.argv[2]=='--schroot') {
             console.log('Running with schroots.');
@@ -549,8 +549,6 @@ var M2Server = function (options) {
         // Send a comment to the clients every 20 seconds so they don't 
         // close the connection and then reconnect
         setInterval(keepEventStreamsAlive, 20000);
-        
-        return M2Server;
     };
     
     var listen = function(newport) {
@@ -558,15 +556,21 @@ var M2Server = function (options) {
             port = newport;
         }
         console.log("Starting server.  Listening on port " + port + "...");
-        http.createServer(app).listen(port);
+        return http.createServer(app).listen(port);
     };
+    var server = http.createServer(app);
+    initializeServer();
     return {
-        listen: listen
+        server: server,
+        listen: function(port) { 
+            console.log("m2server listening on port " + port);
+            server.listen(port); 
+        }
     };
 }; // end of def of M2Server
 
 var m2server = M2Server();
-m2server.listen();
+m2server.listen(8002);
 
 // Local Variables:
 // indent-tabs-mode: nil

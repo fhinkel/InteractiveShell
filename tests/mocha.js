@@ -76,14 +76,14 @@ describe('m2server', function(){
             var server = m2.M2Server();
             server.listen(8002);
             http.get("http://localhost:8002/", function(res) {
-                console.log("!!!!!!!!!");
+                //console.log("!!!!!!!!!");
                 assert.equal(res.statusCode, 200);
                 res.on('data', function(body) {
                      //console.log(body.toString('utf-8'));
                      var str = body.toString('utf-8'); 
                      var n = str.match(/<title>\s*([^\s]*)\s*<\/title>/); 
                      assert.equal(n[1], 'Macaulay2');
-                     console.log("The title is: " + n[1]);
+                     //console.log("The title is: " + n[1]);
                      server.close();
                      done();
                  });
@@ -118,36 +118,6 @@ describe('jsdom', function(){
           done();
         });
     });
-    it('should work with urls', function(done) {
-        var jsdom = require('jsdom');
-
-        jsdom.env({
-          html: "http://localhost/~franzi/tryM2/tests/test2.html",
-          scripts: [
-            'http://code.jquery.com/jquery-1.5.min.js'
-          ]
-        }, function (err, window) {
-            var $ = window.jQuery;
-            //console.log($(".testing").text()); // outputs Hello World
-            assert.equal($("h1").text(), 'Before');
-            done();
-        });
-    });
-    it('should work with urls and load their javascript', function(done) {
-        var jsdom = require('jsdom');
-
-        jsdom.env({
-          html: "http://localhost/~franzi/tryM2/tests/test.html",
-          scripts: [
-            'http://code.jquery.com/jquery-1.5.min.js'
-          ]
-        }, function (err, window) {
-            var $ = window.jQuery;
-            //console.log($(".testing").text()); // outputs Hello World
-            assert.equal($("h1").text(), 'BeforeExternalAfter');
-            done();
-        });
-    });
     it('should work with fs', function(done) {
         var fs = require('fs');
         var jsdom = require('jsdom');
@@ -161,18 +131,39 @@ describe('jsdom', function(){
 
         var window = doc.createWindow();
         jsdom.jQueryify(window, "http://code.jquery.com/jquery-1.5.min.js", function() {
-            console.log(window.a);
-            console.log(window.$().jquery); //jquery version
+            var $ = window.jQuery;
+            var s = $("h1").text();
+            //console.log(s);
+            assert.equal(s, 'Before');
             done();
         });
-    })
+    });
+    it('should work with fs and javascript', function(done) {
+          var fs = require('fs');
+          var jsdom = require('jsdom');
+          var doc   = jsdom.jsdom(fs.readFileSync("tests/test.html"), null, {
+                    features: {
+                      FetchExternalResources   : ['script'],
+                      ProcessExternalResources : ['script'],
+                      MutationEvents           : '2.0',
+                  }
+              });
+
+          var window = doc.createWindow();
+          jsdom.jQueryify(window, "http://code.jquery.com/jquery-1.5.min.js", function() {
+              console.log(window.$().jquery); //jquery version
+              var $ = window.jQuery;
+              assert.equal($("h1").text(), 'BeforeExternalAfter');
+              done();
+          });
+    });
 })
 
 describe('regexsearch', function(){
     it('should find text between title tags', function() {
         var s = 'bla <title> blubb </title> blobber';
         var n = s.match(/<title>\s*([^\s]*)\s*<\/title>/); 
-        console.log(n);
+        //console.log(n);
         assert.equal(n[1], 'blubb');
         s = 'bla <title> blubb\n </title> blobber';
         var n = s.match(/<title>\s*([^\s]*)\s*<\/title>/); 

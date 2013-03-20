@@ -33,10 +33,10 @@ describe('m2server', function(){
         it('should not listen without being started', function(done) {
             var http = require('http');
             http.get("http://localhost:8002/", function(res) {
-                console.log("status: " + res.statusCode);
+                //console.log("status: " + res.statusCode);
                 assert.notEqual(res.statusCode, 200);
             }).on('error', function(e) {
-                console.log("Got error: " + e.message);
+                //console.log("Got error: " + e.message);
                 assert.equal(e.message, "connect ECONNREFUSED");
                 done();
             });
@@ -46,13 +46,13 @@ describe('m2server', function(){
             var server = m2.M2Server();
             server.listen(8002);
             http.get("http://localhost:8002/", function(res) {
-                console.log(res.statusCode);
+                //console.log(res.statusCode);
                 res.on('data', function(body) {
                      //console.log(body.toString('utf-8'));
                      var str = body.toString('utf-8'); 
                      var n = str.match(/<title>\s*([^\s]*)\s*<\/title>/); 
                      assert.equal(n[1], 'Macaulay2');
-                     console.log("The title is: " + n[1]);
+                     //console.log("The title is: " + n[1]);
                      server.close();
                      done();
                  });
@@ -66,29 +66,30 @@ describe('m2server', function(){
             http.get("http://localhost:8002/", function(res) {
                 assert.notEqual(res.statusCode, 200);
             }).on('error', function(e) {
-                console.log("Got error: " + e.message);
+                //console.log("Got error: " + e.message);
                 assert.equal(e.message, "connect ECONNREFUSED");
                 done();
             });
         });
-        it('should load content into lesson with JS', function(done) {
-            
-            var server = m2.M2Server();
-            server.listen(8002);
-            http.get("http://localhost:8002/", function(res) {
-                //console.log("!!!!!!!!!");
-                assert.equal(res.statusCode, 200);
-                res.on('data', function(body) {
-                     //console.log(body.toString('utf-8'));
-                     var str = body.toString('utf-8'); 
-                     var n = str.match(/<title>\s*([^\s]*)\s*<\/title>/); 
-                     assert.equal(n[1], 'Macaulay2');
-                     //console.log("The title is: " + n[1]);
-                     server.close();
-                     done();
+    });
+    describe('JS on M2 website', function() {
+         it('should load content into lesson with JS', function(done) {
+                var server = m2.M2Server();
+                server.listen(8002);
+                http.get("http://localhost:8002/", function(res) {
+                    //console.log("!!!!!!!!!");
+                    assert.equal(res.statusCode, 200);
+                    res.on('data', function(body) {
+                         //console.log(body.toString('utf-8'));
+                         var str = body.toString('utf-8'); 
+                         var n = str.match(/<title>\s*([^\s]*)\s*<\/title>/); 
+                         assert.equal(n[1], 'Macaulay2');
+                         //console.log("The title is: " + n[1]);
+                         server.close();
+                         done();
                  });
             });
-        });
+        });       
     });
     describe('advanced behavior', function() {
         it('should be running M2', function(){
@@ -156,6 +157,24 @@ describe('jsdom', function(){
               assert.equal($("h1").text(), 'BeforeExternalAfter');
               done();
           });
+    });
+    it('should work on Lars code', function(done){
+        var fs = require('fs');
+        var jsdom = require('jsdom');
+        var doc   = jsdom.jsdom(fs.readFileSync("./tests/test.html"), null, {
+                  features: {
+                    FetchExternalResources   : ['script'],
+                    ProcessExternalResources : ['script'],
+                    MutationEvents           : '2.0',
+                }
+            });
+        var window = doc.createWindow();
+        jsdom.jQueryify(window, function() {
+            //console.log(window.document.innerHTML);
+            var $ = window.jQuery;
+            assert.equal($("h1").text(), 'BeforeExternalAfter');
+            done();
+        });
     });
 })
 

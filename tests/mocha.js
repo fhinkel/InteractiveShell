@@ -73,22 +73,26 @@ describe('m2server', function(){
         });
     });
     describe('JS on M2 website', function() {
-         it('should load content into lesson with JS', function(done) {
-                var server = m2.M2Server();
-                server.listen(8002);
-                http.get("http://localhost:8002/", function(res) {
-                    //console.log("!!!!!!!!!");
-                    assert.equal(res.statusCode, 200);
-                    res.on('data', function(body) {
-                         //console.log(body.toString('utf-8'));
-                         var str = body.toString('utf-8'); 
-                         var n = str.match(/<title>\s*([^\s]*)\s*<\/title>/); 
-                         assert.equal(n[1], 'Macaulay2');
-                         //console.log("The title is: " + n[1]);
-                         server.close();
-                         done();
+         it('should load content into lesson', function(done) {
+             var fs = require('fs');
+             var jsdom = require('jsdom');
+             var doc   = jsdom.jsdom(fs.readFileSync("./public/index.html"), null, {
+                       features: {
+                         FetchExternalResources   : ['script'],
+                         ProcessExternalResources : ['script'],
+                         MutationEvents           : '2.0',
+                     }
                  });
-            });
+             var window = doc.createWindow(); 
+             jsdom.jQueryify(window, function() {
+                 //console.log(window.document.innerHTML);
+                 var $ = window.jQuery;
+                 var s = $("#lesson").text();
+                 console.log("Lesson:" + s + ":");
+                 assert.notEqual(s, "");
+                 assert(s.match(/^  Get started by selecting a tutorial or by using the Input Terminal. Have fun!  needsPacka/)); 
+                 done();
+             });
         });       
     });
     describe('advanced behavior', function() {
@@ -187,7 +191,13 @@ describe('regexsearch', function(){
         s = 'bla <title> blubb\n </title> blobber';
         var n = s.match(/<title>\s*([^\s]*)\s*<\/title>/); 
         assert.equal(n[1], 'blubb');
-    })
+    });
+    it('should find beginning of string', function() {
+       var s = "hello world";
+       assert(s.match(/^hello/)); 
+       assert(!false);
+       assert(!s.match(/^Hello/)); 
+    });
 })
 
 describe('testserver', function() {

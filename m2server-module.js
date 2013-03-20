@@ -524,7 +524,7 @@ var M2Server = function(overrideOptions) {
         }
     };
 
-    var viewHelpAction = function(function(request, response, next) {
+    var viewHelpAction = function(request, response, next) {
         var url = require('url').parse(request.url).pathname;
         response.writeHead(200);
         response.end();

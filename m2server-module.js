@@ -198,7 +198,7 @@ var M2Server = function(overrideOptions) {
             */
             var m2 = spawn('sudo', ['cgexec', '-g', 'cpu,memory:' + clientID,
                     'sudo', '-u', clientID, 'schroot', '-c', clientID,
-                    '-u', clientID, '-d', '/home/m2user/', '-r', '/M2/bin/M2'
+                                    '-u', clientID, '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/bin/scriptM2.sh'
             ]);
         } else {
             m2 = spawn('M2');

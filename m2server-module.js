@@ -78,14 +78,6 @@ var M2Server = function (options) {
                 console.log("*** lastActivetime for user : " + clientID + " " + clients[clientID].lastActiveTime )
                 if (clients[clientID].lastActiveTime < minAge) {
                     deleteClient(clientID); 
-                } else {
-                    runShellCommand('perl-scripts/status_user.pl ' + clientID, function(ret) {
-                        //console.log ("Return value from status_user.pl: .." + ret +"..");
-                        if (ret != '0') {
-                            console.log( "removing user because of status_user.pl");
-                            deleteClient(clientID); 
-                        }
-                    }) 
                 } 
             }
         }

@@ -3,17 +3,16 @@ New TODO list:
 * manage user list: clean-users
     background scripts: 
       clean up script: for when the m2server goes down  DONE
-    status-user.pl  and call it from inside m2server
-       this is where we check resource limits
 * resource limitations
     understand the nproc limit,  DONE
     perhaps use cgroups  DONE
-    how to determine the number of processes for a user?
+    how to determine the number of processes for a user? /sys/fs/cgroup/memory/<username>/tasks
+      the number of lines in this file is the number used by nproc.
     memory limit for user, not for process  DONE
-* how to control virtualbox via command line  DONE
+* how to control virtualbox via command line  DONE (info in configuring_ubuntu.tex)
 * scripts or directions to recreate the vbox server
     includes: vbox, schroot, ...
-    this is partially written down in one of the tex files
+    this is partially written down in one of the tex files (in configuring_ubuntu.tex too)
 * Dan's emails: check them
 * update habanero, restart it  DONE
 * need test suite and perhaps testing framework
@@ -24,7 +23,7 @@ New TODO list:
     download button
     drop down menu doesn't fit the style
     next and prev buttons sometimes disappear
-    resizing or changing fonts?  Can the user do this?
+    resizing or changing fonts?  Can the user do this?  SEEMS SO, BUT RESULT ISN"T SO NICE
 * save, or print button
 * M2 help
 * ipad

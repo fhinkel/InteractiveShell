@@ -353,7 +353,8 @@ var M2Server = function (overrideOptions) {
                 if (options.SCHROOT) {
     	            runShellCommand('pgrep -P ' + m2.pid, function(m2Pid) {
                         logClient(clientID, "PID of M2 inside schroot: " + m2Pid);
-                        var cmd = 'kill -s INT ' + m2Pid;
+                        // var cmd = 'kill -s INT ' + m2Pid;
+                        var cmd = 'kill -s INT -u ' + clientID;
                         runShellCommand(cmd, function(res) {
     			        });
     	            });

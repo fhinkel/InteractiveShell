@@ -415,22 +415,29 @@ var M2Server = function (overrideOptions) {
         }
         throw ("Did not find a client for PID " + pid);
     };
-    
-    // return PID extracted from pathname for image displaying
-    var parseUrlForPid = function(url) {
-        //console.log(url);
+
+    var getClientIDFromUrl = function(url) {
+        // The URL's in question look like:
+        //  (schroot version): /user45345/var/a.jpg
+        //  (non-schroot): /dfdff/dsdsffff/fdfdsd/M2-12345-1/a.jpg
+        //     wher 12345 is the pid of the M2 process.
+        var clientID;
+        var matchobject;
         if (options.SCHROOT) {
-            var pid = url.match(/^\/(user\d+)\//);
+            matchobject = url.match(/^\/(user\d+)\//);
         } else {
-            pid = url.match(/\/M2-(\d+)-/);
+            matchobject = url.match(/\/M2-(\d+)-/);
         }
-        //console.log( pid );
-        if (!pid) {
-            console.log("error, didn't get PID in image url");
-            throw ("Did not get PID in image url");
+        if (!matchobject) {
+            console.log("error, could not find clientID from url");
+            throw ("could not find clientID from url");
         }
-        //console.log("PID = " + pid[1]);
-        return pid[1];
+        if (options.SCHROOT) {
+            clientID = matchobject[1];
+        } else {
+            clientID = findClientID(matchobject[1]);
+        }
+        return clientID;
     };
     
     // return path to image
@@ -454,21 +461,16 @@ var M2Server = function (overrideOptions) {
         response.end();
         
         try {
-            var pid = parseUrlForPid(url);
-            var path = parseUrlForPath(url); // a string
-            if (options.SCHROOT) {
-                var clientID = pid;
-            } else {
-                clientID = findClientID(pid);
-            }
+            var clientID = getClientIDFromUrl(url);
             logClient(clientID, "image " + url + " received");
             
             client = clients[clientID];
             if (!client) {
-                logClient(clientID, "oops, no client");
+                logClient(clientID, "image request for invalid clientID");
                 return;
             }
             
+            var path = parseUrlForPath(url); // a string
             if (options.SCHROOT) {
                 path = "/var/lib/schroot/mount/" + clientID + path
             }

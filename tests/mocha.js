@@ -205,6 +205,11 @@ describe('regexsearch', function(){
         url = "/2812/abunchofstuff/M2-2812-0/blablubb";
         imagePath = url.match(/^\/(user)?\d+\/(.*)/); 
         assert.equal(imagePath[2], "abunchofstuff/M2-2812-0/blablubb");
+        
+        url = "file:///M2/share/doc/Macaulay2/Macaulay2Doc/html/_ring.html"
+        imagePath = url.match(/^file:\/\/\/(.*)/);
+        assert.equal(imagePath[1], "M2/share/doc/Macaulay2/Macaulay2Doc/html/_ring.html");
+        assert.equal(url.match(/^file:\/\/\/(.*)/)[1], "M2/share/doc/Macaulay2/Macaulay2Doc/html/_ring.html");
     });
 })
 

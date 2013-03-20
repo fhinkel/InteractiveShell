@@ -540,8 +540,10 @@ var M2Server = function(overrideOptions) {
             }
 
             var path = parseUrlForPath(url); // a string
+                        
             if (options.SCHROOT) {
-                path = "/var/lib/schroot/mount/" + clientID + path
+                // path is of the form file:///M2/share/....html
+                path = "/var/lib/schroot/mount/" + clientID + path.match(/^file:\/\/\/(.*)/)[1]
             }
 
             message = 'event: viewHelp\r\ndata: ' + path + "\r\n\r\n";

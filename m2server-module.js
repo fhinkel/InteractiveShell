@@ -34,9 +34,10 @@ var M2Server = function (overrideOptions) {
             port: 8002, // default port number to use
             userMemoryLimit:  500000000, // Corresponds to 500M memory
             userCpuLimit: 256, // Corresponds to 256 shares of the CPU.
-                       // As stated wrongly on the internet this does NOT correspond to 25% CPU.
-                       // The total number of shares is determined as the sum of all these limits,
-                       // i.e. if there is only one user, he gets 100% CPU.
+                       // As stated wrongly on the internet this does NOT
+                       // correspond to 25% CPU.  The total number of shares is
+                       // determined as the sum of all these limits, i.e. if
+                       // there is only one user, he gets 100% CPU.
             PRUNECLIENTINTERVAL: 1000*60*10, // 10 minutes
             MAXAGE: 1000*60*60*24*7, // 1 week
             SCHROOT: false // if true: start with --schroot on server
@@ -44,9 +45,9 @@ var M2Server = function (overrideOptions) {
 
         totalUsers = 0, //only used for stats: total # users since server started
 
-        // An array of Client objects.  Each has an M2 process, and a response object
-        // It is possible that this.m2 is not defined, and/or that this.eventStream is not
-        // defined.
+        // An array of Client objects.  Each has an M2 process, and a response
+        // object It is possible that this.m2 is not defined, and/or that
+        // this.eventStream is not defined.
         clients = {};
 
     // preamble every log with the client ID
@@ -64,10 +65,13 @@ var M2Server = function (overrideOptions) {
 
     // deciding that a user is obsolete: 
     // set clients[clientID].timestamp (set by M2 output or the client's input)
-    // in set time intervals, iterate over clients and if timestamp is too old or using too high resources, delete the client
+    // in set time intervals, iterate over clients and if timestamp is too old
+    // or using too high resources, delete the client
     var pruneClients = function() {
         // run this when using schroot.
-        // this loops through all clients, and checks their timestamp, also, it checks their resource usage with a perl script. Remove old or bad clients
+        // this loops through all clients, and checks their timestamp, also, it
+        // checks their resource usage with a perl script. Remove old or bad
+        // clients
         console.log("Pruning clients...");
         var clientID = null;
         var now = Date.now();
@@ -131,7 +135,9 @@ var M2Server = function (overrideOptions) {
                 */
                 require('child_process').exec('sudo -u ' + clientID + ' schroot -c ' + clientID + ' -n '+ clientID + ' -b', function() {
                     var filename = "/var/lib/schroot/mount/" + clientID + "/rootstuff/sName.txt";
-                    // create a file inside schroot directory to allow schroot to know its own name needed for open-schroot when sending /image
+                    // create a file inside schroot directory to allow schroot
+                    // to know its own name needed for open-schroot when
+                    // sending /image
                     fs.writeFile(filename, clientID, function(err) {
                         if(err) {
                             logClient(clientID, "failing to write the file " + filename);
@@ -172,8 +178,6 @@ var M2Server = function (overrideOptions) {
             */
     	    var m2 = spawn( 'sudo',
                             [ 'cgexec', '-g', 'cpu,memory:'+clientID, 'sudo', '-u', clientID, 'schroot', '-c', clientID, '-u', clientID, '-d', '/home/m2user/', '-r', '/M2/bin/M2']);
-            
-            // ['-c', clientID, '-u', 'm2user', '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/limitedM2.sh']);
         } else {
             m2 = spawn('M2');
             logClient(clientID, "Spawning new M2 process...");
@@ -353,7 +357,8 @@ var M2Server = function (overrideOptions) {
         });
     };
     
-    // SCHROOT: when using child.kill('SIGINT'), the signal is sent to schroot, where it is useless, instead, find actual PID of M2. 
+    // SCHROOT: when using child.kill('SIGINT'), the signal is sent to schroot,
+    // where it is useless, instead, find actual PID of M2. 
     var interruptAction = function(request, response)  {
         assureClient(request, response, function (clientID) {
     	    logClient(clientID, "received: /interrupt");
@@ -441,7 +446,8 @@ var M2Server = function (overrideOptions) {
     };
     
     // we get a /image from our open script
-    // imageAction finds the matching client by parsing the url, then sends the address of the image to the client's eventStream
+    // imageAction finds the matching client by parsing the url, then sends the
+    // address of the image to the client's eventStream
     var imageAction = function(request, response, next) {
         var url = require('url').parse(request.url).pathname;
         response.writeHead(200);  
@@ -587,6 +593,8 @@ var M2Server = function (overrideOptions) {
         }
     }
     initializeServer();
+    
+    // These are the methods available from the outside:
     return {
         server: server,
         listen: listen,

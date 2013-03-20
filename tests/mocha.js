@@ -198,6 +198,14 @@ describe('regexsearch', function(){
        assert(!false);
        assert(!s.match(/^Hello/)); 
     });
+    it('should find the path', function(){
+        var url = "/M2-2812-0/blablubb";
+        var imagePath = url.match(/^\/(user)?\d+\/(.*)/); 
+        console.log(imagePath);
+        url = "/2812/abunchofstuff/M2-2812-0/blablubb";
+        imagePath = url.match(/^\/(user)?\d+\/(.*)/); 
+        assert.equal(imagePath[2], "abunchofstuff/M2-2812-0/blablubb");
+    });
 })
 
 describe('testserver', function() {

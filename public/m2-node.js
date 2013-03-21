@@ -176,6 +176,12 @@ trym2.startEventSource = function() {
             console.log("viewHelp coming from: " + event.origin);
             if (helpUrl) {
                 console.log("We got a viewHelp! " + helpUrl);
+                $('<div title="M2 Help"></div>').load(helpUrl).dialog({
+                    height: 340,
+                    width: 460,
+                    modal: true,
+                    autoOpen: true
+                });
                 alert('Help is available here: ' + helpUrl);
             }
         }, false);

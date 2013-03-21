@@ -628,7 +628,8 @@ var M2Server = function(overrideOptions) {
         .use(connect.favicon())
         .use(connect.static('public'))
         .use('/upload', uploadM2Package)
-        .use('/var', connect.static('/var'))
+        .use('/var/folders', connect.static('/var/folders'))
+        .use('/var/lib/schroot/mount', connect.static('/var/lib/schroot/mount'))
         // M2 creates temporary files (like created by Graphs.m2) here on MacOS
         .use('/tmp', connect.static('/tmp'))
         // and here on Ubuntu

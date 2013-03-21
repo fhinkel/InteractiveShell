@@ -164,7 +164,7 @@ var M2Server = function(overrideOptions) {
                 */
                 require('child_process').exec('sudo -u ' + clientID +
                     ' schroot -c ' + clientID + ' -n ' + clientID + ' -b', function() {
-                    var filename = "/var/lib/schroot/mount/" + clientID +
+                    var filename = "/usr/local/var/lib/schroot/mount/" + clientID +
                         "/rootstuff/sName.txt";
                     // create a file inside schroot directory to allow schroot
                     // to know its own name needed for open-schroot when
@@ -524,7 +524,7 @@ var M2Server = function(overrideOptions) {
 
             var path = parseUrlForPath(url); // a string
             if (options.SCHROOT) {
-                path = "/var/lib/schroot/mount/" + clientID + path
+                path = "/usr/local/var/lib/schroot/mount/" + clientID + path
             }
 
             message = 'event: image\r\ndata: ' + path + "\r\n\r\n";
@@ -599,7 +599,7 @@ var M2Server = function(overrideOptions) {
             var formidable = require('./node-formidable');
             var form = new formidable.IncomingForm;
             if (options.SCHROOT) {
-                var schrootPath = "/var/lib/schroot/mount/" + clientID +
+                var schrootPath = "/usr/local/var/lib/schroot/mount/" + clientID +
                     "/home/m2user/";
                 form.uploadDir = schrootPath;
             }
@@ -644,7 +644,7 @@ var M2Server = function(overrideOptions) {
         .use(connect.static('public'))
         .use('/upload', uploadM2Package)
         .use('/var/folders', connect.static('/var/folders'))
-        .use('/var/lib/schroot/mount', connect.static('/var/lib/schroot/mount'))
+        .use('/usr/local/var/lib/schroot/mount', connect.static('/usr/local/var/lib/schroot/mount'))
         .use('/M2', connect.static('/M2'))
         // M2 creates temporary files (like created by Graphs.m2) here on MacOS
         .use('/tmp', connect.static('/tmp'))

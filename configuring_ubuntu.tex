@@ -144,7 +144,7 @@ information on what to do.
 Install the following
 
 \begin{verbatim}
-sudo apt-get install schroot debootstrap
+sudo apt-get install debootstrap
 \end{verbatim}
 
 For modifying schroot
@@ -202,7 +202,7 @@ to create a sources.list for me.
 Start by duplicating the default profile
 
 \begin{verbatim}
-cd /etc/schroot
+cd /usr/local/etc/schroot
 sudo mkdir master
 sudo cp default/* master
 \end{verbatim}
@@ -210,7 +210,7 @@ sudo cp default/* master
 Now we need to modify the profile for not getting some files from the outside
 
 \begin{verbatim}
-cd /etc/schroot/master
+cd /usr/local/etc/schroot/master
 sudo vim fstab
 \end{verbatim}
 
@@ -226,22 +226,22 @@ have to uncomment these files.
 Modify the configuration file to have the correct paths
 
 \begin{verbatim}
-sudo vim /etc/schroot/master/config
+sudo vim /usr/local/etc/schroot/master/config
 \end{verbatim}
 
 it should look like
 
 \begin{verbatim}
 # Settings for "master" profile.
-FSTAB="/etc/schroot/master/fstab"
-COPYFILES="/etc/schroot/master/copyfiles"
-NSSDATABASES="/etc/schroot/master/nssdatabases"
+FSTAB="/usr/local/etc/schroot/master/fstab"
+COPYFILES="/usr/local/etc/schroot/master/copyfiles"
+NSSDATABASES="/usr/local/etc/schroot/master/nssdatabases"
 \end{verbatim}
 
 Next I created the configuration file
 
 \begin{verbatim}
-cd /etc/schroot/chroot.d
+cd /usr/local/etc/schroot/chroot.d
 touch master.conf
 \end{verbatim}
 
@@ -292,17 +292,7 @@ rm /home/M2-1.4.0.1.tar.gz
 apt-get update
 apt-get upgrade
 apt-get install vim
-vim /etc/profile
 \end{verbatim}
-
-At the end of this file add the line
-
-\begin{verbatim}
-PATH=$PATH:/M2/bin
-\end{verbatim}
-
-Close the file and the schroot (Ctrl+d). You can restart the schroot and check
-the PATH variable for correctness.
 
 Install all packages needed for M2. Start the schroot as root and inside
 
@@ -314,12 +304,22 @@ M2
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%
+%%%  Installing schroot from source
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Installing schroot from source}
+Since we need to temper with the source of schroot to modify it according to our needs, we have to compile and install it ourselves. First we download the source, then compile it and install it.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
 %%%  Modifying the schroot source
 %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Modifying the schroot source}
 
+\section{Modifying the schroot source}
+\subsection{Mounting readonly file systems with a writable layer}
 The problem we are trying to solve is the following: We want to mount the /etc
 and /root folder inside the clone. Inside the clone they need to be writable
 but we need their outer versions to be unchanged.  This can be solved in the
@@ -357,9 +357,6 @@ mkdir schroot-source
 cd schroot-source
 wget https://launchpad.net/debian/sid/+source/schroot/1.4.25-1/+files/schroot_1.4.25.orig.tar.bz2
 tar xvf schroot_1.4.25.orig.tar.bz2
-mkdir testing
-cd schroot-1.4.25
-./configure --prefix=path2testing/testing
 \end{verbatim}
 
 If all packages from the start are installed this works.
@@ -389,23 +386,39 @@ while(start != std::string::npos){
 entry.options = eopts;
 \end{verbatim}
 
-Now compile
-
-\begin{verbatim}
-cd schroot-source/schroot_1.4.25
-make -j5
-make install
-\end{verbatim}
-
-This might need some error messages. But hopefully it created the right file
-before. Try to copy it
-
-\begin{verbatim}
-sudo cp source/testing/libexec/schroot/schroot-mount \
-   /usr/lib/x86_64-linux-gnu/schroot/schroot-mount 
-\end{verbatim}
 
 Now you are done with this part.
+\subsection{The path of the WWWBROWSER}
+Edit the following file
+
+\begin{verbatim}
+vim schroot-source/sbuild/sbuild-auth.cc
+\end{verbatim}
+and after the lines with
+
+\begin{verbatim}
+if (this->uid == 0)
+    minimal.add(std::make_pair("PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/bin/X11"));
+  else
+    minimal.add(std::make_pair("PATH", "/usr/local/bin:/usr/bin:/bin:/M2/bin"));
+\end{verbatim}
+insert the line
+
+\begin{verbatim}
+ minimal.add(std::make_pair("WWWBROWSER", "open-www"));
+\end{verbatim}
+
+Note: In the 'else'-block we changed the PATH according to our need.
+
+\section{Making and installing}
+To make and install the changes do the following:
+\begin{verbatim}
+cd schroot-source
+./configure
+make -j8
+sudo make install
+\end{verbatim}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%
@@ -418,7 +431,7 @@ Now you are done with this part.
 We want to prepare a profile for the clones
 
 \begin{verbatim}
-cd /etc/schroot
+cd /usr/local/etc/schroot
 sudo mkdir clone
 sudo cp master/* clone
 cd clone
@@ -429,9 +442,9 @@ edit this to look like
 
 \begin{verbatim}
 # Settings for "clone" profile.
-FSTAB="/etc/schroot/clone/fstab"
-COPYFILES="/etc/schroot/clone/copyfiles"
-NSSDATABASES="/etc/schroot/clone/nssdatabases"
+FSTAB="/usr/local/etc/schroot/clone/fstab"
+COPYFILES="/usr/local/etc/schroot/clone/copyfiles"
+NSSDATABASES="/usr/local/etc/schroot/clone/nssdatabases"
 \end{verbatim}
 
 \subsection{Readonly stuff from master}
@@ -439,7 +452,7 @@ NSSDATABASES="/etc/schroot/clone/nssdatabases"
 Edit the fstab to fetch the master files
 
 \begin{verbatim}
-sudo vim /etc/schroot/clone/fstab
+sudo vim /usr/local/etc/schroot/clone/fstab
 \end{verbatim}
 
 it should look like
@@ -517,7 +530,7 @@ mkdir clone
 Edit the clone chroot config
 
 \begin{verbatim}
-cd /etc/schroot/chroot.d
+cd /usr/local/etc/schroot/chroot.d
 sudo vim clone.conf
 \end{verbatim}
 
@@ -616,7 +629,7 @@ schroot -c name -d existing/rw/dir -u user -r touch name
 \item Look at /etc/passwd. For some reason all users of the top system appear
   here. This might be good for others but not for us.
 
-One can resolve this by manipulating the files in /etc/schroot/default. In this
+One can resolve this by manipulating the files in /usr/local/etc/schroot/default. In this
 case the nssdatabases file is the one to be manipulated.
 \item The shell via ssh looks weird.
 \item We want different ports for all schroots, but we only have one file we can change.

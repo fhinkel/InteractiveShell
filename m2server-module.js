@@ -1,6 +1,5 @@
-// September 2012, Franziska Hinkelmann, Mike Stillman, and Lars Kastner
+// March 2013, Franziska Hinkelmann, Mike Stillman, and Lars Kastner
 //
-// This is server-side JavaScript, intended to be run with Node.js.
 // This file defines a Node.js server for serving 'tryM2'.
 //   run 
 //       node m2server.js 
@@ -9,7 +8,7 @@
 // in a terminal in this directory.
 // Then in a browser, use: 
 //      http://localhost:8002/
-// Required Node.js libraries: cookies.  Install via:
+// Required Node.js libraries: cookies, connect, fs, http.  Install via:
 //   npm install cookies, or sudo npm install -g cookies
 // Required on path: M2
 // We are using our own open script to make Graphs.m2 work (generate jpegs for
@@ -236,7 +235,6 @@ var M2Server = function(overrideOptions) {
     var m2ConnectStream = function(clientID) {
         var client = clients[clientID];
         if (!client) return;
-
 
         var ondata = function(data) {
             client.lastActiveTime = Date.now();
@@ -534,7 +532,7 @@ var M2Server = function(overrideOptions) {
                 client.eventStream.write(message);
             }
         } catch (err) {
-            console.log("Received invalid /image request: " + err);
+            logClient(clientID,"Received invalid /image request: " + err);
         }
     };
 
@@ -542,7 +540,7 @@ var M2Server = function(overrideOptions) {
         var url = require('url').parse(request.url).pathname;
         response.writeHead(200);
         response.end();
-        console.log("We received a viewHelp request!");
+        console.log("We received a viewHelp request.");
         try {
             var clientID = getClientIDFromUrl(url);
             logClient(clientID, "viewHelp " + url + " received");
@@ -568,7 +566,7 @@ var M2Server = function(overrideOptions) {
                 client.eventStream.write(message);
             }
         } catch (err) {
-            console.log("Received invalid /viewHelp request: " + err);
+            logClient(clientID,"Received invalid /viewHelp request: " + err);
         }
     }
     var checkForEventStream = function(clientID, response) {

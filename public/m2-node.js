@@ -176,7 +176,8 @@ trym2.startEventSource = function() {
             console.log("viewHelp coming from: " + event.origin);
             if (helpUrl) {
                 console.log("We got a viewHelp! " + helpUrl);
-                $('#viewHelp').load(helpUrl);
+                window.open(helpUrl);
+                //$('#viewHelp').load(helpUrl);
                 //alert('Help is available here: ' + helpUrl);
             }
         }, false);

@@ -61,7 +61,8 @@ var M2Server = function(overrideOptions) {
 
     // delete a user both from the system and the clients[]
     var deleteClient = function(clientID) {
-        runShellCommand('perl-scripts/remove_user.pl ' + clientID, function(ret) {
+        runShellCommand('perl-scripts/remove_user.pl ' + clientID + ' ' 
+        + clients[clientID].schrootName + ' ' + clients[clientID].schrootType, function(ret) {
             console.log("We removed client " + clientID + " with result: " +
                 ret);
         });

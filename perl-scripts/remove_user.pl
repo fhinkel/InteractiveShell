@@ -5,11 +5,13 @@
 # 2. Delete the user
 
 $user = $ARGV[0];
+$schroot_name = $ARGV[1];
+$schroot_type = $ARGV[2];
 # print $user;
 
 # Remove the user:
 system "killall -u $user";
-system "schroot -e -c $user";
-system "rm /usr/local/etc/schroot/chroot.d/$user.conf";
+system "schroot -e -f -c $schroot_name";
+system "rm /usr/local/etc/schroot/chroot.d/$schroot_type.conf";
 system "userdel $user";
-system "cgdelete memory:$user";
+system "cgdelete cpu,memory:$user";

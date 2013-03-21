@@ -163,7 +163,11 @@ trym2.startEventSource = function() {
             //console.log("We got an image! " + imageUrl);
             if (imageUrl) {
                 console.log("We got an image! " + imageUrl);
-                $('<div title="Graph"><a href="' + imageUrl + '" target="_blank">Click to open your image in a new tab or window</a><div>').dialog();
+                $('<div title="Graph"><a id="newGraph" href="' + imageUrl + '" target="_blank">Click to open your image in a new tab or window</a><div>').dialog();
+                $('#newGraph').click(function() {
+                    window.open(imageUrl, '_blank', 'toolbar=0,location=0,menubar=0');
+                    return false;
+                });
 //                ({
 //                    //height: 340,
 //                    //width: 460,

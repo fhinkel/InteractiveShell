@@ -31,7 +31,7 @@ system "useradd -G m2users $user -d /home/m2user";
 ################################
 ##  Schroot config
 ################################
-open (CONFIG, ">>/etc/schroot/chroot.d/$user.conf");
+open (CONFIG, ">>/usr/local/etc/schroot/chroot.d/$user.conf");
 print CONFIG "[$user]\n";
 print CONFIG "description=Ubuntu precise pangolin clone chroot\n";
 print CONFIG "directory=/fakeroots/clone\n";

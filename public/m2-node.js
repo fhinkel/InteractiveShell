@@ -163,12 +163,13 @@ trym2.startEventSource = function() {
             //console.log("We got an image! " + imageUrl);
             if (imageUrl) {
                 console.log("We got an image! " + imageUrl);
-                $('<div title="Graph"><img src="' + imageUrl + '"/><div>').dialog({
-                    height: 340,
-                    width: 460,
-                    modal: true,
-                    autoOpen: true
-                });
+                $('<div title="Graph"><a href="' + imageUrl + '" target="_blank">Click to open your image in a new tab or window</a><div>').dialog();
+//                ({
+//                    //height: 340,
+//                    //width: 460,
+//                    modal: true,
+//                    autoOpen: true
+//                });
             }
         }, false);
         chat.addEventListener('viewHelp', function(event) {
@@ -176,7 +177,7 @@ trym2.startEventSource = function() {
             console.log("viewHelp coming from: " + event.origin);
             if (helpUrl) {
                 console.log("We got a viewHelp! " + helpUrl);
-                window.open(helpUrl);
+                window.open(helpUrl, "M2 Help");
                 //$('#viewHelp').load(helpUrl);
                 //alert('Help is available here: ' + helpUrl);
             }

@@ -135,14 +135,11 @@ var M2Server = function(overrideOptions) {
     
     var startUser = function(cookies, request, callbackFcn) {
         totalUsers = totalUsers + 1;
-        var clientID = Math.random() * 1000000;
-        clientID = Math.floor(clientID);
-        clientID = "user" + clientID.toString(10);
-        while(clientIDExists(clientID)) {
+        var clientID;
+        while(clientID == null || clientIDExists(clientID) ) {
             clientID = Math.random() * 1000000;
             clientID = Math.floor(clientID);
             clientID = "user" + clientID.toString(10);
-            logClient(clientID, "Making new client ID");
         }
         cookies.set("tryM2", clientID, {
             httpOnly: false

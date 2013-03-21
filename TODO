@@ -39,7 +39,7 @@ New TODO list:
 
 * we still need a max for total user number
 * eventually we need to write status_user.pl
-* need to check for identical random usernames
+* need to check for identical random usernames DONE
 
 * is deleting clients working? Sort of we think
 

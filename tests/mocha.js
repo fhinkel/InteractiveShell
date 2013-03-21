@@ -11,14 +11,20 @@ describe('Array', function(){
     it('should be true', function() {
         assert(true);
     }); 
-  })
+    it('should be accessible by index', function(){
+        var a = {};
+        a[5]="number 5";
+        assert.equal(a[1], null);
+        assert.equal(a[5], "number 5");
+    });
+  });
 })
 
 describe('assert.notEqual', function() {
     it('should make 1 not equal to null', function() {
         assert.notEqual(1, null);
-    })
-})
+    });
+});
 
 
 describe('m2server', function(){
@@ -250,6 +256,7 @@ describe('testserver', function() {
       done();
     });
 });
+
 
 
 

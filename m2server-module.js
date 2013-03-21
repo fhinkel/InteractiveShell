@@ -129,7 +129,6 @@ var M2Server = function(overrideOptions) {
             return false;
         }
         logClient(clientID, "Client already exists");
-        //throw("double user");
         return true;
     };
     

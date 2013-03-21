@@ -209,13 +209,13 @@ var M2Server = function(overrideOptions) {
                   -d specifies the directory inside the schroot we want to enter
                   -r specifies the command to be run upon entering.
             */
-            // var m2 = spawn('sudo', ['cgexec', '-g', 'cpu,memory:' + clientID,
-            //         'sudo', '-u', clientID, 'schroot', '-c', clientID,
-            //                         '-u', clientID, '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/bin/scriptM2.sh'
-            // ]);
-            var m2 = spawn('sudo', ['-u', clientID, 'schroot', '-c', clientID,
+            var m2 = spawn('sudo', ['cgexec', '-g', 'cpu,memory:' + clientID,
+                    'sudo', '-u', clientID, 'schroot', '-c', clientID,
                                     '-u', clientID, '-d', '/home/m2user/', '-r', 'M2'
             ]);
+            // var m2 = spawn('sudo', ['-u', clientID, 'schroot', '-c', clientID,
+            //                         '-u', clientID, '-d', '/home/m2user/', '-r', 'M2'
+            // ]);
         } else {
             m2 = spawn('M2');
             logClient(clientID, "Spawning new M2 process...");

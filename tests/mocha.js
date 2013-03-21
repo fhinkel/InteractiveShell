@@ -17,7 +17,19 @@ describe('Array', function(){
         assert.equal(a[1], null);
         assert.equal(a[5], "number 5");
     });
+    it('should have length', function(){
+       var a = [];
+       assert.equal(a.length, 0);
+       assert.equal([].length, 0);
+       assert.equal(['one'].length, 1);
+       a.push('1');
+       assert.equal(a.length, 1);
+    });
   });
+  it('should print', function(){
+      var a = [1,2,3];
+      console.log(a);
+  })
 })
 
 describe('assert.notEqual', function() {

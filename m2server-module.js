@@ -108,9 +108,9 @@ var M2Server = function(overrideOptions) {
         });
     };
 
-    var Client = function(m2process, resp) {
-        this.m2 = m2process;
-        this.eventStream = resp;
+    var Client = function() {
+        this.m2 = null;
+        this.eventStream = [];
         this.clientID = null;
         // generated randomly in startUser(), used for cookie and as user name
         // on the system
@@ -242,15 +242,18 @@ var M2Server = function(overrideOptions) {
         var ondata = function(data) {
             client.lastActiveTime = Date.now();
             var data1 = data.replace(/\n$/, "");
-            logClient(clientID, "data: " + data1.replace(/\n+/g, "\n" +
-                clientID + ": data: "));
+            //logClient(clientID, "data: " + data1.replace(/\n+/g, "\n" + clientID + ": data: "));
             message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
-            if (!client.eventStream) { // fatal error, should not happen
+            if (!client.eventStream || client.eventStream.length == 0) { // fatal error, should not happen
                 logClient(clientID, "Error: No event stream in m2ConnectStream");
                 return;
                 //throw "Error: No client.eventStream in Start M2";
             }
-            client.eventStream.write(message);
+            
+            for (var stream in client.eventStream) {
+                //logClient(clientID, "write: " + message);
+                client.eventStream[stream].write(message);
+            }
         };
         if (client.m2) {
             client.m2.stdout.removeAllListeners('data');
@@ -297,7 +300,9 @@ var M2Server = function(overrideOptions) {
     var keepEventStreamsAlive = function() {
         for (var prop in clients) {
             if (clients.hasOwnProperty(prop) && clients[prop] && clients[prop].eventStream) {
-                clients[prop].eventStream.write(":ping\n");
+                for(var stream in clients[prop].eventStream ) {
+                    clients[prop].eventStream[stream].write(":ping\n");
+                }
             }
         }
     };
@@ -308,18 +313,19 @@ var M2Server = function(overrideOptions) {
             response.writeHead(200, {
                 'Content-Type': "text/event-stream"
             });
-            if (!clients[clientID].eventStream) {
-                clients[clientID].eventStream = response;
-                if (!clients[clientID].m2) {
-                    clients[clientID].m2 = m2Start(clientID);
-                }
-                m2ConnectStream(clientID);
+            logClient(clientID, "pushing a response");
+            clients[clientID].eventStream.push(response);
+
+            if (!clients[clientID].m2) {
+                clients[clientID].m2 = m2Start(clientID);
             }
+            m2ConnectStream(clientID);
+            
             // If the client closes the connection, remove client from the list of active clients
             request.connection.on("end", function() {
                 logClient(clientID, "event stream closed");
                 if (clients[clientID]) {
-                    clients[clientID].eventStream = null;
+                    //clients[clientID].eventStream = [];
                 }
                 response.end();
             });
@@ -454,7 +460,7 @@ var M2Server = function(overrideOptions) {
             if (clients.hasOwnProperty(prop) && clients[prop] && clients[prop].m2) {
                 if (pid == clients[prop].m2.pid) {
                     //console.log("We found the client! It is " + prop);
-                    if (clients[prop].eventStream) {
+                    if (clients[prop].eventStream.length != 0) {
                         //console.log("findClientID picked user with clientID " + prop);
                         return prop;
                     } else {
@@ -528,11 +534,13 @@ var M2Server = function(overrideOptions) {
             }
 
             message = 'event: image\r\ndata: ' + path + "\r\n\r\n";
-            if (!client.eventStream) { // fatal error, should not happen
+            if (!client.eventStream || client.eventStream.length == 0) { // fatal error, should not happen
                 logClient(clientID, "Error: No event stream");
             } else {
                 //logClient(clientID, "Sent image message: " + message);
-                client.eventStream.write(message);
+                for (var stream in client.eventStream ) {
+                    client.eventStream[stream].write(message);
+                }
             }
         } catch (err) {
             logClient(clientID,"Received invalid /image request: " + err);
@@ -562,18 +570,20 @@ var M2Server = function(overrideOptions) {
             }
 
             message = 'event: viewHelp\r\ndata: ' + path + "\r\n\r\n";
-            if (!client.eventStream) { // fatal error, should not happen
+            if (!client.eventStream || client.eventStream.length == 0 ) { // fatal error, should not happen
                 logClient(clientID, "Error: No event stream");
             } else {
                 //logClient(clientID, "Sent image message: " + message);
-                client.eventStream.write(message);
+                for (var stream in client.eventStream) {
+                    client.eventStream[stream].write(message);
+                }
             }
         } catch (err) {
             logClient(clientID,"Received invalid /viewHelp request: " + err);
         }
     }
     var checkForEventStream = function(clientID, response) {
-        if (!clients[clientID].eventStream) {
+        if (!clients[clientID].eventStream || clients[clientID].eventStream.length == 0 ) {
             logClient(clientID, "Send notEventSourceError back to user.");
             response.writeHead(200, {
                 'notEventSourceError': 'No socket for client...'

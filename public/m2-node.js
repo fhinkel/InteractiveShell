@@ -93,11 +93,12 @@ trym2.callback = function(url, msg) {
                 var resHead = xhr.getResponseHeader('notEventSourceError');
                 //console.log( "ResponseHeader: " + resHead);
                 if (resHead) {
-                    console.log(
-                        "We must have lost the EventSource Stremt, redoing it...");
+                    console.log("We must have lost the EventSource Stream, redoing it...");
+                    //ask for new EventSource and send msg again
                     trym2.startEventSource();
-                    //send msg again
-                    trym2.callback("/chat", msg)();
+                    setTimeout(function() {
+                        trym2.callback("/chat", msg)();
+                    }, 1000);
                 }
             }
         };
@@ -155,7 +156,6 @@ trym2.getLessonTitles = function(tutorialFile, callback) {
 // Register for notification of new messages using EventSource
 trym2.startEventSource = function() {
     if ( !! window.EventSource) {
-
         var chat = new EventSource("/startSourceEvent");
         chat.addEventListener('image', function(event) {
             var imageUrl = event.origin + event.data;
@@ -183,10 +183,9 @@ trym2.startEventSource = function() {
         }, false);
         chat.onmessage = function(event) { // When a new message arrives
             var msg = event.data; // Get text from event object
-            console.log(event);
-
+            //console.log(event);
             if (msg !== "") {
-                //console.log("We got a chat message: " + msg);
+                //console.log("We got a chat message: ");
                 $("#M2Out").val($("#M2Out").val() + msg);
                 trym2.scrollDown("#M2Out");
             }

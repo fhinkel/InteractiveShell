@@ -164,28 +164,28 @@ var M2Server = function(overrideOptions) {
                 */
                 require('child_process').exec('sudo -u ' + clientID +
                     ' schroot -c ' + clientID + ' -n ' + clientID + ' -b', function() {
-                    var filename = "/usr/local/var/lib/schroot/mount/" + clientID +
-                        "/rootstuff/sName.txt";
-                    // create a file inside schroot directory to allow schroot
-                    // to know its own name needed for open-schroot when
-                    // sending /image
-                    fs.writeFile(filename, clientID, function(err) {
-                        if (err) {
-                            logClient(clientID, "failing to write the file " +
-                                filename);
-                            logClient(clientID, err);
-                        } else {
-                            logClient(clientID, "wrote schroot's name into " +
-                                filename);
-                            fs.exists(filename, function(error) {
-                                logClient(clientID, "exists?: " + error);
-                            });
-                            fs.chmod(filename, 0444, function(error) {
-                                logClient(clientID, "chmod: " + error);
-                            });
-                            callbackFcn(clientID);
-                        }
-                    });
+                    //var filename = "/usr/local/var/lib/schroot/mount/" + clientID +
+                    //    "/rootstuff/sName.txt";
+                    //// create a file inside schroot directory to allow schroot
+                    //// to know its own name needed for open-schroot when
+                    //// sending /image
+                    //fs.writeFile(filename, clientID, function(err) {
+                    //    if (err) {
+                    //        logClient(clientID, "failing to write the file " +
+                    //            filename);
+                    //        logClient(clientID, err);
+                    //    } else {
+                    //        logClient(clientID, "wrote schroot's name into " +
+                    //            filename);
+                    //        fs.exists(filename, function(error) {
+                    //            logClient(clientID, "exists?: " + error);
+                    //        });
+                    //        fs.chmod(filename, 0444, function(error) {
+                    //            logClient(clientID, "chmod: " + error);
+                    //        });
+                    //        callbackFcn(clientID);
+                    //    }
+                    //});
                 });
             });
         } else {

@@ -163,8 +163,9 @@ trym2.startEventSource = function() {
             //console.log("We got an image! " + imageUrl);
             if (imageUrl) {
                 console.log("We got an image! " + imageUrl);
-                var link = '<div id="graphDialog" title="Graph"><a id="newGraph" href="' + imageUrl + '" target="_blank">Click to open your image in a new tab or window</a><div>';
-                $(link).dialog();
+                $('#graphDialog').html('<a id="newGraph">Click for image</a>')
+                //var link = '<div id="graphDialog" title="Graph"><a id="newGraph" href="' + imageUrl + '" target="_blank">Click to open your image in a new tab or window</a><div>';
+                $('#graphDialog').dialog();
                 $('#newGraph').click(function() {
                     window.open(imageUrl, '_blank', 'height=200,width=200,toolbar=0,location=0,menubar=0');
                     $("#graphDialog").dialog("close");

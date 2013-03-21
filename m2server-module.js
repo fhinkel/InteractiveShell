@@ -543,7 +543,7 @@ var M2Server = function(overrideOptions) {
                         
             if (options.SCHROOT) {
                 // path is of the form file:///M2/share/....html
-                path = "/var/lib/schroot/mount/" + clientID + path.match(/^file:\/\/(.*)/)[1]
+                path = path.match(/^file:\/\/(.*)/)[1];
             }
 
             message = 'event: viewHelp\r\ndata: ' + path + "\r\n\r\n";
@@ -630,6 +630,7 @@ var M2Server = function(overrideOptions) {
         .use('/upload', uploadM2Package)
         .use('/var/folders', connect.static('/var/folders'))
         .use('/var/lib/schroot/mount', connect.static('/var/lib/schroot/mount'))
+        .use('/M2', connect.static('/M2'))
         // M2 creates temporary files (like created by Graphs.m2) here on MacOS
         .use('/tmp', connect.static('/tmp'))
         // and here on Ubuntu

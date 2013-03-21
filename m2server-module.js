@@ -163,29 +163,29 @@ var M2Server = function(overrideOptions) {
                   -b is the begin flag.
                 */
                 require('child_process').exec('sudo -u ' + clientID +
-                    ' schroot -c ' + clientID + ' -n ' + clientID + ' -b', function() {
-                    var filename = "/usr/local/var/lib/schroot/mount/" + clientID +
-                        "/rootstuff/sName.txt";
-                    // create a file inside schroot directory to allow schroot
-                    // to know its own name needed for open-schroot when
-                    // sending /image
-                    fs.writeFile(filename, clientID, function(err) {
-                        if (err) {
-                            logClient(clientID, "failing to write the file " +
-                                filename);
-                            logClient(clientID, err);
-                        } else {
-                            logClient(clientID, "wrote schroot's name into " +
-                                filename);
-                            fs.exists(filename, function(error) {
-                                logClient(clientID, "exists?: " + error);
-                            });
-                            fs.chmod(filename, 0444, function(error) {
-                                logClient(clientID, "chmod: " + error);
-                            });
-                            callbackFcn(clientID);
-                        }
-                    });
+                    ' schroot -c ' + clientID + ' -n ' + clientID + ' -b', function() { 
+                    // var filename = "/usr/local/var/lib/schroot/mount/" + clientID +
+                    //     "/rootstuff/sName.txt";
+                    // // create a file inside schroot directory to allow schroot
+                    // // to know its own name needed for open-schroot when
+                    // // sending /image
+                    // fs.writeFile(filename, clientID, function(err) {
+                    //     if (err) {
+                    //         logClient(clientID, "failing to write the file " +
+                    //             filename);
+                    //         logClient(clientID, err);
+                    //     } else {
+                    //         logClient(clientID, "wrote schroot's name into " +
+                    //             filename);
+                    //         fs.exists(filename, function(error) {
+                    //             logClient(clientID, "exists?: " + error);
+                    //         });
+                    //         fs.chmod(filename, 0444, function(error) {
+                    //             logClient(clientID, "chmod: " + error);
+                    //         });
+                    callbackFcn(clientID);
+                    //     }
+                    // });
                 });
             });
         } else {
@@ -214,7 +214,7 @@ var M2Server = function(overrideOptions) {
             //                         '-u', clientID, '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/bin/scriptM2.sh'
             // ]);
             var m2 = spawn('sudo', ['-u', clientID, 'schroot', '-c', clientID,
-                                    '-u', clientID, '-d', '/home/m2user/', '-r', '/bin/bash', '/M2/bin/scriptM2.sh'
+                                    '-u', clientID, '-d', '/home/m2user/', '-r', 'M2'
             ]);
         } else {
             m2 = spawn('M2');

@@ -38,7 +38,7 @@ print CONFIG "directory=/fakeroots/clone\n";
 print CONFIG "root-users=\n";
 print CONFIG "type=directory\n";
 print CONFIG "users=$user\n";
-print CONFIG "script-config=clone/config\n";
+print CONFIG "profile=clone\n";
 close (CONFIG); 
 
 

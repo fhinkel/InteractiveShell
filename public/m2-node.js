@@ -167,7 +167,7 @@ trym2.startEventSource = function() {
                 $(link).dialog();
                 $('#newGraph').click(function() {
                     window.open(imageUrl, '_blank', 'height=200,width=200,toolbar=0,location=0,menubar=0');
-                    $("#graphDialog").close();
+                    $("#graphDialog").dialog("close");
                     return false;
                 });
 //                ({

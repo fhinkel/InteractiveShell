@@ -120,13 +120,31 @@ var M2Server = function(overrideOptions) {
         this.lastActiveTime = Date.now(); // milliseconds when client was last active
         console.log("function Client()");
     };
-
+    
+    
+    // returns true if cliens[clientID] exists
+    // clientID is of the form user12345
+    var clientIDExists = function(clientID) {
+        if(clients[clientID] == null ){
+            return false;
+        }
+        logClient(clientID, "Client already exists");
+        //throw("double user");
+        return true;
+    };
+    
+    
     var startUser = function(cookies, request, callbackFcn) {
         totalUsers = totalUsers + 1;
         var clientID = Math.random() * 1000000;
         clientID = Math.floor(clientID);
-        // TODO check that this ID is not already in use
         clientID = "user" + clientID.toString(10);
+        while(clientIDExists(clientID)) {
+            clientID = Math.random() * 1000000;
+            clientID = Math.floor(clientID);
+            clientID = "user" + clientID.toString(10);
+            logClient(clientID, "Making new client ID");
+        }
         cookies.set("tryM2", clientID, {
             httpOnly: false
         });

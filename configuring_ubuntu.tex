@@ -616,6 +616,26 @@ One can use this to let the schroot know its name:
 schroot -c name -d existing/rw/dir -u user -r touch name
 \end{verbatim}
 
+\subsection{Short note on updating our schroots:}
+\begin{enumerate}
+\item Shut down the forever script.
+\item Shut down the m2server.
+\item Kill all schroots using
+\begin{verbatim}
+sudo schroot -e -f --all-sessions
+\end{verbatim}
+\item Start the master schroot:
+\begin{verbatim}
+sudo -u lars schroot -c master -u root
+\end{verbatim}
+\item You should now be inside the schroot as root. Do
+\begin{verbatim}
+apt-get update
+apt-get upgrade
+\end{verbatim}
+\item For updating M2 move the new .tar.gz to /fakeroots/new\_master/home (or wherever your master schroot is) and inside the schroot unpack the tarball. Then, still inside, replace /M2 with the new files and delete the tarball. With adjusted paths you could also do this from the outside.
+\item Restart the server.
+\end{enumerate}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%

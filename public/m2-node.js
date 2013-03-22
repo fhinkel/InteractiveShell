@@ -44,10 +44,10 @@ trym2.getSelected = function(inputField) {
 trym2.showTerminal = function() {
     $("#lesson").hide();
     $("#inputarea").show();
-    $("#send").show();
+    $("#sendBtn").show();
     $("#pageIndex").hide();
-    $("#previous").hide();
-    $("#next").hide();
+    $("#previousBtn").hide();
+    $("#nextBtn").hide();
     $("#TOC").hide();
     return false;
 };
@@ -55,9 +55,9 @@ trym2.showTerminal = function() {
 trym2.loadLesson = function(ell) {
     $("#inputarea").hide();
     var lessonContent = $('[lessonid="' + ell + '"]').html();
-    $("#send").hide();
-    $("#previous").show();
-    $("#next").show();    
+    $("#sendBtn").hide();
+    $("#previousBtn").show();
+    $("#nextBtn").show();    
     $("#pageIndex").button("option", "label", trym2.lessonNr + "/" + trym2.maxLesson).show();
     $("#lesson").html(lessonContent).show();
     $("#TOC").hide();    
@@ -134,7 +134,8 @@ trym2.helpScreen = function() {
 // attach a lesson ID
 trym2.getLessonTitles = function(tutorialFile, callback) {
     $("#menuTutorial").load(tutorialFile, function() {
-        var titles = $("#menuTutorial title").text() + " <ul>";
+        var titles = "<h3>" + $("#menuTutorial title").text() + "</h3>";
+        titles = titles + "<div> <ul>";
         var i = 1;
         $("#menuTutorial h4").each(function() {
             var title = $(this).text();
@@ -143,7 +144,7 @@ trym2.getLessonTitles = function(tutorialFile, callback) {
             i = i + 1;
             //console.log("Title in m2.js: " + title);
         });
-        titles = titles + "</ul>";
+        titles = titles + "</ul></div>";
         //console.log("All titles: " + titles);
         callback(titles);
     });
@@ -227,16 +228,28 @@ trym2.startEventSource = function() {
     }
 };
 
+trym2.getAllTitles = function(tutorials, next) {
+    for(var tutorial in tutorials) {
+        trym2.getLessonTitles(tutorials[tutorial],  function(titles) { 
+    		$("#accordion").append( titles ); 
+    		console.log("Titles: " + titles);
+            
+    	});
+	}	
+	next();
+};
+
+
 $(document).ready(function() {
     // send server our client.eventStream
     trym2.startEventSource();
     
     $("button").button();
-    $("#previous").button({
+    $("#previousBtn").button({
         icons: {primary: "ui-icon-arrowthick-1-w" },
         text: false
     });
-    $("#next").button({
+    $("#nextBtn").button({
         icons: {primary: "ui-icon-arrowthick-1-e" },
         text: false
     });
@@ -265,31 +278,29 @@ $(document).ready(function() {
             modal: true,
             autoOpen: false
         });
-        $('#help').click(trym2.helpScreen);
+        $('#helpBtn').click(trym2.helpScreen);
     }
-    $("#send").click(trym2.sendCallback('#M2In'));
+    $("#sendBtn").click(trym2.sendCallback('#M2In'));
     $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
-    $("#reset").click(trym2.postMessage('/restart'));
-    $("#interrupt").click(trym2.postMessage('/interrupt'));
-    $("#terminal").click(trym2.showTerminal);
+    $("#resetBtn").click(trym2.postMessage('/restart'));
+    $("#interruptBtn").click(trym2.postMessage('/interrupt'));
+    $("#terminalBtn").click(trym2.showTerminal);
     $(document).on("click", "#inputTerminalLink", trym2.showTerminal);
-    $("#upload").click(trym2.doUpfileClick);
+    $("#uploadBtn").click(trym2.doUpfileClick);
     $("#upfile").change(trym2.doUpload);
 
-    $("#showLesson").click(function() {
+    $("#showLessonBtn").click(function() {
         trym2.loadLesson(trym2.lessonNr);
         //console.log("lesson!");
     });
     
-    $("#TOCbutton").click(function(){
+    $("#TOCBtn").click(function(){
         $("#inputarea").hide();
-        $("#send").hide();
+        $("#sendBtn").hide();
         $("#lesson").hide();
-        $("#inputarea").hide();
-        $("#send").hide();
         $("#pageIndex").hide();
-        $("#previous").hide();
-        $("#next").hide();
+        $("#previousBtn").hide();
+        $("#nextBtn").hide();
         $("#TOC").show();
     });
 
@@ -307,24 +318,34 @@ $(document).ready(function() {
 
     $("#inputarea").hide();
     $("#TOC").hide();
-    $("#send").hide();
+    $("#sendBtn").hide();
     $("#pageIndex").hide();
+    $("#previousBtn").hide();
+    $("#nextBtn").hide();
 
     var tutorials = ["tutorials/welcome.html", "tutorials/Beginning.html", "tutorials/Beginning.html"];
-    for(var tutorial in tutorials) {
-        trym2.getLessonTitles(tutorials[tutorial],  function(titles) { 
-			$("#TOC").append( titles );
-		});
-    };
+    $("#TOC").append("<div id=\"accordion\"></div>");
+    
+    trym2.getAllTitles(tutorials, function() {
+        console.log("accordion()");
+    	$("#accordion").accordion();
+    });
+    
 
-    trym2.loadLesson(trym2.lessonNr);
+    
+
+    
+    var lessonContent = $('[lessonid="' + trym2.lessonNr + '"]').html();
+    $("#lesson").html(lessonContent).show();
+    
+    
     trym2.maxLesson = $('#tutorial').children().length;
     //console.log("maxLesson: " + trym2.maxLesson);
 
-    $("#next").click(function() {
+    $("#nextBtn").click(function() {
         trym2.switchLesson(1);
     });
-    $("#previous").click(function() {
+    $("#previousBtn").click(function() {
         trym2.switchLesson(-1);
     });
 

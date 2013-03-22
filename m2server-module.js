@@ -151,9 +151,9 @@ var M2Server = function(overrideOptions) {
         clients[clientID].clientID = clientID;
 
         // Setting the schroot and system related variables.
-        clients[clientID].schrootType = clientID;
-        clients[clientID].schrootName = clientID;
-        clients[clientID].systemUserName = clientID;
+        clients[clientID].schrootType = clientID + 'st';
+        clients[clientID].schrootName = clientID + 'sn';
+        clients[clientID].systemUserName = clientID + 'sun';
         
         
         logClient(clientID, "New user: " + " UserAgent=" + request.headers[

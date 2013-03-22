@@ -17,7 +17,6 @@
  */
 
 (function($) {
-  var isIE=$.browser.msie;
   jQuery.fn.encHTML = function() {
     return this.each(function(){
       var me   = $(this);
@@ -42,7 +41,7 @@
         var fontfamily=el.css('font-family')?el.css('font-family').replace(/\'/g, '').replace(/"/g,''):"Arial";
         var fontcolor=el.css('color')? el.css('color'):"#000";
 
-        if ($.browser.msie){
+          if ($(browser).msie){
           if(!tb) el.css({'writing-mode': 'tb-rl', height:h, filter: 'fliph() flipv("") ', whiteSpace:"nowrap", lineHeight:fontsize+2+"px"}).css('font-weight', 'normal');
           label=$("<span style='writing-mode: tb-rl; whiteSpace:nowrap; height:"+h+"; width:"+w+"; line-height:"+(fontsize+2)+"px'>"+el.html()+"</span>");
         }else{
@@ -51,7 +50,7 @@
 
           h=dim[1];
           w=dim[0];
-          if(!isIE ) el.encHTML();
+          el.encHTML();
           var txt= el.text();
 
           var rot="-90";

@@ -3,7 +3,7 @@ all: check
 .PHONY: start start_schroot_server start_local_server check beautify help
 
 start:
-	forever start -l forever.log -o out.log -e err.log --append m2server-schroot.js
+	forever start -l /home/webm2.logs/forever.log -o /home/webm2.logs/out.log -e /home/webm2.logs/err.log --append m2server-schroot.js
 
 start_local:
 	node m2server.js

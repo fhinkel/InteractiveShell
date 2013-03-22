@@ -252,7 +252,6 @@ $(document).ready(function() {
         text: false
     });
 
-/*
     var extruderMenu = $("#extruderTop").buildMbExtruder({
         position: "top",
         width: 350,
@@ -261,7 +260,7 @@ $(document).ready(function() {
         onExtContentLoad: function() {},
         onExtClose: function() {}
     });
-*/
+
     $('#M2In').val(
         "Evaluate a line by typing Shift+Enter or by clicking on Evaluate.\nHere are some sample commands:\n---------------\nR = ZZ/101[a,b,c]\nS = ZZ/32003[vars(1..10)]\nQQ[x_1..x_6]\n\nS = ZZ/32003[vars(1..13)]\nres coker vars S\n");
 
@@ -328,7 +327,7 @@ $(document).ready(function() {
 
     $(document).on("click", "#selectTutorialLink", function() {
         //console.log("open tutorial menu");
-//        extruderMenu.openMbExtruder();
+        extruderMenu.openMbExtruder();
         return false;
     });
 

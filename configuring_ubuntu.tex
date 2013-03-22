@@ -102,7 +102,7 @@ system "echo 500000000 > /cgroup/memory/$user/memory.limit_in_bytes";
 
 Then the schroot can be executed in the corresponding cgroup using
 \begin{verbatim}
-sudo cgexec -g memory:user sudo -u user schroot -c user -u user -d /home/m2user -r /bin/bash /M2/limitedM2.sh
+sudo cgexec -g memory:user sudo -u user schroot -c user -u user -d /home/m2user -r M2
 \end{verbatim}
 
 If you want to see the tasks of a specific user:
@@ -375,6 +375,8 @@ profile=master <- total path doesn't work
 Note that apparently all the users mentioned here have to exist on the outside
 as well.  We definetely have to modify the passwd file, since at this point it
 is a copy from the outside.
+
+Note also that we need to move our custom 'open' and 'open-www' files to /usr/local/bin.
 
 \subsection{Installing M2 and other things}
 

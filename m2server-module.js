@@ -61,7 +61,8 @@ var M2Server = function(overrideOptions) {
 
     // delete a user both from the system and the clients[]
     var deleteClient = function(clientID) {
-        runShellCommand('perl-scripts/remove_user.pl ' + clientID, function(ret) {
+        runShellCommand('perl-scripts/remove_user.pl ' + clients[clientID].systemUserName + ' ' 
+        + clients[clientID].schrootName + ' ' + clients[clientID].schrootType, function(ret) {
             console.log("We removed client " + clientID + " with result: " +
                 ret);
         });
@@ -112,6 +113,9 @@ var M2Server = function(overrideOptions) {
         this.m2 = null;
         this.eventStream = [];
         this.clientID = null;
+        this.schrootType = null;
+        this.schrootName = null;
+        this.systemUserName = null;
         // generated randomly in startUser(), used for cookie and as user name
         // on the system
         this.recentlyRestarted = false;
@@ -145,10 +149,18 @@ var M2Server = function(overrideOptions) {
         });
         clients[clientID] = new Client();
         clients[clientID].clientID = clientID;
+
+        // Setting the schroot and system related variables.
+        clients[clientID].schrootType = clientID;// + 'st';
+        clients[clientID].schrootName = clientID;// + 'sn';
+        clients[clientID].systemUserName = clientID;// + 'sun';
+        
+        
         logClient(clientID, "New user: " + " UserAgent=" + request.headers[
             'user-agent'] + ".");
         if (options.SCHROOT) {
-            runShellCommand('perl-scripts/create_user.pl ' + clientID + ' ' +
+            runShellCommand('perl-scripts/create_user.pl ' + clients[clientID].systemUserName 
+                + ' ' + clients[clientID].schrootType + ' ' +
                 options.userMemoryLimit + ' ' + options.userCpuLimit, function(
                 ret) {
                 //console.log( "***" + ret );
@@ -162,30 +174,9 @@ var M2Server = function(overrideOptions) {
                      below upon entering the schroot.
                   -b is the begin flag.
                 */
-                require('child_process').exec('sudo -u ' + clientID +
-                    ' schroot -c ' + clientID + ' -n ' + clientID + ' -b', function() { 
-                    // var filename = "/usr/local/var/lib/schroot/mount/" + clientID +
-                    //     "/rootstuff/sName.txt";
-                    // // create a file inside schroot directory to allow schroot
-                    // // to know its own name needed for open-schroot when
-                    // // sending /image
-                    // fs.writeFile(filename, clientID, function(err) {
-                    //     if (err) {
-                    //         logClient(clientID, "failing to write the file " +
-                    //             filename);
-                    //         logClient(clientID, err);
-                    //     } else {
-                    //         logClient(clientID, "wrote schroot's name into " +
-                    //             filename);
-                    //         fs.exists(filename, function(error) {
-                    //             logClient(clientID, "exists?: " + error);
-                    //         });
-                    //         fs.chmod(filename, 0444, function(error) {
-                    //             logClient(clientID, "chmod: " + error);
-                    //         });
+                require('child_process').exec('sudo -u ' + clients[clientID].systemUserName +
+                    ' schroot -c ' + clients[clientID].schrootType + ' -n ' + clients[clientID].schrootName + ' -b', function() { 
                     callbackFcn(clientID);
-                    //     }
-                    // });
                 });
             });
         } else {
@@ -209,9 +200,9 @@ var M2Server = function(overrideOptions) {
                   -d specifies the directory inside the schroot we want to enter
                   -r specifies the command to be run upon entering.
             */
-            var m2 = spawn('sudo', ['cgexec', '-g', 'cpu,memory:' + clientID,
-                    'sudo', '-u', clientID, 'schroot', '-c', clientID,
-                                    '-u', clientID, '-d', '/home/m2user/', '-r', 'M2'
+            var m2 = spawn('sudo', ['cgexec', '-g', 'cpu,memory:' + clients[clientID].systemUserName,
+                    'sudo', '-u', clients[clientID].systemUserName, 'schroot', '-c', clients[clientID].schrootName,
+                                    '-u', clients[clientID].systemUserName, '-d', '/home/m2user/', '-r', 'M2'
             ]);
             // var m2 = spawn('sudo', ['-u', clientID, 'schroot', '-c', clientID,
             //                         '-u', clientID, '-d', '/home/m2user/', '-r', 'M2'
@@ -396,7 +387,7 @@ var M2Server = function(overrideOptions) {
             }, 1000);
             if (client.m2) {
                 client.m2.kill();
-                runShellCommand("killall -u " + clientID, function(ret) {
+                runShellCommand("killall -u " + clients[clientID].systemUserName, function(ret) {
                     console.log("We removed processes associates to " +
                         clientID + " with result: " + ret);
                 });
@@ -477,10 +468,12 @@ var M2Server = function(overrideOptions) {
         // The URL's in question look like:
         //  (schroot version): /user45345/var/a.jpg
         //  (non-schroot): /dfdff/dsdsffff/fdfdsd/M2-12345-1/a.jpg
-        //     wher 12345 is the pid of the M2 process.
+        //     where 12345 is the pid of the M2 process.
         var clientID;
         var matchobject;
         if (options.SCHROOT) {
+            // This needs to be changed. What we might get here is only
+            // the username. We need to match the clientID from this.
             matchobject = url.match(/^\/(user\d+)\//);
         } else {
             matchobject = url.match(/\/M2-(\d+)-/);
@@ -530,7 +523,7 @@ var M2Server = function(overrideOptions) {
 
             var path = parseUrlForPath(url); // a string
             if (options.SCHROOT) {
-                path = "/usr/local/var/lib/schroot/mount/" + clientID + path
+                path = "/usr/local/var/lib/schroot/mount/" + clients[clientID].schrootName + path
             }
 
             message = 'event: image\r\ndata: ' + path + "\r\n\r\n";
@@ -566,6 +559,7 @@ var M2Server = function(overrideOptions) {
                         
             if (options.SCHROOT) {
                 // path is of the form file:///M2/share/....html
+                // This will fail if we split the clientID.
                 path = path.match(/^file:\/\/(.*)/)[1];
             }
 
@@ -609,7 +603,7 @@ var M2Server = function(overrideOptions) {
             var formidable = require('./node-formidable');
             var form = new formidable.IncomingForm;
             if (options.SCHROOT) {
-                var schrootPath = "/usr/local/var/lib/schroot/mount/" + clientID +
+                var schrootPath = "/usr/local/var/lib/schroot/mount/" + clients[clientID].schrootName +
                     "/home/m2user/";
                 form.uploadDir = schrootPath;
             }

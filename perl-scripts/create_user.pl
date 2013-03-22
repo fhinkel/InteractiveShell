@@ -12,9 +12,10 @@
 # 2. Delete the user
 
 $user = $ARGV[0];
+$schroot_type = $ARGV[1];
 
-$memlimit  =$ARGV[1];
-$cpulimit  =$ARGV[2];
+$memlimit  =$ARGV[2];
+$cpulimit  =$ARGV[3];
 #print $memlimit;
 #print "We are starting a new user: ";
 #print $user;
@@ -31,8 +32,8 @@ system "useradd -G m2users $user -d /home/m2user";
 ################################
 ##  Schroot config
 ################################
-open (CONFIG, ">>/usr/local/etc/schroot/chroot.d/$user.conf");
-print CONFIG "[$user]\n";
+open (CONFIG, ">>/usr/local/etc/schroot/chroot.d/$schroot_type.conf");
+print CONFIG "[$schroot_type]\n";
 print CONFIG "description=Ubuntu precise pangolin clone chroot\n";
 print CONFIG "directory=/fakeroots/clone\n";
 print CONFIG "root-users=\n";

@@ -1,2 +1,2 @@
-schrootID=`cat /rootstuff/sName.txt`
+schrootID=`cat /etc/debian_chroot`
 curl -s http://localhost:8002/image/$schrootID/$1 

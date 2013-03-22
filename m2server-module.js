@@ -600,7 +600,7 @@ var M2Server = function(overrideOptions) {
     var uploadM2Package = function(request, response, next) {
         assureClient(request, response, function(clientID) {
             logClient(clientID, "received: /upload");
-            var formidable = require('./node-formidable');
+            var formidable = require('formidable');
             var form = new formidable.IncomingForm;
             if (options.SCHROOT) {
                 var schrootPath = "/usr/local/var/lib/schroot/mount/" + clients[clientID].schrootName +

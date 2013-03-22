@@ -153,6 +153,44 @@ trym2.getLessonTitles = function(tutorialFile, callback) {
     });
 };
 
+trym2.doUpfileClick = function () {
+    $("#upfile").click();
+};
+
+trym2.doUpload = function () {
+    var obj = this;
+    var file = obj.files[0];
+    var fileName = obj.value.split("\\");
+    var formData = new FormData();
+    formData.append('file', file);
+    console.log("process form " + file );
+    console.log(file.size);      
+    if (file.size > 10000000) {
+        alert("Your file is too big to upload.  Sorry!");
+        return false;
+    }
+    $.ajax({
+        url: '/upload',
+        type: 'POST',
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        statusCode: {
+            500: function(data) {
+                alert("Uploading failed.");
+            }
+        },
+        success: function(data) {
+            console.log("File uploaded successfully!" + data);
+            alert(fileName +
+                  " has been uploaded and you can use it by loading it into your Macaulay2 session (use the input terminal).");
+            
+        }
+    }); 
+    return false;
+}
+
 // Register for notification of new messages using EventSource
 trym2.startEventSource = function() {
     if ( !! window.EventSource) {
@@ -246,6 +284,9 @@ $(document).ready(function() {
     $("#terminal").click(trym2.showTerminal);
     $("#inputTerminalLink").live("click", trym2.showTerminal);
 
+    $("#upload").click(trym2.doUpfileClick);
+    $("#upfile").change(trym2.doUpload);
+
     $("#showLesson").click(function() {
         trym2.loadLesson(trym2.lessonNr);
         //console.log("lesson!");
@@ -272,44 +313,6 @@ $(document).ready(function() {
     $("#tutorial").html(
         "<div class='lesson' lessonid='1'>  <div><br>Get started by <a href='#' id='selectTutorialLink'><b>selecting a tutorial</b></a> or by using the <a href='#' id='inputTerminalLink'><b>Input Terminal</b></a>. Have fun!<br> <p><code>viewHelp \"set\"</code><br><code> needsPackage \"Graphs\"<br>\nA = graph({{x_1,x_3},{x_2,x_4},{x_1,x_4}})<br>\ndisplayGraph A</code><p><code>4+3*9</code><br><code>apply(10, i -> i *17)</code><br><code>R = ZZ/3[a,b,c]</code><br><code>groebnerBasis ideal(a^2, a*b-b*b, -c^2)</code><br><a href='http://www.math.uiuc.edu/Macaulay2/'>Macaulay2</a> is a software system devoted to supporting research in algebraic geometry and commutative algebra, whose creation has been funded by the National Science Foundation since 1992. </p> <p> To get started, select a tutorial. Click on any highlighted code, Macaulay2 will execute it. The result is displayed on the right. Alternatively, you can use the <b>Input Terminal</b> on the left to write your own commands. Execute a line by positioning your cursor on it and click on the Evaluate button (or type Shift-Enter). You can switch back to the tutorial at any time. </p> <p>The tutorials demonstrate different aspects of Macaulay2. They are meant to be starting points for your own experimentation. Edit the commands in the <b>Input Terminal</b> and run them again. Whenever you're ready to move on, click the Next button.</p>");
     // <code>3+18</code><br>    <code>version</code><br>    <code> exit </code> <br>   <code> R = ZZ/101[vars(0..13)] </code> <br><code> gbTrace=1 </code> <br> <code> time res coker vars R </code> <br>  <code> m1 = genericMatrix(R,a,3,3) </code> <br> <code> m2 = genericMatrix(R,j,3,3) </code> <br> <code> J = ideal(m1*m2-m2*m1) </code> <br> <code> C = res J </code> <br> <code> C.dd_3 </code> <br> 
-
-    //$("#Upload").live("click", trym2.uploadCallback );
-    $("#Upload").live("click", function() {
-        var formData = new FormData();
-        var files = $('#fileNameField')[0].files;
-        if (files.length == 0) {
-            alert("Please select a file to upload.");
-            return false;
-        }
-        var fileName = $('#fileNameField').val();
-        console.log("process form " + files[0]);
-        formData.append('file', files[0]);
-        var filesize = files[0].size;
-        if (filesize > trym2.MAXFILESIZE) {
-            alert("Your file is too big to upload.  Sorry!");
-            return false;
-        }
-        $.ajax({
-            url: '/upload',
-            type: 'POST',
-            data: formData,
-            cache: false,
-            contentType: false,
-            processData: false,
-            statusCode: {
-                500: function(data) {
-                    alert("Uploading failed.");
-                }
-            },
-            success: function(data) {
-                console.log("File uploaded successfully!" + data);
-                alert(fileName +
-                    " has been uploaded and you can use it by loading it into your Macaulay2 session (use the input terminal).");
-                //$("#Upload").parent().after("<div><i>" + fileName + "</i> has been uploaded and you can use it load it in your Macaulay2 session (use the input terminal).</div>");
-            }
-        });
-        return false;
-    });
 
     $("#selectTutorialLink").live("click", function() {
         //console.log("open tutorial menu");

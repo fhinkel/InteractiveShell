@@ -36,12 +36,6 @@ body {
 	position: relative;
 }
 
-.bottom {
-	position: absolute; 
-    bottom: 0;
-	width: 100%;
-}
-
 div {
 	/*border: 1px black solid;*/
 }
@@ -54,6 +48,7 @@ div {
 #title {
 	font-size: 24pt;
 	font-weight: bold;
+	float: right;
 }
 
 .terminal {

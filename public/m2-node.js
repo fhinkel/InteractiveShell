@@ -48,10 +48,7 @@ trym2.showTerminal = function() {
     $("#pageIndex").hide();
     $("#previous").hide();
     $("#next").hide();
-    //$("#showLesson").show();
-    //$("#terminal").hide();
     $("#TOC").hide();
-    //$("#TOCbutton").show();
     return false;
 };
 
@@ -63,11 +60,7 @@ trym2.loadLesson = function(ell) {
     $("#next").show();    
     $("#pageIndex").button("option", "label", trym2.lessonNr + "/" + trym2.maxLesson).show();
     $("#lesson").html(lessonContent).show();
-    //$("#showLesson").hide();
-    //$("#terminal").show();
-    $("#TOC").hide();
-    //$("#TOCbutton").show();
-    
+    $("#TOC").hide();    
 };
 
 trym2.switchLesson = function(incr) {
@@ -291,16 +284,13 @@ $(document).ready(function() {
     $("#TOCbutton").click(function(){
         $("#inputarea").hide();
         $("#send").hide();
-        //$("#showLesson").show();
         $("#lesson").hide();
         $("#inputarea").hide();
         $("#send").hide();
         $("#pageIndex").hide();
         $("#previous").hide();
         $("#next").hide();
-        //$("#terminal").show();
         $("#TOC").show();
-        //$("#TOCbutton").hide();
     });
 
 
@@ -318,7 +308,6 @@ $(document).ready(function() {
     $("#inputarea").hide();
     $("#TOC").hide();
     $("#send").hide();
-
     $("#pageIndex").hide();
 
     var tutorials = ["tutorials/welcome.html", "tutorials/Beginning.html", "tutorials/Beginning.html"];

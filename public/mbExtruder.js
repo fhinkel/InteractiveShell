@@ -25,7 +25,6 @@
 	document.extruder.bottom = 0;
 	document.extruder.right = 0;
 	document.extruder.idx=0;
-	var isIE=$.browser.msie;
 
 	$.mbExtruder= {
 		author:"Matteo Bicocchi",
@@ -84,7 +83,7 @@
 										{position:position,top:0,left:0,width:1}:
 										{position:position,top:0,right:0,width:1};
 				extruder.css(extruderStyle);
-				if(!isIE) extruder.css({opacity:this.options.extruderOpacity});
+				extruder.css({opacity:this.options.extruderOpacity});
 				extruder.wrapInner("<div class='ext_wrapper'></div>");
 				wrapper= extruder.find(".ext_wrapper");
 
@@ -212,8 +211,7 @@
 			var where=$(this), voice;
 			var cb= this.options.callback;
 			var container=$("<div>").addClass("container");
-			if (!($.browser.msie && $.browser.version<=7))
-				container.css({width:$(this).get(0).options.width});
+			container.css({width:$(this).get(0).options.width});
 			where.find(".content").wrapInner(container);
 			$.ajax({
 				type: "GET",
@@ -241,7 +239,7 @@
 			$(document).unbind("click.extruder"+extruder.get(0).idx);
 			var opt= extruder.get(0).options;
 			extruder.addClass("isOpened");
-			if(!isIE) extruder.css("opacity",1);
+			extruder.css("opacity",1);
 			var position= opt.position;
 			extruder.mb_bringToFront();
 			if (position=="top" || position=="bottom"){
@@ -249,7 +247,7 @@
 				if(opt.onExtOpen) opt.onExtOpen();
 			}else{
 
-				if(!isIE) $(this).css("opacity",1);
+				$(this).css("opacity",1);
 				extruder.find('.ext_wrapper').css({width:""});
 				extruder.find('.content').css({overflowX:"hidden", display:"block"});
 				extruder.find('.content').animate({ width: opt.width}, opt.slideTimer);
@@ -268,7 +266,7 @@
 			var opt= extruder.get(0).options;
 			extruder.removeClass("isOpened");
 			$(document).unbind("click.extruder"+extruder.get(0).idx);
-			if(!isIE) extruder.css("opacity",opt.extruderOpacity);
+			extruder.css("opacity",opt.extruderOpacity);
 			if(opt.hidePanelsOnClose) extruder.hidePanelsOnClose();
 			if (opt.position=="top" || opt.position=="bottom"){
 				extruder.find('.content').slideUp(opt.slideTimer);

@@ -241,6 +241,7 @@ trym2.startEventSource = function() {
 $(document).ready(function() {
     // send server our client.eventStream
     trym2.startEventSource();
+/*
     var extruderMenu = $("#extruderTop").buildMbExtruder({
         position: "top",
         width: 350,
@@ -249,11 +250,11 @@ $(document).ready(function() {
         onExtContentLoad: function() {},
         onExtClose: function() {}
     });
-
+*/
     $('#M2In').val(
         "Evaluate a line by typing Shift+Enter or by clicking on Evaluate.\nHere are some sample commands:\n---------------\nR = ZZ/101[a,b,c]\nS = ZZ/32003[vars(1..10)]\nQQ[x_1..x_6]\n\nS = ZZ/32003[vars(1..13)]\nres coker vars S\n");
 
-    $('.submenuItem').live("click", function() {
+    $(document).on("click", ".submenuItem", function() {
         var i = 1,
             lessonId = $(this).attr('lessonid');
         //console.log("You clicked a submenuItem: " + $(this).html());
@@ -281,7 +282,7 @@ $(document).ready(function() {
     $("#reset").click(trym2.postMessage('/restart'));
     $("#interrupt").click(trym2.postMessage('/interrupt'));
     $("#terminal").click(trym2.showTerminal);
-    $("#inputTerminalLink").live("click", trym2.showTerminal);
+    $(document).on("click", "#inputTerminalLink", trym2.showTerminal);
 
     $("#upload").click(trym2.doUpfileClick);
     $("#upfile").change(trym2.doUpload);
@@ -292,7 +293,7 @@ $(document).ready(function() {
     });
 
 
-    $("code").live("click", function() {
+    $(document).on("click", "code", function() {
         $(this).effect("highlight", {
             color: 'red'
         }, 300);
@@ -313,9 +314,10 @@ $(document).ready(function() {
         "<div class='lesson' lessonid='1'>  <div><br>Get started by <a href='#' id='selectTutorialLink'><b>selecting a tutorial</b></a> or by using the <a href='#' id='inputTerminalLink'><b>Input Terminal</b></a>. Have fun!<br> <p><code>viewHelp \"set\"</code><br><code> needsPackage \"Graphs\"<br>\nA = graph({{x_1,x_3},{x_2,x_4},{x_1,x_4}})<br>\ndisplayGraph A</code><p><code>4+3*9</code><br><code>apply(10, i -> i *17)</code><br><code>R = ZZ/3[a,b,c]</code><br><code>groebnerBasis ideal(a^2, a*b-b*b, -c^2)</code><br><a href='http://www.math.uiuc.edu/Macaulay2/'>Macaulay2</a> is a software system devoted to supporting research in algebraic geometry and commutative algebra, whose creation has been funded by the National Science Foundation since 1992. </p> <p> To get started, select a tutorial. Click on any highlighted code, Macaulay2 will execute it. The result is displayed on the right. Alternatively, you can use the <b>Input Terminal</b> on the left to write your own commands. Execute a line by positioning your cursor on it and click on the Evaluate button (or type Shift-Enter). You can switch back to the tutorial at any time. </p> <p>The tutorials demonstrate different aspects of Macaulay2. They are meant to be starting points for your own experimentation. Edit the commands in the <b>Input Terminal</b> and run them again. Whenever you're ready to move on, click the Next button.</p>");
     // <code>3+18</code><br>    <code>version</code><br>    <code> exit </code> <br>   <code> R = ZZ/101[vars(0..13)] </code> <br><code> gbTrace=1 </code> <br> <code> time res coker vars R </code> <br>  <code> m1 = genericMatrix(R,a,3,3) </code> <br> <code> m2 = genericMatrix(R,j,3,3) </code> <br> <code> J = ideal(m1*m2-m2*m1) </code> <br> <code> C = res J </code> <br> <code> C.dd_3 </code> <br> 
 
-    $("#selectTutorialLink").live("click", function() {
+
+    $(document).on("click", "#selectTutorialLink", function() {
         //console.log("open tutorial menu");
-        extruderMenu.openMbExtruder();
+//        extruderMenu.openMbExtruder();
         return false;
     });
 

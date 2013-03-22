@@ -26,10 +26,21 @@ body {
 
 .left {
 	float: left;
+
 }
 
 .right {
 	float: right;
+}
+
+.clear {
+    clear: both;
+}
+
+div-border
+{
+border-style:solid;
+border-width:2px;
 }
 
 .rel { 
@@ -44,33 +55,33 @@ div {
 	border: 1px red solid;
 }
 
-
+.bottom {
+    position: absolute;
+    bottom: 0;
+}
 #title {
 	font-size: 24pt;
+	display: inline;
+	vertical-align: bottom;
 	font-weight: bold;
-	float: right;
 }
 
 .terminal {
 	background-color: #C2DFFF;
 }
 
-.left {
-	padding-left: 10px;
-	
-}
 
 #inputarea, #lesson, #TOC, #outputarea {
 	width: 49%;
 	height: 90%;
 }
 
-#lesson {
+#lesson, #TOC {
 	overflow-y: auto;
 	font-family: Lucida Grande;
 }
 
-#inputarea, #lesson {
+#inputarea, #lesson, #TOC {
 	clear: both;
 
 }

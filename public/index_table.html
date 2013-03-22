@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+  <head>
+    <link rel="stylesheet" href="m2.css" type="text/css" media="screen">
+<!--
+    <link rel="stylesheet" href="css/overcast/jquery-ui-1.8.23.custom.css" type="text/css" media="screen">
+    <script type="text/javascript" src="jqueryui/js/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript" src="jqueryui/js/jquery-ui-1.8.23.custom.min.js"></script>
+-->
+        <link rel="stylesheet" href="jquery-ui-1.10.2.custom/css/cupertino/jquery-ui-1.10.2.custom.css" type="text/css" media="screen">
+    <script type="text/javascript" src="jquery-ui-1.10.2.custom/js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="jquery-ui-1.10.2.custom/js/jquery-ui-1.10.2.custom.min.js"></script>
+
+    <link href="mbExtruder.css" media="all" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="jquery.mb.extruder/inc/jquery.hoverIntent.min.js"></script>
+    <script type="text/javascript" src="jquery.mb.extruder/inc/jquery.metadata.js"></script>
+    <script type="text/javascript" src="jquery.mb.extruder/inc/jquery.mb.flipText.js"></script>
+    <script type="text/javascript" src="mbExtruder.js"></script>
+
+  <script type="text/javascript" src="m2-node.js"></script>
+
+    <title>
+      Macaulay2
+    </title>
+    
+  </head>
+
+  <body>
+   <table width="100%" height="100%" cellspacing=10>
+      <tr>
+         <td width="100%" colspan=2>
+                  <button type="button" id="M2">Macaulay2</button> 
+                    <button id="upload" type="button">click to upload a file</button>
+                    <!--<div style='height: 0px;width: 0px; overflow:hidden;'><input id="upfile" type="file" value="upload"/></div>-->
+
+                  <button type="button" id="terminal">Input Terminal</button> 
+                  <button type="button" id="previous">Previous</button> 
+                  <button type="button" id="next">Next</button> 
+                  <button type="button" id="send">Evaluate</button>
+                  <button type="button" id="showLesson">Tutorial</button>
+                  <button type="button" id="pageIndex">PageIndex</button>
+                  
+                  <button type="button" id="reset">Reset</button>
+                  <button type="button" id="interrupt">Interrupt</button>
+                  <button type="button" id="help">Help</button>
+         </td>
+      </tr>
+      <tr height="96%">
+         <td width="50%">
+             <!--<div id="lesson" class="terminal left "></div>-->
+               <textarea id="M2In" wrap='off'>
+         </textarea>
+             <!--<div id="help-dialog" title="TryM2 Help">
+             </div>
+             <div id="graphDialog" title="Graph"></div>
+             <form method="POST" enctype="multipart/form-data" name="myForm">
+             </form>-->
+
+         </td>
+         <td width="50%">
+               <textarea id="M2Out" wrap='off' readonly='readonly'>
+         </textarea>
+         </td>
+      </tr>
+   </table>
+  </body>
+</html>

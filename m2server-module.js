@@ -5,25 +5,36 @@
 //       node m2server.js 
 //   or
 //       node m2server-schroot.js
-// in a terminal in this directory.
-// Then in a browser, use: 
+// in a terminal in this directory. Alternatively you can use the Makefile 
+// provided alongside this repository.
+//
+//
+// Local version:
+//
+// In a browser, use: 
 //      http://localhost:8002/
-// Required Node.js libraries: cookies, connect, fs, http.  Install via:
+// Requirements:
+//   Node.js libraries: cookies, connect, fs, http.  
+// Install via:
 //   npm install cookies, or sudo npm install -g cookies
 // Required on path: M2
 // We are using our own open script to make Graphs.m2 work (generate jpegs for
 // users), please include the current directory in your path: 
 // export PATH=.:$PATH
-
-// intended to run on (s)chrooted environment, where every user starts M2 in a
-// separate schroot. 
+//
+//
+// Schroot version:
+//
+// Intended to run on (s)chrooted environment, where every user starts M2 in a
+// separate schroot. For setup instructions please see configuring_ubuntu.tex.
+//
 //
 // A message on / : possibly creates a cookie, and serves back index.html and
 // related js/css/png files
 // A POST message on /chat: input should be Macaulay2 commands to perform.  A
 // message on /chat: start an event emitter, which will return the output of
 // the M2 process.
-// image is being called by the open script to tell the server where to find a
+// Image is being called by the open script to tell the server where to find a
 // jpg that the user created
 //
 // Using Node connect, but not express
@@ -44,7 +55,7 @@ var M2Server = function(overrideOptions) {
         // there is only one user, he gets 100% CPU.
         PRUNECLIENTINTERVAL: 1000 * 60 * 10, // 10 minutes
         MAXAGE: 1000 * 60 * 60 * 24 * 7, // 1 week
-        SCHROOT: false // if true: start with --schroot on server
+        SCHROOT: false // if true: start with 'sudo make start' on server.
     },
 
         totalUsers = 0, //only used for stats: total # users since server started
@@ -204,9 +215,6 @@ var M2Server = function(overrideOptions) {
                     'sudo', '-u', clients[clientID].systemUserName, 'schroot', '-c', clients[clientID].schrootName,
                                     '-u', clients[clientID].systemUserName, '-d', '/home/m2user/', '-r', 'M2'
             ]);
-            // var m2 = spawn('sudo', ['-u', clientID, 'schroot', '-c', clientID,
-            //                         '-u', clientID, '-d', '/home/m2user/', '-r', 'M2'
-            // ]);
         } else {
             m2 = spawn('M2');
             logClient(clientID, "Spawning new M2 process...");

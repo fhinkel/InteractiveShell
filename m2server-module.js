@@ -151,9 +151,9 @@ var M2Server = function(overrideOptions) {
         clients[clientID].clientID = clientID;
 
         // Setting the schroot and system related variables.
-        clients[clientID].schrootType = clientID + 'st';
-        clients[clientID].schrootName = clientID + 'sn';
-        clients[clientID].systemUserName = clientID + 'sun';
+        clients[clientID].schrootType = clientID;// + 'st';
+        clients[clientID].schrootName = clientID;// + 'sn';
+        clients[clientID].systemUserName = clientID;// + 'sun';
         
         
         logClient(clientID, "New user: " + " UserAgent=" + request.headers[
@@ -472,7 +472,9 @@ var M2Server = function(overrideOptions) {
         var clientID;
         var matchobject;
         if (options.SCHROOT) {
-            matchobject = url.match(/^\/(user\d+)sn\//);
+            // This needs to be changed. What we might get here is only
+            // the username. We need to match the clientID from this.
+            matchobject = url.match(/^\/(user\d+)\//);
         } else {
             matchobject = url.match(/\/M2-(\d+)-/);
         }
@@ -557,6 +559,7 @@ var M2Server = function(overrideOptions) {
                         
             if (options.SCHROOT) {
                 // path is of the form file:///M2/share/....html
+                // This will fail if we split the clientID.
                 path = path.match(/^file:\/\/(.*)/)[1];
             }
 
@@ -600,7 +603,7 @@ var M2Server = function(overrideOptions) {
             var formidable = require('./node-formidable');
             var form = new formidable.IncomingForm;
             if (options.SCHROOT) {
-                var schrootPath = "/usr/local/var/lib/schroot/mount/" + clientID +
+                var schrootPath = "/usr/local/var/lib/schroot/mount/" + clients[clientID].schrootName +
                     "/home/m2user/";
                 form.uploadDir = schrootPath;
             }

@@ -1,14 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 	<head>
-
 		<link rel="stylesheet" href="m2.css" type="text/css" media="screen">
 		<link rel="stylesheet" href="css/overcast/jquery-ui-1.8.23.custom.css" type="text/css" media="screen">
-
 		<script type="text/javascript" src="jqueryui/js/jquery-1.8.0.min.js"></script>
 		<script type="text/javascript" src="jqueryui/js/jquery-ui-1.8.23.custom.min.js"></script>
-
-
     <link href="mbExtruder.css" media="all" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="jquery.mb.extruder/inc/jquery.hoverIntent.min.js"></script>
   	<script type="text/javascript" src="jquery.mb.extruder/inc/jquery.metadata.js"></script>
@@ -16,13 +12,53 @@
     <script type="text/javascript" src="mbExtruder.js"></script>
 	  
 	<script type="text/javascript" src="m2-node.js"></script>
+	<script type="text/javascript">
+   function getFile(){
+     document.getElementById("upfile").click();
+   }
+   function sub(obj){
+      var file = obj.files[0];
+      var fileName = obj.value.split("\\");
+      var formData = new FormData();
+      formData.append('file', file);
+      console.log("process form " + file );
+      console.log(file.size);      
+      if (file.size > 10000000) {
+            alert("Your file is too big to upload.  Sorry!");
+            return false;
+        }
+        $.ajax({
+            url: '/upload',
+            type: 'POST',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            statusCode: {
+                500: function(data) {
+                    alert("Uploading failed.");
+                }
+            },
+            success: function(data) {
+                console.log("File uploaded successfully!" + data);
+                alert(fileName +
+                    " has been uploaded and you can use it by loading it into your Macaulay2 session (use the input terminal).");
+
+            }
+        }); 
+      return false;
+    }
+
+
+
+  </script>
 
 		<title>
 			Macaulay2
 		</title>
+		
 	</head>
 	<body>
-	  <div id="graphDialog" title="Graph"></div>
   		<div class="rel">
 			<div id="title">
 				Macaulay2
@@ -36,11 +72,12 @@
 
 					<div  class="right" >
 					  <div class='left'>
-    					<form id='fileForm' enctype='multipart/form-data' method='post' >
-    				      <input type='file' name='file' id='fileNameField' />
-    			        <input type='button' value='Upload' id='Upload'/>
-    	        </form>
+					    <button id="yourBtn" type="button" onclick="getFile()">click to upload a file</button>
+              <!-- this is your file input tag, so i hide it!-->
+              <!-- i used the onchange event to fire the form submission-->
+              <div style='height: 0px;width: 0px; overflow:hidden;'><input id="upfile" type="file" value="upload" onchange="sub(this)"/></div>
   	        </div>
+
 						<button type="button" id="terminal">Input Terminal</button> 
 						<button type="button" id="previous">Previous</button> 
 						<button type="button" id="next">Next</button> 
@@ -92,5 +129,8 @@
 			<p><a href='mailto:fhinkel@vt.edu'>Email us with any questions or suggestions!</a></p>
 			<p>Funding provided by the NSF (<a href="http://www.math.uiuc.edu/Macaulay2/Funding/">see here</a> and through Award 0635561). 
 		</div>
+		<div id="graphDialog" title="Graph"></div>
+		<form method="POST" enctype="multipart/form-data" name="myForm">
+    </form>
 	</body>
 </html>

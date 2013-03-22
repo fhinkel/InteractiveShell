@@ -48,10 +48,10 @@ trym2.showTerminal = function() {
     $("#pageIndex").hide();
     $("#previous").hide();
     $("#next").hide();
-    $("#showLesson").show();
-    $("#terminal").hide();
+    //$("#showLesson").show();
+    //$("#terminal").hide();
     $("#TOC").hide();
-    $("#TOCbutton").show();
+    //$("#TOCbutton").show();
     return false;
 };
 
@@ -63,10 +63,10 @@ trym2.loadLesson = function(ell) {
     $("#next").show();    
     $("#pageIndex").button("option", "label", trym2.lessonNr + "/" + trym2.maxLesson).show();
     $("#lesson").html(lessonContent).show();
-    $("#showLesson").hide();
-    $("#terminal").show();
+    //$("#showLesson").hide();
+    //$("#terminal").show();
     $("#TOC").hide();
-    $("#TOCbutton").show();
+    //$("#TOCbutton").show();
     
 };
 
@@ -133,8 +133,6 @@ trym2.helpScreen = function() {
     //console.log("Display Help.");
     $("#help-dialog").dialog('open');
     $("#help-dialog").scrollTop(0);
-
-
 };
 
 // input: filename with tutorial content
@@ -142,16 +140,17 @@ trym2.helpScreen = function() {
 // <div><a>" + title + "</a></div>  
 // attach a lesson ID
 trym2.getLessonTitles = function(tutorialFile, callback) {
-    var titles = "";
     $("#menuTutorial").load(tutorialFile, function() {
+        var titles = $("#menuTutorial title").text() + " <ul>";
         var i = 1;
         $("#menuTutorial h4").each(function() {
             var title = $(this).text();
-            titles = titles + "<div><a class='submenuItem' lessonid='lesson" +
-                i + "'>" + title + "</a></div>";
+            titles = titles + "<li><a class='submenuItem' lessonid='lesson" +
+                i + "'>" + title + "</a></li>";
             i = i + 1;
             //console.log("Title in m2.js: " + title);
         });
+        titles = titles + "</ul>";
         //console.log("All titles: " + titles);
         callback(titles);
     });
@@ -281,7 +280,6 @@ $(document).ready(function() {
     $("#interrupt").click(trym2.postMessage('/interrupt'));
     $("#terminal").click(trym2.showTerminal);
     $(document).on("click", "#inputTerminalLink", trym2.showTerminal);
-
     $("#upload").click(trym2.doUpfileClick);
     $("#upfile").change(trym2.doUpload);
 
@@ -293,17 +291,16 @@ $(document).ready(function() {
     $("#TOCbutton").click(function(){
         $("#inputarea").hide();
         $("#send").hide();
-        $("#showLesson").show();
-        $("#terminal").show();
+        //$("#showLesson").show();
         $("#lesson").hide();
         $("#inputarea").hide();
         $("#send").hide();
         $("#pageIndex").hide();
         $("#previous").hide();
         $("#next").hide();
-        $("#terminal").show();
+        //$("#terminal").show();
         $("#TOC").show();
-        $("#TOCbutton").hide();
+        //$("#TOCbutton").hide();
     });
 
 
@@ -324,16 +321,12 @@ $(document).ready(function() {
 
     $("#pageIndex").hide();
 
-    //$("#tutorial").html("<div class='lesson' lessonid='1'>  <div><br>Get started by <a href='#' id='selectTutorialLink'><b>selecting a tutorial</b></a> or by using the <a href='#' id='inputTerminalLink'><b>Input Terminal</b></a>. Have fun!<br> <br><a href='http://www.math.uiuc.edu/Macaulay2/'>Macaulay2</a> is a software system devoted to supporting research in algebraic geometry and commutative algebra, whose creation has been funded by the National Science Foundation since 1992. </p> <p> To get started, select a tutorial. Click on any highlighted code, Macaulay2 will execute it. The result is displayed on the right. Alternatively, you can use the <b>Input Terminal</b> on the left to write your own commands. Execute a line by positioning your cursor on it and click on the Evaluate button (or type Shift-Enter). You can switch back to the tutorial at any time. </p> <p>The tutorials demonstrate different aspects of Macaulay2. They are meant to be starting points for your own experimentation. Edit the commands in the <b>Input Terminal</b> and run them again. Whenever you're ready to move on, click the Next button.</p>");
-    $("#tutorial").html(
-        "<div class='lesson' lessonid='1'>  <div><br>Get started by <a href='#' id='selectTutorialLink'><b>selecting a tutorial</b></a> or by using the <a href='#' id='inputTerminalLink'><b>Input Terminal</b></a>. Have fun!<br> <p><code>viewHelp \"set\"</code><br><code> needsPackage \"Graphs\"<br>\nA = graph({{x_1,x_3},{x_2,x_4},{x_1,x_4}})<br>\ndisplayGraph A</code><p><code>4+3*9</code><br><code>apply(10, i -> i *17)</code><br><code>R = ZZ/3[a,b,c]</code><br><code>groebnerBasis ideal(a^2, a*b-b*b, -c^2)</code><br><a href='http://www.math.uiuc.edu/Macaulay2/'>Macaulay2</a> is a software system devoted to supporting research in algebraic geometry and commutative algebra, whose creation has been funded by the National Science Foundation since 1992. </p> <p> To get started, select a tutorial. Click on any highlighted code, Macaulay2 will execute it. The result is displayed on the right. Alternatively, you can use the <b>Input Terminal</b> on the left to write your own commands. Execute a line by positioning your cursor on it and click on the Evaluate button (or type Shift-Enter). You can switch back to the tutorial at any time. </p> <p>The tutorials demonstrate different aspects of Macaulay2. They are meant to be starting points for your own experimentation. Edit the commands in the <b>Input Terminal</b> and run them again. Whenever you're ready to move on, click the Next button.</p>");
-    // <code>3+18</code><br>    <code>version</code><br>    <code> exit </code> <br>   <code> R = ZZ/101[vars(0..13)] </code> <br><code> gbTrace=1 </code> <br> <code> time res coker vars R </code> <br>  <code> m1 = genericMatrix(R,a,3,3) </code> <br> <code> m2 = genericMatrix(R,j,3,3) </code> <br> <code> J = ideal(m1*m2-m2*m1) </code> <br> <code> C = res J </code> <br> <code> C.dd_3 </code> <br> 
-
-    var text = trym2.getLessonTitles("tutorials/Beginning.html",  function(titles) { 
+    var tutorials = ["tutorials/welcome.html", "tutorials/Beginning.html", "tutorials/Beginning.html"];
+    for(var tutorial in tutorials) {
+        trym2.getLessonTitles(tutorials[tutorial],  function(titles) { 
 			$("#TOC").append( titles );
 		});
-    $("#TOC").text(text);
-
+    };
 
     trym2.loadLesson(trym2.lessonNr);
     trym2.maxLesson = $('#tutorial').children().length;
@@ -345,10 +338,6 @@ $(document).ready(function() {
     $("#previous").click(function() {
         trym2.switchLesson(-1);
     });
-
-    $("#next").hide();
-    $("#previous").hide();
-    $("#showLesson").hide();
 
     // swipe changed to swipeXXX to remove functionality for testing
     $(function() {

@@ -65,11 +65,9 @@ div {
 	
 }
 
-#inputarea, #lesson, #outputarea {
+#inputarea, #lesson, #TOC, #outputarea {
 	width: 49%;
 	height: 90%;
-	 
-	
 }
 
 #lesson {

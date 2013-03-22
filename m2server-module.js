@@ -165,7 +165,10 @@ var M2Server = function(overrideOptions) {
         clients[clientID].schrootType = clientID;// + 'st';
         clients[clientID].schrootName = clientID;// + 'sn';
         clients[clientID].systemUserName = clientID;// + 'sun';
-        
+        // For now we choose all these to be equal.
+        // getClientIDFromURL does not work if we choose these to be different
+        // from each other.
+        // There are several locations where we will have to adapt the path.
         
         logClient(clientID, "New user: " + " UserAgent=" + request.headers[
             'user-agent'] + ".");

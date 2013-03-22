@@ -21,15 +21,18 @@ New TODO list:
     this is partially written down in one of the tex files (in configuring_ubuntu.tex too)
 * Dan's emails: check them
 * update habanero, restart it  DONE
-* need test suite and perhaps testing framework
+* need test suite and perhaps testing framework  (DONE)
+    Have "make check"
+    EventStream does not allow for easy testing.
 * tutorials management strategy
 * writing tutorials
 * allow, if possible: in one browser, multiple sessions (one per tab, or window).
+    Decided to go with one session per browser.  (DONE)
 * user interface elements:
     download button
-    drop down menu doesn't fit the style
-    next and prev buttons sometimes disappear
-    resizing or changing fonts?  Can the user do this?  SEEMS SO, BUT RESULT ISN"T SO NICE
+    drop down menu doesn't fit the style  DONE (ABANDONED)
+    next and prev buttons sometimes disappear  DONE
+    resizing or changing fonts?  Can the user do this?  SEEMS SO, BUT RESULT ISN'T SO NICE
 * save, or print button
 * M2 help
 * ipad
@@ -44,7 +47,7 @@ New TODO list:
 * username and clientID is now the same thing, we got rid of the hack with an array of premade user names
 
 * we still need a max for total user number
-* eventually we need to write status_user.pl
+* eventually we need to write status_user.pl  NO
 * need to check for identical random usernames DONE
 
 * is deleting clients working? Sort of we think

@@ -472,7 +472,7 @@ var M2Server = function(overrideOptions) {
         var clientID;
         var matchobject;
         if (options.SCHROOT) {
-            matchobject = url.match(/^\/(user\d+)\//);
+            matchobject = url.match(/^\/(user\d+)sn\//);
         } else {
             matchobject = url.match(/\/M2-(\d+)-/);
         }

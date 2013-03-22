@@ -139,7 +139,7 @@ trym2.getLessonTitles = function(tutorialFile, callback) {
         var i = 1;
         $("#menuTutorial h4").each(function() {
             var title = $(this).text();
-            titles = titles + "<li><a class='submenuItem' lessonid='lesson" +
+            titles = titles + "<li><a href='#' class='submenuItem' lessonid='lesson" +
                 i + "'>" + title + "</a></li>";
             i = i + 1;
             //console.log("Title in m2.js: " + title);
@@ -228,15 +228,17 @@ trym2.startEventSource = function() {
     }
 };
 
-trym2.getAllTitles = function(tutorials, next) {
-    for(var tutorial in tutorials) {
-        trym2.getLessonTitles(tutorials[tutorial],  function(titles) { 
+
+trym2.getAllTitles = function(i, tutorials, next) {
+    if ( i < tutorials.length) {
+        trym2.getLessonTitles(tutorials[i],  function(titles) { 
     		$("#accordion").append( titles ); 
     		console.log("Titles: " + titles);
-            
-    	});
-	}	
-	next();
+    		trym2.getAllTitles(i+1, tutorials, next);
+		});
+    } else {
+        next();
+    }
 };
 
 
@@ -326,14 +328,11 @@ $(document).ready(function() {
     var tutorials = ["tutorials/welcome.html", "tutorials/Beginning.html", "tutorials/Beginning.html"];
     $("#TOC").append("<div id=\"accordion\"></div>");
     
-    trym2.getAllTitles(tutorials, function() {
+    
+    trym2.getAllTitles(0, tutorials, function() {
         console.log("accordion()");
-    	$("#accordion").accordion();
+    	$("#accordion").accordion({ heightStyle: "content" });
     });
-    
-
-    
-
     
     var lessonContent = $('[lessonid="' + trym2.lessonNr + '"]').html();
     $("#lesson").html(lessonContent).show();

@@ -1,5 +1,4 @@
-/*global $, alert, console, document, trym2, updateOrientation, window */
-
+/*global $, alert, console, document, trym2, window */
 
 var trym2 = {
     lessonNr: 1,
@@ -80,13 +79,13 @@ trym2.switchLesson = function(incr) {
     }
 };
 
-trym2.callback = function(url, msg) {
+trym2.postMessage = function(url, msg) {
     return function() {
         var xhr = new XMLHttpRequest(); // Create a new XHR
         //console.log( "URL: " + url);
         xhr.open("POST", url); // to POST to url.
         xhr.setRequestHeader("Content-Type", // Specify plain UTF-8 text 
-        "text/plain;charset=UTF-8");
+                             "text/plain;charset=UTF-8");
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
                 //console.log( "All ResponseHeaders: " + xhr.getAllResponseHeaders());
@@ -97,7 +96,7 @@ trym2.callback = function(url, msg) {
                     //ask for new EventSource and send msg again
                     trym2.startEventSource();
                     setTimeout(function() {
-                        trym2.callback("/chat", msg)();
+                        trym2.postMessage("/chat", msg)();
                     }, 1000);
                 }
             }
@@ -110,7 +109,7 @@ trym2.callback = function(url, msg) {
 trym2.sendCallback = function(inputField) {
     return function() {
         var str = trym2.getSelected(inputField);
-        trym2.callback('/chat', str)();
+        trym2.postMessage('/chat', str)();
         return false;
     };
 };
@@ -120,7 +119,7 @@ trym2.sendOnEnterCallback = function(inputfield) {
         if (e.which === 13 && e.shiftKey) {
             e.preventDefault();
             // do not make a line break or remove selected text when sending
-            trym2.callback('/chat', trym2.getSelected(inputfield))();
+            trym2.postMessage('/chat', trym2.getSelected(inputfield))();
         }
     };
 };
@@ -165,7 +164,7 @@ trym2.doUpload = function () {
     formData.append('file', file);
     console.log("process form " + file );
     console.log(file.size);      
-    if (file.size > 10000000) {
+    if (file.size > trym2.MAXFILESIZE) {
         alert("Your file is too big to upload.  Sorry!");
         return false;
     }
@@ -279,8 +278,8 @@ $(document).ready(function() {
     }
     $("#send").click(trym2.sendCallback('#M2In'));
     $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
-    $("#reset").click(trym2.callback('/restart'));
-    $("#interrupt").click(trym2.callback('/interrupt'));
+    $("#reset").click(trym2.postMessage('/restart'));
+    $("#interrupt").click(trym2.postMessage('/interrupt'));
     $("#terminal").click(trym2.showTerminal);
     $("#inputTerminalLink").live("click", trym2.showTerminal);
 
@@ -301,7 +300,7 @@ $(document).ready(function() {
         code = code + "\n";
         $("#M2In").val($("#M2In").val() + code);
         trym2.scrollDown("#M2In");
-        trym2.callback('/chat', code)();
+        trym2.postMessage('/chat', code)();
     });
 
     $("#inputarea").hide();
@@ -347,27 +346,6 @@ $(document).ready(function() {
             }
         });
     });
-
-
-
-    //updateOrientation(); 
 });
 
-function updateOrientation() {
-    var orient = "";
-    switch (window.orientation) {
-        case 0:
-        case 180:
-            orient = "show_portrait";
-            break;
-        case -90:
-        case 90:
-            orient = "show_landscape";
-            break;
-        default:
-            orient = "show_landscape";
-    }
-    $("body").attr("class", orient);
-    $("#rightwindow").attr('class', orient);
-    $("#leftwindow").attr('class', orient);
-}
+

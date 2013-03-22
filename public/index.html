@@ -25,16 +25,15 @@
     
   </head>
   <body>
-      <div class="rel">
+    <div class="rel">
       <div id="title">
         Macaulay2
       </div>
-      
       <div class="left halfWidth rel">
         <div class="bottom">
           <div  class="right" >
             <div class='left'>
-              <button id="upload" type="button">click to upload a file</button>
+              <button id="upload" type="button">Upload File</button>
               <div style='height: 0px;width: 0px; overflow:hidden;'><input id="upfile" type="file" value="upload"/></div>
             </div>
 
@@ -42,8 +41,8 @@
             <button type="button" id="previous">Previous</button> 
             <button type="button" id="next">Next</button> 
             <button type="button" id="send">Evaluate</button>
-            <button type="button" id="showLesson">Tutorial</button>
-            <button type="button" id="pageIndex">PageIndex</button>
+            <button type="button" id="showLesson">Lesson</button>
+            <button type="button" id="pageIndex">Page Index</button>
             
           </div>
         </div>
@@ -66,11 +65,11 @@
     <div id="lesson" class="terminal left "></div>
     <div id="inputarea" class="terminal left">
       <textarea id="M2In" wrap='off'>
-</textarea>
+      </textarea>
     </div>
     <div id="outputarea" class="terminal right">
       <textarea id="M2Out" wrap='off' readonly='readonly'>
-</textarea>
+      </textarea>
     </div>
     <div id="tutorial" class="hidden"></div><!-- this div is used to display a lesson -->
     <div id="menuTutorial" class="hidden"></div><!-- this div is used to extract the titles in the menu -->

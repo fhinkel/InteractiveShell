@@ -61,7 +61,7 @@ var M2Server = function(overrideOptions) {
 
     // delete a user both from the system and the clients[]
     var deleteClient = function(clientID) {
-        runShellCommand('perl-scripts/remove_user.pl ' + clientID + ' ' 
+        runShellCommand('perl-scripts/remove_user.pl ' + clients[clientID].systemUserName + ' ' 
         + clients[clientID].schrootName + ' ' + clients[clientID].schrootType, function(ret) {
             console.log("We removed client " + clientID + " with result: " +
                 ret);
@@ -387,7 +387,7 @@ var M2Server = function(overrideOptions) {
             }, 1000);
             if (client.m2) {
                 client.m2.kill();
-                runShellCommand("killall -u " + clientID, function(ret) {
+                runShellCommand("killall -u " + clients[clientID].systemUserName, function(ret) {
                     console.log("We removed processes associates to " +
                         clientID + " with result: " + ret);
                 });
@@ -468,7 +468,7 @@ var M2Server = function(overrideOptions) {
         // The URL's in question look like:
         //  (schroot version): /user45345/var/a.jpg
         //  (non-schroot): /dfdff/dsdsffff/fdfdsd/M2-12345-1/a.jpg
-        //     wher 12345 is the pid of the M2 process.
+        //     where 12345 is the pid of the M2 process.
         var clientID;
         var matchobject;
         if (options.SCHROOT) {
@@ -521,7 +521,7 @@ var M2Server = function(overrideOptions) {
 
             var path = parseUrlForPath(url); // a string
             if (options.SCHROOT) {
-                path = "/usr/local/var/lib/schroot/mount/" + clientID + path
+                path = "/usr/local/var/lib/schroot/mount/" + clients[clientID].schrootName + path
             }
 
             message = 'event: image\r\ndata: ' + path + "\r\n\r\n";

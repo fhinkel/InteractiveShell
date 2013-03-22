@@ -58,8 +58,8 @@ trym2.loadLesson = function(ell) {
     var lessonContent = $('[lessonid="' + ell + '"]').html();
     $("#send").hide();
     $("#previous").show();
-    $("#next").show();
-    $("#pageIndex").text(trym2.lessonNr + "/" + trym2.maxLesson).show();
+    $("#next").show();    
+    $("#pageIndex").button("option", "label", trym2.lessonNr + "/" + trym2.maxLesson).show();
     $("#lesson").html(lessonContent).show();
     $("#showLesson").hide();
     $("#terminal").show();
@@ -241,6 +241,17 @@ trym2.startEventSource = function() {
 $(document).ready(function() {
     // send server our client.eventStream
     trym2.startEventSource();
+    
+    $("button").button();
+    $("#previous").button({
+        icons: {primary: "ui-icon-arrowthick-1-w" },
+        text: false
+    });
+    $("#next").button({
+        icons: {primary: "ui-icon-arrowthick-1-e" },
+        text: false
+    });
+
 /*
     var extruderMenu = $("#extruderTop").buildMbExtruder({
         position: "top",

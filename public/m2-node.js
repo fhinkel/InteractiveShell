@@ -50,6 +50,8 @@ trym2.showTerminal = function() {
     $("#next").hide();
     $("#showLesson").show();
     $("#terminal").hide();
+    $("#TOC").hide();
+    $("#TOCbutton").show();
     return false;
 };
 
@@ -63,6 +65,9 @@ trym2.loadLesson = function(ell) {
     $("#lesson").html(lessonContent).show();
     $("#showLesson").hide();
     $("#terminal").show();
+    $("#TOC").hide();
+    $("#TOCbutton").show();
+    
 };
 
 trym2.switchLesson = function(incr) {
@@ -207,12 +212,6 @@ trym2.startEventSource = function() {
                     $("#graphDialog").dialog("close");
                     return false;
                 });
-//                ({
-//                    //height: 340,
-//                    //width: 460,
-//                    modal: true,
-//                    autoOpen: true
-//                });
             }
         }, false);
         chat.addEventListener('viewHelp', function(event) {
@@ -221,8 +220,6 @@ trym2.startEventSource = function() {
             if (helpUrl) {
                 console.log("We got a viewHelp! " + helpUrl);
                 window.open(helpUrl, "M2 Help");
-                //$('#viewHelp').load(helpUrl);
-                //alert('Help is available here: ' + helpUrl);
             }
         }, false);
         chat.onmessage = function(event) { // When a new message arrives
@@ -250,15 +247,6 @@ $(document).ready(function() {
     $("#next").button({
         icons: {primary: "ui-icon-arrowthick-1-e" },
         text: false
-    });
-
-    var extruderMenu = $("#extruderTop").buildMbExtruder({
-        position: "top",
-        width: 350,
-        extruderOpacity: 1,
-        onExtOpen: function() {},
-        onExtContentLoad: function() {},
-        onExtClose: function() {}
     });
 
     $('#M2In').val(
@@ -301,6 +289,22 @@ $(document).ready(function() {
         trym2.loadLesson(trym2.lessonNr);
         //console.log("lesson!");
     });
+    
+    $("#TOCbutton").click(function(){
+        $("#inputarea").hide();
+        $("#send").hide();
+        $("#showLesson").show();
+        $("#terminal").show();
+        $("#lesson").hide();
+        $("#inputarea").hide();
+        $("#send").hide();
+        $("#pageIndex").hide();
+        $("#previous").hide();
+        $("#next").hide();
+        $("#terminal").show();
+        $("#TOC").show();
+        $("#TOCbutton").hide();
+    });
 
 
     $(document).on("click", "code", function() {
@@ -315,6 +319,7 @@ $(document).ready(function() {
     });
 
     $("#inputarea").hide();
+    $("#TOC").hide();
     $("#send").hide();
 
     $("#pageIndex").hide();
@@ -324,12 +329,11 @@ $(document).ready(function() {
         "<div class='lesson' lessonid='1'>  <div><br>Get started by <a href='#' id='selectTutorialLink'><b>selecting a tutorial</b></a> or by using the <a href='#' id='inputTerminalLink'><b>Input Terminal</b></a>. Have fun!<br> <p><code>viewHelp \"set\"</code><br><code> needsPackage \"Graphs\"<br>\nA = graph({{x_1,x_3},{x_2,x_4},{x_1,x_4}})<br>\ndisplayGraph A</code><p><code>4+3*9</code><br><code>apply(10, i -> i *17)</code><br><code>R = ZZ/3[a,b,c]</code><br><code>groebnerBasis ideal(a^2, a*b-b*b, -c^2)</code><br><a href='http://www.math.uiuc.edu/Macaulay2/'>Macaulay2</a> is a software system devoted to supporting research in algebraic geometry and commutative algebra, whose creation has been funded by the National Science Foundation since 1992. </p> <p> To get started, select a tutorial. Click on any highlighted code, Macaulay2 will execute it. The result is displayed on the right. Alternatively, you can use the <b>Input Terminal</b> on the left to write your own commands. Execute a line by positioning your cursor on it and click on the Evaluate button (or type Shift-Enter). You can switch back to the tutorial at any time. </p> <p>The tutorials demonstrate different aspects of Macaulay2. They are meant to be starting points for your own experimentation. Edit the commands in the <b>Input Terminal</b> and run them again. Whenever you're ready to move on, click the Next button.</p>");
     // <code>3+18</code><br>    <code>version</code><br>    <code> exit </code> <br>   <code> R = ZZ/101[vars(0..13)] </code> <br><code> gbTrace=1 </code> <br> <code> time res coker vars R </code> <br>  <code> m1 = genericMatrix(R,a,3,3) </code> <br> <code> m2 = genericMatrix(R,j,3,3) </code> <br> <code> J = ideal(m1*m2-m2*m1) </code> <br> <code> C = res J </code> <br> <code> C.dd_3 </code> <br> 
 
+    var text = trym2.getLessonTitles("tutorials/Beginning.html",  function(titles) { 
+			$("#TOC").append( titles );
+		});
+    $("#TOC").text(text);
 
-    $(document).on("click", "#selectTutorialLink", function() {
-        //console.log("open tutorial menu");
-        extruderMenu.openMbExtruder();
-        return false;
-    });
 
     trym2.loadLesson(trym2.lessonNr);
     trym2.maxLesson = $('#tutorial').children().length;

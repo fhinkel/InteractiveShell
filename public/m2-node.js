@@ -49,6 +49,7 @@ trym2.makeAccordian = function(tutorials) {
         var title = tutorials[i].title;
         title.addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons")
         .prepend('<span class="ui-icon ui-accordion-header-icon ui-icon-triangle-1-e"></span>')
+        .hover(function() {$(this).toggleClass("ui-state-hover");})
         .click(function() {
             $(this)
             .toggleClass("ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top")

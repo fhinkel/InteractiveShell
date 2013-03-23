@@ -653,6 +653,41 @@ var M2Server = function(overrideOptions) {
         });
     };
 
+    var saveAction = function(request, response) {
+        assureClient(request, response, function(clientID) {
+            request.setEncoding("utf8");
+            logClient(clientID, "received: /save");
+            // Set the directory where we will write the resulting 2 files
+            var path = "/tmp/";
+            if (options.SCHROOT) {
+                path = "/usr/local/var/lib/schroot/mount/" 
+                    + clients[clientID].schrootName + "/home/m2user/";
+            };
+            var body = "";
+
+            // When we get a chunk of data, add it to the body
+            request.on("data", function(chunk) {
+                body += chunk;
+            });
+
+            // grab input and output windows, place them in files where we can serve them
+            request.on("end", function() {
+                console.log("/save, received: " + body);
+                var json = JSON.parse(body);
+                console.log(json.input);
+
+                fs.writeFile(path + "Macaulay2-input.txt", json.input);
+                fs.writeFile(path + "Macaulay2-output.txt", json.output);
+                response.writeHead(200, {
+                    "Content-Type": "text/html"
+                });
+                var msg = {input: path + "Macaulay2-input.txt", output: path + "Macaulay2-output.txt"};
+                response.write(JSON.stringify(msg));
+                response.end();
+            });
+        });
+    };
+
     var app = connect()
         .use(connect.logger('dev'))
         .use(connect.favicon())
@@ -671,6 +706,7 @@ var M2Server = function(overrideOptions) {
         .use('/chat', m2InputAction)
         .use('/interrupt', interruptAction)
         .use('/restart', restartAction)
+        .use('/save', saveAction)
         .use(unhandled);
     //.use(connect.errorHandler());
 

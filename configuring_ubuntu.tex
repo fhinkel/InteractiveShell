@@ -10,7 +10,112 @@
 
 \usepackage{verbatim}
 
+
+
 \begin{document}
+
+
+\tableofcontents
+\chapter{General strategy}
+To provide different M2 processes for several users and at the same time not putting the host system at any risk we have the following strategy:
+\begin{enumerate}
+\item Create a virtual machine where our server is inside. Apparently it is very difficult to escape from a virtual machine.
+\item Inside the virtual machine have the users run in an (s)chrooted environment.
+\item Limit the resources for each user using cgroups.
+\item Do provide as little system files to the user as possible. We mount almost everything (except /proc) from a master schroot. The mounting happens readonly. If the user needs write access he gets a writable layer on top.
+\item Mounting readonly with a writable layer forces us to modify the schroot source.
+\end{enumerate}
+Backing up the progress is easy using the snapshot tool of VBoxManage (see below). This document is supposed to provide enough information to set up this environment.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%%  Things we actually do on Habanero
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Actual usage}
+This is a short manual how to start and stop things very concretely.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Controlling
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Controlling}
+\subsection{Habanero}
+Habanero can shut down using
+\begin{verbatim}
+sudo shutdown -P now
+\end{verbatim}
+and rebooted using
+\begin{verbatim}
+sudo reboot
+\end{verbatim}
+Currently I now of now way to booting it once it completely shut down besides being in the office.
+\subsection{webm2}
+Use the same commands as for habanero, after ssh on to webm2. If it gets stuck use
+\begin{verbatim}
+sudo -u vmuser VBoxManage controlvm "webm2" poweroff
+\end{verbatim}
+The only way to start it is
+\begin{verbatim}
+sudo -u vmuser VBoxManage startvm "webm2" --type=headless
+\end{verbatim}
+Other VBoxManage commands can be found below. To control webm2 they must be executed as the vmuser.
+\subsection{schroot}
+No need to start these. Else see the updating section on schroots and the chapter on schroots.
+You can end all schroots using
+\begin{verbatim}
+sudo schroot -e -f --all-sessions
+\end{verbatim}
+To clean up all users use
+\begin{verbatim}
+cd /home/franzi/tryM2/perl-scripts
+sudo perl total_cleanup.pl
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Updating
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Updating Ubuntus + M2}
+\subsection{Habanero}
+First ssh on to habanero. To update Ubuntu do
+\begin{verbatim}
+sudo apt-get update
+sudo apt-get upgrade
+\end{verbatim}
+and possibly
+\begin{verbatim}
+sudo apt-get dist-upgrade
+\end{verbatim}
+If something fails, the following commands might help:
+\begin{verbatim}
+sudo apt-get autoclean
+sudo apt-get autoremove
+\end{verbatim}
+\subsection{webm2}
+First ssh on to habanero, from there ssh on to webm2. There is no way to ssh directly on to webm2.
+Now you can execute the same commands as for habanero.
+\subsection{The schroot}
+You need to ssh on to webm2. Then go into the master schroot using
+\begin{verbatim}
+sudo -u lars schroot -c master -u root -d /home
+\end{verbatim}
+Your shell should now clearly indicate that you are inside the schroot. Since you already are root you can just
+\begin{verbatim}
+apt-get update
+apt-get upgrade
+apt-get dist-upgrade
+\end{verbatim}
+\subsection{Updating M2 in the schroot}
+First get the '.tar.gz' with the newest M2. Then you can just unpack it to the folder
+\begin{verbatim}
+/fakeroots/master/M2
+\end{verbatim}
+Note that on our webm2 this is currently
+\begin{verbatim}
+/fakeroots/new_master/M2
+\end{verbatim}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%
@@ -19,7 +124,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{VirtualBox (VBox)}
-One can install VBox via apt.
+One can install VBox via apt:
+\begin{verbatim}
+sudo apt-get install virtualbox
+\end{verbatim}
+I do not (yet) provide information on how to install a guest system without the gui, sorry.
+
+Lets give an short overview over the commands:
 
 \begin{verbatim}
 VBoxManage list runningvms
@@ -59,6 +170,12 @@ VBoxManage snapshot webm2 take name --description "Cool features."
 \end{verbatim}
 CAUTION: For some reason taking a snapshot of the running machine didn't work.
 
+Unfortunately I do not know how to set up port forwarding. Possibly
+\begin{verbatim}
+http://www.virtualbox.org/manual/ch06.html#natforward
+\end{verbatim}
+provides that information.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Starting the server at startup of vm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -70,9 +187,7 @@ sudo crontab -e
 At the end insert the line
 \begin{verbatim}
 @reboot export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:
-/usr/bin:/sbin:/bin:/M2/bin; cd /home/franzi/tryM2; /usr/local/bin/forever
-start -l /home/webm2.logs/forever.log -o /home/webm2.logs/out.log -e
-/home/webm2.logs/err.log --append m2server.js --schroot >>
+/usr/bin:/sbin:/bin:/M2/bin; cd /home/franzi/tryM2; make start >>
 /home/webm2.logs/cron.log 2>&1
 \end{verbatim}
 Maybe the line breaks need to be removed if you are copying from this pdf.
@@ -97,7 +212,7 @@ Now the create\_user.pl script will create a new cgroup for each user with the f
 \begin{verbatim}
 system "cgcreate -a $user -g memory:$user";
 system "chown -R root:root /sys/fs/cgroups/memory/$user/";
-system "echo 500000000 > /cgroup/memory/$user/memory.limit_in_bytes";
+system "echo 500000000 > /sys/fs/cgroup/memory/$user/memory.limit_in_bytes";
 \end{verbatim}
 
 Then the schroot can be executed in the corresponding cgroup using

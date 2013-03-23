@@ -2,7 +2,7 @@
 
 var trym2 = {
     lessonNr: 1,
-    maxLesson: 1
+    maxLesson: 1,
 };
 
 trym2.MAXFILESIZE = 500000; // max size in bytes for file uploads
@@ -52,9 +52,9 @@ trym2.showTerminal = function() {
     return false;
 };
 
-trym2.loadLesson = function(ell) {
+trym2.loadLesson = function( lessonNr) {
     $("#inputarea").hide();
-    var lessonContent = $('[lessonid="' + ell + '"]').html();
+    var lessonContent = $('[lessonid="' + lessonNr + '"]').html();
     $("#sendBtn").hide();
     $("#previousBtn").show();
     $("#nextBtn").show();    
@@ -132,16 +132,18 @@ trym2.helpScreen = function() {
 // return a list of lessons title, each wrapped in a div and link, 
 // <div><a>" + title + "</a></div>  
 // attach a lesson ID
-trym2.getLessonTitles = function(tutorialFile, callback) {
-    $("#menuTutorial").load(tutorialFile, function() {
-        var titles = "<h3>" + $("#menuTutorial title").text() + "</h3>";
+trym2.getLessonTitles = function(tutorialFile, tutorialNr, callback) {
+    $("#tutorial").load(tutorialFile, function() {
+        var titles = "<h3>" + $("#tutorial title").text() + "</h3>";
         titles = titles + "<div> <ul>";
         var i = 1;
-        $("#menuTutorial h4").each(function() {
+        $("#tutorial h4").each(function() {
             var title = $(this).text();
-            titles = titles + "<li><a href='#' class='submenuItem' lessonid='lesson" +
-                i + "'>" + title + "</a></li>";
+            titles = titles + "<li><a href='#' class='submenuItem' lessonid='lesson" + 
+                i + "' tutorialid='tutorial" + tutorialNr + "'>" + title + "</a></li>";
+            console.log("give parent ID");               
             i = i + 1;
+            trym2.maxLesson = i - 1;
             //console.log("Title in m2.js: " + title);
         });
         titles = titles + "</ul></div>";
@@ -231,7 +233,7 @@ trym2.startEventSource = function() {
 
 trym2.getAllTitles = function(i, tutorials, next) {
     if ( i < tutorials.length) {
-        trym2.getLessonTitles(tutorials[i],  function(titles) { 
+        trym2.getLessonTitles(tutorials[i],  i, function(titles) { 
     		$("#accordion").append( titles ); 
     		console.log("Titles: " + titles);
     		trym2.getAllTitles(i+1, tutorials, next);
@@ -243,8 +245,13 @@ trym2.getAllTitles = function(i, tutorials, next) {
 
 
 $(document).ready(function() {
+
+    
     // send server our client.eventStream
     trym2.startEventSource();
+    
+    var tutorials = ["tutorials/welcome.html", "tutorials/Beginning.html", "tutorials/Beginning.html"];
+    
     
     $("button").button();
     $("#previousBtn").button({
@@ -262,15 +269,20 @@ $(document).ready(function() {
     $(document).on("click", ".submenuItem", function() {
         var i = 1,
             lessonId = $(this).attr('lessonid');
+        var tutorialId = $(this).attr('tutorialid');
         //console.log("You clicked a submenuItem: " + $(this).html());
         trym2.lessonNr = parseInt(lessonId.match(/\d/g), 10);
-        $("#tutorial").html($("#menuTutorial").html());
-        $("#tutorial h4").each(function() {
-            $(this).parent().attr('lessonid', i); // add an ID to every lesson div
-            i = i + 1;
+        var tutorialNr = parseInt(tutorialId.match(/\d/g), 10);
+        //$("#tutorial").html($("#menuTutorial").html());
+        $('#tutorial').load(tutorials[tutorialNr], function() {
+            $("#tutorial h4").each(function() {
+                $(this).parent().attr('lessonid', i); // add an ID to every lesson div
+                i = i + 1;
+            });
+            trym2.maxLesson = i - 1;
+            trym2.loadLesson(trym2.lessonNr);
         });
-        trym2.maxLesson = i - 1;
-        trym2.loadLesson(trym2.lessonNr);
+        return false;
     });
 
     if ( !! window.EventSource) {
@@ -325,22 +337,18 @@ $(document).ready(function() {
     $("#previousBtn").hide();
     $("#nextBtn").hide();
 
-    var tutorials = ["tutorials/welcome.html", "tutorials/Beginning.html", "tutorials/Beginning.html"];
     $("#TOC").append("<div id=\"accordion\"></div>");
-    
-    
     trym2.getAllTitles(0, tutorials, function() {
         console.log("accordion()");
     	$("#accordion").accordion({ heightStyle: "content" });
     });
     
-    var lessonContent = $('[lessonid="' + trym2.lessonNr + '"]').html();
-    $("#lesson").html(lessonContent).show();
+    $('#tutorial').load(tutorials[0], function() {
+        $("#tutorial h4").parent().attr('lessonid', 1); // add an ID to every lesson div
+        trym2.maxLesson = 1;
+        trym2.loadLesson(trym2.lessonNr);
+    });
     
-    
-    trym2.maxLesson = $('#tutorial').children().length;
-    //console.log("maxLesson: " + trym2.maxLesson);
-
     $("#nextBtn").click(function() {
         trym2.switchLesson(1);
     });

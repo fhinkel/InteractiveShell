@@ -70,6 +70,7 @@ trym2.makeAccordian = function(tutorials) {
         $("#accordion").append(title).append(div);
 
     };
+    $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset");
 };
 
 trym2.submenuItemCallback = function() {

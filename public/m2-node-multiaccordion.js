@@ -234,18 +234,23 @@ trym2.startEventSource = function() {
 trym2.getAllTitles = function(i, tutorials, next) {
     if ( i < tutorials.length) {
         trym2.getLessonTitles(tutorials[i],  function(list) { 
-    list[0].addClass("ui-accordion-header ui-helper-reset ui-state-default ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only")
+    //<h3 id="ui-accordion-accordion-header-1" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons"
+    //role="tab" aria-controls="ui-accordion-accordion-panel-1" aria-selected="false" tabindex="-1">
+    list[0].addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons")
     .prepend('<span class="ui-icon ui-icon-triangle-1-e"></span>')
     .click(function() {
+    //<h3 id="ui-accordion-accordion-header-0" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-header-active 
+    //ui-state-active ui-corner-top ui-accordion-icons" role="tab" aria-controls="ui-accordion-accordion-panel-0" aria-selected="true" tabindex="0">
       $(this)
-        .toggleClass("ui-accordion-header-active ui-state-active ui-state-default ui-corner-bottom ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only")
+        .toggleClass("ui-accordion-header ui-helper-reset ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons")
         .find("> .ui-icon").toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s").end()
         .next().slideToggle();
       return false;
     })
     .next()
-      .addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only")
       .hide();
+      //<div id="ui-accordion-accordion-panel-0" class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="display: block;" aria-labelledby="ui-accordion-accordion-header-0" role="tabpanel" aria-expanded="true" aria-hidden="false">
+      list[1].addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active")
     		$("#accordion").append(list[0]);
          $("#accordion").append(list[1]);
     		//console.log("Titles: " + titles);
@@ -346,7 +351,7 @@ $(document).ready(function() {
     
     trym2.getAllTitles(0, tutorials, function() {
         console.log("accordion()");
-    	$("#accordion").addClass("ui-accordion ui-accordion-icons ui-widget ui-helper-reset");
+    	$("#accordion").addClass("ui-accordion ui-widget ui-helper-reset");
     });
     
     var lessonContent = $('[lessonid="' + trym2.lessonNr + '"]').html();

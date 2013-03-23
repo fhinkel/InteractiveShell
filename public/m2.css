@@ -116,16 +116,6 @@ div {
     disabled: ;
 }
 
-/*#lesson {
-	/*width: 680px;
-	height: 300px;*/
-	/*text-align: center;
-	margin-left: auto ;
-  	margin-right: auto ;
-	background-color: #C8C8C8  ;
-  	color: black;
-}*/
-
 code {
 	background-color: lightyellow;
 	padding: 1px 3px;
@@ -138,32 +128,10 @@ code {
     box-shadow: 1px 1px 2px #000;
 }
 
-
-/*#leftwindow.show_landscape, #rightwindow.show_landscape {
-	height: 650px;
+.ui-button,  .ui-button-text .ui-button{  
+    font-size: 16px !important; 
 }
 
-#leftwindow.show_portrait, #rightwindow.show_portrait {
-	height: 850px;
-}
-
-#content_portrait {
-    display: none;
-}
-#content_landscape {
-    display: none;
-
-}
-
-.show_portrait {
-    height: 1000px;
-    width: 768px;
-}
-
-.show_landscape {
-    /*width: 1024px;
-    height: 744px;
-}*/
 
 #tmp {
 	background-color:red;

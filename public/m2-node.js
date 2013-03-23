@@ -134,19 +134,21 @@ trym2.helpScreen = function() {
 // attach a lesson ID
 trym2.getLessonTitles = function(tutorialFile, callback) {
     $("#menuTutorial").load(tutorialFile, function() {
-        var titles = "<h3>" + $("#menuTutorial title").text() + "</h3>";
-        titles = titles + "<div> <ul>";
+        var h3 = $("<h3>").append($("#menuTutorial title").text());
+        var ul = $('<ul>');
         var i = 1;
         $("#menuTutorial h4").each(function() {
             var title = $(this).text();
-            titles = titles + "<li><a href='#' class='submenuItem' lessonid='lesson" +
-                i + "'>" + title + "</a></li>";
+            ul.append($('<li>').append("<a class='submenuItem' lessonid='lesson" +
+                i + "'>" + title + "</a>"));
             i = i + 1;
             //console.log("Title in m2.js: " + title);
         });
-        titles = titles + "</ul></div>";
+        h3 = h3;
+        var div = $("<div>").append(ul);
         //console.log("All titles: " + titles);
-        callback(titles);
+        var out = [h3, div];
+        callback(out);
     });
 };
 
@@ -231,9 +233,10 @@ trym2.startEventSource = function() {
 
 trym2.getAllTitles = function(i, tutorials, next) {
     if ( i < tutorials.length) {
-        trym2.getLessonTitles(tutorials[i],  function(titles) { 
-    		$("#accordion").append( titles ); 
-    		console.log("Titles: " + titles);
+        trym2.getLessonTitles(tutorials[i],  function(list) { 
+    		$("#accordion").append(list[0]);
+         $("#accordion").append(list[1]);
+    		//console.log("Titles: " + titles);
     		trym2.getAllTitles(i+1, tutorials, next);
 		});
     } else {

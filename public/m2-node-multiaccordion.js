@@ -2,7 +2,7 @@
 
 var trym2 = {
     lessonNr: 1,
-    maxLesson: 1,
+    maxLesson: 1
 };
 
 trym2.MAXFILESIZE = 500000; // max size in bytes for file uploads
@@ -52,9 +52,9 @@ trym2.showTerminal = function() {
     return false;
 };
 
-trym2.loadLesson = function( lessonNr) {
+trym2.loadLesson = function(ell) {
     $("#inputarea").hide();
-    var lessonContent = $('[lessonid="' + lessonNr + '"]').html();
+    var lessonContent = $('[lessonid="' + ell + '"]').html();
     $("#sendBtn").hide();
     $("#previousBtn").show();
     $("#nextBtn").show();    
@@ -137,12 +137,11 @@ trym2.getLessonTitles = function(tutorialFile, callback) {
         var h3 = $("<h3>").append($("#menuTutorial title").text());
         var ul = $('<ul>');
         var i = 1;
-        $("#tutorial h4").each(function() {
+        $("#menuTutorial h4").each(function() {
             var title = $(this).text();
             ul.append($('<li>').append("<a class='submenuItem' lessonid='lesson" +
                 i + "'>" + title + "</a>"));
             i = i + 1;
-            trym2.maxLesson = i - 1;
             //console.log("Title in m2.js: " + title);
         });
         h3 = h3;
@@ -235,6 +234,37 @@ trym2.startEventSource = function() {
 trym2.getAllTitles = function(i, tutorials, next) {
     if ( i < tutorials.length) {
         trym2.getLessonTitles(tutorials[i],  function(list) { 
+    //<h3 id="ui-accordion-accordion-header-1" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons"
+    //role="tab" aria-controls="ui-accordion-accordion-panel-1" aria-selected="false" tabindex="-1">
+    list[0].addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons")
+//    .attr("id","ui-accordion-accordion-header-1")
+//    .attr("role","tab")
+//    .attr("aria-controls","ui-accordion-accordion-panel-1")
+//    .attr("aria-selected","false")
+//    .attr("tabindex","-1")
+    .prepend('<span class="ui-icon ui-accordion-header-icon ui-icon-triangle-1-e"></span>')
+    .click(function() {
+    //<h3 id="ui-accordion-accordion-header-0" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-header-active 
+    //ui-state-active ui-corner-top ui-accordio1n-icons" role="tab" aria-controls="ui-accordion-accordion-panel-0" aria-selected="true" tabindex="0">
+      $(this)
+        .toggleClass("ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top")
+//    .attr("id","ui-accordion-accordion-header-1")
+//    .attr("aria-controls","ui-accordion-accordion-panel-0")
+//    .attr("aria-selected","true")
+//    .attr("tabindex","0")
+        .find("> .ui-icon").toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s").end()
+        .next().slideToggle();
+      return false;
+    })
+    .next();
+      //.hide();
+      //<div id="ui-accordion-accordion-panel-0" class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="display: block;" aria-labelledby="ui-accordion-accordion-header-0" role="tabpanel" aria-expanded="true" aria-hidden="false">
+      list[1].addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom").hide();
+//    .attr("style","display: block")
+//    .attr("aria-labelledby","ui-accordion-accordion-header-1")
+//    .attr("role","tabpanel")
+//    .attr("aria-expanded","false")
+//    .attr("aria-hidden","true");
     		$("#accordion").append(list[0]);
          $("#accordion").append(list[1]);
     		//console.log("Titles: " + titles);
@@ -247,13 +277,8 @@ trym2.getAllTitles = function(i, tutorials, next) {
 
 
 $(document).ready(function() {
-
-    
     // send server our client.eventStream
     trym2.startEventSource();
-    
-    var tutorials = ["tutorials/welcome.html", "tutorials/Beginning.html", "tutorials/Beginning.html"];
-    
     
     $("button").button();
     $("#previousBtn").button({
@@ -271,20 +296,15 @@ $(document).ready(function() {
     $(document).on("click", ".submenuItem", function() {
         var i = 1,
             lessonId = $(this).attr('lessonid');
-        var tutorialId = $(this).attr('tutorialid');
         //console.log("You clicked a submenuItem: " + $(this).html());
         trym2.lessonNr = parseInt(lessonId.match(/\d/g), 10);
-        var tutorialNr = parseInt(tutorialId.match(/\d/g), 10);
-        //$("#tutorial").html($("#menuTutorial").html());
-        $('#tutorial').load(tutorials[tutorialNr], function() {
-            $("#tutorial h4").each(function() {
-                $(this).parent().attr('lessonid', i); // add an ID to every lesson div
-                i = i + 1;
-            });
-            trym2.maxLesson = i - 1;
-            trym2.loadLesson(trym2.lessonNr);
+        $("#tutorial").html($("#menuTutorial").html());
+        $("#tutorial h4").each(function() {
+            $(this).parent().attr('lessonid', i); // add an ID to every lesson div
+            i = i + 1;
         });
-        return false;
+        trym2.maxLesson = i - 1;
+        trym2.loadLesson(trym2.lessonNr);
     });
 
     if ( !! window.EventSource) {
@@ -339,18 +359,22 @@ $(document).ready(function() {
     $("#previousBtn").hide();
     $("#nextBtn").hide();
 
+    var tutorials = ["tutorials/welcome.html", "tutorials/Beginning.html", "tutorials/Beginning.html"];
     $("#TOC").append("<div id=\"accordion\"></div>");
+    
+    
     trym2.getAllTitles(0, tutorials, function() {
         console.log("accordion()");
-    	$("#accordion").accordion({ heightStyle: "content" });
+    	$("#accordion").addClass("ui-accordion ui-widget ui-helper-reset").attr("role","tablist");
     });
     
-    $('#tutorial').load(tutorials[0], function() {
-        $("#tutorial h4").parent().attr('lessonid', 1); // add an ID to every lesson div
-        trym2.maxLesson = 1;
-        trym2.loadLesson(trym2.lessonNr);
-    });
+    var lessonContent = $('[lessonid="' + trym2.lessonNr + '"]').html();
+    $("#lesson").html(lessonContent).show();
     
+    
+    trym2.maxLesson = $('#tutorial').children().length;
+    //console.log("maxLesson: " + trym2.maxLesson);
+
     $("#nextBtn").click(function() {
         trym2.switchLesson(1);
     });

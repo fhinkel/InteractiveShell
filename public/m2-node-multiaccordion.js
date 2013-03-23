@@ -236,13 +236,13 @@ trym2.getAllTitles = function(i, tutorials, next) {
         trym2.getLessonTitles(tutorials[i],  function(list) { 
     //<h3 id="ui-accordion-accordion-header-1" class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons"
     //role="tab" aria-controls="ui-accordion-accordion-panel-1" aria-selected="false" tabindex="-1">
-    list[0].addClass("ui-accordion-header ui-helper-reset ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons")
+    list[0].addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons")
 //    .attr("id","ui-accordion-accordion-header-1")
 //    .attr("role","tab")
 //    .attr("aria-controls","ui-accordion-accordion-panel-1")
 //    .attr("aria-selected","false")
 //    .attr("tabindex","-1")
-    .prepend('<span class="ui-icon ui-accordion-header-icon ui-icon-triangle-1-s"></span>')
+    .prepend('<span class="ui-icon ui-accordion-header-icon ui-icon-triangle-1-e"></span>')
     .click(function() {
     //<h3 id="ui-accordion-accordion-header-0" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-header-active 
     //ui-state-active ui-corner-top ui-accordio1n-icons" role="tab" aria-controls="ui-accordion-accordion-panel-0" aria-selected="true" tabindex="0">
@@ -256,10 +256,10 @@ trym2.getAllTitles = function(i, tutorials, next) {
         .next().slideToggle();
       return false;
     })
-    .next()
-      .hide();
+    .next();
+      //.hide();
       //<div id="ui-accordion-accordion-panel-0" class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="display: block;" aria-labelledby="ui-accordion-accordion-header-0" role="tabpanel" aria-expanded="true" aria-hidden="false">
-      list[1].addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom")
+      list[1].addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom").hide();
 //    .attr("style","display: block")
 //    .attr("aria-labelledby","ui-accordion-accordion-header-1")
 //    .attr("role","tabpanel")

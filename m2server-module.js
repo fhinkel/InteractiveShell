@@ -676,12 +676,12 @@ var M2Server = function(overrideOptions) {
                 var json = JSON.parse(body);
                 console.log(json.input);
 
-                fs.writeFile(path + "Macaulay2-input.txt", json.input);
-                fs.writeFile(path + "Macaulay2-output.txt", json.output);
+                fs.writeFile(path + "Macaulay2-input", json.input);
+                fs.writeFile(path + "Macaulay2-output", json.output);
                 response.writeHead(200, {
                     "Content-Type": "text/html"
                 });
-                var msg = {input: path + "Macaulay2-input.txt", output: path + "Macaulay2-output.txt"};
+                var msg = {input: path + "Macaulay2-input", output: path + "Macaulay2-output"};
                 response.write(JSON.stringify(msg));
                 response.end();
             });

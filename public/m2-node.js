@@ -259,6 +259,19 @@ trym2.helpScreen = function() {
     $("#help-dialog").scrollTop(0);
 };
 
+trym2.saveFiles = function(filenames) {
+    console.log('<a href="' + filenames.input + '">Download input file</a>');
+    $("#save-dialog").html('<p><a href="' + filenames.input + '">Input</a>');
+    $("#save-dialog").append('<p><a href="' + filenames.output + '">Output</a>');
+    $("#save-dialog a").button({
+        icons: {primary: "ui-icon-document" }
+    });
+    $("#save-dialog").dialog();
+/*{
+        height: 200,
+        width: 200
+    });*/
+};
 trym2.doUpfileClick = function () {
     $("#upfile").click();
 };
@@ -277,7 +290,8 @@ trym2.saveInteractions = function() {
             console.log("saveInteractions post finished");
             var filenames = JSON.parse(xhr.responseText);
             console.log(filenames);
-            window.open(filenames.input, 'Download');
+            trym2.saveFiles(filenames);
+            //window.open(filenames.input, 'Download');
             }
     };
 

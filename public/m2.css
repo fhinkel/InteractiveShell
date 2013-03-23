@@ -9,6 +9,16 @@ html {
     overflow:scroll;
 }
 
+#save-dialog .ui-button {
+    width: 150px;
+    text-align: left;
+}
+
+#save-dialog {
+    height: 200px;
+    width: 200px;
+}
+
 a {
     color: #0000EE;
 }

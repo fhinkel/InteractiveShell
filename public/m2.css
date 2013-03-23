@@ -84,6 +84,11 @@ div {
 #lesson, #TOC {
 	overflow-y: auto;
 	font-family: Lucida Grande;
+	padding: 25px 50px;
+	box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+    
 }
 
 #inputarea, #lesson, #TOC {

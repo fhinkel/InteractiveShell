@@ -412,6 +412,7 @@ $(document).ready(function() {
     
     trym2.getTutorials(0, tutorialNames, function() {
         trym2.makeAccordian(trym2.tutorials);
+        trym2.loadLesson(0, 0); // welcome tutorial
     });
 
     $("#nextBtn").click(function() {

@@ -83,7 +83,7 @@ trym2.submenuItemCallback = function() {
         tutorialIdNr = parseInt(tutorialId.match(/\d/g), 10);
     //console.log("You clicked a submenuItem: " + $(this).html());
     trym2.loadLesson(tutorialIdNr, lessonIdNr);
-    $("#showLessonBtn").prop("checked", true).button("refresh");
+    $("#tutorialBtn").prop("checked", true).button("refresh");
     return false;
 };
 
@@ -432,12 +432,12 @@ $(document).ready(function() {
     $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
     $("#resetBtn").click(trym2.postMessage('/restart'));
     $("#interruptBtn").click(trym2.postMessage('/interrupt'));
-    $("#terminalBtn").click(trym2.showTerminal);
+    $("#inputBtn").click(trym2.showTerminal);
     $("#saveBtn").click(trym2.saveInteractions);
     $("#uploadBtn").click(trym2.doUpfileClick);
     $("#upfile").change(trym2.doUpload);
 
-    $("#showLessonBtn").click(function() {
+    $("#tutorialBtn").click(function() {
         trym2.loadLesson(trym2.tutorialNr, trym2.lessonNr);
         if (trym2.tutorialScrollTop != 0) 
             $("#lesson").scrollTop(trym2.tutorialScrollTop);
@@ -445,7 +445,7 @@ $(document).ready(function() {
         //console.log("lesson!");
     });
     
-    $("#TOCBtn").click(trym2.showTOC);
+    $("#homeBtn").click(trym2.showTOC);
 
     $(document).on("click", ".submenuItem", trym2.submenuItemCallback);
 
@@ -485,14 +485,14 @@ $(document).ready(function() {
     });
     
     $(document).on("click", "#selectTutorialLink", function() {
-        $("#TOCBtn").trigger("click");
-        $("#TOCBtn").prop("checked", true).button("refresh");
+        $("#homeBtn").trigger("click");
+        $("#homeBtn").prop("checked", true).button("refresh");
         return false;
     });
     $(document).on("click", "#inputTerminalLink", function() {
-        //$("#terminalBtn").trigger("click");
-        $("#terminalBtn").trigger("click");
-        $("#terminalBtn").prop("checked", true).button("refresh");
+        //$("#inputBtn").trigger("click");
+        $("#inputBtn").trigger("click");
+        $("#inputBtn").prop("checked", true).button("refresh");
         return false;
     });
     

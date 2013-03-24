@@ -174,8 +174,11 @@ trym2.inspect = function(obj) {
 };
 
 trym2.scrollDown = function(area) {
-    var mySize = $(area).val().length;
-    $(area).scrollTop(mySize);
+    //var mySize = $(area).val().length;
+    // You can output the heights and the second one is much larger.
+    //console.log("Size: "+mySize);
+    //console.log("Height: "+$(area)[0].scrollHeight);
+    $(area).scrollTop($(area)[0].scrollHeight);
     return false;
     // Return false to cancel the default link action
 };

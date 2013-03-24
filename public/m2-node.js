@@ -259,8 +259,44 @@ trym2.helpScreen = function() {
     $("#help-dialog").scrollTop(0);
 };
 
+trym2.saveFiles = function(filenames) {
+    console.log('<a href="' + filenames.input + '">Download input file</a>');
+    $("#save-dialog").html('<p><a href="' + filenames.input + '">Input</a>');
+    $("#save-dialog").append('<p><a href="' + filenames.output + '">Output</a>');
+    $("#save-dialog a").button({
+        icons: {primary: "ui-icon-document" }
+    });
+    $("#save-dialog").dialog();
+/*{
+        height: 200,
+        width: 200
+    });*/
+};
 trym2.doUpfileClick = function () {
     $("#upfile").click();
+};
+
+trym2.saveInteractions = function() {
+    var xhr = new XMLHttpRequest(); // Create a new XHR
+    //console.log( "URL: " + url);
+    var msg = { input: $("#M2In").val(),
+                output: $("#M2Out").val()
+              };
+    xhr.open("POST", '/save'); // to POST to url.
+    xhr.setRequestHeader("Content-Type", // Specify plain UTF-8 text 
+                         "application/json;charset=UTF-8");
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            console.log("saveInteractions post finished");
+            var filenames = JSON.parse(xhr.responseText);
+            console.log(filenames);
+            trym2.saveFiles(filenames);
+            //window.open(filenames.input, 'Download');
+            }
+    };
+
+    xhr.send(JSON.stringify(msg));
+    return true;
 };
 
 trym2.doUpload = function () {
@@ -370,6 +406,7 @@ $(document).ready(function() {
     $("#interruptBtn").click(trym2.postMessage('/interrupt'));
     $("#terminalBtn").click(trym2.showTerminal);
     $(document).on("click", "#inputTerminalLink", trym2.showTerminal);
+    $("#saveBtn").click(trym2.saveInteractions);
     $("#uploadBtn").click(trym2.doUpfileClick);
     $("#upfile").change(trym2.doUpload);
 

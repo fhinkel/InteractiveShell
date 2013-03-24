@@ -361,7 +361,7 @@ trym2.startEventSource = function() {
                 var graphBtn = $('<a href="#" id="newGraph">Image</a>').button({
                     icons: {primary: "ui-icon-document" }
                 });
-                $("<div></div>").attr('id', 'newGraph').append(a).dialog({dialogClass:alert});
+                $("<div></div>").attr('id', 'newGraph').append(graphBtn).dialog({dialogClass:alert});
 
                 $('#newGraph').click(function() {
                     window.open(imageUrl, '_blank', 'height=200,width=200,toolbar=0,location=0,menubar=0');

@@ -101,7 +101,7 @@ trym2.loadLesson = function(tutorialid, lessonid) {
     $("#sendBtn").hide();
     $("#previousBtn").show();
     $("#nextBtn").show();    
-    $("#pageIndex").button("option", "label", (trym2.lessonNr+1) + "/" + maxLesson).show().unbind();
+    $("#pageIndex").button("option", "label", (trym2.lessonNr+1) + "/" + maxLesson).show().unbind().css('cursor', 'default');;
     if (changedLesson) {
         $("#lesson").html(lessonContent).show();
         $("#lesson").scrollTop(0);
@@ -477,9 +477,11 @@ $(document).ready(function() {
 
     $("#nextBtn").click(function() {
         trym2.switchLesson(1);
+        $(this).removeClass("ui-state-focus");
     });
     $("#previousBtn").click(function() {
         trym2.switchLesson(-1);
+        $(this).removeClass("ui-state-focus");
     });
     
     $(document).on("click", "#selectTutorialLink", trym2.showTOC);

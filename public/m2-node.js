@@ -476,6 +476,7 @@ $(document).ready(function() {
     });
     
     $("#lesson").on("click", "#selectTutorialLink", trym2.showTOC);
+    
 });
 
 

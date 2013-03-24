@@ -113,11 +113,6 @@ div-boarder
 
 }
 
-.inactive {
-    color: lightgrey;
-}
-
-
 #M2In, #M2Out {
 	width: 100%;
 	font-family: monospace;
@@ -151,12 +146,5 @@ code {
     display:none;
 }
 
-#tmp {
-	background-color:red;
-	visibility:hidden;
-}
 
-.hidden {
-	visibility:hidden;
-}
 

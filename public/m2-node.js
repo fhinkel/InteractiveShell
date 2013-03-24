@@ -18,32 +18,17 @@ trym2.tutorials = [];
 trym2.makeTutorial = function(theUrl, theHtml) {
     // populate a Tutorial element, and return it
     var theLessons = [];
-    $("#tutorial").html(theHtml);
-    $("div", "#tutorial").each(function() {
+    var tutorial = $("<div>").html(theHtml);
+    $("div", tutorial).each(function() {
         theLessons.push({title: $("h4", $(this)).text(),
                              html: $(this)});
     });
     return { // class Tutorial
         url: theUrl,
-        title: $("<h3>").append($("title", "#tutorial").text()),
+        title: $("<h3>").append($("title",tutorial).text()),
         current: 0,
         lessons: theLessons
     };
-};
-
-trym2.makeAccordianOLD = function(tutorials) {
-    var content = "";
-    for (var i=0; i<tutorials.length; i++) {
-        content = content + tutorials[i].title + '<div><ul>';
-        var lessons = tutorials[i].lessons;
-        for (var j=0; j<lessons.length; j++) {
-            content = content + '<li><a href="#" class="submenuItem" tutorialid=' + i +
-                         ' lessonid=' + j + '>  ' + lessons[j].title + '</a></li>';
-        };
-        content = content + '</ul></div>';
-    };
-    $("#accordion").append(content);
-    $("#accordion").accordion({ heightStyle: "content" });
 };
 
 trym2.makeAccordian = function(tutorials) {
@@ -364,16 +349,16 @@ trym2.startEventSource = function() {
             //console.log("We got an image! " + imageUrl);
             if (imageUrl) {
                 console.log("We got an image! " + imageUrl);
-                var graphBtn = $('<a href="#" id="newGraph">Image</a>').button({
+                var graphBtn = $('<a href="#" >Image</a>').button({
                     icons: {primary: "ui-icon-document" }
-                });
-                $("<div></div>").append(graphBtn).dialog({dialogClass: 'alert'}).attr('id', 'graphDialog');
-
-                $(document).on('click', '#newGraph', function() {
+                }).on('click', function() {
                     window.open(imageUrl, '_blank', 'height=200,width=200,toolbar=0,location=0,menubar=0');
-                    $("#graphDialog").dialog("close");
+                    $(".graphDialog").dialog("close");
                     return false;
                 });
+                
+                $("<div></div>").append(graphBtn).dialog({dialogClass: 'alert'}).addClass('graphDialog');
+
             }
         }, false);
         chat.addEventListener('viewHelp', function(event) {

@@ -264,19 +264,15 @@ trym2.helpScreen = function() {
 };
 
 trym2.saveFiles = function(filenames) {
-    console.log('<a href="' + filenames.input + '">Download input file</a>');
-    $("<div></div>").html('<p><a href="' + filenames.input + '" target="_blank">Input</a>')
+   $("<div></div>").html('<p><a href="' + filenames.input + '" target="_blank">Input</a>')
         .append('<p><a href="' + filenames.output + '" target="_blank">Output</a>')
-        .dialog({title: "Download"}).attr('id', 'save-dialog');
+        .append("<span autofocus='autofocus'></span>")
+        .dialog({title: "Download" }).attr('id', 'save-dialog');
     $("#save-dialog a").button({
         icons: {primary: "ui-icon-document" }
     });
-  
-/*{
-        height: 200,
-        width: 200
-    });*/
 };
+
 trym2.doUpfileClick = function () {
     $("#upfile").click();
 };
@@ -357,10 +353,10 @@ trym2.startEventSource = function() {
                     icons: {primary: "ui-icon-document" }
                 }).on('click',  function() {
                         window.open(imageUrl, '_blank', 'height=200,width=200,toolbar=0,location=0,menubar=0');
-                        $(".graphDialog").dialog("close");
+                        $(".graph-dialog").dialog("close");
                         return false;
                     });
-                $("<div></div>").html(graphBtn).dialog({title: 'Image', dialogClass: 'alert'}).addClass('graphDialog');
+                $("<div></div>").html(graphBtn).dialog({title: 'Image', dialogClass: 'alert'}).addClass('graph-dialog');
             }
         }, false);
         chat.addEventListener('viewHelp', function(event) {

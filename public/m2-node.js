@@ -341,9 +341,10 @@ trym2.doUpload = function () {
         },
         success: function(data) {
             console.log("File uploaded successfully!" + data);
-            alert(fileName +
-                  " has been uploaded and you can use it by loading it into your Macaulay2 session (use the input terminal).");
             
+            $("<div>" + fileName +
+                  " has been uploaded and you can use it by loading it into your Macaulay2 session (use the input terminal).</div>")
+                  .dialog({ dialogClass: ' alert' });
         }
     }); 
     return false;

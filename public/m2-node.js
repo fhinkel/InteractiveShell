@@ -425,7 +425,7 @@ $(document).ready(function() {
     $("#resetBtn").click(trym2.postMessage('/restart'));
     $("#interruptBtn").click(trym2.postMessage('/interrupt'));
     $("#terminalBtn").click(trym2.showTerminal);
-    $("#lesson").on("click", "#inputTerminalLink", trym2.showTerminal);
+    $(document).on("click", "#inputTerminalLink", trym2.showTerminal);
     $("#saveBtn").click(trym2.saveInteractions);
     $("#uploadBtn").click(trym2.doUpfileClick);
     $("#upfile").change(trym2.doUpload);
@@ -475,7 +475,7 @@ $(document).ready(function() {
         trym2.switchLesson(-1);
     });
     
-    $("#lesson").on("click", "#selectTutorialLink", trym2.showTOC);
+    $(document).on("click", "#selectTutorialLink", trym2.showTOC);
     
 });
 

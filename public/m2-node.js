@@ -313,11 +313,13 @@ trym2.doUpload = function () {
     console.log("process form " + file );
     console.log(file.size);      
     if (file.size > trym2.MAXFILESIZE) {
-        $("<div class='ui-state-error'><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Your file is too big to upload.  Sorry!</div>").dialog({
+        $("<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Your file is too big to upload.  Sorry!</div>").dialog({
              dialogClass: 'alert', 
          });
         return false;
     }
+    
+    $(docume)
     $.ajax({
         url: '/upload',
         type: 'POST',
@@ -327,7 +329,7 @@ trym2.doUpload = function () {
         processData: false,
         statusCode: {
             500: function(data) {
-                $("<div>Uploading failed.</div>").dialog({dialogClass: 'alert' });
+                $("<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'>Uploading failed.</div>").dialog({dialogClass: 'alert' });
             }
         },
         success: function(data) {
@@ -335,7 +337,7 @@ trym2.doUpload = function () {
             
             $("<div>" + fileName +
                   " has been uploaded and you can use it by loading it into your Macaulay2 session (use the input terminal).</div>")
-                  .dialog({ dialogClass: ' alert' });
+                  .dialog({  dialogClass: ' alert' });
         }
     }); 
     return false;
@@ -351,14 +353,14 @@ trym2.startEventSource = function() {
             //console.log("We got an image! " + imageUrl);
             if (imageUrl) {
                 console.log("We got an image! " + imageUrl);
-                var graphBtn = $('<a href="#">Image</a>').button({
+                var graphBtn = $('<a href="#">').html(imageUrl.split('/').pop()).button({
                     icons: {primary: "ui-icon-document" }
                 }).on('click',  function() {
                         window.open(imageUrl, '_blank', 'height=200,width=200,toolbar=0,location=0,menubar=0');
                         $(".graphDialog").dialog("close");
                         return false;
                     });
-                $("<div></div>").html(graphBtn).dialog({dialogClass: 'alert'}).addClass('graphDialog');
+                $("<div></div>").html(graphBtn).dialog({title: 'Image', dialogClass: 'alert'}).addClass('graphDialog');
             }
         }, false);
         chat.addEventListener('viewHelp', function(event) {

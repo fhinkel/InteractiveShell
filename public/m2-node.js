@@ -34,8 +34,6 @@ trym2.makeTutorial = function(theUrl, theHtml) {
 trym2.makeAccordion = function(tutorials) {
     for (var i=0; i<tutorials.length; i++) {
         var title = tutorials[i].title;
-        title = $("<div><a href='#'>").html(title);
-        console.log("title: " + title.text());
         title.addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons")
         .prepend('<span class="ui-icon ui-accordion-header-icon ui-icon-triangle-1-e"></span>')
         .hover(function() {$(this).toggleClass("ui-state-hover");})

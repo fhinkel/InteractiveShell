@@ -454,13 +454,20 @@ $(document).ready(function() {
     $("#previousBtn").hide();
     $("#nextBtn").hide();
 
-    var tutorialNames = ["tutorials/welcome.html", "tutorials/Beginning.html", "tutorials/Beginning.html"];
+    var tutorialNames = ["tutorials/welcome2.html", "tutorials/Beginning.html", "tutorials/Beginning.html"];
     $("#TOC").append("<div id=\"accordion\"></div>");
     
     trym2.getTutorials(0, tutorialNames, function() {
         trym2.makeAccordian(trym2.tutorials);
+        // Do we actually need this line?
         trym2.loadLesson(0, 0); // welcome tutorial
+        // The before line loaded the tutorial.
+        // To get out 'home' page we have to click the corresponding button.
+        // Instead one could also call the corrsponding method, but this
+        // really doesn't make any difference.
+        $("#homeBtn").click();
     });
+
 
     $("#nextBtn").click(function() {
         trym2.switchLesson(1);

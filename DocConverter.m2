@@ -79,7 +79,7 @@ replaceWithValueOf String  :=  s -> (
 toHtml = method()
 toHtml String := (s) ->  (
   s = replaceWithValueOf s;
-  print s;
+  --print s;
   s = html TEX s;
   s | "<BR>\n"
   )

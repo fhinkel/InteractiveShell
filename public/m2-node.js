@@ -261,8 +261,8 @@ trym2.helpScreen = function() {
 
 trym2.saveFiles = function(filenames) {
     console.log('<a href="' + filenames.input + '">Download input file</a>');
-    $("#save-dialog").html('<p><a href="' + filenames.input + '">Input</a>');
-    $("#save-dialog").append('<p><a href="' + filenames.output + '">Output</a>');
+    $("#save-dialog").html('<p><a href="' + filenames.input + '" target="_blank">Input</a>');
+    $("#save-dialog").append('<p><a href="' + filenames.output + '" target="_blank">Output</a>');
     $("#save-dialog a").button({
         icons: {primary: "ui-icon-document" }
     });

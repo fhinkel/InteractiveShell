@@ -313,11 +313,13 @@ trym2.doUpload = function () {
     console.log("process form " + file );
     console.log(file.size);      
     if (file.size > trym2.MAXFILESIZE) {
-        $("<div class='ui-state-error'><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Your file is too big to upload.  Sorry!</div>").dialog({
+        $("<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Your file is too big to upload.  Sorry!</div>").dialog({
              dialogClass: 'alert', 
          });
         return false;
     }
+    
+    $(docume)
     $.ajax({
         url: '/upload',
         type: 'POST',
@@ -327,7 +329,7 @@ trym2.doUpload = function () {
         processData: false,
         statusCode: {
             500: function(data) {
-                $("<div>Uploading failed.</div>").dialog({dialogClass: 'alert' });
+                $("<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'>Uploading failed.</div>").dialog({dialogClass: 'alert' });
             }
         },
         success: function(data) {

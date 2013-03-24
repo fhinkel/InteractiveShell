@@ -377,7 +377,6 @@ trym2.startEventSource = function() {
                 $("#M2Out").val($("#M2Out").val() + msg);
                 trym2.scrollDown("#M2Out");
             }
-
         }
     }
 };
@@ -386,7 +385,15 @@ trym2.startEventSource = function() {
 $(document).ready(function() {
     // send server our client.eventStream
     trym2.startEventSource();
-   
+  
+    // Restarting the EventSource after pressing 'esc':
+      $(document).keyup(function(e) {
+        console.log("Got a key:"+e.keyCode);
+        if (e.keyCode == 27) { 
+         trym2.startEventSource();
+          }   // esc
+      }); 
+    
     $("#navigation").children("input").attr("name", "navbutton");
     $("#navigation").buttonset();
     $(".buttonset").buttonset();

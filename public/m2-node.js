@@ -3,6 +3,8 @@
 var trym2 = {
     lessonNr: 1,
     tutorialNr: 0,
+    tutorialScrollTop: 0,  // this value is where we set the scrollTop of "#lesson" so we can reset it back
+                           // when we navigate back (from Input or Index views).
     tutorials: [],
     maxLesson: 1
 };
@@ -198,6 +200,7 @@ trym2.getSelected = function(inputField) {
 };
 
 trym2.showTerminal = function() {
+    trym2.tutorialScrollTop = $("#lesson").scrollTop();
     $("#lesson").hide();
     $("#inputarea").show();
     $("#sendBtn").show();
@@ -209,6 +212,7 @@ trym2.showTerminal = function() {
 };
 
 trym2.showTOC = function(){
+    trym2.tutorialScrollTop = $("#lesson").scrollTop();
     $("#inputarea").hide();
     $("#sendBtn").hide();
     $("#lesson").hide();
@@ -423,6 +427,9 @@ $(document).ready(function() {
 
     $("#showLessonBtn").click(function() {
         trym2.loadLesson(trym2.tutorialNr, trym2.lessonNr);
+        if (trym2.tutorialScrollTop != 0) 
+            $("#lesson").scrollTop(trym2.tutorialScrollTop);
+        trym2.tutorialScrollTop = 0;
         //console.log("lesson!");
     });
     

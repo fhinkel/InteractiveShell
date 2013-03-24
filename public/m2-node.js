@@ -487,6 +487,7 @@ $(document).ready(function() {
     $(document).on("click", "#selectTutorialLink", function() {
         $("#TOCBtn").trigger("click");
         $("#TOCBtn").prop("checked", true).button("refresh");
+        return false;
     });
     $(document).on("click", "#inputTerminalLink", function() {
         //$("#terminalBtn").trigger("click");

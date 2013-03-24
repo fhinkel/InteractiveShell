@@ -6,7 +6,7 @@ start:
 	forever start -l /home/webm2.logs/forever.log -o /home/webm2.logs/out.log -e /home/webm2.logs/err.log --append m2server-schroot.js
 
 start_local:
-	node m2server.js
+	export PATH=$(@D)/:$(PATH); node m2server.js
 
 kill:
 	kill `ps ax | grep m2server | grep -v monitor | grep node | awk '{print $$1}'`

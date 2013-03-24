@@ -40,7 +40,7 @@ body {
     clear: both;
 }
 
-div-border
+div-boarder
 {
     border-style:solid;
     border-width:2px;
@@ -50,29 +50,32 @@ div-border
 	position: relative;
 }
 
-div {
-	/*border: 1px black solid;*/
-}
 
 .red {
 	border: 1px red solid;
 }
 
-.bottom {
-    position: absolute;
-    bottom: 0;
+.parent {
+	border: 4px green solid;
 }
+
+.padded {
+    padding: 0px 5px;
+}
+
 #title {
-	font-size: 24pt;
-	display: inline;
-	vertical-align: bottom;
+	font-size: 22pt;
+	position: relative;
+    top: 5px;
 	font-weight: bold;
+	margin-left: auto;
+	margin-right: auto;
+	overflow: hidden;   
 }
 
 .terminal {
 	background-color: #C2DFFF;
 }
-
 
 #inputarea, #lesson, #TOC, #outputarea {
 	width: 49.6%;

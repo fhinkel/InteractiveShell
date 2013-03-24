@@ -14,32 +14,34 @@
   <body>
     <div class="rel">
       <div class="left halfWidth rel">
-          <div class='left'>
+          <div class='left padded'>
             <button type="button" id="terminalBtn" >Input</button> 
             <button type="button" id="showLessonBtn">Tutorial</button>
             <button type="button" id="TOCBtn">Index</button>
-             <div id="title" >Macaulay2</div> 
+            
           </div>
-          <div  class="right " >
+          <div  class="right padded" >
             <button type="button" id="previousBtn">Previous</button> 
             <button type="button" id="pageIndex">Page Index</button>
             <button type="button" id="nextBtn">Next</button> 
             <button type="button" id="sendBtn">Evaluate</button>
-          </div>                
+           </div>  
+           
+           <div id="title" >Macaulay2  </div> 
       </div>
       <div class="right halfWidth rel">
-          <div class ="left">
+          <div class ="left padded">
             <button type="button" id="resetBtn">Reset</button>
             <button type="button" id="interruptBtn">Interrupt</button>
           </div>
-          <div class="right ">
+          <div class="right padded">
               <button type="button" id="uploadBtn">Upload File</button>
               <button type="button" id="helpBtn">Help</button>
           </div>  
       </div>
-    </div>
-    <div class="clear"></div>
-    
+      <div class="clear"></div>
+      
+    </div>    
     <div id="TOC" class="terminal left"><h4>Macaulay2 Tutorials</h4></div>
     <div id="lesson" class="terminal left "></div>
     <div id="inputarea" class="terminal left">
@@ -50,7 +52,7 @@
       <textarea id="M2Out" wrap='off' readonly='readonly'>
       </textarea>
     </div>
-    <div class="clear"></div>
+   
     <div id="tutorial" class="hidden"></div><!-- this div is used to display a lesson -->
     <div id="tmp"></div>
     <div id="help-dialog" title="TryM2 Help">

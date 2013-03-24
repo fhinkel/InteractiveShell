@@ -14,12 +14,17 @@
   <body>
     <div class="rel">
       <div class="left halfWidth rel">
-          <div class='left padded'>
-            <button type="button" id="terminalBtn" >Input</button><button type="button" id="showLessonBtn">Tutorial</button><button type="button" id="TOCBtn">Index</button>
-            
+          <div class='left padded' id="navigation">
+            <input type="radio" id="terminalBtn" ><label for="terminalBtn">Input</label>
+            <input type="radio" id="showLessonBtn" checked="checked"><label for="showLessonBtn">Tutorial</label>
+            <input type="radio" id="TOCBtn"><label for="TOCBtn">Index</label>
           </div>
           <div  class="right padded" >
-            <button type="button" id="previousBtn">Previous</button><button type="button" id="pageIndex">Page Index</button><button type="button" id="nextBtn">Next</button>
+            <div class="buttonset">
+               <button type="button" id="previousBtn">Previous</button>
+               <button type="button" id="pageIndex">Page Index</button>
+               <button type="button" id="nextBtn">Next</button>
+            </div>
             <button type="button" id="sendBtn">Evaluate</button>
            </div>  
            

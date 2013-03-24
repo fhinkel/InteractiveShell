@@ -101,7 +101,7 @@ trym2.loadLesson = function(tutorialid, lessonid) {
     $("#sendBtn").hide();
     $("#previousBtn").show();
     $("#nextBtn").show();    
-    $("#pageIndex").button("option", "label", (trym2.lessonNr+1) + "/" + maxLesson).show();
+    $("#pageIndex").button("option", "label", (trym2.lessonNr+1) + "/" + maxLesson).show().unbind();
     if (changedLesson) {
         $("#lesson").html(lessonContent).show();
         $("#lesson").scrollTop(0);
@@ -400,7 +400,11 @@ trym2.startEventSource = function() {
 $(document).ready(function() {
     // send server our client.eventStream
     trym2.startEventSource();
-    
+   
+    $("#navigation").children("input").attr("name", "navbutton");
+    $("#navigation").buttonset();
+    $(".buttonset").buttonset();
+
     $("button").button();
     $("#previousBtn").button({
         icons: {primary: "ui-icon-arrowthick-1-w" },

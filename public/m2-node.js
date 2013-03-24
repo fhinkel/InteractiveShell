@@ -31,9 +31,11 @@ trym2.makeTutorial = function(theUrl, theHtml) {
     };
 };
 
-trym2.makeAccordian = function(tutorials) {
+trym2.makeAccordion = function(tutorials) {
     for (var i=0; i<tutorials.length; i++) {
         var title = tutorials[i].title;
+        title = $("<div><a href='#'>").html(title);
+        console.log("title: " + title.text());
         title.addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons")
         .prepend('<span class="ui-icon ui-accordion-header-icon ui-icon-triangle-1-e"></span>')
         .hover(function() {$(this).toggleClass("ui-state-hover");})
@@ -459,7 +461,7 @@ $(document).ready(function() {
     $("#TOC").append("<div id=\"accordion\"></div>");
     
     trym2.getTutorials(0, tutorialNames, function() {
-        trym2.makeAccordian(trym2.tutorials);
+        trym2.makeAccordion(trym2.tutorials);
         // Do we actually need this line?
         trym2.loadLesson(0, 0); // welcome tutorial
         // The before line loaded the tutorial.

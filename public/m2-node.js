@@ -83,6 +83,7 @@ trym2.submenuItemCallback = function() {
         tutorialIdNr = parseInt(tutorialId.match(/\d/g), 10);
     //console.log("You clicked a submenuItem: " + $(this).html());
     trym2.loadLesson(tutorialIdNr, lessonIdNr);
+    $("#showLessonBtn").prop("checked", true).button("refresh");
     return false;
 };
 

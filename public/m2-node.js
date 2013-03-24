@@ -328,7 +328,9 @@ trym2.doUpload = function () {
     console.log("process form " + file );
     console.log(file.size);      
     if (file.size > trym2.MAXFILESIZE) {
-        $("<div>Your file is too big to upload.  Sorry!</div>").dialog({ dialogClass: 'ui-state-error alert' });
+        $("<div class='ui-state-error'><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Your file is too big to upload.  Sorry!</div>").dialog({
+             dialogClass: 'alert', 
+         });
         return false;
     }
     $.ajax({
@@ -340,7 +342,7 @@ trym2.doUpload = function () {
         processData: false,
         statusCode: {
             500: function(data) {
-                $("<div>Uploading failed.</div>").dialog({dialogClass: 'ui-state-error alert' });
+                $("<div>Uploading failed.</div>").dialog({dialogClass: 'alert' });
             }
         },
         success: function(data) {
@@ -364,16 +366,14 @@ trym2.startEventSource = function() {
             //console.log("We got an image! " + imageUrl);
             if (imageUrl) {
                 console.log("We got an image! " + imageUrl);
-                var graphBtn = $('<a href="#" id="newGraph">Image</a>').button({
+                var graphBtn = $('<a href="#">Image</a>').button({
                     icons: {primary: "ui-icon-document" }
-                });
-                $("<div></div>").append(graphBtn).dialog({dialogClass: 'alert'}).attr('id', 'graphDialog');
-
-                $(document).on('click', '#newGraph', function() {
-                    window.open(imageUrl, '_blank', 'height=200,width=200,toolbar=0,location=0,menubar=0');
-                    $("#graphDialog").dialog("close");
-                    return false;
-                });
+                }).on('click',  function() {
+                        window.open(imageUrl, '_blank', 'height=200,width=200,toolbar=0,location=0,menubar=0');
+                        $(".graphDialog").dialog("close");
+                        return false;
+                    });
+                $("<div></div>").html(graphBtn).dialog({dialogClass: 'alert'}).addClass('graphDialog');
             }
         }, false);
         chat.addEventListener('viewHelp', function(event) {

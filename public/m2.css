@@ -148,7 +148,7 @@ code {
 
 /* do not display title bars in dialogs when they alert and error*/
 .alert .ui-dialog-titlebar {
-    display:none;
+    /*display:none;/*
 }
 
 #tmp {

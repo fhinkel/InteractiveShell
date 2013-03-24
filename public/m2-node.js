@@ -315,7 +315,6 @@ trym2.doUpload = function () {
         return false;
     }
     
-    $(docume)
     $.ajax({
         url: '/upload',
         type: 'POST',
@@ -330,10 +329,9 @@ trym2.doUpload = function () {
         },
         success: function(data) {
             console.log("File uploaded successfully!" + data);
-            
-            $("<div>" + fileName +
+            $("<div class='smallFont'>" + fileName +
                   " has been uploaded and you can use it by loading it into your Macaulay2 session (use the input terminal).</div>")
-                  .dialog({  dialogClass: ' alert' });
+                  .dialog({  dialogClass: ' alert', title: 'File uploaded' });
         }
     }); 
     return false;

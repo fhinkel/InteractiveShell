@@ -146,7 +146,9 @@ code {
     /*display:none;*/
 }
 
-
+.smallFont {
+    font-size: 12px;
+}
 
 .image-text-wrap {
     float: right;

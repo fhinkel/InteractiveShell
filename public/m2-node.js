@@ -81,6 +81,7 @@ trym2.submenuItemCallback = function() {
         tutorialIdNr = parseInt(tutorialId.match(/\d/g), 10);
     //console.log("You clicked a submenuItem: " + $(this).html());
     trym2.loadLesson(tutorialIdNr, lessonIdNr);
+    return false;
 };
 
 trym2.loadLesson = function(tutorialid, lessonid) {
@@ -207,6 +208,16 @@ trym2.showTerminal = function() {
     return false;
 };
 
+trym2.showTOC = function(){
+    $("#inputarea").hide();
+    $("#sendBtn").hide();
+    $("#lesson").hide();
+    $("#pageIndex").hide();
+    $("#previousBtn").hide();
+    $("#nextBtn").hide();
+    $("#TOC").show();
+    return false;
+};
 
 trym2.postMessage = function(url, msg) {
     return function() {
@@ -405,7 +416,7 @@ $(document).ready(function() {
     $("#resetBtn").click(trym2.postMessage('/restart'));
     $("#interruptBtn").click(trym2.postMessage('/interrupt'));
     $("#terminalBtn").click(trym2.showTerminal);
-    $(document).on("click", "#inputTerminalLink", trym2.showTerminal);
+    $("#lesson").on("click", "#inputTerminalLink", trym2.showTerminal);
     $("#saveBtn").click(trym2.saveInteractions);
     $("#uploadBtn").click(trym2.doUpfileClick);
     $("#upfile").change(trym2.doUpload);
@@ -415,15 +426,7 @@ $(document).ready(function() {
         //console.log("lesson!");
     });
     
-    $("#TOCBtn").click(function(){
-        $("#inputarea").hide();
-        $("#sendBtn").hide();
-        $("#lesson").hide();
-        $("#pageIndex").hide();
-        $("#previousBtn").hide();
-        $("#nextBtn").hide();
-        $("#TOC").show();
-    });
+    $("#TOCBtn").click(trym2.showTOC);
 
     $(document).on("click", ".submenuItem", trym2.submenuItemCallback);
 
@@ -459,6 +462,8 @@ $(document).ready(function() {
     $("#previousBtn").click(function() {
         trym2.switchLesson(-1);
     });
+    
+    $("#lesson").on("click", "#selectTutorialLink", trym2.showTOC);
 });
 
 

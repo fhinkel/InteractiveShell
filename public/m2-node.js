@@ -432,7 +432,6 @@ $(document).ready(function() {
     $("#resetBtn").click(trym2.postMessage('/restart'));
     $("#interruptBtn").click(trym2.postMessage('/interrupt'));
     $("#terminalBtn").click(trym2.showTerminal);
-    $(document).on("click", "#inputTerminalLink", trym2.showTerminal);
     $("#saveBtn").click(trym2.saveInteractions);
     $("#uploadBtn").click(trym2.doUpfileClick);
     $("#upfile").change(trym2.doUpload);
@@ -484,7 +483,17 @@ $(document).ready(function() {
         $(this).removeClass("ui-state-focus");
     });
     
-    $(document).on("click", "#selectTutorialLink", trym2.showTOC);
+    $(document).on("click", "#selectTutorialLink", function() {
+        $("#TOCBtn").trigger("click");
+        $("#TOCBtn").prop("checked", true).button("refresh");
+    });
+    $(document).on("click", "#inputTerminalLink", function() {
+        //$("#terminalBtn").trigger("click");
+        $("#terminalBtn").trigger("click");
+        $("#terminalBtn").prop("checked", true).button("refresh");
+        return false;
+    });
+    
     
 });
 

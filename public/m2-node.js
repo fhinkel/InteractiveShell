@@ -335,7 +335,7 @@ trym2.doUpload = function () {
         processData: false,
         statusCode: {
             500: function(data) {
-                $("<div>Uploading failed.</div>").dialog();
+                $("<div>Uploading failed.</div>").dialog({dialogClass: 'ui-state-error alert' });
             }
         },
         success: function(data) {
@@ -361,7 +361,7 @@ trym2.startEventSource = function() {
                 var graphBtn = $('<a href="#" id="newGraph">Image</a>').button({
                     icons: {primary: "ui-icon-document" }
                 });
-                $("<div></div>").append(a).dialog({dialogClass:alert});
+                $("<div></div>").attr('id', 'newGraph').append(a).dialog({dialogClass:alert});
 
                 $('#newGraph').click(function() {
                     window.open(imageUrl, '_blank', 'height=200,width=200,toolbar=0,location=0,menubar=0');

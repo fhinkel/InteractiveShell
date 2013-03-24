@@ -319,7 +319,7 @@ trym2.doUpload = function () {
     console.log("process form " + file );
     console.log(file.size);      
     if (file.size > trym2.MAXFILESIZE) {
-        alert("Your file is too big to upload.  Sorry!");
+        $("<div>Your file is too big to upload.  Sorry!</div>").dialog({ dialogClass: 'ui-state-error alert' });
         return false;
     }
     $.ajax({
@@ -331,7 +331,7 @@ trym2.doUpload = function () {
         processData: false,
         statusCode: {
             500: function(data) {
-                alert("Uploading failed.");
+                $("<div>Uploading failed.</div>").dialog();
             }
         },
         success: function(data) {
@@ -354,8 +354,11 @@ trym2.startEventSource = function() {
             //console.log("We got an image! " + imageUrl);
             if (imageUrl) {
                 console.log("We got an image! " + imageUrl);
-                $('#graphDialog').html('<a href="#" id="newGraph">Click for image</a>');
-                $('#graphDialog').dialog();
+                var graphBtn = $('<a href="#" id="newGraph">Image</a>').button({
+                    icons: {primary: "ui-icon-document" }
+                });
+                $("<div></div>").append(a).dialog({dialogClass:alert});
+
                 $('#newGraph').click(function() {
                     window.open(imageUrl, '_blank', 'height=200,width=200,toolbar=0,location=0,menubar=0');
                     $("#graphDialog").dialog("close");

@@ -145,6 +145,10 @@ code {
     font-size: 16px !important; 
 }
 
+/* do not display title bars in dialogs when they alert and error*/
+.alert .ui-dialog-titlebar {
+    display:none;
+}
 
 #tmp {
 	background-color:red;

@@ -368,7 +368,7 @@ trym2.startEventSource = function() {
                 });
                 $("<div></div>").append(graphBtn).dialog({dialogClass: 'alert'}).attr('id', 'graphDialog');
 
-                $('#newGraph').click(function() {
+                $(document).on('click', '#newGraph', function() {
                     window.open(imageUrl, '_blank', 'height=200,width=200,toolbar=0,location=0,menubar=0');
                     $("#graphDialog").dialog("close");
                     return false;

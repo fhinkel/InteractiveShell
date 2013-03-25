@@ -402,7 +402,7 @@ $(document).ready(function() {
   
     // Restarting the EventSource after pressing 'esc':
       $(document).keyup(function(e) {
-        console.log("Got a key:"+e.keyCode);
+        //console.log("Got a key:"+e.keyCode);
         if (e.keyCode == 27) { 
          trym2.startEventSource();
           }   // esc

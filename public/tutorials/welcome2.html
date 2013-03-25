@@ -70,37 +70,59 @@
   lines already there.  When you are ready to come back to the tutorial, click or tap on the
   <b>Tutorial</b> button at the top of the page.  You will end up right here!
 
-</div>
-
-<div>
-  <h4>Macaulay2 sessions, Reset, and Interrupt</h4>
-
-  <p>
+   <p><b>To save your work:</b>
+  Click on the <b>Save</b> button at the top of the top right of the window.  A dialog will appear
+  where you can save the text in the <b>Input</b> window, or the text in the Macaulay2 output (or both).
+  Alternatively, you can just select the text you wish, and copy it.
   </p>
+  
 </div>
 
 <div>
-    <h4>Uploading files and saving files</h4>
-</div>
-
-<div>
-    <h4>Restrictions in place for the Macaulay2 server</h4>
-
+  <h4>Macaulay2 sessions and the Reset button</h4>
+  
   <p>
+  When your browser starts, it starts a Macaulay2 process on our server.  All of your input,
+  either typed and evaluated, or run by pressing buttons, goes to this process.
   </p>
 
   <p>
+  You might wish to start fresh, or restart Macaulay2, if a computation is
+  going on too long.  In this case, press the <b>Reset</b> button at the top of
+  the page.
   </p>
-
 </div>
 
 <div>
-    <h4>Macaulay2 and pop up windows</h4>
+  <h4>Advanced topics</h4>
+  <h4>Uploading files</h4>
 
-    <p>
+  <p>You may upload files to the Macaulay2 server that can then be loaded into your Macaulay2 session.
+  For example, you may upload a package that you have written that you wish to use or test.</p>
+
+  <h4>Restrictions in place for the Macaulay2 server</h4>
+
+  <p>The server is being shared with other users, therefore memory and CPU time
+  are limited (generous, but limited).  Other restrictions include: upload file size, number of processes that
+  can run, and the amount of time that the session is saved on the server.
   </p>
+  
+  <h4>Running shell commands from within Macaulay2</h4>
 
-</div>
+  <p>It is possible to run shell commands from within Macaulay2, although many operations are restricted.
+  For example, to see what files you have in your home directory, try:</p>
+  <code>get "!ls"</code><br>
+
+  <p>Typically, there will be no files shown in your home directory, unless you have created them
+  or uploaded them.</p>
+
+  <h4>Helping with this project</h4>
+
+  <p>
+  If you would like to help develop this site, or if you have tutorials that
+  you would like to upload please contact us.  The code for this server is at
+  <a href="http://github.com/fhinkel/tryM2" target="_blank">tryM2 on github</a>.
+  </p>
 
 </div>
 </body>

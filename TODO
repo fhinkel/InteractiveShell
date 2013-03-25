@@ -6,11 +6,12 @@
 *JSAG article
 * Create new tutorial
 * subdomain from Dan
-
 * Change text of 'welcome' and 'help' and 'M2In', M2In!!!
+* explain save-upload relationship (they're not necessarily intended to be used together)
 DESIRED
 * 'Evaluate all' method for tutorials
 * Getting list of tutorials, so far it is fixed, OK for now
+* keep/get M2 results from earlier calculations when navigating away from site
 
 
 *alerts DONE

@@ -42,8 +42,8 @@ trym2.makeAccordion = function(tutorials) {
             .toggleClass("ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top")
             .find("> .ui-icon").toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s").end()
             .next().slideToggle();
-            console.log($("#TOC").scrollTop() + ' ' + $(this).next().next().height());
-            //$("#TOC").scrollTop($("TOC").scrollTop() + $(this).next().next().height());
+            console.log($("#home").scrollTop() + ' ' + $(this).next().next().height());
+            //$("#home").scrollTop($("home").scrollTop() + $(this).next().next().height());
             return false;
         })
        .next();
@@ -101,7 +101,7 @@ trym2.loadLesson = function(tutorialid, lessonid) {
         $("#lesson").html(lessonContent).prepend("<h3>" + title + "</h3>").show();
         $("#lesson").scrollTop(0);
     };
-    $("#TOC").hide();    
+    $("#home").hide();    
 };
 
 trym2.switchLesson = function(incr) {
@@ -205,11 +205,11 @@ trym2.showTerminal = function() {
     $("#pageIndex").hide();
     $("#previousBtn").hide();
     $("#nextBtn").hide();
-    $("#TOC").hide();
+    $("#home").hide();
     return false;
 };
 
-trym2.showTOC = function(){
+trym2.showhome = function(){
     trym2.tutorialScrollTop = $("#lesson").scrollTop();
     $("#inputarea").hide();
     $("#sendBtn").hide();
@@ -217,7 +217,7 @@ trym2.showTOC = function(){
     $("#pageIndex").hide();
     $("#previousBtn").hide();
     $("#nextBtn").hide();
-    $("#TOC").show();
+    $("#home").show();
     return false;
 };
 
@@ -266,11 +266,6 @@ trym2.sendOnEnterCallback = function(inputfield) {
     };
 };
 
-trym2.helpScreen = function() {
-    //console.log("Display Help.");
-    $("#help-dialog").dialog('open');
-    $("#help-dialog").scrollTop(0);
-};
 
 trym2.saveFiles = function(filenames) {
    $("<div></div>").html('<p><a href="' + filenames.input + '" target="_blank">Input</a>')
@@ -416,15 +411,6 @@ $(document).ready(function() {
     $('#M2In').val(
         "Evaluate a line by typing Shift+Enter or by clicking on Evaluate.\nHere are some sample commands:\n---------------\nR = ZZ/101[a,b,c]\nS = ZZ/32003[vars(1..10)]\nQQ[x_1..x_6]\n\nS = ZZ/32003[vars(1..13)]\nres coker vars S\n");
 
-    if ( !! window.EventSource) {
-        $('#help-dialog').dialog({
-            height: 340,
-            width: 460,
-            modal: true,
-            autoOpen: false
-        });
-        $('#helpBtn').click(trym2.helpScreen);
-    }
     $("#sendBtn").click(trym2.sendCallback('#M2In'));
     $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
     $("#resetBtn").click(trym2.postMessage('/restart'));
@@ -442,7 +428,7 @@ $(document).ready(function() {
         //console.log("lesson!");
     });
     
-    $("#homeBtn").click(trym2.showTOC);
+    $("#homeBtn").click(trym2.showhome);
 
     $(document).on("click", ".submenuItem", trym2.submenuItemCallback);
 
@@ -458,14 +444,14 @@ $(document).ready(function() {
     });
 
     $("#inputarea").hide();
-    $("#TOC").hide();
+    $("#home").hide();
     $("#sendBtn").hide();
     $("#pageIndex").hide();
     $("#previousBtn").hide();
     $("#nextBtn").hide();
 
     var tutorialNames = ["tutorials/welcome2.html", "tutorials/Beginning.html", "tutorials/tutorial.html"];
-    $("#TOC").append("<div id=\"accordion\"></div>");
+    $("#home").append("<div id=\"accordion\"></div>");
     
     trym2.getTutorials(0, tutorialNames, function() {
         trym2.makeAccordion(trym2.tutorials);

@@ -63,15 +63,15 @@
    <p>In that window, place your cursor on a line that you wish to evaluate, and either click the
   <b>Evaluate</b> button, or press Shift-Return (both keys at the same time).</p>
 
-  <p>Alternatively, you may select several lines, or a part of a line, and click
-  <b>Evaluate</b> (or press Shift-Return), will evaluate the selection.</p>
+  <p>Alternatively, you may select several lines, or a part of a line, and clicking
+  <b>Evaluate</b> (or press Shift-Return) will evaluate the selection.</p>
 
-  <p>You try it!  Navigate to that page, type in some Macaulay2 input, or try out some of the example
+  <p>You try it!  Click <b>Input</b>, type in some Macaulay2 input, or try out some of the example
   lines already there.  When you are ready to come back to the tutorial, click or tap on the
   <b>Tutorial</b> button at the top of the page.  You will end up right here!
 
    <p><b>To save your work:</b>
-  Click on the <b>Save</b> button at the top of the top right of the window.  A dialog will appear
+  Click on the <b>Save</b> button at the top right of the window.  A dialog will appear
   where you can save the text in the <b>Input</b> window, or the text in the Macaulay2 output (or both).
   Alternatively, you can just select the text you wish, and copy it.
   </p>
@@ -124,28 +124,18 @@
 
   
   <p><b>Note</b>: these lines will likely give errors now, as the file
-    <tt>foo.m2</tt> probably doesn't exist on the server</p>
+    <tt>foo.m2</tt> probably doesn't exist on the server!</p>
 
-  <h4>Restrictions in place for the Macaulay2 server</h4>
-
-  <p>The server is being shared with other users, therefore memory and CPU time
-  are limited (generous, but limited).  Other restrictions include: upload file size, number of processes that
-  can run, and the amount of time that the session is saved on the server.
-  </p>
-  
-  <h4>Running shell commands from within Macaulay2</h4>
+  <h4>Running shell commands in your Macaulay2 session</h4>
 
   <p>It is possible to run shell commands from within Macaulay2, although many operations are restricted.
-  For example, to see what files you have in your home directory, try:</p>
-  <code>get "!ls"</code><br>
-
-  <p>Typically, there will be no files shown in your home directory, unless you have created them
-  or uploaded them.</p>
+  For example, to see what files you have in your home directory on the server, try:</p>
+  <code>get "!ls -a"</code><br>
 
   <h4>Macaulay2 and image files</h4>
 
-  <p>Sometimes Macaulay2 or one of its packages generates image files that are then downloaded to
-  your machine. For example, the displayGraph function creates a jpeg file that gets downloaded so you :
+  <p>Sometimes Macaulay2 or one of its packages generates image files.
+  For example, the displayGraph function below creates a jpeg file.
   </p>
     <code> needsPackage "Graphs"</code><br>
     <code>A = graph({{x_1,x_3},{x_2,x_4},{x_1,x_4}})</code><br>
@@ -165,7 +155,15 @@
   </p>
   
   <code>get "!open important-results.txt"</code><br>
+
+  <h4>Restrictions in place for the Macaulay2 server</h4>
+
+  <p>The server is being shared with other users, therefore memory and CPU time
+  are limited (generous, but limited).  Other restrictions include: upload file size, number of processes that
+  can run, and the amount of time that the session is saved on the server.
+  </p>
   
+
   <h4>Helping with this project</h4>
 
   <p>

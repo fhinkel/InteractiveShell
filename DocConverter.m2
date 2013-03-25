@@ -32,7 +32,7 @@ newPackage(
 
 needsPackage "Text"
 
-export {convert, keywordRE, descriptionRE}
+export {convert, keywordRE, descriptionRE, tutorial}
 
 keywordRE = ///^\s*Key|^\s*Headline|^\s*Description///
 descriptionRE = ///^\s*Text|^\s*Code|^\s*Example///
@@ -145,6 +145,46 @@ convert String := (filename) -> (
 	      ));
       s | cc | "    </div>\n  </body>\n</html>\n"
      )
+
+
+mat := (pat,line) -> class line === String and match(pat,line)
+
+tutorialToSimpleDoc = method()
+tutorialToSimpleDoc String := (x) -> (
+     -- x is generally the contents of a file
+     x = lines x;
+     x = select(x, line -> not mat("^[[:space:]]*$",line));
+     head := false;
+     x = apply(x, line -> (
+	       if mat("^---",line) then (head = not head;) 
+	       else if head then HEADER4 replace("^-- *","",line)
+	       else line));
+     p1 := reverse positions(x, line -> mat("^--\\^$",line));
+     p2 := reverse positions(x, line -> mat("^--\\$$",line));
+     if #p1 != #p2 then error "unmatched --^ --$ pairs";
+     scan(#p1, 
+	  i -> x = join(
+	       take(x,{0,p1#i-1}),
+	       {concatenate between_newline take(x,{p1#i+1,p2#i-1})},
+	       take(x,{p2#i+1,#x-1})));
+     p1 = reverse positions(x, line -> mat("^--PRE\\^$",line));
+     p2 = reverse positions(x, line -> mat("^--PRE\\$$",line));
+     if #p1 != #p2 then error "unmatched --PRE^ --PRE$ pairs";
+     scan(#p1, 
+	  i -> x = join(
+	       take(x,{0,p1#i-1}),
+	       {PRE concatenate between_newline apply(take(x,{p1#i+1,p2#i-1}),line -> replace("^--","",line))},
+	       take(x,{p2#i+1,#x-1})));
+     x = apply(x, line -> if mat("^--$",line) then PARA{} else line);
+     x = sublists(x,
+	  line -> class line === String and match("^--",line),
+	  sublist -> TEX concatenate between(newline,apply(sublist,line -> replace("^-- *","",line))),
+	  identity);
+     x = sublists(x,
+	  line -> class line === String,
+	  sublist -> EXAMPLE sublist,
+	  identity);
+     x )
 
 
 end

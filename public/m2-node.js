@@ -46,8 +46,7 @@ trym2.makeAccordion = function(tutorials) {
                // i.e. not as a callback.
                var y = $(this).position().top;
                var height = parseInt($("#home").css('height'), 10);
-               var children = $(this).children().children().length;
-               var total_height = 50*children; // This value is total guesswork!
+               var total_height = parseInt($(this).css('height'), 10) + 50;
                //console.log("y-pos: " + y + " height: " + height + " number of children: " + children);
                //console.log($(this).position());
                //console.log("total height: " + total_height + " distance to bottom: " + (height - y));

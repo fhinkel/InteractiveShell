@@ -42,6 +42,8 @@ trym2.makeAccordion = function(tutorials) {
             .toggleClass("ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top")
             .find("> .ui-icon").toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s").end()
             .next().slideToggle();
+            console.log($("#TOC").scrollTop() + ' ' + $(this).next().next().height());
+            //$("#TOC").scrollTop($("TOC").scrollTop() + $(this).next().next().height());
             return false;
         })
        .next();
@@ -54,9 +56,15 @@ trym2.makeAccordion = function(tutorials) {
                ' lessonid=' + j + '>  ' + lessons[j].title + '</a></li>';
        };
        content = content + '</ul>';
+       if(i>0){
        div.append(content).addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom").hide();
+        } else {
+        // Expand the first tutorial:
+       title.toggleClass("ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top")
+                   .find("> .ui-icon").toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s");
+       div.append(content).addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom");
+        }
         $("#accordion").append(title).append(div);
-
     };
     $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset");
 };

@@ -122,12 +122,9 @@ Description
     Example
         apply(5, f)
     Text
-        The function {\tt "scan"} is analogous to {\tt "apply"} except 
-        that no value is returned.  It may be used to implement loops in
-        programs.
+        The syntax for a {\tt "for"} loop is the following.
     Example
-        scan(5, i -> print (i, i^3))
-        j=1; scan(10, i -> j = 2*j); j
+        for i from 1 to 5 do print(i, i^3)
     Code
         SUBSECTION "Rings, matrices, and ideals"
     Text
@@ -155,7 +152,7 @@ Description
     Example
         F = R^3
     Text
-        The i-th basis element of {\tt "F"} can be obtained as {\tt "F_i"}.  
+        The i-th basis element of {\tt "F"} can be obtained as {\tt "F&#95;i"}.  
         In this example, the valid values for {\tt "i"} are 0, 1, and 2.
     Example
         F_1
@@ -306,4 +303,10 @@ Description
         We can use {\tt "betti"} to see the degrees involved in the Groebner basis.
     Example
         betti gb j
-
+    Text
+        Macaulay2 has many more mathematical functions, and many user defined packages.
+        Try out other tutorials to see some possibilities, or peruse the documentation
+        at
+    Example
+        viewHelp "MacaulayDoc"
+    

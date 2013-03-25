@@ -635,8 +635,7 @@ var M2Server = function(overrideOptions) {
                         return;
                     }
                     if (options.SCHROOT){
-                        fs.chown(schrootPath + file.name, clients[clientID].systemUserName, clients[clientID].systemUserName);
-                    //runShellCommand("chown " + clients[clientID].systemUserName + ":" + clients[clientID].systemUserName + " " + schrootPath )
+                        runShellCommand("chown " + clients[clientID].systemUserName + ":" + clients[clientID].systemUserName + " " + newpath + file.name);
                     }
                 });
             });

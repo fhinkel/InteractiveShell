@@ -463,7 +463,7 @@ $(document).ready(function() {
     $("#previousBtn").hide();
     $("#nextBtn").hide();
 
-    var tutorialNames = ["tutorials/welcome2.html", "tutorials/Beginning.html", "tutorials/Beginning.html"];
+    var tutorialNames = ["tutorials/welcome2.html", "tutorials/Beginning.html"];
     $("#TOC").append("<div id=\"accordion\"></div>");
     
     trym2.getTutorials(0, tutorialNames, function() {

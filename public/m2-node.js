@@ -422,6 +422,35 @@ $(document).ready(function() {
         text: false
     });
 
+/*
+    var M2InDefaultText = 
+-- Welcome to Macaulay2 !!
+-- In this window you may type in Macaulay2 commands 
+-- and have them evaluated by the server.
+
+-- Evaluate a line or selection by typing Shift+Enter 
+-- or by clicking on Evaluate.
+
+-- To open the Macaulay2 documentation for a 
+-- topic in another browser tab or window do e.g.:
+
+viewHelp "determinant"
+
+-- If nothing shows up, you may need to set your browser 
+-- to allow pop up windows.
+
+-- Here are some sample commands:
+  R = ZZ/101[a,b,c,d]
+  I = ideal(a^2-b*c, a^3-b^3, a^4-b*d^3, a^5-c^2*d^3)
+  J = ideal groebnerBasis I;
+  netList J_*
+
+  -- Some examples of rings
+  A = ZZ/32003[a..g]
+  B = QQ[x_1..x_6]
+  C = ZZ/101[vars(0..12)]
+---------------
+*/
     $('#M2In').val(
         "Evaluate a line by typing Shift+Enter or by clicking on Evaluate.\nHere are some sample commands:\n---------------\nR = ZZ/101[a,b,c]\nS = ZZ/32003[vars(1..10)]\nQQ[x_1..x_6]\n\nS = ZZ/32003[vars(1..13)]\nres coker vars S\n");
 

@@ -308,5 +308,5 @@ Description
         Try out other tutorials to see some possibilities, or peruse the documentation
         at
     Example
-        viewHelp "MacaulayDoc"
+        viewHelp "Macaulay2Doc"
     

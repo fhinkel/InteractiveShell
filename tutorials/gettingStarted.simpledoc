@@ -4,42 +4,44 @@ Headline
     Basic Introduction to Macaulay2
 Description
     Code
-       SUBSECTION "Basic usage"
+        SUBSECTION "Basic usage"
     Text
-        Your first input prompt will be ", TT "i1 : ", ".  In response to the prompt,
-	  type ", TT "2+2", " and press return.  The expression you entered will be
-	  evaluated - no punctuation is required at the end of the line.
+        First, let's restart Macaulay2 so that we are starting fresh.
+    Example
+        restart
+    Text
+        Your first input prompt will be {\tt "i1 : "}.  In response to the prompt,
+	    type {\tt 2+2} and press return.  The expression you entered will be
+	    evaluated - no punctuation is required at the end of the line.
     Example
         2+2
     Text
-        The answer is displayed to the right of the output label ", TT "o1 =".
+        The answer is displayed to the right of the output label {\tt "o1 = "}.
     Text
         Here is some arithmetic with fractions.
     Example
         3/5 + 7/11
     Text
-        Notice the additional line of output labeled with ", TT "o2 :", ".
+        Notice the additional line of output labeled with {\tt "o2 : "}.
         Output lines labeled with colons provide information about the type of
-        output.  In this case, the symbol ", TO "QQ", " is our notation for
+        output.  In this case, the symbol {\tt QQ} is our notation for
         the class of all rational numbers, and indicates that the answer on
         the previous line is a rational number.
     Text
-        Multiplication is indicated with ", TO "*".
+        Multiplication is indicated with {\tt "*"}.
     Example
         1*2*3*4
     Text
-        Powers are obtained with ", TO "^".
+        Powers are obtained with {\tt "&#94;"}.
     Example
         2^200
     Text
-        Factorials are obtained with ", TO "!".
+        Factorials are obtained with {\tt "!"}.
     Example
         40!
     Text
-        Because some answers can be very long, it is a good idea to run the
-        program in a window that does not wrap output lines, and allows the
-        user to scroll left horizontally to see the rest of the output.  (See
-        , TO "using Macaulay2 with emacs", .)
+        Some output is longer than the window.  Scroll horizontally to see
+        the rest of the output.
     Example
         100!
     Text
@@ -51,12 +53,12 @@ Description
     Example
         4*5;
     Text
-        The output from the previous line can be obtained with ", TO "oo", ", even if 
+        The output from the previous line can be obtained with {\tt "oo"}  even if 
         a semicolon prevented it from being printed.
     Example
         oo
     Text
-        Lines before that can be obtained with ", TO "ooo", " and ", TO "oooo", ".  
+        Lines before that can be obtained with {\tt "ooo"} and {\tt "oooo"}.
         Alternatively, the symbol labeling an output line
         can be used to retrieve the value, as in the following example.
     Example
@@ -64,30 +66,37 @@ Description
     Text
         To enter a string, use quotation marks.
     Example
-        \"hi there\"
+        "hi there"
     Text
-        A value can be assigned to a variable with ", TO "=", ".
+        A value can be assigned to a variable with {\tt "="}.
     Example
-        s = \"hi there\"
+        s = "hi there"
     Text
-        Strings may be concatenated horizontally with ", TT "|", ", (see 
-        , TO (symbol |, String, String), ).
+        Strings may be concatenated horizontally with {\tt "|"}.
     Example
-        s | \" - \" | s
+        s | " - " | s
     Text
-        or vertically with ", TT "||", ", (see ", TO (symbol ||, Net, Net), ").
+        or vertically with {\tt "||"}.
     Example
-        s || \" - \" || s
+        s || " - " || s
+    Code
+        SUBSECTION "Lists and functions"
     Text
         A list of expressions can be formed with braces.
     Example
-        {1, 2, s}
+        L = {1, 2, s}
+    Text
+        All indexing in Macaulay2 is 0-based.  Indexing is done
+        using {\tt "&#95;"}.
+    Example
+        L_0
+        L_1
     Text
         Lists behave like vectors.
     Example
         10*{1,2,3} + {1,1,1}
     Text
-        A function can be created with the arrow operator, ", TO "->", " .
+        A function can be created with the arrow operator, {\tt "->"}.
     Example
         f = i -> i^3
     Text
@@ -100,37 +109,37 @@ Description
         g = (x,y) -> x * y
         g(6,9)
     Text
-        The function ", TO "apply", " can be used to apply a function to each element of a list.
+        The function {\tt "apply"} can be used to apply a function to each element of a list.
     Example
         apply({1,2,3,4}, i -> i^2)
         apply({1,2,3,4}, f)
     Text
-        The operator ", TO "..", " may be used to generate sequences of consecutive numbers.
+        The operator {\tt ".."} may be used to generate sequences of consecutive numbers.
     Example
         apply(1 .. 4, f) 
     Text
-        If the first argument to ", TT "apply", " is an integer ", TT "n", " then it stands for the list ", TT "{0, 1, ..., n-1}", ".
+        If the first argument to {\tt "apply"} is an integer {\tt n}, then it stands for the list {\tt \{0, 1, ..., n-1\}}.
     Example
         apply(5, f)
     Text
-        The function ", TO "scan", " is analogous to ", TO "apply", " except that no value is returned.  It may be used to implement loops in
-     	  programs.
+        The function {\tt "scan"} is analogous to {\tt "apply"} except 
+        that no value is returned.  It may be used to implement loops in
+        programs.
     Example
         scan(5, i -> print (i, i^3))
         j=1; scan(10, i -> j = 2*j); j
+    Code
+        SUBSECTION "Rings, matrices, and ideals"
     Text
         Most computations with polynomials take place in rings that may be specified in usual mathematical notation.
     Example
         R = ZZ/5[x,y,z];
     Text
-        (We reserve single letter symbols such as ", TT "Z", " for use as variables in rings,
-        hence we must use something like ", TO "ZZ", " to stand for the ring of integers.
-        It may remind you of the \"blackboard bold\" font of AMSTeX.  If you prefer
-        , TT "Z", " to ", TO "ZZ", ", you may put ", TT "Z=ZZ", " in your
-        , TO "initialization file", ".  The symbols ", TT "ZZ/5", "
-        represent the quotient ring ", TT "Z/5Z", ", and then ", TT "ZZ/5[x,y,z]", "
+        {\tt "ZZ"} represents the ring of integers.
+        The symbols {\tt "ZZ/5"}
+        represent the quotient ring {\tt "Z/5Z"}, and then {\tt "ZZ/5[x,y,z]"}
         represents the ring of polynomials in the variables x,y, and z with coefficients 
-        in the ring ", TT "Z/5Z", ".)
+        in the ring {\tt "Z/5Z"}.
     Example
         (x+y)^5
     Text
@@ -138,7 +147,7 @@ Description
     Example
         R
     Text
-        To see the original description of a ring, use ", TO "describe", ".
+        To see the original description of a ring, use {\tt "describe"}.
     Example
         describe R
     Text
@@ -146,11 +155,13 @@ Description
     Example
         F = R^3
     Text
-        The i-th basis element of ", TT "F", " can be obtained as ", TT "F_i", ".  In this example, the valid values for ", TT "i", " are 0, 1, and 2.
+        The i-th basis element of {\tt "F"} can be obtained as {\tt "F_i"}.  
+        In this example, the valid values for {\tt "i"} are 0, 1, and 2.
     Example
         F_1
     Text
-        Using a list of indices instead will produce the homomorphism corresponding to the basis vectors indicated.
+        Using a list of indices instead will produce the homomorphism 
+        corresponding to the basis vectors indicated.
     Example
         F_{1,2}
     Text
@@ -158,21 +169,21 @@ Description
     Example
         F_{2,1,1}
     Text
-        We can create a homomorphism between free modules with ", TO "matrix", "
+        We can create a homomorphism between free modules with {\tt "matrix"}
         by providing the list of rows of the matrix, each of which is in turn
         a list of ring elements.
     Example
         f = matrix {{x,y,z}}
     Text
-        Use ", TO "image", " to get the image of f.
+        Use {\tt "image"} to get the image of f.
     Example
         image f
     Text
-        We may use ", TO "ideal", " to produce the corresponding ideal.
+        We may use {\tt "ideal"} to produce the corresponding ideal.
     Example
         ideal (x,y,z)
     Text
-        We may use ", TO "kernel", " to compute the kernel of f.
+        We may use {\tt "kernel"} to compute the kernel of f.
     Example
         kernel f
     Text 
@@ -180,76 +191,78 @@ Description
 	    a homomorphism whose matrix is displayed.  Integers inside braces to
 	    the left of the matrix give the degrees of the basis elements of the
 	    target of the matrix; they are omitted if the degrees are all zero.
-	    In case the matrix itself is desired, it can be obtained with ", TO "generators", ", as follows.
+	    In case the matrix itself is desired, it can be obtained 
+        with {\tt "generators"}, as follows.
     Example
         generators oo
     Text
-        We may use ", TO "poincare", " to compute the Poincare polynomial.
+        We may use {\tt "poincare"} to compute the Poincare polynomial (the numerator of
+        the Hilbert function).
     Example
         poincare kernel f
     Text
-        We may use ", TO "rank", " to compute the rank.
+        We may use {\tt "rank"} to compute the rank.
     Example
         rank kernel f
     Text
-        A presentation for the kernel can be obtained with ", TO "presentation", ".
+        A presentation for the kernel can be obtained with {\tt "presentation"}.
     Example
         presentation kernel f
     Text
-        We can produce the cokernel with ", TO "cokernel", "; no computation is performed.
+        We can produce the cokernel with {\tt "cokernel"}; no computation is performed.
     Example
         cokernel f
     Text
-        The direct sum is formed with ", TO (symbol ++,Module,Module), ".
+        The direct sum is formed with {\tt (symbol ++,Module,Module)}.
     Example
         N = kernel f ++ cokernel f
     Text
-        The answer is expressed in terms of the ", TO "subquotient", " function, which
+        The answer is expressed in terms of the {\tt "subquotient"} function, which
 	    produces subquotient modules.  Each subquotient module is accompanied
 	    by its matrix of generators and its matrix of relations.  These matrices
-	    can be recovered with ", TO "generators", " and ", TO "relations", ".
+	    can be recovered with {\tt "generators"} and {\tt "relations"}.
     Example
         generators N
         relations N
     Text
-        The function ", TO "prune", " can be used to convert a subquotient
+        The function {\tt "prune"} can be used to convert a subquotient
      	  module to a quotient module.
     Example
         prune N
     Text
-        We can use ", TO "resolution", " to compute a projective resolution of the 
-     	  cokernel of ", TT "f", ".
+        We can use {\tt "resolution"} to compute a projective resolution of the 
+     	  cokernel of {\tt "f"}.
     Example
         C = resolution cokernel f
     Text
-        To see the differentials we examine 'C.dd'.
+        To see the differentials we examine {\tt "C.dd"}.
     Example
         C.dd
     Text
-        We can verify that ", TT "C", " is a complex by squaring the differential map.
+        We can verify that {\tt "C"} is a complex by squaring the differential map.
     Example
         C.dd^2 == 0
     Text
-        We can use ", TO "betti", " to see the degrees of the components of C.
+        We can use {\tt "betti"} to see the degrees of the components of C.
     Example
         betti C
     Text
-        Let's try a harder example.  We can use ", TO "vars", " to create a sequence
+        Let's try a harder example.  We can use {\tt "vars"} to create a sequence
      	  of variables.
     Example
         R = ZZ/101[a .. r];
     Text
-        We use ", TO "genericMatrix", " to make a 3 by 6 generic matrix whose
-     	  entries are drawn from the variables of the ring ", TT "R", ".
+        We use {\tt "genericMatrix"} to make a 3 by 6 generic matrix whose
+     	entries are drawn from the variables of the ring {\tt "R"}.
     Example
         g = genericMatrix(R,a,3,6)
     Text
-        Then we construct its cokernel with ", TO "cokernel", ".
+        Then we construct its cokernel with {\tt "cokernel"}.
     Example
         M = cokernel g
     Text
-        We may use ", TO "resolution", " to produce a projective resolution of it, and
-        , TO "time", to report the time required.
+        We may use {\tt "resolution"} to produce a projective resolution of it, and
+        {\tt "time"}, to report the time required.
     Example
         time C = resolution M
     Text
@@ -257,11 +270,11 @@ Description
     Example
         betti C
     Text
-        We can make a polynomial ring with 18 ", TO "IndexedVariable", "s.
+        We can make a polynomial ring with 18 {\tt "IndexedVariable"}s.
     Example
         S = ZZ/101[t_1 .. t_9, u_1 .. u_9];
     Text
-        We can use ", TO "genericMatrix", " to pack the variables into 
+        We can use {\tt "genericMatrix"} to pack the variables into 
      	  3-by-3 matrices.
     Example
         m = genericMatrix(S, t_1, 3, 3)
@@ -272,25 +285,25 @@ Description
         m*n
     Text
         Let's produce the equations generated by the equations that assert
-     	  that m and n commute with each other.  (See ", TO "flatten", ".)
+     	  that m and n commute with each other.  (See {\tt "flatten"}.)
     Example
         j = flatten(m*n - n*m)
     Text
-        Let's compute a Groebner basis for the image of ", TT "j", " with ", TO "gb", ".
+        Let's compute a Groebner basis for the image of {\tt "j"} with {\tt "gb"}.
     Example
         gb j
     Text
         The resulting Groebner basis contains a lot of information.
-	  We can get the generators of the basis, and even though we call upon
-        , TO "gb", again, the computation will not be repeated.
+	    We can get the generators of the basis, and even though we call upon
+        {\tt "gb"}, again, the computation will not be repeated.
     Example
         generators gb j;
     Text
         The semicolon prevents the matrix of generators from appearing on the 
-	  screen, but the class of the matrix appears -- we see that there are 26
-	  generators.
+        screen, but the class of the matrix appears -- we see that there are 26
+	    generators.
     Text
-        We can use ", TO "betti", " to see the degrees involved in the Groebner basis.
+        We can use {\tt "betti"} to see the degrees involved in the Groebner basis.
     Example
         betti gb j
 

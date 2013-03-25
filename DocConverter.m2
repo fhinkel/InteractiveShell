@@ -84,6 +84,13 @@ toHtml String := (s) ->  (
   s | "<BR>\n"
   )
 
+toHtmlPara = method()
+toHtmlPara String := (s) -> (
+  s = replaceWithValueOf s;
+  --print s;
+  s = "<p>" | html TEX s | "</p>\n"
+  )
+
 -- return string with HTML head for given title
 printHead = method()
 printHead String := title -> (
@@ -116,7 +123,7 @@ convert String := (filename) -> (
 	       -- Keyword is: Text, Code, Example (that is it at the moment)
 	       k := first m;
 	       if k === "Text" then
-	          toHtml concatenate between("\n", m#1) -- all lines in a text section
+	          toHtmlPara concatenate between("\n", m#1) -- all lines in a text section
 	       else if k === "Example" then (
               m1 := select(last m, x -> not match(///^\s*$///, x));
               concatenate apply(m1, x -> "        <code>"| replace(///^\s*///, "", x) |"</code><br>\n")
@@ -144,8 +151,9 @@ end
 
 restart
 loadPackage "DocConverter"
-L = convert "beginningM2.simpledoc";
---L = convert "SimpleDoc";
+--L = convert "beginningM2.simpledoc";
+L = convert "tutorials/gettingStarted.simpledoc";
+"public/tutorials/getting-started.html" << L << close;
 fn = "Beginning.html"
 fn << L << close
 get ("!open " | fn)

@@ -613,8 +613,9 @@ var M2Server = function(overrideOptions) {
             logClient(clientID, "received: /upload");
             var formidable = require('formidable');
             var form = new formidable.IncomingForm;
+            var schrootPath;
             if (options.SCHROOT) {
-                var schrootPath = "/usr/local/var/lib/schroot/mount/" + clients[clientID].schrootName +
+                schrootPath = "/usr/local/var/lib/schroot/mount/" + clients[clientID].schrootName +
                     "/home/m2user/";
                 form.uploadDir = schrootPath;
             }
@@ -632,6 +633,10 @@ var M2Server = function(overrideOptions) {
                         });
                         response.end('rename failed: ' + error);
                         return;
+                    }
+                    if (options.SCHROOT){
+                        fs.chown(schrootPath + file.name, clients[clientID].systemUserName, clients[clientID].systemUserName);
+                    //runShellCommand("chown " + clients[clientID].systemUserName + ":" + clients[clientID].systemUserName + " " + schrootPath )
                     }
                 });
             });

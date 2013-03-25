@@ -498,7 +498,7 @@ $(document).ready(function() {
     $("#previousBtn").hide();
     $("#nextBtn").hide();
 
-    var tutorialNames = ["tutorials/welcome2.html", "tutorials/getting-started.html", "tutorials/Beginning.html", "tutorials/tutorial.html"];
+    var tutorialNames = ["tutorials/welcome2.html", "tutorials/getting-started.html", "tutorials/Beginning.html"];
     $("#home").append("<div id=\"accordion\"></div>");
     
     trym2.getTutorials(0, tutorialNames, function() {

@@ -110,8 +110,21 @@
   <h4>Advanced topics</h4>
   <h4>Uploading files</h4>
 
-  <p>You may upload files to the Macaulay2 server that can then be loaded into your Macaulay2 session.
-  For example, you may upload a package that you have written that you wish to use or test.</p>
+  <p>Use the <b>Upload File</b> button to upload files to the Macaulay2 server that can then be loaded into your Macaulay2 session. Suppose that you have uploaded a file named <tt>foo.m2</tt> which contains Macaulay2 code.
+  You may then load this file into Macaulay2 using either:
+  </p>
+  
+  <code>load "foo.m2"</code><br>
+
+  <p>
+  or, if you wish to see all of the lines executed one by one:
+  </p>
+  
+  <code>input "foo.m2"</code><br>
+
+  
+  <p><b>Note</b>: these lines will likely give errors now, as the file
+    <tt>foo.m2</tt> probably doesn't exist on the server</p>
 
   <h4>Restrictions in place for the Macaulay2 server</h4>
 
@@ -129,6 +142,30 @@
   <p>Typically, there will be no files shown in your home directory, unless you have created them
   or uploaded them.</p>
 
+  <h4>Macaulay2 and image files</h4>
+
+  <p>Sometimes Macaulay2 or one of its packages generates image files that are then downloaded to
+  your machine. For example, the displayGraph function creates a jpeg file that gets downloaded so you :
+  </p>
+    <code> needsPackage "Graphs"</code><br>
+    <code>A = graph({{x_1,x_3},{x_2,x_4},{x_1,x_4}})</code><br>
+    <code>displayGraph A</code><br>
+
+  <h4>Getting files back to your machine</h4>
+
+  <p>
+  Sometimes your Macaulay2 code will create a file as output.  How to download
+  this onto your machine?  Here is one way.  This first line creates a file for
+  the purpose of this example.
+  </p>
+  
+  <code>"important-results.txt" << "very important results" << close</code>
+
+  <p>The next line will present a download dialog for you to obtain the file on your machine.
+  </p>
+  
+  <code>get "!open important-results.txt"</code><br>
+  
   <h4>Helping with this project</h4>
 
   <p>

@@ -42,7 +42,8 @@ trym2.makeAccordion = function(tutorials) {
             .toggleClass("ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top")
             .find("> .ui-icon").toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s").end()
             .next().slideToggle( function(){
-               // Needs improvement!
+               // Needs improvement! Possibly do this synchronously with the slide toggle,
+               // i.e. not as a callback.
                var y = $(this).position().top;
                var height = parseInt($("#home").css('height'), 10);
                var children = $(this).children().children().length;
@@ -53,7 +54,8 @@ trym2.makeAccordion = function(tutorials) {
                if(height-y < total_height){
                   var scroll = total_height - height + y;
                   //console.log("I want to scroll! " + scroll + ' ' + $("#TOC").scrollTop());
-                  $("#home").scrollTop($("#home").scrollTop() + scroll);
+                  $("#home").animate({scrollTop: ($("#home").scrollTop() + scroll)},400);
+                  //$("#home").scrollTop($("#home").scrollTop() + scroll);
                }
             
             });

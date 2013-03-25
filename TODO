@@ -5,14 +5,15 @@ running get "!open .txt" returns a wrong link
 
 
 3/25/2013
-*tutorial name should be displayed inside lessons, font
+*tutorial name should be displayed inside lessons, font DONE
 *update readme for github
 *strategy for tutorials
 *JSAG article
 * Create new tutorial
 * subdomain from Dan
-* Change text of 'welcome' and 'help' and 'M2In', M2In!!!
-* explain save-upload relationship (they're not necessarily intended to be used together)
+* Change text of 'welcome' and 'help' and 'M2In', DONE
+* explain save-upload relationship (they're not necessarily intended to be used together) DONE
+
 DESIRED
 * 'Evaluate all' method for tutorials
 * Getting list of tutorials, so far it is fixed, OK for now

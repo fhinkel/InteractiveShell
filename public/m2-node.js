@@ -97,7 +97,8 @@ trym2.loadLesson = function(tutorialid, lessonid) {
     $("#nextBtn").show();    
     $("#pageIndex").button("option", "label", (trym2.lessonNr+1) + "/" + maxLesson).show().unbind().css('cursor', 'default');;
     if (changedLesson) {
-        $("#lesson").html(lessonContent).show();
+        var title = trym2.tutorials[trym2.tutorialNr].title.text();
+        $("#lesson").html(lessonContent).prepend("<h3>" + title + "</h3>").show();
         $("#lesson").scrollTop(0);
     };
     $("#TOC").hide();    
@@ -463,7 +464,7 @@ $(document).ready(function() {
     $("#previousBtn").hide();
     $("#nextBtn").hide();
 
-    var tutorialNames = ["tutorials/welcome2.html", "tutorials/Beginning.html"];
+    var tutorialNames = ["tutorials/welcome2.html", "tutorials/Beginning.html", "tutorials/tutorial.html"];
     $("#TOC").append("<div id=\"accordion\"></div>");
     
     trym2.getTutorials(0, tutorialNames, function() {

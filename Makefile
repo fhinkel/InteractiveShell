@@ -23,9 +23,11 @@ pretty:
 
 help:
 	@echo "Possible make targets:"
-	@echo "  check         run mocha tests"
-	@echo "  pretty        make *.pretty.js files from *.js files"
-	@echo "  start         start schroot server with forever script"
-	@echo "  start_local   start local server"
-	@echo "  kill          kill m2server (schroot or local), but not forever script"
-
+	@echo "  check           run mocha tests"
+	@echo "  pretty          make *.pretty.js files from *.js files"
+	@echo "  start           start schroot server with forever script"
+	@echo "  start_local     start local server"
+	@echo "  kill            kill m2server (schroot or local), but not forever script"
+	@echo "  total_cleanup   kill all schroots and remove all users from the system."
+	@echo "                  This will also remove users that cannot be removed by"
+	@echo "                  the server anymore."

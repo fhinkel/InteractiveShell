@@ -1,4 +1,9 @@
 
+upload: owned by root DONE
+/home can't use mv etc DONE
+running get "!open .txt" returns a wrong link
+
+
 3/25/2013
 *tutorial name should be displayed inside lessons, font
 *update readme for github

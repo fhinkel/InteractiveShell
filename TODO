@@ -1,26 +1,29 @@
-*tutorial name should be displayed inside lessons
-*login for admin section?
+
+3/25/2013
+*tutorial name should be displayed inside lessons, font
 *update readme for github
 *strategy for tutorials
 *JSAG article
-*alerts
-*welcome screen
-*about
+* Create new tutorial
+* subdomain from Dan
+* Change text of 'welcome' and 'help' and 'M2In', M2In!!!
+* explain save-upload relationship (they're not necessarily intended to be used together)
+DESIRED
+* 'Evaluate all' method for tutorials
+* Getting list of tutorials, so far it is fixed, OK for now
+* keep/get M2 results from earlier calculations when navigating away from site
 
-*open image - can we pass the name?
 
+*alerts DONE
+*welcome screen DONE
+*about DONE
+*open image - can we pass the name? DONE
 * Terminal, Tutorial, TOC - the one we're on should be highlighted DONE
 
 3/23/2013
 IMPORTANT
-* Change text of 'welcome' and 'help' and 'M2In'
 * Save button  (pretty much)DONE
-DESIRED
-* 'Evaluate all' method for tutorials
-* Create new tutorial
-* Getting list of tutorials, so far it is fixed
-* CSS position of buttons
-
+* CSS position of buttons DONE
 
 3/21/2013
 User interface:
@@ -43,7 +46,7 @@ New TODO list:
 * scripts or directions to recreate the vbox server
     includes: vbox, schroot, ...
     this is partially written down in one of the tex files (in configuring_ubuntu.tex too)
-* Dan's emails: check them
+* Dan's emails: check them DONE
 * update habanero, restart it  DONE
 * need test suite and perhaps testing framework  (DONE)
     Have "make check"

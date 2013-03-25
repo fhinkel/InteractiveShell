@@ -1,12 +1,11 @@
 /*global $, alert, console, document, trym2, window */
 
 var trym2 = {
-    lessonNr: 1,
+    lessonNr: 0,
     tutorialNr: 0,
     tutorialScrollTop: 0,  // this value is where we set the scrollTop of "#lesson" so we can reset it back
                            // when we navigate back (from Input or Index views).
-    tutorials: [],
-    maxLesson: 1
+    tutorials: []
 };
 
 ///////////////////
@@ -33,11 +32,13 @@ trym2.makeTutorial = function(theUrl, theHtml) {
 
 trym2.makeAccordion = function(tutorials) {
     for (var i=0; i<tutorials.length; i++) {
-        var title = tutorials[i].title;
-        title.addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons")
+        var title =  tutorials[i].title ; //this is an <h3>
+        title.wrapInner("<a href='#' class='menuTitle' tutorialid=" + i +"/>")
+        .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons")
         .prepend('<span class="ui-icon ui-accordion-header-icon ui-icon-triangle-1-e"></span>')
         .hover(function() {$(this).toggleClass("ui-state-hover");})
         .click(function() {
+            console.log($(this).html());
             $(this)
             .toggleClass("ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top")
             .find("> .ui-icon").toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s").end()
@@ -81,6 +82,13 @@ trym2.makeAccordion = function(tutorials) {
         $("#accordion").append(title).append(div);
     };
     $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset");
+    $(".menuTitle").on("click", function() {
+        var tutorialId = $(this).attr('tutorialid'),
+        tutorialIdNr = parseInt(tutorialId.match(/\d/g), 10);
+        trym2.loadLesson(tutorialIdNr, 0);
+        $("#tutorialBtn").prop("checked", true).button("refresh");
+        return false;
+    });
 };
 
 trym2.submenuItemCallback = function() {
@@ -88,6 +96,7 @@ trym2.submenuItemCallback = function() {
         tutorialId = $(this).attr('tutorialid'),
         lessonIdNr = parseInt(lessonId.match(/\d/g), 10),
         tutorialIdNr = parseInt(tutorialId.match(/\d/g), 10);
+        console.log( lessonId );
     //console.log("You clicked a submenuItem: " + $(this).html());
     trym2.loadLesson(tutorialIdNr, lessonIdNr);
     $("#tutorialBtn").prop("checked", true).button("refresh");
@@ -120,7 +129,6 @@ trym2.loadLesson = function(tutorialid, lessonid) {
 
 trym2.switchLesson = function(incr) {
     //console.log("Current lessonNr " + trym2.lessonNr);
-    //console.log("maxlesson " + trym2.maxLesson);
     trym2.loadLesson(trym2.tutorialNr, trym2.lessonNr + incr);
 };
 
@@ -503,7 +511,6 @@ $(document).ready(function() {
         // really doesn't make any difference.
         $("#homeBtn").click();
     });
-
 
     $("#nextBtn").click(function() {
         trym2.switchLesson(1);

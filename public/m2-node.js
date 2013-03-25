@@ -41,8 +41,21 @@ trym2.makeAccordion = function(tutorials) {
             $(this)
             .toggleClass("ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top")
             .find("> .ui-icon").toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s").end()
-            .next().slideToggle();
-            console.log($("#TOC").scrollTop() + ' ' + $(this).next().next().height());
+            .next().slideToggle( function(){
+               var y = $(this).position().top;
+               var height = parseInt($("#TOC").css('height'), 10);
+               var children = $(this).children().children().length;
+               var total_height = 50*children; // This value is total guesswork!
+               //console.log("y-pos: " + y + " height: " + height + " number of children: " + children);
+               //console.log($(this).position());
+               //console.log("total height: " + total_height + " distance to bottom: " + (height - y));
+               if(height-y < total_height){
+                  var scroll = total_height - height + y;
+                  //console.log("I want to scroll! " + scroll + ' ' + $("#TOC").scrollTop());
+                  $("#TOC").scrollTop($("#TOC").scrollTop() + scroll);
+               }
+            
+            });
             //$("#TOC").scrollTop($("TOC").scrollTop() + $(this).next().next().height());
             return false;
         })

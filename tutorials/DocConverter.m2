@@ -32,7 +32,7 @@ newPackage(
 
 needsPackage "Text"
 
-export {convert, keywordRE, descriptionRE, tutorial}
+export {convert, keywordRE, descriptionRE, tutorialToSimpleDoc}
 
 keywordRE = ///^\s*Key|^\s*Headline|^\s*Description///
 descriptionRE = ///^\s*Text|^\s*Code|^\s*Example///
@@ -109,8 +109,9 @@ convert String := (filename) -> (
      contents := lines get filename;
      contents = select(contents, s -> not match(///^\s*--///, s));
      M := groupLines(contents, keywordRE);
-     MKey := first select(M, x -> match(///^\s*Key///, first x));
-     MHeadline := first select(M, x -> match(///^\s*Headline///, first x));
+     --MKey := first select(M, x -> match(///^\s*Key///, first x));
+     MHeadline := select(M, x -> match(///^\s*Headline///, first x));
+     MHeadline = if #MHeadline > 0 then MHeadline#0 else {null, {"Tutorial"}};
      MDescription := first select(M, x -> match(///^\s*Description///, first x));
      -- ignore the Key for now.
      -- << "Key = " << last MKey << endl;
@@ -149,43 +150,59 @@ convert String := (filename) -> (
 
 mat := (pat,line) -> class line === String and match(pat,line)
 
+makeSUBSECTION = (str) -> "SUBSECTION" => str
+makeTEXT = (str) -> "Text" => str
+makeEXAMPLE = (str) -> "Example" => str
+
+writeout = (group) -> (
+     name := group#0#0;
+     strs := group/last;
+     if name === "SUBSECTION"
+     then (
+          if #strs > 1 then error "our logic with subsections is off";
+          "    Code\n        SUBSECTION \"" | strs#0 | "\"\n"
+          )
+     else (
+          header := "    " | name | "\n";
+          header | concatenate apply(strs, s -> "        " | s | "\n")
+          )
+     )
 tutorialToSimpleDoc = method()
 tutorialToSimpleDoc String := (x) -> (
-     -- x is generally the contents of a file
      x = lines x;
      x = select(x, line -> not mat("^[[:space:]]*$",line));
+     x = select(x, line -> not mat("-\\*-", line));
      head := false;
      x = apply(x, line -> (
 	       if mat("^---",line) then (head = not head;) 
-	       else if head then HEADER4 replace("^-- *","",line)
+	       else if head then makeSUBSECTION replace("^-- *","",line)
 	       else line));
-     p1 := reverse positions(x, line -> mat("^--\\^$",line));
-     p2 := reverse positions(x, line -> mat("^--\\$$",line));
-     if #p1 != #p2 then error "unmatched --^ --$ pairs";
-     scan(#p1, 
-	  i -> x = join(
-	       take(x,{0,p1#i-1}),
-	       {concatenate between_newline take(x,{p1#i+1,p2#i-1})},
-	       take(x,{p2#i+1,#x-1})));
-     p1 = reverse positions(x, line -> mat("^--PRE\\^$",line));
-     p2 = reverse positions(x, line -> mat("^--PRE\\$$",line));
-     if #p1 != #p2 then error "unmatched --PRE^ --PRE$ pairs";
-     scan(#p1, 
-	  i -> x = join(
-	       take(x,{0,p1#i-1}),
-	       {PRE concatenate between_newline apply(take(x,{p1#i+1,p2#i-1}),line -> replace("^--","",line))},
-	       take(x,{p2#i+1,#x-1})));
-     x = apply(x, line -> if mat("^--$",line) then PARA{} else line);
-     x = sublists(x,
-	  line -> class line === String and match("^--",line),
-	  sublist -> TEX concatenate between(newline,apply(sublist,line -> replace("^-- *","",line))),
-	  identity);
-     x = sublists(x,
-	  line -> class line === String,
-	  sublist -> EXAMPLE sublist,
-	  identity);
-     x )
-
+     x = apply(x, line -> (
+               if instance(line, String) then (
+                    if mat("^--", line) then makeTEXT replace("^-- *","",line)
+                    else makeEXAMPLE line
+                    )
+               else
+                    line
+               ));
+     -- Now we loop through all of the lines, keeping track of the last type.
+     x = select(x, a -> a =!= null);
+     x1 := sublists(x, 
+            line -> line#0 === "Text",
+            toList,
+            identity);
+     x2 := sublists(x1,
+            line -> line#0 === "Example",
+            toList,
+            identity);
+     x3 := sublists(x2,
+            line -> line#0 === "SUBSECTION",
+            toList,
+            identity);
+     "Description\n" | concatenate for group in x3 list (
+          writeout group
+          )
+     )
 
 end
 
@@ -208,7 +225,12 @@ groupLines(M, descriptionRE)
 netList M_{202..216}
 netList oo
 
-
+restart
+loadPackage "DocConverter"
+X = get "tu_elementary.m2"
+"tu_elementary.simpledoc" << tutorialToSimpleDoc X << close;
+"../public/tutorials/elementary.html" << convert "tu_elementary.simpledoc" << close;
+netList oo
 beginDocumentation()
 
 doc ///

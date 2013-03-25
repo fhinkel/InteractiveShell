@@ -87,17 +87,17 @@ div-border
 }
 
 .tall {
-	height: 90%;
+	height: 94%;
 }
 
-#inputarea, #lesson, #TOC, #outputarea {
+#inputarea, #lesson, #home, #outputarea {
 	width: 49.6%;
 	height: 100%;
 	border-style:solid;
     border-width:1px;
 }
 
-#lesson, #TOC {
+#lesson, #home {
 	overflow-y: auto;
 	font-family: Lucida Grande;
 	padding: 25px 50px;

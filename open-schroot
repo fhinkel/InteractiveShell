@@ -2,11 +2,11 @@
 schrootID=`cat /etc/debian_chroot`
 case "$1" in
 /*)
-   curl -s http://localhost:8002/image/$schrootID/$1
+   curl -s "http://localhost:8002/image/$schrootID/$1"
    ;;
 *)
    path=`pwd`
    # echo $schrootID$path/$1
-   curl -s http://localhost:8002/image/$schrootID/$path/$1
+   curl -s "http://localhost:8002/image/$schrootID/$path/$1"
    ;;
 esac

@@ -501,7 +501,7 @@ $(document).ready(function() {
     var tutorialNames = ["tutorials/welcome2.html", 
                          "tutorials/getting-started.html", 
                          "tutorials/Beginning.html",
-                         "tutorials/elementary.html"
+                         "tutorials/elementary-groebner.html"
                         ];
     $("#home").append("<div id=\"accordion\"></div>");
     

@@ -20,7 +20,7 @@ trym2.makeTutorial = function(theUrl, theHtml) {
     var theLessons = [];
     var tutorial = $("<div>").html(theHtml);
     $("div", tutorial).each(function() {
-        theLessons.push({title: $("h4", $(this)).text(),
+        theLessons.push({title: $("h4:first", $(this)).text(),
                              html: $(this)});
     });
     return { // class Tutorial

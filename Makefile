@@ -11,6 +11,9 @@ start_local:
 kill:
 	kill `ps ax | grep m2server | grep -v monitor | grep node | awk '{print $$1}'`
 
+total_cleanup:
+	perl perl-scripts/total_cleanup.pl
+
 check:
 	mocha tests/mocha.js --reporter spec
 

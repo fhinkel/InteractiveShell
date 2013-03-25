@@ -81,15 +81,28 @@
 <div>
   <h4>Macaulay2 sessions and the Reset button</h4>
   
-  <p>
-  When your browser starts, it starts a Macaulay2 process on our server.  All of your input,
-  either typed and evaluated, or run by pressing buttons, goes to this process.
+  <p> When your browser starts, it starts a Macaulay2 process on our server.
+  All of your input, either typed and evaluated, or run by pressing buttons,
+  goes to this process.  If you open a second window or tab in the same
+  browser, you will get the same session.
   </p>
 
   <p>
   You might wish to start fresh, or restart Macaulay2, if a computation is
   going on too long.  In this case, press the <b>Reset</b> button at the top of
   the page.
+  </p>
+
+  <p>
+  When you first connect to this web site, a cookie is generated, and that is used to connect to
+  your Macaulay2 process on the server.  If you quit your browser, and it is set to remember windows, then
+  it remembers the cookie, and you can reconnect back to the same session.  If not, then a new session
+  is created.  The server will remove the session after some length of time, currently several days or a week.
+  </p>
+
+  <p>
+  Sometimes the server must be restarted for maintenance or other reasons, and at those times, all sessions
+  are terminated.
   </p>
 </div>
 

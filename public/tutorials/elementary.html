@@ -2,27 +2,19 @@
   <head>
 
     <title>
-Tutorial
+Elementary uses of Groebner bases
     </title>
   </head>
 <body>
+<div>
+    <h4>A. First Steps; example with a monomial curve</h4>
 <p>        In this tutorial we introduce a number
         of basic operations using Gröbner bases, and
         at the same time become familiar with a range
         of useful Macaulay2 constructs. The sections are:
         
-        A.  First steps; example with a monomial curve
-        
-        B.  Random regular sequences
-        
-        C.  Division with remainder
-        
-        D.  Elimination theory
-        
-        E.  Quotients and saturation</p>
-<div>
-    <h4>A. First Steps; example with a monomial curve</h4>
-<p>        To compute the Gröbner basis of an ideal
+/p>
+  <p>        To compute the Gröbner basis of an ideal
         <i>(x<sup>2</sup>y,xy<sup>2</sup>+x<sup>3</sup>)</i> in the polynomial ring in
         four variables we proceed as follows:
         
@@ -103,11 +95,7 @@ Tutorial
 <p>        To get more precise information about <tt>Mres</tt>,
         we could do</p>
         <code>betti Mres</code><br>
-<p>        The display is chosen for compactness:
-        B    total: 1 4 4 1
-        B        0: 1 . . .
-        B        1: . 1 . .
-        B        2: . 3 4 1
+<p>        The output displayed is chosen for compactness:
         the first line gives the total betti 
         numbers, the same information given when
         we type the resolution.  The remaining

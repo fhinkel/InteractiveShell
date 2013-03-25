@@ -422,9 +422,35 @@ $(document).ready(function() {
         text: false
     });
 
-    $('#M2In').val(
-        "Evaluate a line by typing Shift+Enter or by clicking on Evaluate.\nHere are some sample commands:\n---------------\nR = ZZ/101[a,b,c]\nS = ZZ/32003[vars(1..10)]\nQQ[x_1..x_6]\n\nS = ZZ/32003[vars(1..13)]\nres coker vars S\n");
+    var M2InDefaultText = "" + 
+    "-- Welcome to Macaulay2 !\n" +
+    "-- In this window you may type in Macaulay2 commands \n" +
+    "-- and have them evaluated by the server.\n" +
+    "\n" +
+    "-- Evaluate a line or selection by typing Shift+Enter \n" +
+    "-- or by clicking on Evaluate.\n" +
+    "\n" +
+    "-- To open the Macaulay2 documentation for a \n" +
+    "-- topic in another browser tab or window do e.g.:\n" +
+    "\n" +
+    "viewHelp \"determinant\"\n" +
+    "\n" +
+    "-- If nothing shows up, you may need to set your browser \n" +
+    "-- to allow pop up windows.\n" +
+    "\n" +
+    "-- Here are some sample commands:\n" +
+    "  R = ZZ/101[a,b,c,d]\n" +
+    "  I = ideal(a^2-b*c, a^3-b^3, a^4-b*d^3, a^5-c^2*d^3)\n" +
+    "  J = ideal groebnerBasis I;\n" +
+    "  netList J_*\n" +
+    "\n" +
+    "  -- Some examples of rings\n" +
+    "  A = ZZ/32003[a..g]\n" +
+    "  B = QQ[x_1..x_6]\n" +
+    "  C = ZZ/101[vars(0..12)]\n" +
+    "---------------\n";
 
+    $('#M2In').val(M2InDefaultText);
     $("#sendBtn").click(trym2.sendCallback('#M2In'));
     $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
     $("#resetBtn").click(trym2.postMessage('/restart'));

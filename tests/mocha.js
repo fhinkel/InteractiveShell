@@ -192,7 +192,7 @@ describe('jsdom', function(){
             });
         var window = doc.createWindow();
         jsdom.jQueryify(window, function() {
-            //console.log(window.document.innerHTML);
+            console.log(window.document.innerHTML);
             var $ = window.jQuery;
             assert.equal($("h1").text(), 'BeforeExternalAfter');
             done();

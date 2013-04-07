@@ -267,6 +267,8 @@ For modifying schroot
 \begin{verbatim}
 sudo apt-get install g++
    libboost-regex-dev libboost-filesystem-dev
+sudo emerge debootstrap gettext boost lockev util-linux btrfs-progs lvm2 pam xz-utils\ 
+   groff doxygen graphviz po4a gettext cppunit debianutils dchroot libintl aufs-util
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -383,6 +385,11 @@ make -j8
 sudo make install
 \end{verbatim}
 
+Gentoo: At this stage, schroot needs to be compiled as C++11. Do
+\begin{verbatim}
+./configure CXX="g++4.8.0 -std=c++11"
+\end{verbatim}
+
 Note: Possibly the ./bootstrap yields errors with some hint at 'm4\_pattern\_allow'. Then one has to add the following line at the top of the configure.ac:
 \begin{verbatim}
 m4_pattern_allow([AM_PATH_CPPUNIT]);
@@ -390,6 +397,13 @@ m4_pattern_allow([AM_PATH_CPPUNIT]);
 and later remove the line that the configure process complains about in the configure file.
 
 Note: To update it should suffice to pull the schroot-source git and then run ./configure and make again. Hopefully git is able to merge our changes.
+
+Gentoo: In Gentoo everything should run without throwing any erros. However the file /etc/pam.d/schroot needs to be modified: It should look like
+\begin{verbatim}
+auth    include         system-auth
+account include         system-auth
+session include         system-auth
+\end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% The master
@@ -757,4 +771,159 @@ apt-get upgrade
 \item For updating M2 move the new .tar.gz to /fakeroots/new\_master/home (or wherever your master schroot is) and inside the schroot unpack the tarball. Then, still inside, replace /M2 with the new files and delete the tarball. With adjusted paths you could also do this from the outside.
 \item Restart the server.
 \end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%%  Gentoo walkthrough
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Gentoo walkthrough}
+This is a collection of commands to create a virtual machine with a 20G harddisc running gentoo. Using the above instructions one can then install schroot on it and use it to run a node server.
+
+First command downloads a gentoo minimal installation disc. Then create a virtual machine and mount it.
+\begin{verbatim}
+wget http://distfiles.gentoo.org/releases/amd64/autobuilds/current-iso/default/20130207/install-amd64-minimal-20130207.iso
+VBoxManage createhd
+VBoxManage createhd --filename gentoo_hd.vdi --size 20000 --variant Standard
+VBoxManage list ostypes
+VBoxManage createvm --name gentoo_webm2 --ostype Gentoo_64 --register
+VBoxManage list vms
+VBoxManage modifyvm
+VBoxManage storagectl gentoo_webm2 --name "SATA Controller" --add sata
+VBoxManage storageattach gentoo_webm2 --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium "gentoo_hd.vdi"
+VBoxManage storagectl gentoo_webm2 --name "IDE Controller" --add ide
+VBoxManage storageattach gentoo_webm2 --storagectl "IDE Controller" --port 0 --device 0 --type dvddrive --medium "install-amd64-minimal-20130207.iso"
+VBoxManage modifyvm gentoo_webm2 --boot1 dvd --boot2 disk --boot3 none --boot4 none
+VBoxHeadless -s gentoo_webm2 -n -m 3389
+\end{verbatim}
+
+Now the virtual machine is started. Since it has no ssh-server running, you have to access it using a ssh tunnel and vncviewer:
+\begin{verbatim}
+ssh -L 3389:127.0.0.1:3389 lars@habanero.math.cornell.edu
+vncviewer localhost:3389
+\end{verbatim}
+
+Now you are inside the virtual machine. Check the network connection:
+ifconfig tells that everything is alright.
+Then start partitioning the harddisc.
+\begin{verbatim}
+fdisk /dev/sda
+n p 1 default +128M
+a 1
+n p 2 default +3072M
+t 2 82
+n p 3 default +10G
+n e default
+n default +3G
+n default default
+p
+\end{verbatim}
+You should now have 6 partitions
+\begin{verbatim}
+w
+\end{verbatim}
+
+Then mount the partitions.
+\begin{verbatim}
+mkswap /dev/sda2
+swapon /dev/sda2
+mkfs.ext2 /dev/sda1
+mkfs.ext4 /dev/sda3
+mkfs.ext4 /dev/sda5
+mkfs.ext4 /dev/sda6
+mount /dev/sda3 /mnt/gentoo
+cd /mnt/gentoo
+mkdir boot
+mkdir fakeroot
+mkdir usr
+cd usr
+mkdir local
+cd
+mount /dev/sda1 /mnt/gentoo/boot
+mount /dev/sda5 /mnt/gentoo/fakeroot
+mount /dev/sda6 /mnt/gentoo/usr/local
+cd /mnt/gentoo
+links http://www.gentoo.org/main/en/mirrors.xml
+\end{verbatim}
+Download stage 3 tarball
+\begin{verbatim}
+tar xvjpf stage...
+nano -w /mnt/gentoo/etc/portage/make.conf add line MAKEOPTS="-j3" at end
+mirrorselect -i -o >> /mnt/gentoo/etc/portage/make.conf
+mirrorselect -i -r -o >> /mnt/gentoo/etc/portage/make.conf
+cat /mnt/gentoo/etc/portage/make.conf
+cp -L /etc/resolv.conf /mnt/gentoo/etc/
+mount -t proc none /mnt/gentoo/proc
+mount --rbind /sys /mnt/gentoo/sys
+mount --rbind /dev /mnt/gentoo/dev
+chroot /mnt/gentoo /bin/bash
+source /etc/profile
+export PS1="(chroot) $PS1"
+
+mkdir /usr/portage
+emerge-webrsync
+emerge --sync
+
+echo "America/New_York" > /etc/timezone
+
+emerge gentoo-sources
+cd /usr/src/linux
+emerge pciutils
+lspci
+lsmod
+make menuconfig
+\end{verbatim}
+In the config enable the cgroup support and the aufs file system. If it doesn't support the aufs filesystem you will have to download and install a different kernel later using emerge.
+
+\begin{verbatim}
+make && make modules_install
+cp arch/x86_64/boot/bzImage /boot/kernel-xxx-gentoo
+
+emerge genkernel
+genkernel --install initramfs
+
+emerge vim
+
+vim /etc/fstab
+
+cd /etc/init.d
+ln -s net.lo net.eth0
+rc-update add net.eth0 default
+emerge syslog-ng
+rc-update add syslog-ng default
+
+emerge grub
+vim /boot/grub/grub.conf
+
+grep -v rootfs /proc/mounts > /etc/mtab
+grub-install --no-floppy /dev/sda
+
+exit
+umount -l /mnt/gentoo/dev{/shm,/pts,}
+umount -l /mnt/gentoo{/boot,/proc,}
+reboot
+\end{verbatim}
+
+This will fail. First remove the cdrom, as vmuser do:
+\begin{verbatim}
+VBoxManage storageattach gentoo_webm2 --storagectl "IDE Controller" --port 0 --device 0 --type dvddrive --medium none
+VBoxManage modifyvm gentoo_webm2 --natpf1 "guestssh,tcp,,13779,,13779"
+VBoxManage modifyvm gentoo_webm2 --natpf1 "webaccess,tcp,,3691,,8002"
+\end{verbatim}
+
+Now install an ssh server and have it listen on port 13779
+\begin{verbatim}
+emerge openssh
+rc-update add sshd default
+vim /etc/ssh/sshd_config
+\end{verbatim}
+
+Log on to the virtual machine and install the necessary node stuff.
+\begin{verbatim}
+sudo emerge nodejs
+sudo npm install -g connect forever cookies
+\end{verbatim}
 \end{document}

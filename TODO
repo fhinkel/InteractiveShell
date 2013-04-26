@@ -8,7 +8,7 @@ running get "!open .txt" returns a wrong link
 *tutorial name should be displayed inside lessons, font DONE
 *update readme for github
 *strategy for tutorials
-*JSAG article
+*JSAG article, got started
 * Create new tutorial
 * subdomain from Dan
 * Change text of 'welcome' and 'help' and 'M2In', DONE

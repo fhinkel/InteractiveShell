@@ -215,7 +215,7 @@ var M2Server = function(overrideOptions) {
                   -r specifies the command to be run upon entering.
             */
             var m2 = spawn('sudo', ['cgexec', '-g', 'cpu,memory:' + clients[clientID].systemUserName,
-                    'sudo', '-u', clients[clientID].systemUserName, 'schroot', '-c', clients[clientID].schrootName,
+                    'sudo', '-u', clients[clientID].systemUserName, 'nice', 'schroot', '-c', clients[clientID].schrootName,
                                     '-u', clients[clientID].systemUserName, '-d', '/home/m2user/', '-r', 'M2'
             ]);
         } else {

@@ -1,3 +1,29 @@
+<<<<<<< HEAD
+=======
+4/26/2013
+Shift enter and button click moves down to next line (FRANZI)
+Does site work on IE? (MIKE)
+Converter for tutorial format (MIKE)
+* subdomain from Dan (MIKE)
+different virtual machine (LARS)
+Writing into right hand side (ALL): 
+    - show input on left hand side?
+    - deactivate mouse cursor? 
+    - change color/font? 
+    - when typing in right hand side, automatically type on left or bring warning
+BUG: trying to get a URL that we don't serve does not give 404 but eternal waiting
+
+
+4/5/2013
+welcome tutorial: clicking on everything in order makes a error because x and x_1 DONE
+m2server: refactor, handle unhandled requests
+selenium testing, we should use it!
+
+3/26/2013
+BUG: on iPad, using viewHelp breaks the event stream
+We need another port for a test server that we can use before we go live now that we have told people about web.m2.com DONE 
+
+>>>>>>> 584179a... todos
 
 upload: owned by root DONE
 /home can't use mv etc DONE
@@ -8,9 +34,15 @@ running get "!open .txt" returns a wrong link
 *tutorial name should be displayed inside lessons, font DONE
 *update readme for github
 *strategy for tutorials
+<<<<<<< HEAD
 *JSAG article, got started
 * Create new tutorial
 * subdomain from Dan
+=======
+*JSAG article
+* Create new tutorial DONE
+
+>>>>>>> 584179a... todos
 * Change text of 'welcome' and 'help' and 'M2In', DONE
 * explain save-upload relationship (they're not necessarily intended to be used together) DONE
 

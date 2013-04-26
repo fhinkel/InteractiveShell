@@ -215,6 +215,7 @@ trym2.getSelected = function(inputField) {
         } else {
             end = str.length;
         }
+        // move cursor to end of line below TODO
     }
     return str.slice(start, end) + "\n";
 };

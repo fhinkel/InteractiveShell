@@ -75,6 +75,36 @@ Motivation (simple for students, simple interface, no time for installation in c
 \section{Tutorials}
 writing new tutorials,
 \section{Internal structure, schroots}
+
+One of the first questions that occurred to us in this context was whether to offer a sandboxed version of M2 or M2 with full functionality.
+We settled for the second alternative, since it seemed easier to realize and more likely to attract new users.
+This lead to several new questions:
+\begin{enumerate}
+\item A fully functional M2 also gives the user system access. How does that impact security and how to deal with it?
+\item How do we distinguish the users on the system?
+\item How can we limit resources to prevent one user from breaking the system? e.g. via fork bombs.
+\item How do we clean up after a user has left?
+\item blablabla?
+\end{enumerate}
+
+The answer to the second question was to create and delete users on the fly. Since this implies that the server must be run as root, we decided to run it inside a virtual machine in order not to compromise the security of the host system.
+
+
+Since any system command can be run from inside M2 which is why we decided to run M2 inside a `secure chroot' (schroot). To provide full funtionality we mount a full system inside the schroot. The mounting happens read only, a few folders are provided with a writable layer, if M2 needs write access to them. In the definition of a user specific schroot there is not root user, so it should not be possible to become root or execute any command via sudo.
+
+When a user connects to the server the following things happen:
+\begin{enumerate}
+\item A user account on the system is created.
+\item A schroot configuration file is created with the above user as only user.
+\item Control groups for memory and CPU are created.
+\item The schroot is started.
+\end{enumerate}
+
+Control groups (cgroups) allow you to restrict the number of CPU shares and the memory for a process and all its children. When M2 is executed inside a schroot it is called via {\tt cgexec} with the cgroups specifically created for this user. Using this technique it is possible to limit the total consumption of CPU and memory by each user. Additionally we ensure that the administrator of the virtual machine always is able to execute any command required for maintenance, i.e. if the node server is down or has been compromised.
+
+Now any Macaulay2 command can be run in this schroot inside the corresponding cgroups.
+
+Lars!
 link to tutorial from Lars for setting up your own server, link to github
 
 

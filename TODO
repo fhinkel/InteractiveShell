@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 4/26/2013
 Shift enter and button click moves down to next line (FRANZI)
 Does site work on IE? (MIKE)
@@ -23,7 +21,6 @@ selenium testing, we should use it!
 BUG: on iPad, using viewHelp breaks the event stream
 We need another port for a test server that we can use before we go live now that we have told people about web.m2.com DONE 
 
->>>>>>> 584179a... todos
 
 upload: owned by root DONE
 /home can't use mv etc DONE
@@ -34,15 +31,12 @@ running get "!open .txt" returns a wrong link
 *tutorial name should be displayed inside lessons, font DONE
 *update readme for github
 *strategy for tutorials
-<<<<<<< HEAD
 *JSAG article, got started
 * Create new tutorial
 * subdomain from Dan
-=======
 *JSAG article
 * Create new tutorial DONE
 
->>>>>>> 584179a... todos
 * Change text of 'welcome' and 'help' and 'M2In', DONE
 * explain save-upload relationship (they're not necessarily intended to be used together) DONE
 

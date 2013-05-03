@@ -606,6 +606,7 @@ var M2Server = function(overrideOptions) {
             return;
         }
         console.log("Request for something we don't serve: " + request.url);
+        response.send('404', 404);
     };
 
     var uploadM2Package = function(request, response, next) {

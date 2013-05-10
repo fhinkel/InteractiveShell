@@ -601,14 +601,10 @@ var M2Server = function(overrideOptions) {
 
     var unhandled = function(request, response, next) {
         var url = require('url').parse(request.url).pathname;
-        if (url == '/chat' || url == 'interrupt' || url == '/restart') {
-            next();
-            return;
-        }
         console.log("Request for something we don't serve: " + request.url);
         response.writeHead(404, "Request for something we don't serve.");
-	response.write("404");
-	response.end();
+    	response.write("404");
+    	response.end();
     };
 
     var uploadM2Package = function(request, response, next) {

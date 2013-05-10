@@ -215,10 +215,31 @@ trym2.getSelected = function(inputField) {
         } else {
             end = str.length;
         }
-        // move cursor to end of line below TODO
+        // move cursor to beginning of line below 
+        trym2.setCaretPosition(inputField, endPos + 1);
     }
     return str.slice(start, end) + "\n";
 };
+
+
+trym2.setCaretPosition = function(inputField, caretPos) {
+    if(inputField != null) {
+        if($(inputField)[0].createTextRange) {
+            var range = $(inputField)[0].createTextRange();
+            range.move('character', caretPos);
+            range.select();
+        }
+        else {
+            if($(inputField)[0].selectionStart) {
+                $(inputField)[0].focus();
+                $(inputField)[0].setSelectionRange(caretPos, caretPos);
+            }
+            else {
+                $(inputField)[0].focus();
+            }
+        }
+    }
+}
 
 trym2.showTerminal = function() {
     trym2.tutorialScrollTop = $("#lesson").scrollTop();

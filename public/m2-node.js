@@ -237,11 +237,11 @@ trym2.setCaretPosition = function(inputField, caretPos) {
         }
         else {
             if($(inputField)[0].selectionStart || $(inputField)[0].selectionStart === 0) {
-                $(inputField)[0].focus();
+                //$(inputField)[0].focus();
                 $(inputField)[0].setSelectionRange(caretPos, caretPos);
             }
             else {
-                $(inputField)[0].focus();                
+                //$(inputField)[0].focus();                
             }
         }
     }

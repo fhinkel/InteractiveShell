@@ -1,20 +1,29 @@
+5/10/2013
+DONE: 
+    move cursor on shift enter
+    second virtual machine, master and stable branch for nice deploying
+    subdomain for trym2
+    
+On iPhone, viewHelp does not work, looks as if server is serving page before iPhone user allows pop up
+
+
 4/26/2013
-Shift enter and button click moves down to next line (FRANZI)
+Shift enter and button click moves down to next line (FRANZI + LARS) DONE
 Does site work on IE? (MIKE)
 Converter for tutorial format (MIKE)
-* subdomain from Dan (MIKE)
-different virtual machine (LARS)
+* subdomain from Dan (MIKE) DONE
+different virtual machine (LARS) DONE
 Writing into right hand side (ALL): 
     - show input on left hand side?
     - deactivate mouse cursor? 
     - change color/font? 
     - when typing in right hand side, automatically type on left or bring warning
-BUG: trying to get a URL that we don't serve does not give 404 but eternal waiting
+BUG: trying to get a URL that we don't serve does not give 404 but eternal waiting DONE
 
 
 4/5/2013
 welcome tutorial: clicking on everything in order makes a error because x and x_1 DONE
-m2server: refactor, handle unhandled requests
+m2server: refactor, handle unhandled requests DONE
 selenium testing, we should use it!
 
 3/26/2013

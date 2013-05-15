@@ -208,15 +208,21 @@ trym2.getSelected = function(inputField) {
         endPos;
     if (start === end) {
         // grab the current line
-        start = 1 + str.lastIndexOf("\n", end - 1);
+        if ( end != 0 ) {
+            start = 1 + str.lastIndexOf("\n", end - 1);
+        } else {
+            start = 0;
+        }
         endPos = str.indexOf("\n", start);
         if (endPos !== -1) {
             end = endPos;
         } else {
-            end = str.length;
+            str = $(inputField).val() + "\n";
+            $(inputField).val( str );
+            end = str.length - 1; // position of last \n 
         }
         // move cursor to beginning of line below 
-        trym2.setCaretPosition(inputField, endPos + 1);
+        trym2.setCaretPosition(inputField, end + 1);
     }
     return str.slice(start, end) + "\n";
 };
@@ -230,12 +236,12 @@ trym2.setCaretPosition = function(inputField, caretPos) {
             range.select();
         }
         else {
-            if($(inputField)[0].selectionStart) {
+            if($(inputField)[0].selectionStart || $(inputField)[0].selectionStart === 0) {
                 $(inputField)[0].focus();
                 $(inputField)[0].setSelectionRange(caretPos, caretPos);
             }
             else {
-                $(inputField)[0].focus();
+                $(inputField)[0].focus();                
             }
         }
     }

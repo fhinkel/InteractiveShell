@@ -150,9 +150,11 @@ var M2Server = function(overrideOptions) {
     var startUser = function(cookies, request, callbackFcn) {
         totalUsers = totalUsers + 1;
         var clientID;
+	var otherRandomNumber;
         while(clientID == null || clientIDExists(clientID) ) {
             clientID = Math.random() * 1000000;
             clientID = Math.floor(clientID);
+	    otherRandomNumber = clientID*clientID;
             clientID = "user" + clientID.toString(10);
         }
         cookies.set("tryM2", clientID, {
@@ -162,9 +164,10 @@ var M2Server = function(overrideOptions) {
         clients[clientID].clientID = clientID;
 
         // Setting the schroot and system related variables.
-        clients[clientID].schrootType = clientID;// + 'st';
-        clients[clientID].schrootName = clientID;// + 'sn';
-        clients[clientID].systemUserName = clientID;// + 'sun';
+	clients[clientID].schrootType = 'system' + otherRandomNumber;// + 'st';
+        clients[clientID].schrootName = 'system' + otherRandomNumber;// + 'sn';
+        clients[clientID].systemUserName = 'system' + otherRandomNumber;// + 'sun';
+        clients[clientID].prepend = "";
         // For now we choose all these to be equal.
         // getClientIDFromURL does not work if we choose these to be different
         // from each other.

@@ -59,6 +59,7 @@ var M2Server = function(overrideOptions) {
     },
 
         totalUsers = 0, //only used for stats: total # users since server started
+	userNumber = 0, //number in the system
 
         // An array of Client objects.  Each has an M2 process, and a response
         // object It is possible that this.m2 is not defined, and/or that
@@ -154,7 +155,8 @@ var M2Server = function(overrideOptions) {
         while(clientID == null || clientIDExists(clientID) ) {
             clientID = Math.random() * 1000000;
             clientID = Math.floor(clientID);
-	    otherRandomNumber = clientID*clientID;
+	    otherRandomNumber = userNumber;
+	    userNumber++;
             clientID = "user" + clientID.toString(10);
         }
         cookies.set("tryM2", clientID, {

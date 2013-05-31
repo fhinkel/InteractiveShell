@@ -184,7 +184,7 @@ var M2Server = function(overrideOptions) {
                 ret) {
                 //console.log( "***" + ret );
                 logClient(clientID, "Spawning new schroot process named " +
-                    clientID + ".");
+                    clientID + " " + clients[clientID].systemUserName+".");
                 /*
                   The following command creates a schroot environment for the user.
                   -c specifies the schroot type. This tells schroot to use the config file

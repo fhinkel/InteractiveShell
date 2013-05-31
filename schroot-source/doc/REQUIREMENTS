@@ -1,0 +1,35 @@
+Requirements                                                     -*- outline -*-
+------------
+
+* Allow a user to chroot() into a location specified in a configuration file.
+
+  This will require the program to be setuid-root.
+
+* Allow the user to run a command or a login shell.
+
+* Allow the user to preserve their environment inside the chroot.
+
+  This should not be the default.
+
+* Restrict access to the chroot to certain users or groups.
+
+  Group restrictions are easiest to administer, and the default is to
+  create users with their own group anyway.
+
+* Allow root access to non-root users.
+
+  root access is required in order to install and remove packages in
+  the root (i.e. general apt/dpkg stuff).
+
+  In order for tools like sbuild to run non-interactively, this should
+  be password-less if the user is authorised to have root access in
+  the chroot.
+
+* Allow changing to other users, in addition to root, in the same manner as su(1).
+
+  This will require authentication.
+
+* Allow querying of the available chroots.
+
+  Tools need to know the available chroots, and should not be required
+  to parse the configuration file by hand.

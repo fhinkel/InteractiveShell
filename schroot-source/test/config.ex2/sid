@@ -1,0 +1,19 @@
+[sid]
+type=directory
+description=Debian sid (unstable)
+directory=/srv/chroot/sid
+priority=3
+groups=sbuild,root
+root-groups=root,sbuild
+aliases=unstable,default
+message-verbosity=quiet
+
+[sid-local]
+description=Debian sid (unstable)
+#directory=/srv/chroot/sid
+priority=3
+groups=sbuild,root
+root-groups=root,sbuild
+directory=/srv/chroot/sid
+message-verbosity=verbose
+preserve-environment=false

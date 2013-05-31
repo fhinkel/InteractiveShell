@@ -1,0 +1,37 @@
+# Debian GNU/Linux schroot(1) completion.
+# Copyright © 2009  Tim Abbott <tabbott@mit.edu>
+#
+# schroot is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# schroot is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see
+# <http://www.gnu.org/licenses/>.
+
+have schroot &&
+_schroot()
+{
+    local cur prev options
+
+    COMPREPLY=()
+    cur=${COMP_WORDS[COMP_CWORD]}
+    prev=${COMP_WORDS[COMP_CWORD-1]}
+
+    # Select precisely the tokens from schroot --help that begin with a dash
+    options=$(schroot --help | sed 's/\(^\|[[:space:]]\)[^[:space:]-][^[:space:]]*//g')
+
+    if [ "$prev" = "-c" ] || [ "$prev" = "--chroot" ]; then
+        COMPREPLY=( $(compgen -W "$(schroot -a -l)" -- $cur) )
+    else
+        COMPREPLY=( $(compgen -W "$options" -- $cur) )
+    fi
+    return 0
+}
+complete -F _schroot schroot

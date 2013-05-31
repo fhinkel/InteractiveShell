@@ -1,0 +1,19 @@
+# This is a configuration file for /etc/init.d/schroot; it allows you
+# to perform common modifications to the behavior of schroot
+# initialization without editing the init script (and thus getting
+# prompted by dpkg on upgrades).  Note that the defaults defined here
+# are not used when invoking the schroot command; to configure schroot
+# behaviour have a look at /etc/schroot/* and the schroot manual page
+# ("man schroot").
+
+# Action to perform when the service is stopped.  By default, we do
+# nothing (set to "none").  If all sessions should be automatically
+# ended, set to "end".  If this is set to "none", START_ACTION should
+# probably be set to "recover" to avoid broken sessions on restart.
+STOP_ACTION="none"
+
+# What do we want to do with "orphan" sessions when starting or
+# restarting?  Recover them (leave empty or set to "recover") or just
+# end them (set to "end")?
+START_ACTION="recover"
+

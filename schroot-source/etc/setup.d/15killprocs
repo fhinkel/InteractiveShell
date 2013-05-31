@@ -1,0 +1,83 @@
+#!/bin/sh
+# Copyright © 2007       Kees Cook <kees@outflux.net>
+# Copyright © 2007-2013  Roger Leigh <rleigh@debian.org>
+#
+# schroot is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# schroot is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see
+# <http://www.gnu.org/licenses/>.
+#
+#####################################################################
+
+set -e
+
+. "$SETUP_DATA_DIR/common-data"
+. "$SETUP_DATA_DIR/common-functions"
+. "$SETUP_DATA_DIR/common-config"
+
+# Wrapper around kill command. Turns errors into
+# warnings when running in verbose mode, otherwise
+# it ignores them.
+# args: parameters for kill
+kill_proc()
+{
+    if ! kill "$@" 2>/dev/null; then
+        info "kill $@ failed: process already terminated?"
+    fi
+}
+
+# Kill all processes that were run from within the chroot environment
+# $1: mount base location
+do_kill_all()
+{
+    if [ -z "$1" ]; then
+        fatal "No path for finding stray processes: not reaping processes in chroot"
+    fi
+
+    info "Killing processes run inside $1"
+    ls /proc | egrep '^[[:digit:]]+$' |
+    while read pid; do
+        # Check if process root are the same device/inode as chroot
+        # root (for efficiency)
+        if [ /proc/"$pid"/root -ef "$1" ]; then
+            # Check if process and chroot root are the same (may be
+            # different even if device/inode match).
+            root=$(readlink /proc/"$pid"/root || true)
+            if [ "$root" = "$1" ]; then
+                exe=$(readlink /proc/"$pid"/exe || true)
+                info "Killing left-over pid $pid (${exe##$1})"
+                info "  Sending SIGTERM to pid $pid"
+
+                kill_proc -TERM "$pid"
+
+                count=0
+                max=5
+                while [ -d /proc/"$pid" ]; do
+                    count=$(( $count + 1 ))
+                    info "  Waiting for pid $pid to shut down... ($count/$max)"
+                    sleep 1
+                # Wait for $max seconds for process to die before -9'ing it
+                    if [ "$count" -eq "$max" ]; then
+                        info "  Sending SIGKILL to pid $pid"
+                        kill_proc -KILL "$pid"
+                        sleep 1
+                        break
+                    fi
+                done
+            fi
+        fi
+    done
+}
+
+if [ $STAGE = "setup-recover" ] || [ $STAGE = "setup-stop" ]; then
+    do_kill_all "$CHROOT_PATH"
+fi

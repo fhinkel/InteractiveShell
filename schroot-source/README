@@ -1,0 +1,84 @@
+schroot
+=======
+
+Securely enter a chroot and run a command or login shell.
+
+Note that giving untrusted users root access to chroots is a serious
+security risk!  Although the untrusted user will only have root access
+to files inside the chroot, in practice there are many obvious ways of
+breaking out of the chroot and of disrupting services on the host
+system.  As always, this boils down to trust.  Don't give chroot root
+access to users you would not trust with root access to the host
+system.
+
+For compatibility with existing tools and scripts, wrapper binaries
+for dchroot and DSA dchroot are provided.
+
+
+Build Dependencies
+------------------
+
+An ISO C++ compiler supporting TR1 (e.g. GCC 4.x), or an ISO C++
+compiler and the Boost libraries
+libstdc++ (GNU libstdc++)
+libpam0g-dev (Linux-PAM)
+libboost-dev                 }
+libboost-program-options-dev } The Boost C++ libraries
+libboost-regex-dev           }
+groff (or troff) soelim
+
+If building from GIT, you will also need:
+gettext (0.16 or greater)
+doxygen
+po4a (>=0.40)
+
+
+Translation
+-----------
+
+If you would like to see the schroot messages output in your own
+language, please consider translating the pot file (po/schroot.pot).
+If you would like to see the schroot man pages in your own language,
+please consider translating the pot file
+(man/po4a/po/schroot-man.pot).
+
+
+Building and installation
+-------------------------
+
+Please see the INSTALL file for generic installation instructions.
+Note that the testsuite ("make check") should be run under fakeroot or
+real root in order to work correctly.  There are the following
+additional options:
+
+  --enable-dchroot:       Build dchroot for backward compatibility
+  --enable-dchroot-dsa:   Build DSA dchroot for backward compatibility
+  --enable-debug:         Enable debugging features
+                          (not recommended--use --debug at runtime instead)
+  --enable-environment-filter
+                          Enable default environment filtering (regex)
+  --enable-pam            Enable support for PAM authentication
+  --enable-block-device   Enable support for block devices
+  --enable-lvm-snapshot   Enable support for LVM snapshots
+  --enable-btrfs-snapshot Enable support for btrfs snapshots
+  --enable-loopback       Enable support for loopback mounts
+  --enable-union          Enable support for union mounts
+  --enable-doxygen        Enable doxygen documentation
+
+Normally configure will autodetect and enable the recommended options
+if supported by your system, so the above options should not usually
+be required.
+
+Run "make doc" to make the doxygen documentation.
+
+
+Configuration
+-------------
+
+See schroot.conf(5) and schroot-setup(5).
+
+
+Running
+-------
+
+See schroot(1).

@@ -1,0 +1,17 @@
+PO4A-HEADER:mode=after;position=^\.SH "VOIR AUSSI";beginboundary=^FakePo4aBoundary
+
+.SH TRADUCTION
+Ce document est une traduction, réalisée par Thomas Blein le
+30 mai 2012.
+
+L'équipe de traduction a fait le maximum pour réaliser une adaptation
+française de qualité.
+
+La version anglaise de ce document est toujours consultable
+en ajoutant l'option «\ \-L C\ » à la commande \fBman\fR.
+
+N'hésitez pas à signaler à l'auteur ou à la liste de traduction
+..nh
+<\fIdebian\-l10n\-french@lists.debian.org\fR>,
+..hy
+selon le cas, toute erreur dans cette page de manuel.

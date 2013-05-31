@@ -1,0 +1,1032 @@
+NEWS                                                            -*- outline -*-
+----
+
+Welcome to schroot 1.7.0.  This is a development release.  Please read
+these release notes carefully.
+
+Full installation instructions are provided in the INSTALL file.  The
+README file also contains more specific notes regarding building and
+configuration.
+
+* Major changes in 1.7.0:
+
+  1) Support for disassociating networking in the chroot from the host
+     system has been added.  This may be enabled by setting
+     "unshare.net".
+
+  2) Support for execution scripts has been re-added.  These are used
+     to set up the environment when a single command is executed, such
+     as for disassociating networking.
+
+  3) schroot now requires a C++11 compiler to build.  Several C++11
+     features are now used to make the code more robust and
+     maintainable, including range-based for loops, auto (automatic
+     type detection) and container initialiser lists.  Existing use of
+     TR1 types has been replaced with the use of the C++11
+     equivalents.
+
+  4) The build system has been refactored to use nonrecursive make.
+     It is no longer possible to build individual subdirectories, but
+     parallel building is far faster and dependencies between objects
+     in different directories may now be described directly.
+
+  5) Support for device locking with liblockdev has been removed;
+     liblockdev is no longer required for using "block-device" or
+     "lvm-snapshot" chroot types.  lockdev locking was not
+     particularly useful, and there is no decrease in safety with this
+     change.
+
+  6) Session identifiers are no longer UUIDs.  The requirement for
+     libuuid has been removed.  Session identifiers are now six random
+     alphanumeric characters (derived from the current system time)
+     plus the process ID.  The new IDs are rather shorter and more
+     readable than UUIDs, and will remain sufficiently unique that
+     there should be no clashes between automatically-created session
+     names.
+
+  7) The unused and incomplete csbuild and schroot-sbuild wrappers for
+     sbuild have been removed.
+
+  8) The source code has been reorganised and refactored to be more
+     useful for third-party developers.  libsbuild is now built as a
+     shared library by default.  While it is possible to use static
+     linking, this is discouraged, and it also requires the use of
+     -Wl,--whole-archive when linking, to prevent loss of chroot
+     facets which are used indirectly.
+
+  9) The output of "schroot --version" now displays installed chroot
+     facets rather than available chroot types.
+
+* Major changes in 1.6.4:
+
+  1) Canonicalise symlink mount points.  If a mount point in fstab
+     contains a path with symlinks as mountpoint, canonicalise the
+     path, and ensure that absolute paths are mounted inside the
+     chroot.  The canonicalisation is performed on the host rather
+     than inside the chroot, so complex paths containing multiple
+     symlinks may not resolve correctly; but in the simple case of a
+     single link will resolve paths accurately.
+
+* Major changes in 1.6.3:
+
+  1) Revert pam_env change from 1.6.2.  This is due to running the PAM
+     module on the host, it would inappropriately set LANG, LANGUAGE
+     and potentially other environment variables which would be
+     incorrect inside the chroot.
+
+* Major changes in 1.6.2:
+
+  1) PAM pam_env is used to set up additional environment from
+     /etc/security/pam_env.conf and /etc/default/locale.
+
+  2) /usr/bin/X11 and /usr/games have been removed from the
+     default PATH.
+
+* Major changes in 1.6.1:
+
+  None.
+
+* Major changes in 1.6.0:
+
+  1) The new profile and old script-config options are mutually
+     exclusive.  While profile is set by default, if script-config is
+     set, it will unset and override the effect of the profile
+     setting.  script-config is deprecated and will be removed in
+     schroot 1.7.x.  Please update your configuration to use the
+     profile key.
+
+  2) The CHROOT_PROFILE setup-script variable has been renamed to
+     CHROOT_PROFILE_DIR.  CHROOT_PROFILE now contains the profile name
+     only, while CHROOT_PROFILE_DIR contains the absolute path to the
+     profile directory.
+
+* Major changes in 1.5.4:
+
+  None.
+
+* Major changes in 1.5.3:
+
+  1) dchroot always uses "/bin/sh -c" to run the specified command,
+     rather than the user's shell, in order to ensure consistent
+     behaviour.
+
+  2) Add shell fallbacks.  When running a login shell, try $SHELL (if
+     preserving the environment), or else passwd pw_shell, then
+     /bin/bash and finally /bin/sh.  This may be overidden using the
+     shell configuration key, which may in turn be overidden by the
+     --shell option.
+
+  3) Support for QEMU linux user emulation using binfmt_misc on Linux
+     is enabled by default.  If binfmt_misc is available, and a
+     suitable program is available for running non-native architecture
+     programs, it will be made available in the chroot automatically.
+     This permits chroots for other architectures to be used
+     transparently.
+
+* Major changes in 1.5.2:
+
+  1) Support for overlayfs has been added in addition to the existing
+     aufs and unionfs support.
+
+  2) Arbitrary options may now be set in a chroot definition in
+     schroot.conf.  These options are also set in the environment when
+     running setup scripts, making this a simple means by which setup
+     scripts may be customised without writing code.
+
+  3) The above options may be set (where permitted) on the schroot
+     command-line by using the new --option command-line option to set
+     the option to a user-defined value, which will permit users to
+     customise the behaviour of setup scripts.  Note that only keys
+     specified in the new user-modifiable-keys or root-modifiable-keys
+     settings are permitted to be set, for security reasons.
+
+  4) A new "custom" chroot type has been added.  This permits the
+     testing and development of new specialised chroot types without
+     the need to write any C++ chroot modules.  It just requires a
+     custom setup script, which can use arbitrary options set in your
+     schroot.conf for configuration.  Options are provided to set up
+     the session cloning and purging behaviour for the custom chroot.
+     See schroot.conf(5) for further details.
+
+  5) Services may be started and stopped inside the chroot on session
+     creation and session ending.  These are specified using the new
+     setup.services key, and are started and stopped using
+     invoke-rc.d.  See schroot.conf(5) for further details.
+
+  6) Chroot profiles are now selectable using the new "profile" key.
+     This replaces the older "script-config" key, which is now
+     deprecated.  The profile configuration file referenced by
+     script-config is also deprecated, the individual settings it
+     contained now being directly configurable in schroot.conf.  See
+     schroot.conf(5) for further details.
+
+* Major changes in 1.5.1:
+
+  1) schroot no longer requires GCC to build, following the removal of
+     GCC-specific features.  It may now build with other C++ compilers.
+
+  2) Large file support is enabled by default.  This enables the use
+     of files over 2 GiB in size on 32 bit architectures.
+
+  3) The environment variable CHROOT_ALIAS has been added to the setup
+     script execution environment, and SCHROOT_ALIAS_NAME to the user
+     environment.  These may be used to conditionally alter behaviour
+     depending upon the chroot alias used.
+
+  4) dchroot and dchroot-dsa no longer use dchroot.conf.  Both
+     programs now always use schroot.conf, and additionally use the
+     same authentication mechanisms as schroot.  This is intended to
+     provide the same basic configuration for all tools, and to also
+     improve security by only having a single set of authentication
+     rules.
+
+* Major changes in 1.5.0:
+
+  1) The deprecated options priority, run-setup-scripts and
+     run-exec-scripts (all chroot types) and location ("plain" and
+     "directory" chroot types) have been obsoleted and removed from
+     the documentation.
+
+  2) Source chroots no longer create a chroot with a -source suffix;
+     the source: namespace should be used instead.  Likewise sessions
+     are no longer present in the chroot: namespace, and are only
+     found in the session: namespace.  This means the fully-qualified
+     name must be used to refer to sessions except when performing
+     actions which use session: as the default namespace.
+
+  3) Support for zip file archives has been removed.  zip was not able
+     to archive named pipes and device nodes, and so was not usable
+     for chroot archival.
+
+  4) AUTH_VERBOSITY is no longer set in setup scripts.  Please use
+     VERBOSE instead.  VERBOSITY replaced and deprecated
+     AUTH_VERBOSITY in version 1.4.5.
+
+* Major changes in 1.4.27:
+
+  1) Canonicalise symlink mount points.  If a mount point in fstab
+     contains a path with symlinks as mountpoint, canonicalise the
+     path, and ensure that absolute paths are mounted inside the
+     chroot.  The canonicalisation is performed on the host rather
+     than inside the chroot, so complex paths containing multiple
+     symlinks may not resolve correctly; but in the simple case of a
+     single link will resolve paths accurately.
+
+* Major changes in 1.4.26:
+
+  1) Added --exclude-aliases option.  This removes aliases from the
+     chroot selection.
+
+* Major changes in 1.4.25:
+
+  1) Support for overlayfs has been added in addition to the existing
+     aufs and unionfs support.
+
+* Major changes in 1.4.24:
+
+  1) Support for zip file archives has been removed.  zip was not able
+     to archive named pipes and device nodes, and so was not usable
+     for chroot archival.
+
+  2) The autoconf and automake build logic from schroot 1.5.1 has been
+     backported to add multi-arch support to schroot 1.4.
+
+* Major changes in 1.4.23:
+
+  None.
+
+* Major changes in 1.4.22:
+
+  1) Large file support is enabled by default.  This enables the use
+     of files over 2 GiB in size on 32 bit architectures.
+
+  2) Chroot profiles no longer bind filesystems with rbind.  Recursive
+     bind mounting of /proc, /dev and /sys caused breakage with
+     systemd due to its use of autofs mounts.  autofs interacts badly
+     with bind mounting, leading to unmountable mount points.  While
+     rbind is still possible, it is not done by default, and instead
+     only specific filesystems are mounted; additional mounts required
+     must be added to the profile fstab file.
+
+  3) Session metadata includes the original chroot name.  This is
+     available in the user environment as SCHROOT_CHROOT_NAME and
+     in the setup scripts as CHROOT_NAME.
+
+  4) A buildd profile is now provided.  This was previously provided
+     by the sbuild package, but has now been consolidated with the
+     main collection of schroot profiles.
+
+  5) A helper program, schroot-sbuild has been provided in order to
+     provide better privilege separation with sbuild.  This permits an
+     authorised user in the sbuild group to run builds as the sbuild
+     user.
+
+* Major changes in 1.4.21:
+
+  None.
+
+* Major changes in 1.4.20:
+
+  1) Add support for the Boost filesystem v3 library, to permit
+     building with Boost version 1.46.  Older versions of Boost
+     continue to be supported.
+
+* Major changes in 1.4.19:
+
+  None.
+
+* Major changes in 1.4.18:
+
+  None.
+
+* Major changes in 1.4.17:
+
+  None.
+
+* Major changes in 1.4.16:
+
+  1) Chroot naming restrictions introduced in 1.4.0 have been relaxed
+     following a code audit to evaluate the security implications.
+     The name may not contain a leading period (‘.’).  Any characters
+     are permitted, with the following restrictions.  The characters
+     ‘:’ (colon), ‘,’ (comma) and ‘/’ (forward slash) are not
+     permitted anywhere in the name.  The name may also not contain a
+     trailing tilde ('~').  See schroot.conf(5) for more information.
+
+* Major changes in 1.4.15:
+
+  None.
+
+* Major changes in 1.4.14:
+
+  None.
+
+* Major changes in 1.4.13:
+
+  None.
+
+* Major changes in 1.4.12:
+
+  None.
+
+* Major changes in 1.4.11:
+
+  None.
+
+* Major changes in 1.4.10:
+
+  None.
+
+* Major changes in 1.4.9:
+
+  None.
+
+* Major changes in 1.4.8:
+
+  1) Chroot names are now prefixed by a namespace.  Three namespaces
+     are used in this release, "chroot:", "source:" and "session:" for
+     chroots, source chroots and sessions, respectively.  These may
+     all be selected with the --all-chroots, --all-source-chroots and
+     --all-sessions options.  Individual chroots may be referred to
+     with or without a prefix, depending upon the context.  For most
+     actions, "chroot:" is the default prefix, while the
+     --run-session, --recover-session and --end-session actions use
+     "session:" as the default prefix.
+
+  2) Source chroots previously used a -source suffix.  A chroot named
+     "squeeze" providing a source chroot would also create a source
+     chroot named "squeeze-source".  The source chroot is now named
+     "source:squeeze", but a chroot with a -source suffix is still
+     created for compatibility (actually now named
+     "chroot:squeeze-source").  The -source suffix names will be
+     dropped in the 1.5.x development releases and 1.6.x stable
+     releases.
+
+  3) Session chroots previously were in the same flat namespace as
+     chroots.  Now that sessions are in a separate namespace, it is
+     possible to create a session with the same name as the original
+     chroot.  For example a chroot named "build" is actually
+     "chroot:build" and so the session will be named "session:build".
+     For compatibility session names are also still placed in the
+     "chroot:" namespace so that they still work without namespaces
+     with actions such as --info (namespaces are not required for
+     session-specific actions such as --run-session).  The
+     compatibility name will be dropped in the 1.5.x development
+     releases and 1.6.x stable releases.
+
+  4) The option --list, in addition to respecting the various --all
+     options will now allow the use of --chroot as well.  This may be
+     used to verify the existence of the specified chroots.  --list
+     defaults to showing --all-chroots --all-source-chroots which is
+     the effective behaviour of previous releases.
+
+  5) The key named priority in the configuration file has been
+     deprecated.  This was originally introduced for compatibility
+     with sbuild, but sbuild has never used the property.  It will be
+     obsoleted and removed in the 1.5.x development releases and 1.6.x
+     stable releases.
+
+  6) The enviroment variables HOME and SESSION are always preserved
+     (this was a regression in 1.4.7).
+
+* Major changes in 1.4.7:
+
+  1) Install profile configurations in the correct location.  1.4.6
+     incorrectly installed these into $sysconfdir rather than
+     $sysconfdir/schroot due to a mistake in the build scripts.
+
+* Major changes in 1.4.6:
+
+  1) The environment may be preserved on a per-chroot basis using the
+     new preserve-environment key in the configuration file.  This is
+     equivalent to using the --preserve-environment option, but only
+     affects a single chroot.
+
+  2) It is now possible to add a "location" configuration option to
+     specify the location of the chroot within the archive file for
+     file type chroots.  Previously, it was assumed that the location
+     was always the root, whereas it is typical to create archives
+     which unpack into a subdirectory rather than the current
+     directory.  This makes chroot file archive creation and use
+     easier.
+
+  3) Chroots of type "loopback" now always create session files which
+     adds the ability to begin and end sessions with this chroot type.
+
+  4) The setup scripts have been improved to increase their
+     reliability during failure.  Previously, if a problem occured it
+     might not have been possible to end a session which would result
+     in stray files being left in the session and mount directories.
+     This should no longer occur.
+
+  5) Users should note that by default the entirety of /dev is bind
+     mounted into the chroot environment.  If this has security
+     implications, the "minimal" profile does not mount any of /dev
+     into the chroot and may be a more secure alternative.  For most
+     situations, mounting /dev in the chroot and providing full access
+     to the devices on the host system is perfectly acceptable.
+
+* Major changes in 1.4.5:
+
+  1) A new chroot type, "btrfs-snapshot", has been added.  This is
+     similar to the existing LVM snapshot functionality, but using
+     snapshots of Btrfs subvolumes.  Btrfs is currently still marked
+     experimental in the Linux kernel, so this feature should also be
+     regarded as experimental and subject to change.  Btrfs snapshots
+     are somewhat faster than LVM snapshots, are more flexible, and
+     use very little disc space.  LVM snapshots require pre-allocating
+     a fixed amount of storage per snapshot.
+
+  2) Source chroots may be disabled for chroot types providing source
+     chroots using the new source-clone key in the configuration file.
+
+  3) Configuration profiles "minimal", "desktop" and "sbuild" have
+     been added in addition to the existing "default" profile.  These
+     provide pre-canned configurations for several common usage
+     scenarios, and are used with the script-config key.
+
+  4) Frequently asked questions are addressed in the new
+     schroot-faq(7) manual page.
+
+  5) The default message verbosity may be set using the new
+     message-verbosity key in the configuration file.
+
+* Major changes in 1.4.4:
+
+  None.
+
+* Major changes in 1.4.3:
+
+  None.
+
+* Major changes in 1.4.2:
+
+  1) Added support for building with Boost 1.42.
+
+* Major changes in 1.4.1:
+
+  1) A dchroot bug which prevented root from accessing chroots where
+     they were not specifically granted access has been fixed.  root
+     now has access to all chroots.  Note this only affected dchroot
+     and dchroot-dsa, not schroot.
+
+  2) The setup script configuration files 'script-defaults',
+     'mount-defaults', 'copyfiles-defaults' and
+     'nssdatabases-defaults', located in /etc/schroot, have been moved
+     to /etc/schroot/default.  'script-defaults' has been renamed to
+     'config', and 'mount-defaults' has been renamed to 'fstab'.
+     Likewise 'nssdatabases-defaults' has been renamed to
+     'nssdatabases' and 'copyfiles-defaults' to 'copyfiles'.  Note
+     that the default setting for 'script-config' in schroot.conf has
+     changed from 'script-defaults' to 'default/config'.  If manually
+     setting 'script-config' to 'script-defaults' in your chroot
+     definitions, this will require updating.  If unset, no changes
+     are required.
+
+  3) Additional setup script environment variables have been added:
+     HOST, HOST_OS, HOST_VENDOR, HOST_CPU and PLATFORM.  These are for
+     adding platform-specific logic to setup scripts, and are
+     initially for FreeBSD and GNU/kFreeBSD compatibility.
+
+  4) Additional FreeBSD compatibility work in setup scripts and block
+     device code.  schroot should now work with current FreeBSD and
+     Debian GNU/kFreeBSD systems.
+
+* Major changes in 1.4.0:
+
+  None.  For users upgrading from the previous stable release (1.2.x),
+  please read the changes made since 1.2.3.  Changes to the
+  configuration file format may require some small changes to your
+  existing configuration.  Additionally, the naming of chroot
+  configuration files under /etc/schroot/chroot.d has been made
+  stricter, in order to prevent reading of editor backup files and
+  dpkg conffile backups.  It uses the same naming rules as specified
+  in run-parts(8) for the --lsbsysinit option.  If some of your
+  chroots are not available after upgrading to 1.4.0, this may be the
+  reason.  Simply rename the files to a conforming name and they will
+  become available.
+
+* Major changes in 1.3.2:
+
+  None.
+
+* Major changes in 1.3.1:
+
+  1) Kernel personality support should now work on non-Linux
+     architectures such as kfreebsd.
+
+* Major changes in 1.3.0:
+
+  None.
+
+* Major changes in 1.3.0-rc1:
+
+  1) Exec scripts have been removed.  Unlike setup scripts, these
+     scripts were never used, and there are no known uses for them.
+     Removing them will improve the performance of schroot.  The
+     run-exec-scripts configuration option is no longer used, but
+     is still permitted to be used until it is obsoleted in a
+     future release.
+
+  2) Setup scripts are now always run for all chroot types except
+     "plain".  In practice, scripts were required for all types
+     except "plain" in order to function correctly.  The ability to
+     configure this is not useful and so setting run-setup-scripts is
+     now deprecated in schroot.conf.  It may still be set for backward
+     compatibility, but it has no effect and will be removed in the
+     future.
+
+  3) Chroot configuration files in /etc/schroot/chroot.d are not
+     loaded if they are backup files or dpkg conffile backups.
+
+  4) Support for GCC versions prior to 3.4 has been removed.
+
+  5) System databases are copied into the chroot using the getent
+     program to use the appropriate name service switch (NSS) modules
+     to get the data, rather than just copying the files.  This means
+     all NSS database sources are supported, including NIS and LDAP.
+
+  6) Setup script output is logged to stderr which prevents schroot
+     outputting to stdout when run with verbose logging enabled.
+
+  7) Most schroot features are compiled conditionally, which should
+     ease porting to non-Linux platforms.
+
+  8) Support for union filesystems has been added (aufs and unionfs).
+     This permits the use of read-only block-device, directory and
+     loopback chroots with a temporary writable overlay.  For "scratch"
+     temporary chroots, this method is recommended over the existing
+     LVM snapshot support.  It is considered to be faster, more
+     robust, and uses less disc space.
+
+  9) The "command-prefix" option no longer requires an absolute path
+     to the command.  It will use the normal search path inside the
+     chroot to locate the command.
+
+ 10) When creating a session, the users in "users", "root-users", and
+     groups in "groups" and "root-groups" are no longer preserved.
+     The user requesting access will be the sole user listed in
+     "users" for the session; however, if the user was in "root-users"
+     or "root-groups", they will be added to "root-users" instead.
+     This ensures that only the user creating the session will have
+     access, so that other users having access to the chroot will not
+     also automatically gain access to other users sessions.
+
+* Major changes in 1.2.3:
+
+  None.
+
+* Major changes in 1.2.2:
+
+  None.
+
+* Major changes in 1.2.1:
+
+  1) A new chroot type, "loopback", has been added.  This is similar
+     to the "block-device" type, but allows for loopback mounting of
+     filesystems contained within regular files.
+
+  2) "lvm-snapshot" chroot types now clean up correctly in the case of
+     failures during setup.
+
+* Major changes in 1.2.0:
+
+  1) In addition to /etc/schroot/schroot.conf, chroot definitions may
+     be placed in separate files under /etc/schroot/chroot.d to enable
+     packages and system administrators to easily make new chroots
+     available to schroot.
+
+  2) Configuration files may now be symlinks as well as regular files.
+
+  3) schroot now builds with GCC 4.3.
+
+  4) All setup and exec scripts source and use the script
+     configuration file specified with the script-config configuration
+     key.
+
+* Major changes in 1.1.6:
+
+  1) Relicence under the GNU General Public License, version 3 or
+     later.
+
+  2) Per-chroot custom mountpoints are now possible through the use of
+     an fstab file.  This may be used to mount or bind mount any
+     filesystem within the chroot with the assistance of a helper
+     utility, schroot-mount.  Set FSTAB=fstab in the script-config
+     file to specify which file to use.
+
+  3) Per-chroot custom file copying is now supported.  Set
+     COPYFILES=file in the script-config file to specify a file
+     containing a list of files to copy from the host system into the
+     chroot.  This change merged the 20network and 30passwd setup
+     scripts into a single script, 20copyfiles.  If you previously
+     customised either of these scripts, the changes will need to be
+     copied over to the new files.
+
+  4) If invalid options are used in schroot.conf, warnings will be
+     printed, rather than simply ignoring them.
+
+* Major changes in 1.1.5:
+
+  1) A "script-config" option has been added to allow customisation of
+     the chroot setup and execution scripts on a per-chroot basis.
+     See schroot.conf(5) for further details.
+
+  2) A --session-name has been added to allow naming sessions when
+     using --begin-session.  This replaces the automatically-generated
+     chroot-UUID session name.
+
+* Major changes in 1.1.4:
+
+  1) When ending a session, processes still running in the chroot are
+     terminated.
+
+* Major changes in 1.1.3:
+
+  Bugfixes and translation updates only.
+
+* Major changes in 1.1.2:
+
+  Bugfixes and translation updates only.
+
+* Major changes in 1.1.1:
+
+  1) For dchroot and dchroot-dsa, the syslog logging of the command or
+     shell being run in the chroot now only occurs when running as
+     root or switching to another user.  If the user is the same
+     inside and outside the chroot, and not root, the command or shell
+     being run will not be logged.
+
+  2) Using symbolic links in the mount path (SCHROOT_MOUNT_DIR) will
+     no longer result in severe dataloss.
+
+  3) User-defined filtering of the chroot environment is now permitted
+     using the environment-filter key in the configuration file, which
+     uses a regular expression to identify environment variables for
+     removal.
+
+  4) The environment variables SCHROOT_COMMAND, SCHROOT_USER,
+     SCHROOT_GROUP, SCHROOT_UID and SCHROOT_GID are set inside the
+     chroot specifying the command being run, the user name, group
+     name, user ID and group ID, respectively.
+
+* Major changes in 1.1.0:
+
+  1) Authentication now uses the Controlling TTY (/dev/tty) for
+     communication with the user.  This means PAM interaction with the
+     user will work even if stdin, stdout and stderr are all
+     redirected.  If authentication is required and no CTTY is
+     available, it will fail (due to authentication being an
+     interactive process).
+
+  2) The syslog logging of the command or shell being run in the
+     chroot now only occurs when running as root or switching to
+     another user.  If the user is the same inside and outside the
+     chroot, and not root, the command or shell being run will not be
+     logged.
+
+  3) A --directory option has been added to schroot, dchroot and
+     dchroot-dsa.  This option allows the user to explictly specify
+     the working directory inside the chroot.
+
+* Major changes in 1.0.6:
+
+  Bugfixes only.
+
+* Major changes in 1.0.5:
+
+  Bugfixes only.
+
+* Major changes in 1.0.4:
+
+  1) Using symbolic links in the mount path (SCHROOT_MOUNT_DIR) will
+     no longer result in severe dataloss.
+
+  2) LSB init script functions are now used.
+
+* Major changes in 1.0.3:
+
+  1) For dchroot and dchroot-dsa, the syslog logging of the command or
+     shell being run in the chroot now only occurs when running as
+     root or switching to another user.  If the user is the same
+     inside and outside the chroot, and not root, the command or shell
+     being run will not be logged.
+
+* Major changes in 1.0.2:
+
+  1) The syslog logging of the command or shell being run in the
+     chroot now only occurs when running as root or switching to
+     another user.  If the user is the same inside and outside the
+     chroot, and not root, the command or shell being run will not be
+     logged.
+
+  2) A --directory option has been added to schroot, dchroot and
+     dchroot-dsa.  This option allows the user to explictly specify
+     the working directory inside the chroot.
+
+* Major changes in 1.0.1:
+
+  Bugfixes and translation updates only.
+
+* Major changes in 1.0.0:
+
+  Bugfixes and translation updates only.
+
+* Major changes in 0.99.4:
+
+  1) All errors in the configuration file now show the full details of
+     the problem, including the exact line number, group and key.
+
+  2) Duplicate groups and keys with groups are now treated as errors.
+
+  3) The terminal state is only saved and restored when running a
+     login shell.  It is no longer saved and restored when running
+     commands.  This is to correct the problem of schroot being
+     stopped when running in the background while restoring the
+     terminal settings.
+
+  4) Child processes are now terminated when SIGTERM is received, in
+     addition to SIGHUP.
+
+* Major changes in 0.99.3:
+
+  1) A new chroot type, "directory", has been added.  This is the same
+     as the "plain" type, but additionally allows filesystem mounting
+     when setup scripts are enabled.
+
+  2) A further dchroot compatibility issue has been corrected.
+     Multiple command options specified on the command line are
+     concatenated into a single command, separated by spaces.
+
+* Major changes in 0.99.2:
+
+  1) A --debug option has been added to all programs.  Its use is
+     documented in the manual pages.
+
+  2) When errors are found in the chroot configuration, the line
+     number in the configuration file is now reported.
+
+  3) The use of run-parts(8) is no longer needed.  This should make
+     the package portable to non-Debian systems.
+
+* Major changes in 0.99.1:
+
+  1) A dchroot-dsa compatibility mode has been implemented.  This
+     behaves in the same manner as the DSA dchroot program, and is
+     useful for backward compatibility with DSA dchroot, as well as
+     migrating from DSA dchroot.
+
+  2) The dchroot program is now compatible with the command-line
+     syntax of older versions, and also matches the older behaviour of
+     which directory is used inside the chroot.  The behaviour is
+     documented in the manual page.
+
+  3) In addition to "groups" and "root-groups" options for controlling
+     chroot access, "users" and "root-users" have been added for finer
+     control over access.  Corresponding "source-users" and
+     "source-root-users" options have been added for source chroots.
+
+  4) Files, Devices and Locations in schroot.conf must be absolute
+     pathnames.  Relative names are a security risk, because the
+     behaviour may vary depending on the current working directory.
+     It was previously the sysadmin's responsibility to set these
+     correctly, but this rule is now strictly enforced.
+
+* Major changes in 0.99.0:
+
+  1) In order to support running 32-bit chroots on 64-bit systems, a
+     "personality" option has been added.  This may be set to
+     "linux32" to run a 32-bit Linux chroot on an amd64 system, for
+     example.
+
+  2) dchroot has an additional personality field in dchroot.conf.
+     This may also be set to linux32 to achieve the same effect as the
+     personality setting in schroot.conf.
+
+  3) The root user can access all chroots, even when the root group is
+     omitted from the groups or root_groups lists.  Authentication is
+     still required, but by default is skipped due to using
+     pam_rootok.so in the PAM configuration.
+
+  4) Session recovery is only performed at system startup, not on
+     upgrades.  This prevents upgrades interfering with active
+     sessions.
+
+* Major changes in 0.2.11:
+
+  1) The 10mount script, used to unmount filesystem in a chroot, will
+     exit with an error if unmounting fails (for safety).  It also
+     uses /proc/mounts (via a new program, schroot-listmounts) to
+     ensure all filesystems in the chroot are unmounted.
+
+  2) The 05file script, used to unpack and repack chroot archives,
+     will use schroot-listmounts to check if any filesystems are
+     mounted before purging the chroot.  This is in order to avoid
+     dataloss.
+
+  3) Setup scripts can now abort on failure during cleanup (exec-stop
+     and setup-stop phases).  Previously the scripts continued in the
+     face of failure, and broken sessions were removed.  Broken
+     sessions which failed to clean up must now be removed by the
+     system administrator (which was required previously; it just
+     wasn't apparent), or the session can be ended again once the
+     problem has been rectified.
+
+* Major changes in 0.2.10:
+
+  Bugfixes only.
+
+* Major changes in 0.2.9:
+
+  1) The package now compiles with older compilers, such as GCC 3.3
+     and 3.4.
+
+  2) If the current working directory does not exist inside the
+     chroot, the user's home directory ($HOME, home directory in
+     passwd, or /) will be used when running a login shell.  If
+     running a command and the directory does not exist, schroot will
+     exit with an error.
+
+* Major changes in 0.2.8:
+
+  Bugfixes only.
+
+* Major changes in 0.2.7:
+
+  Bugfixes only.
+
+* Major changes in 0.2.6:
+
+  1) For all chroot types, a "command-prefix" option has been added.
+     This is a command to prefix to all commands run inside the
+     chroot.
+
+  2) The scripts run before and after executing a command or shell in
+     the chroot have been moved from /etc/schroot/run.d to
+     /etc/schroot/exec.d.  The corresponding configuration option in
+     schroot.conf has been renamed from "run-session-scripts" to
+     "run-exec-scripts".  This change was to reduce ambiguity in the
+     naming, to make it easier to understand and configure.
+
+  3) The session operations "--recover-session", "--run-session", and
+     "--end-session" now allow multiple chroots to be specified with
+     "--chroot", rather than just one.
+
+  4) The "file" and "lvm-snapshot" chroot types both implement "source
+     chroots", to provide access to the source block device and
+     archive file, respectively.  The "source-groups" and
+     "source-root-groups" options have been added to set the "groups"
+     and "root-groups" options for the source chroot.
+
+  5) The "file" chroot, when accessed as a source chroot using the
+     "-source" suffix, will now automatically repack itself into a new
+     archive file on ending a session.
+
+* Major changes in 0.2.5:
+
+  1) The output of "--info" now displays a "Path" line if available.
+     This is the location of the chroot in the filesystem.
+
+* Major changes in 0.2.4:
+
+  1) For "block-device" and "lvm-snapshot" type chroots, it is now
+     possible to add a "location" configuration option to specify the
+     location of the chroot within the device filesystem, rather than
+     assuming the location is always the root.  This allows multiple
+     chroots to be stored on a single LVM LV, for example.
+
+  2) For "plain" chroots, if setup scripts (run-setup-scripts) is
+     enabled, session management is also enabled.  This is not true
+     session management, because it uses bind mounts rather than a
+     copy of the chroot, so should be used with caution, but will make
+     concurrent access to the chroot with session scripts enabled
+     rather more useful.
+
+* Major changes in 0.2.3:
+
+  1) A dchroot compatibility mode has been implemented.  This behaves
+     in the same manner as the dchroot program, and is useful for
+     backward compatibility with dchroot, as well as migrating from
+     dchroot.
+
+  2) Access to the source device of an "lvm-snapshot" type chroot is
+     simplified.  For a chroot named "snap", a "block-device" type
+     chroot named "snap-source" is created for easy access to the
+     source device.
+
+  3) The output of "--info" now includes a "Session Managed" line,
+     which is true if full session management is available, or false
+     otherwise.
+
+* Major changes in 0.2.2:
+
+  1) Session metadata is now correctly saved and restored.
+
+  2) New option "--config" to dump chroot configuration, in the same
+     manner as "--info".  This is useful to test if the configuration
+     you put in schroot.conf is what schroot is actually parsing.
+
+  3) Session-managed chroot types ("file" and "lvm-snapshot") now run
+     setup and session scripts by default.  It was previously disabled
+     for all chroot types for safety reasons.  It's considered safe
+     for these types due to their ephemeral nature.
+
+* Major changes in 0.2.1:
+
+  1) Creating a session now returns a zero exit status on success.
+
+* Major changes in 0.2.0:
+
+  1) A new chroot type, "file", has been added, to allow chroots to be
+     created by unpacking a file archive, such as a tar or zip file.
+
+  2) The source has been rewritten in C++, and documented with
+     Doxygen.
+
+  3) A testsuite has been added to unit test as much functionality as
+     is reasonably possible.
+
+* Major changes in 0.1.7:
+
+  1) The chroots now implement locking to restrict access to chroots
+     which are already in use.
+
+  2) The "current-users" and "max-users" configuration options have
+     been removed.  These have been obsoleted by chroot locking.
+
+  3) The command-line options "--all-chroots" and "--all-sessions"
+     have been added, which have similar behaviour to "--all", but
+     selects all chroots and all active sessions, respectively.
+
+  4) Session creation, use and removal is now available for LVM
+     snapshot chroots, using the options documented in schroot(1).
+
+  5) The session commands also work with non-session-based chroot
+     types (plain and block-device), but are equivalent to using the
+     chroot normally.
+
+  6) An init script is used to recover (restore) session chroots at
+     system startup.
+
+  7) If no chroot is specified, schroot will fall back to using the
+     "default" chroot.  Adding a "default" alias to an existing chroot
+     will make this chroot the default.
+
+* Major changes in 0.1.6:
+
+  1) Setup scripts may be run on startup and shutdown and before and
+     after a command in order to perform setup tasks such as
+     configuring the chroot and mounting filesystems.  These are
+     stored in /etc/schroot/setup.d and /etc/schroot/run.d, and run
+     using run-parts(8).  New scripts may easily be added by the
+     system administrator.  See schroot-setup(5).
+
+  2) Different types of chroots are now supported.  The current types
+     are "plain" (the default, which is the type supported by previous
+     releases), "block-device" (a block device mounted on the fly) and
+     "lvm-snapshot" (an LVM snapshot of an LV made on the fly).
+
+* Major changes in 0.1.5:
+
+  1) The authentication system has been extended to remove the
+     dependency upon libpam_misc.  There are no user-visible changes.
+
+  2) The root user (uid 0) no longer has special privileges during
+     authentication.  If the root user should have special privileges
+     (such as not requiring authentication to change to any other
+     user), do the following:
+
+     - uncomment the pam_rootok.so line in pam.d/schroot.  This will
+       disable the requirement for root authentication.
+     - add root to groups (root_groups membership is redundant), so
+       that root is allowed access.
+
+  3) The configuration file, /etc/schroot.conf has been moved to
+     /etc/schroot/schroot.conf.  This should be moved automatically
+     when upgrading the Debian package.
+
+  4) A new directory, /etc/schroot/setup.d has been added.  This
+     contains scripts to perform setup and cleanup tasks in the
+     chroot, which are run with run-parts(8).  This provides an
+     easy was to configure and customise chroots.
+
+* Major changes in 0.1.4:
+
+  1) A new chroot configuration option, "priority", has been added.
+     This is intended for use with sbuild, to indicate whether the
+     distribution in a chroot is older than the distribution in
+     another chroot.
+
+  2) The printed messages displaying the command or shell being run
+     now correctly inform the user if the shell is a login shell or
+     not.
+
+* Major changes in 0.1.3:
+
+  1) HOME, LOGNAME and USER are set in the environment if the old
+     environment is not being preserved.
+
+  2) schroot now aborts earlier if no chroots are defined in
+     schroot.conf, rather than failing with a confusing failed
+     assertion error.
+
+  3) An option parsing bug which could sometimes cause a crash has
+     been fixed.
+
+* Major changes in 0.1.2:
+
+  1) Support for gettext has been added, to allow localisation into
+     any language.
+
+  2) If a command is specified, it will be searched for in $PATH.
+     Previously, an absolute path was always required.
+
+* Major changes in 0.1.1:
+
+  1) Add a large number of pointer checks.
+
+* Major changes in 0.1.0:
+
+  1) Initial release.
+
+  2) Debian packaging created.

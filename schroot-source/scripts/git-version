@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# date needs to use C for date (LC_TIME) formatting, so ensure it's
+# not overridden.
+export LANGUAGE=C
+export LANG=C
+export LC_TIME=C
+export LC_ALL=C
+
+PACKAGE="$(sed -ne '/^Welcome to /{s/Welcome to[[:space:]][[:space:]]*\([[:alnum:]][[:alnum:]]*\)[[:space:]][[:space:]]*\([[:alnum:]][[:alnum:].-]*\)\..*/\1/p;q}' < NEWS)"
+VERSION="$(sed -ne '/^Welcome to /{s/Welcome to[[:space:]][[:space:]]*\([[:alnum:]][[:alnum:]]*\)[[:space:]][[:space:]]*\([[:alnum:]][[:alnum:].-]*\)\..*/\2/p;q}' < NEWS)"
+
+TAG="release/${PACKAGE}-${VERSION}"
+COMMIT="$(git rev-parse "$TAG^{}" 2>/dev/null)" || COMMIT=""
+
+if [ -n "$COMMIT" ]; then
+    COMMIT_DATE="$(git log -1 "$COMMIT" --pretty="format:%ai")"
+
+    RELEASE_DATE="$(date --date="$COMMIT_DATE" '+%d %b %Y')"
+    RELEASE_BY="$(git show "$TAG" | sed -ne '/^Tagger:/{s/Tagger:[[:space:]][[:space:]]*//p;q}')"
+else
+    RELEASE_DATE="$(date '+%d %b %Y')"
+    RELEASE_BY="Unreleased"
+fi
+
+echo "Package: $PACKAGE"
+echo "Version: $VERSION"
+echo "Release-Date: $RELEASE_DATE"
+echo "Released-By: $RELEASE_BY"
+
+if [ -n "$COMMIT" ]; then
+    echo "Git-Tag: $TAG"
+fi

@@ -1,0 +1,14 @@
+dev             /dev            devfs   rw,bind         0       0
+dev             /dev/fd         fdescfs rw,bind         0       0
+/home           /home           nullfs  rw              0       0
+/tmp            /tmp            nullfs  rw              0       0
+
+# For PulseAudio and other desktop-related things
+/var/lib/dbus    /var/lib/dbus  none    rw,bind         0       0
+
+# It may be desirable to have access to /run, especially if you wish
+# to run additional services in the chroot.  However, note that this
+# may potentially cause undesirable behaviour on upgrades, such as
+# killing services on the host.
+#/run           /run            nullfs  rw              0       0
+#/run/lock      /run/lock       nullfs  rw              0       0

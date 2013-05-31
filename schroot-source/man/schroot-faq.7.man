@@ -1,0 +1,267 @@
+.\" Copyright © 2013  Roger Leigh <rleigh@debian.org>
+.\"
+.\" schroot is free software: you can redistribute it and/or modify it
+.\" under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" schroot is distributed in the hope that it will be useful, but
+.\" WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+.\" General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see
+.\" <http://www.gnu.org/licenses/>.
+.\"
+.so config.man
+.TH SCHROOT-FAQ 7 "\*[RELEASE_DATE]" "Version \*[VERSION]" "Debian sbuild"
+.SH NAME
+schroot \- frequently asked questions
+.SH DESCRIPTION
+This manual page covers various frequently asked questions about configuration
+and usage of schroot.
+.SH CONFIGURATION
+.SS Why is schroot overwriting configuration files in the chroot?
+By default, schroot copies over the system NSS databases (\[oq]passwd\[cq],
+\[oq]shadow\[cq], \[oq]group\[cq], \[oq]gshadow\[cq], \[oq]services\[cq],
+\[oq]protocols\[cq], \[oq]networks\[cq], and \[oq]hosts\[cq], etc.) into the
+chroot.  The reason for this is that the chroot environment is not a completely
+separate system, and it copying them over keeps them synchronised.  However,
+this is not always desirable, particularly if installing a package in the
+chroot creates system users and groups which are not present on the host, since
+these will disappear next time the databases are copied over.
+.PP
+The suggested workaround here is to disable the copying.  This may be achieved
+by setting the \f[CI]setup.nssdatabases\fP key to be empty in
+\fIschroot.conf\fP.  In prior schroot releases, this was done by commenting out
+the NSSDATABASES file for the chroot
+(\fI\*[SCHROOT_SYSCONF_DIR]/default/config\fP by default).  The database list
+may also be customised by editing the file containing the database list
+(\fI\*[SCHROOT_SYSCONF_DIR]/default/nssdatabases\fP by default).
+.PP
+In the future, we will be working on a better scheme for keeping the host and
+chroot databases in sync which can merge entries rather than overwriting the
+entire database, which would preserve chroot-specific changes.
+.SS Should I use the plain or directory chroot type?
+These two chroot types are basically equivalent, since they are both just
+directories in the filesystem.  plain is very simple and does not perform any
+setup tasks; the only reason you would
+want to use it is if you're upgrading from a program such as
+.BR dchroot(1)
+or
+.BR chroot(8)
+which don't do anything other than running a command or shell in a directory.
+On the other hand, directory chroots do run setup scripts, which can mount
+additional filesystems and do other setup tasks.
+.SH ADVANCED CONFIGURATION
+.SS What are snapshots and unions?
+Some chroot types support \fIcloning\fP.  This means when you start a session,
+you get a \fIcopy\fP of the chroot which lasts just for the lifetime of the
+session.  This is useful when you want a temporary clean copy of a system for a
+single task, which is then automatically deleted when you're done with it.  For
+example, the Debian package build d\[ae]mons run
+.BR sbuild (1)
+to build Debian packages, and this program uses schroot to create a clean build
+environment for each package.  Without snapshotting, the chroot would need to
+be reset to its initial state at the end of each build to make it ready for the
+next one, and any debris left over from package removals or earlier builds
+could interfere with the next build.
+.PP
+The most commonly-used snapshotting method is to use LVM snapshots (chroot type
+\[oq]lvm\-snapshot\[cq]).  In this case the chroot must exist on an LVM logical
+volume (LV); snapshots of an LV may then be made with
+.BR lvcreate (8)
+during chroot session setup.  However, these use up a lot of disk space.  A
+newer method is to use Btrfs snapshots which use up much less disk space
+(chroot type \[oq]btrfs\-snapshot\[cq]), and may be more reliable than LVM
+snapshots.  Btrfs is however still experimental, but it is hoped that it will
+become the recommended method as it matures.
+.PP
+Unions are an alternative to snapshots.  In this situation, instead of creating
+a copy of the chroot filesystem, we overlay a read-write temporary filesystem
+on top of the chroot filesystem so that any modifications are stored in the
+overlay, leaving the original chroot filesystem untouched.  The Linux kernel
+has yet to integrate support for union filesystems such as aufs and unionfs, so
+LVM snapshots are still the recommended method at present.
+.SH USAGE
+.SS Can I run a d\[ae]mons in a chroot?
+A common problem is trying to run a d\[ae]mon in a chroot, and finding that
+this doesn't work.  Typically, the d\[ae]mon is killed shortly after it starts
+up.
+.PP
+When schroot runs, it begins a session, runs the specified command or shell,
+waits for the command or shell to exit, and then it ends the session.  For a
+normal command or shell, this works just fine.  However, d\[ae]mons normally
+start up by running in the background and detaching from the controlling
+terminal.  They do this by forking twice and letting the parent processes
+exit.  Unfortunately, this means schroot detects that the program exited (the
+d\[ae]mon is a orphaned grandchild of this process) and it then ends the
+session.  Part of ending the session is killing all processes running inside
+the chroot, which means the d\[ae]mon is killed as the session ends.
+.PP
+In consequence, it's not possible to run a d\[ae]mon \fIdirectly\fP with
+schroot.  You can however do it if you create a session with
+\fI\-\-begin\-session\fP and then run the d\[ae]mon with
+\fI\-\-run\-session\fP.  It's your responsibility to end the session with
+\fI\-\-end\-session\fP when the daemon has terminated or you no longer need it.
+.SS How do I manually cleaning up a broken session?
+Occasionally, it may be necessary to manually clean up sessions.  If something
+changes on your system which causes the setup scripts to fail when ending a
+session, for example removal of a needed file or directory, it may not be
+possible for schroot to clean everything up automatically.  For each of the
+session directories listed in the \[lq]\fISession directories\fP\[rq] section
+in
+.BR schroot (1),
+any files with the name of the session ID need deleting, and any directories
+with the name of the session ID need umounting (if there are any filesystems
+mounted under it), and then also removing.
+.PP
+For example, to remove a session named
+\fImy-session\fP by hand:
+.IP \[bu]
+Remove the session configuration file
+.EX
+%\ \f[CB]rm\ \*[SCHROOT_SESSION_DIR]/my\-session\fP\[CR]
+.EE
+.IP \[bu]
+Check for mounted filesystems
+.EX
+%\ \f[CB]\*[SCHROOT_LIBEXEC_DIR]/schroot\-listmounts\ \-m\ \\
+  \*[SCHROOT_MOUNT_DIR]/my\-session\fP\[CR]
+.EE
+.IP \[bu]
+Unmount any mounted filesystems
+.IP \[bu]
+Remove \fI\*[SCHROOT_MOUNT_DIR]/my\-session\fP
+.IP \[bu]
+Repeat for the other directories such as \fI\*[SCHROOT_UNDERLAY_DIR]\fP,
+\fI\*[SCHROOT_OVERLAY_DIR]\fP and \fI\*[SCHROOT_FILE_UNPACK_DIR]\fP
+.PP
+\fBNOTE:\fP Do not remove any directories without checking if there are any
+filesystems mounted below them, since filesystems such as \fI/home\fP could
+still be bind mounted.  Doing so could cause irretrievable data loss!
+.SH ADVANCED USAGE
+.SS How do I use sessions?
+In normal use, running a command might look like this:
+.EX
+%\ \f[CB]schroot\ \-c squeeze \-\- command\fP\[CR]
+.EE
+.PP
+which would run the command \fIcommand\fP in the \fIsqueeze\fP chroot.  While
+it's not apparent that a session is being used here, schroot is actually doing
+the following steps:
+.IP \[bu]
+Creating a session using the \fIsqueeze\fP chroot.  This will be automatically
+given a unique name, such as
+\fIsqueeze\-57a69547\-e014\-4f5d\-a98b\-f4f35a005307\fP, though you don't
+usually need to know about this
+.IP \[bu]
+Setup scripts are run to create the session chroot and configure it for you
+.IP \[bu]
+The command \fIcommand\fP is run inside the session chroot
+.IP \[bu]
+Setup scripts are run to clean up the session chroot
+.IP \[bu]
+The session is deleted
+.PP
+Now, if you wanted to run more than one command, you could run a shell and run
+them interactively, or you could put them into shell script and run that
+instead.  But you might want to do something in between, such as running
+arbitrary commands from a program or script where you don't know which commands
+to run in advance.  You might also want to preseve the chroot state in between
+commands, where the normal automatic session creation would reset the state in
+between each command.  This is what sessions are for: once created, the session
+is persistent and won't be automatically removed.  With a session, you can run
+as many commands as you like, but you need to create and delete the session by
+hand since schroot can't know by itself when you're done with it unlike in the
+single command case above.  This is quite easy:
+.EX
+% \f[CB]schroot \-\-begin\-session \-c squeeze\fP\[CR]
+squeeze\-57a69547\-e014\-4f5d\-a98b\-f4f35a005307
+.EE
+.PP
+This created a new session based upon the \fIsqueeze\fP chroot.  The unique
+name for the session, the session ID, was printed to standard output, so we
+could also save it as a shell variable at the same time like so:
+.EX
+% \f[CB]SESSION=$(schroot \-\-begin\-session \-c squeeze)\fP\[CR]
+% \f[CB]echo $SESSION\fP\[CR]
+squeeze\-57a69547\-e014\-4f5d\-a98b\-f4f35a005307
+.EE
+.PP
+Now we have created the session and got the session ID, we can run commands in
+it using the session ID:
+.EX
+% \f[CB]schroot \-\-run\-session \-c squeeze\-57a69547\-e014\-4f5d\-a98b\-f4f35a005307 \\
+  \-\- command1\fP\[CR]
+.EE
+.PP
+or
+.EX
+% \f[CB]schroot \-\-run\-session \-c "$SESSION" \-\- command1\fP\[CR]
+.EE
+.PP
+and then as many more commands as we like
+.EX
+% \f[CB]schroot \-\-run\-session \-c "$SESSION" \-\- command2\fP\[CR]
+% \f[CB]schroot \-\-run\-session \-c "$SESSION" \-\- command3\fP\[CR]
+% \f[CB]schroot \-\-run\-session \-c "$SESSION" \-\- command4\fP\[CR]
+.EE
+.PP
+etc.
+.PP
+When we are done with the session, we can remove it with \fI\-\-end\-session\fP:
+.EX
+% \f[CB]schroot \-\-end\-session \-c squeeze\-57a69547\-e014\-4f5d\-a98b\-f4f35a005307\fP\[CR]
+.EE
+.PP
+or
+.EX
+% \f[CB]schroot \-\-end\-session \-c "$SESSION"\fP\[CR]
+.EE
+.PP
+Since the automatically generated session names can be long and unwieldy, the
+\fI\-\-session\-name\fP option allows you to provide you own name:
+.PP
+.EX
+% \f[CB]schroot \-\-begin\-session \-c squeeze \-\-session\-name my\-name\fP\[CR]
+my\-name
+.EE
+.SH CONTRIBUTING
+.SS Getting help and getting involved
+The mailing list \f[CR]<buildd-tools-devel@lists.alioth.debian.org>\fP is used
+for both user support and development discussion.  The list may be subscribed
+to from the project website at
+\f[CR]https://alioth.debian.org/projects/buildd-tools/\fP or the Mailman list
+interface at
+\f[CR]http://lists.alioth.debian.org/mailman/listinfo/buildd-tools-devel\fP.
+.SS Reporting bugs
+On Debian systems, bugs may be reported using the
+.BR reportbug (1)
+tool, or alternatively by mailing \f[CR]<submit@bugs.debian.org>\fP (see
+\f[CR]http://bugs.debian.org\fP for details on how to do that).
+.SS Getting the latest sources
+schroot is maintained in the git version control system.  You can get the
+latest sources from \f[CR]git://git.debian.org/git/buildd-tools/schroot\fP.
+.EX
+% \f[CB]git clone git://git.debian.org/git/buildd-tools/schroot\fP\[CR]
+.EE
+.LP
+The master branch containes the current development release.  Stable releases
+are found on branches, for example the 1.4 series of releases are on
+the schroot-1.4 branch.
+.so authors.man
+.so copyright.man
+.SH SEE ALSO
+.BR dchroot (1),
+.BR schroot (1),
+.BR sbuild (1),
+.BR schroot\-setup (5),
+.BR schroot.conf (5).
+.\"#
+.\"# The following sets edit modes for GNU EMACS
+.\"# Local Variables:
+.\"# mode:nroff
+.\"# fill-column:79
+.\"# End:

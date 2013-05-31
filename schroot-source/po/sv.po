@@ -1,0 +1,1613 @@
+# Swedish translation of schroot.
+# Copyright © 2006-2007 Roger Leigh <rleigh@debian.org>
+# This file is distributed under the same license as the schroot package.
+# Daniel Nylander <po@danielnylander.se>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: schroot\n"
+"Report-Msgid-Bugs-To: Roger Leigh <rleigh@debian.org>\n"
+"POT-Creation-Date: 2013-05-05 00:58+0100\n"
+"PO-Revision-Date: 2010-01-16 15:44+0000\n"
+"Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
+"Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. TRANSLATORS: '...' is an ellipsis e.g. U+2026, and '-'
+#. is an em-dash.
+#, fuzzy
+msgid "[OPTION…] chroot [COMMAND] — run command or shell in a chroot"
+msgstr " [FLAGGA...] chroot [KOMMANDO] - kör kommando eller skal i en chroot"
+
+msgid "Print paths to available chroots"
+msgstr "Skriv ut sökvägar till tillgängliga chrootmiljöer"
+
+msgid "Select all chroots"
+msgstr "Välj alla chroot"
+
+msgid "Directory to use"
+msgstr "Katalog att använda"
+
+msgid "Only one command may be specified"
+msgstr "Endast ett kommando får anges"
+
+msgid "Command must have an absolute path"
+msgstr "Kommandot måste ha en absolut sökväg"
+
+msgid "No chroot specified"
+msgstr "Ingen chroot angiven"
+
+#. TRANSLATORS: %1% = chroot name
+#. TRANSLATORS: %2% = command
+#, fuzzy, boost-format
+msgid "[%1% chroot] Running command: “%2%”"
+msgstr "[%1% chroot] Kör kommando: \"%2%\""
+
+#. TRANSLATORS: '...' is an ellipsis e.g. U+2026, and '-'
+#. is an em-dash.
+#, fuzzy
+msgid "[OPTION…] [COMMAND] — run command or shell in a chroot"
+msgstr " [FLAGGA...] [KOMMANDO] - kör kommando eller skal i en chroot"
+
+msgid "Print path to selected chroot"
+msgstr "Skriv ut sökvägen till valda chroot"
+
+msgid "Preserve user environment"
+msgstr "Behåll användarens miljövariabler"
+
+msgid "--quiet and --verbose may not be used at the same time"
+msgstr "--quiet och --verbose får inte användas samtidigt"
+
+msgid "Using verbose output"
+msgstr "Använder informativ utskrift"
+
+msgid "--chroot and --all may not be used at the same time"
+msgstr "--chroot och --all kan inte användas samtidigt"
+
+msgid "Using --chroots only"
+msgstr "Använder endast --chroots"
+
+msgid "Print location of selected chroots"
+msgstr "Skriv ut platsen för valda chroot"
+
+msgid "Select all chroots and active sessions"
+msgstr "Välj alla chroot och aktiva sessioner"
+
+msgid "Select all active sessions"
+msgstr "Välj alla aktiva sessioner"
+
+#, fuzzy
+msgid "Select all source chroots"
+msgstr "Välj alla chroot"
+
+msgid "Do not include aliases"
+msgstr ""
+
+msgid "Shell to use as login shell"
+msgstr ""
+
+msgid "Username (default current user)"
+msgstr "Användarnamn (förval är nuvarande användare)"
+
+#, fuzzy
+msgid "Set option"
+msgstr "Allmänna flaggor"
+
+msgid "Begin, run and end a session automatically (default)"
+msgstr ""
+
+msgid "Begin a session; returns a session ID"
+msgstr "Börja en session; returnerar ett sessions-id"
+
+msgid "Recover an existing session"
+msgstr "Återhämta en existerande session"
+
+msgid "Run an existing session"
+msgstr "Kör en existerande session"
+
+msgid "End an existing session"
+msgstr "Avsluta en existerande session"
+
+msgid "Session name (defaults to an automatically generated name)"
+msgstr ""
+
+msgid "Force operation, even if it fails"
+msgstr "Tvinga operation, även om den misslyckas"
+
+#. TRANSLATORS: %1% = program name
+#. TRANSLATORS: %2% = program version
+#. TRANSLATORS: %3% = release date
+#, fuzzy, boost-format
+msgid "%1% (Debian sbuild) %2% (%3%)"
+msgstr "%1% (Debian sbuild) %2% (%3%)\n"
+
+#. TRANSLATORS: %1% = copyright year (start)
+#. TRANSLATORS: %2% = copyright year (end)
+#, fuzzy, boost-format
+msgid "Copyright © %1%–%2% Roger Leigh"
+msgstr "Copyright © 2004–2011 Roger Leigh"
+
+msgid "Written by Roger Leigh"
+msgstr "Skrivet av Roger Leigh"
+
+msgid ""
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+msgstr ""
+"Detta är fri programvara; se källkoden för kopieringsvillkor. Det finns "
+"INGEN GARANTI;\n"
+"inte ens för SÄLJBARHET eller LÄMPLIGHET FÖR NÅGOT SPECIELLT ÄNDAMÅL.\n"
+
+msgid "Configured features:"
+msgstr ""
+
+msgid "Usage:"
+msgstr "Användning:"
+
+#. TRANSLATORS: %1% = program name
+#, fuzzy, boost-format
+msgid "Run “%1% --help” to list usage example and all available options"
+msgstr ""
+"Kör \"%1% --help\" för att lista exempel på användning och alla tillgängliga "
+"flaggor"
+
+#, boost-format
+msgid "%1%: invalid action"
+msgstr ""
+
+msgid "Only one action may be specified"
+msgstr "Endast en åtgärd får anges"
+
+#, fuzzy
+msgid "Actions"
+msgstr "Plats"
+
+msgid "General options"
+msgstr "Allmänna flaggor"
+
+msgid "Hidden options"
+msgstr "Dolda flaggor"
+
+msgid "Show help options"
+msgstr "Visa hjälpflaggor"
+
+msgid "Print version information"
+msgstr "Skriv ut versionsinformation"
+
+msgid "Show less output"
+msgstr "Visa mindre utdata"
+
+msgid "Show more output"
+msgstr "Visa mer utdata"
+
+msgid "Enable debugging messages"
+msgstr "Aktivera felsökningsmeddelanden"
+
+msgid "Invalid debug level"
+msgstr "Ogiltig felsökningsnivå"
+
+msgid "dchroot session restriction"
+msgstr "sessionsbegränsning för dchroot"
+
+msgid "Failed to get hostname"
+msgstr "Misslyckades med att få värdnamn"
+
+#. TRANSLATORS: %1% = user name or user ID
+#, fuzzy, boost-format
+msgid "User ‘%1%’ not found"
+msgstr "Användaren \"%1%\" hittades inte"
+
+#. TRANSLATORS: %1% = group name or group ID
+#. TRANSLATORS: %1% = group name
+#, fuzzy, boost-format
+msgid "Group ‘%1%’ not found"
+msgstr "Gruppen \"%1%\" hittades inte"
+
+msgid "Authentication failed"
+msgstr "Autentisering misslyckades"
+
+msgid "Access not authorised"
+msgstr "Åtkomst inte auktoriserad"
+
+msgid "PAM is already initialised"
+msgstr "PAM är redan initierad"
+
+msgid "PAM error"
+msgstr "PAM-fel"
+
+msgid "PAM failed to shut down cleanly"
+msgstr ""
+
+#. TRANSLATORS: %1% = program name (PAM service name)
+#, boost-format
+msgid "You do not have permission to access the %1% service."
+msgstr "Du har inte behörighet att komma åt %1%-tjänsten."
+
+msgid "This failure will be reported."
+msgstr "Det här felet kommer att rapporteras."
+
+msgid "No controlling terminal"
+msgstr ""
+
+msgid "Timed out"
+msgstr "Tidsgräns överstigen"
+
+#. TRANSLATORS: Please use an ellipsis e.g. U+2026
+#, fuzzy
+msgid "Time is running out…"
+msgstr "Tiden rinner iväg..."
+
+msgid "Failed to get terminal settings"
+msgstr "Misslyckades med att få tag på terminalinställningar"
+
+#. TRANSLATORS: %1% = integer
+#, fuzzy, boost-format
+msgid "Unsupported conversation type ‘%1%’"
+msgstr "Konversationstypen \"%1%\" stöds inte"
+
+msgid "Password: "
+msgstr ""
+
+msgid "Password:"
+msgstr ""
+
+#, boost-format
+msgid "[schroot] password for %1%: "
+msgstr ""
+
+msgid "An unknown exception occurred"
+msgstr "Ett okänt undantag inträffade"
+
+#, fuzzy
+msgid "Pluggable Authentication Modules"
+msgstr "Autentisering misslyckades"
+
+msgid "Set RUSER"
+msgstr "Ställ in RUSER"
+
+msgid "Set RHOST"
+msgstr "Ställ in RHOST"
+
+msgid "Set TTY"
+msgstr "Ställ in TTY"
+
+msgid "Set USER"
+msgstr "Ställ in USER"
+
+msgid "Chroot creation failed"
+msgstr "Skapandet av chroot misslyckades"
+
+msgid "Device name not set"
+msgstr "Enhetsnamnet är inte inställt"
+
+#. TRANSLATORS: %1% = chroot type name
+#, fuzzy, boost-format
+msgid "Unknown chroot type ‘%1%’"
+msgstr "Okänd chroot-typ \"%1%\""
+
+msgid "Device must have an absolute path"
+msgstr "Enheten måste ha en absolut sökväg"
+
+msgid "Failed to lock device"
+msgstr "Misslyckades med att låsa enheten"
+
+msgid "File is not a block device"
+msgstr "Filen är inte en blockenhet"
+
+msgid "Failed to unlock device"
+msgstr "Misslyckades med att låsa upp enheten"
+
+#, fuzzy
+msgid "Directory must have an absolute path"
+msgstr "Enheten måste ha en absolut sökväg"
+
+#, boost-format
+msgid "Attempt to use facet ‘%1%’ which is not present"
+msgstr ""
+
+#, boost-format
+msgid "Attempt to add object ‘%1%’ which is not a facet"
+msgstr ""
+
+#, boost-format
+msgid "Attempt to add facet ‘%1%’ which is already in use"
+msgstr ""
+
+msgid "File must have an absolute path"
+msgstr "Filen måste ha en absolut sökväg"
+
+msgid "Failed to acquire file lock"
+msgstr "Misslyckades med att skaffa enhetslås"
+
+msgid "File is not a regular file"
+msgstr "Filen är inte en vanlig fil"
+
+msgid "File is not owned by user root"
+msgstr "Filen ägs inte av användaren root"
+
+msgid "File has write permissions for others"
+msgstr "Filen har skrivrättigheter för andra"
+
+msgid "Failed to discard file lock"
+msgstr "Misslyckades med att kasta enhetslåset"
+
+msgid "Location must have an absolute path"
+msgstr "Platsen måste ha en absolut sökväg"
+
+#, fuzzy
+msgid "Invalid name"
+msgstr "ogiltig grupp"
+
+#, boost-format
+msgid "Could not set profile name from script configuration path ‘%1%’"
+msgstr ""
+
+#. TRANSLATORS: unlink refers to the C function which removes a file
+msgid "Failed to unlink session file"
+msgstr "Misslyckades med att ta bort sessionsfilen"
+
+msgid "Failed to write session file"
+msgstr "Misslyckades med att skriva till sessionsfilen"
+
+msgid "Message verbosity is invalid"
+msgstr ""
+
+#, boost-format
+msgid "Namespace separator ‘%1%’ may not be used in a chroot name"
+msgstr ""
+
+msgid "Naming restrictions are documented in schroot.conf(5)"
+msgstr ""
+
+#, boost-format
+msgid "Namespace separator ‘%1%’ may not be used in an alias name"
+msgstr ""
+
+msgid "Name"
+msgstr "Namn"
+
+msgid "Description"
+msgstr "Beskrivning"
+
+msgid "Type"
+msgstr "Typ"
+
+msgid "Message Verbosity"
+msgstr ""
+
+msgid "Users"
+msgstr "Användare"
+
+msgid "Groups"
+msgstr "Grupper"
+
+msgid "Root Users"
+msgstr "Rootanvändare"
+
+msgid "Root Groups"
+msgstr "Rotgrupper"
+
+msgid "Aliases"
+msgstr "Alias"
+
+#, fuzzy
+msgid "Preserve Environment"
+msgstr "Behåll användarens miljövariabler"
+
+msgid "Default Shell"
+msgstr ""
+
+msgid "Environment Filter"
+msgstr ""
+
+msgid "Run Setup Scripts"
+msgstr "Kör konfigurationsskript"
+
+#, fuzzy
+msgid "Configuration Profile"
+msgstr "Använder konfigurationsfilen för %1%: \"%2%\""
+
+msgid "Script Configuration"
+msgstr ""
+
+msgid "Session Managed"
+msgstr "Session hanterad"
+
+#, fuzzy
+msgid "Session Cloned"
+msgstr "Session hanterad"
+
+#, fuzzy
+msgid "Session Purged"
+msgstr "Session hanterad"
+
+msgid "Command Prefix"
+msgstr "Kommandoprefix"
+
+msgid "Mount Location"
+msgstr "Montera plats"
+
+msgid "Path"
+msgstr "Sökväg"
+
+msgid "Chroot"
+msgstr "Chroot"
+
+msgid "Session"
+msgstr "Session"
+
+#, fuzzy
+msgid "Source"
+msgstr "Källanvändare"
+
+#. TRANSLATORS: %1% = chroot alias name
+#. TRANSLATORS: %4% = chroot name
+#, fuzzy, boost-format
+msgid "Alias ‘%1%’ already associated with ‘%4%’ chroot"
+msgstr "Aliaset \"%1%\" är redan associerat med chrootmiljön \"%4%\""
+
+#. TRANSLATORS: %1% = chroot name
+#, boost-format
+msgid "%1%: Chroot not found"
+msgstr "%1%: Chroot hittades inte"
+
+#. TRANSLATORS: %1% = comma-separated list of chroot names
+#, boost-format
+msgid "%1%: Chroots not found"
+msgstr "%1%: Chrootmiljöer hittades inte"
+
+#. TRANSLATORS: %1% = chroot name
+#, fuzzy, boost-format
+msgid "A chroot or alias ‘%1%’ already exists with this name"
+msgstr "En chroot eller aliaset \"%1%\" finns redan med det här namnet"
+
+msgid "Failed to open file"
+msgstr "Misslyckades med att öppna filen"
+
+msgid "No such namespace"
+msgstr ""
+
+msgid "Duplicate names are not allowed"
+msgstr "Dubbleta namn tillåts inte"
+
+msgid "Available chroots: "
+msgstr "Tillgängliga chroot: "
+
+msgid "Device"
+msgstr "Enhet"
+
+msgid "Support for ‘block-device’ chroots"
+msgstr ""
+
+msgid "Support for ‘btrfs-snapshot’ chroots"
+msgstr ""
+
+msgid "Btrfs Source Subvolume"
+msgstr ""
+
+#, fuzzy
+msgid "Btrfs Snapshot Directory"
+msgstr "Enhet för LVM-snapshot"
+
+msgid "Btrfs Snapshot Name"
+msgstr ""
+
+msgid "Support for ‘custom’ chroots"
+msgstr ""
+
+#, fuzzy
+msgid "Directory"
+msgstr "Katalog att använda"
+
+msgid "Support for ‘directory’ chroots"
+msgstr ""
+
+msgid "Support for ‘file’ chroots"
+msgstr ""
+
+msgid "File"
+msgstr "Fil"
+
+msgid "File Repack"
+msgstr "Filompackning"
+
+msgid "Location"
+msgstr "Plats"
+
+msgid "Support for filesystem unioning"
+msgstr ""
+
+#. TRANSLATORS: %1% = chroot fs type
+#, fuzzy, boost-format
+msgid "Unknown filesystem union type ‘%1%’"
+msgstr "Okänd chroot-typ \"%1%\""
+
+#, fuzzy
+msgid "Union overlay must have an absolute path"
+msgstr "Filen måste ha en absolut sökväg"
+
+#, fuzzy
+msgid "Union underlay must have an absolute path"
+msgstr "Filen måste ha en absolut sökväg"
+
+#, fuzzy
+msgid "Filesystem Union Type"
+msgstr "Session hanterad"
+
+#, fuzzy
+msgid "Filesystem Union Mount Options"
+msgstr "Session hanterad"
+
+#, fuzzy
+msgid "Filesystem Union Overlay Directory"
+msgstr "Misslyckades med att öppna katalogen"
+
+#, fuzzy
+msgid "Filesystem Union Underlay Directory"
+msgstr "Misslyckades med att öppna katalogen"
+
+msgid "Support for ‘loopback’ chroots"
+msgstr ""
+
+msgid "Support for ‘lvm-snapshot’ chroots"
+msgstr ""
+
+msgid "LVM Snapshot Device"
+msgstr "Enhet för LVM-snapshot"
+
+# Finns det ett svenskt ord för snapshot?
+msgid "LVM Snapshot Options"
+msgstr "Flaggor för LVM-snapshot"
+
+msgid "Support for filesystem mounting"
+msgstr ""
+
+msgid "Mount Device"
+msgstr "Montera enhet"
+
+msgid "Mount Options"
+msgstr "Monteringsflaggor"
+
+msgid "Linux kernel Application Binary Interface switching"
+msgstr ""
+
+#. TRANSLATORS: "Personality" is the Linux kernel personality
+#. (process execution domain).  See schroot.conf(5).
+msgid "Personality"
+msgstr "Personlighet"
+
+msgid "Support for ‘plain’ chroots"
+msgstr ""
+
+msgid "Support for session chroot cloning"
+msgstr ""
+
+#, fuzzy
+msgid "(session chroot)"
+msgstr "(käll-chroot)"
+
+#, fuzzy
+msgid "Support for session chroots"
+msgstr "(käll-chroot)"
+
+msgid "Original Chroot Name"
+msgstr ""
+
+#, fuzzy
+msgid "Selected Chroot Name"
+msgstr "Välj alla chroot"
+
+#, fuzzy
+msgid "Session ID"
+msgstr "Session"
+
+msgid "Support for source chroot cloning"
+msgstr ""
+
+msgid "Source Users"
+msgstr "Källanvändare"
+
+msgid "Source Groups"
+msgstr "Källgrupper"
+
+msgid "Source Root Users"
+msgstr "Källrootanvändare"
+
+msgid "Source Root Groups"
+msgstr "Källrotgrupper"
+
+msgid "(source chroot)"
+msgstr "(käll-chroot)"
+
+#, fuzzy
+msgid "Support for source chroots"
+msgstr "Välj alla chroot"
+
+msgid "Linux dissassociation of shared execution context"
+msgstr ""
+
+#, boost-format
+msgid "Could not unshare ‘%1%’ process execution context"
+msgstr ""
+
+msgid "Unshare Networking"
+msgstr ""
+
+msgid "Unshare System V IPC"
+msgstr ""
+
+msgid "Unshare System V Semaphores"
+msgstr ""
+
+msgid "Unshare UTS namespace"
+msgstr ""
+
+msgid "User setting of custom configuration parameters"
+msgstr ""
+
+#, boost-format
+msgid "Environment variable ‘%1%’ is ambiguous"
+msgstr ""
+
+#, fuzzy, boost-format
+msgid "Configuration key ‘%1%’ is ambiguous"
+msgstr "[%1%]: Nödvändiga nyckeln \"%4%\" saknas"
+
+#, boost-format
+msgid "Configuration key ‘%1%’ is not permitted to be modified."
+msgstr ""
+
+#, boost-format
+msgid "Configuration key name ‘%1%’ is not a permitted name."
+msgstr ""
+
+#. TRANSLATORS: %1% = key name for which value parsing failed
+#. TRANSLATORS: %4% = additional details of error
+#, fuzzy, boost-format
+msgid "%1%: %4%"
+msgstr "[%1%]: %4%"
+
+#, boost-format
+msgid ""
+"Configuration keys additional to ‘%1%’ would set this setup script "
+"environment variable"
+msgstr ""
+
+msgid "User Modifiable Keys"
+msgstr ""
+
+msgid "Root Modifiable Keys"
+msgstr ""
+
+msgid "User Data"
+msgstr ""
+
+#, boost-format
+msgid ""
+"More than one configuration key would set the ‘%1%’ environment variable"
+msgstr ""
+
+msgid "The key is not present in user-modifiable-keys or root-modifiable-keys"
+msgstr ""
+
+msgid "The key is not present in user-modifiable-keys"
+msgstr ""
+
+msgid "The controlling terminal close-on-execute flag could not be set"
+msgstr ""
+
+msgid "The controlling terminal file descriptor could not be duplicated"
+msgstr ""
+
+msgid "true"
+msgstr "sant"
+
+msgid "false"
+msgstr "falskt"
+
+#. TRANSLATORS: %1% = title of section
+#. TRANSLATORS: Please format the --- as a continuous line, e.g. U+2500
+#, boost-format
+msgid "─── %1% ───"
+msgstr ""
+
+#, fuzzy, boost-format
+msgid "Can't open file ‘%1%’"
+msgstr "Kan inte öppna filen \"%1%\""
+
+#, fuzzy, boost-format
+msgid "line %1% [%2%]: Deprecated key ‘%4%’ used"
+msgstr "rad %1% [%2%]: Utfasade nyckeln \"%4%\" används"
+
+#, fuzzy, boost-format
+msgid "[%1%]: Deprecated key ‘%4%’ used"
+msgstr "[%1%]: Den utfasade nyckeln \"%4%\" används"
+
+#, fuzzy, boost-format
+msgid "line %1% [%2%]: Disallowed key ‘%4%’ used"
+msgstr "rad %1% [%2%]: Otillåtna nyckeln \"%4%\" används"
+
+#, fuzzy, boost-format
+msgid "[%1%]: Disallowed key ‘%4%’ used"
+msgstr "[%1%]: Den otillåtna nyckeln \"%4%\" används"
+
+#, fuzzy, boost-format
+msgid "line %1%: Duplicate group ‘%4%’"
+msgstr "rad %1%: Dubblett av gruppen \"%4%\""
+
+#, fuzzy, boost-format
+msgid "line %1% [%2%]: Duplicate key ‘%4%’"
+msgstr "rad %1% [%2%]: Dubblett av nyckeln \"%4%\""
+
+#, fuzzy, boost-format
+msgid "line %1%: Invalid group: “%4%”"
+msgstr "rad %1%: Ogiltig grupp: \"%4%\""
+
+#, fuzzy, boost-format
+msgid "line %1% [%2%]: Invalid key ‘%4%’ used"
+msgstr "rad %1% [%2%]: Otillåtna nyckeln \"%4%\" används"
+
+#, fuzzy, boost-format
+msgid "line %1%: Invalid line: “%4%”"
+msgstr "rad %1%: Ogiltig rad: \"%4%\""
+
+#, fuzzy, boost-format
+msgid "line %1% [%2%]: Required key ‘%4%’ is missing"
+msgstr "rad %1% [%2%]: Nödvändiga nyckeln \"%4%\" saknas"
+
+#, fuzzy, boost-format
+msgid "[%1%]: Required key ‘%4%’ is missing"
+msgstr "[%1%]: Nödvändiga nyckeln \"%4%\" saknas"
+
+#, fuzzy, boost-format
+msgid "line %1%: No group specified: “%4%”"
+msgstr "rad %1%: Ingen grupp angiven: \"%4%\""
+
+#, fuzzy, boost-format
+msgid "line %1%: No key specified: “%4%”"
+msgstr "rad %1%: Ingen nyckel angiven: \"%4%\""
+
+#, fuzzy, boost-format
+msgid "line %1% [%2%]: Obsolete key ‘%4%’ used"
+msgstr "rad %1% [%2%]: Föråldrade nyckeln \"%4%\" används"
+
+#, fuzzy, boost-format
+msgid "[%1%]: Obsolete key ‘%4%’ used"
+msgstr "[%1%]: Den föråldrade nyckeln \"%4%\" används"
+
+#, boost-format
+msgid "[%1%]: %4%"
+msgstr "[%1%]: %4%"
+
+#, boost-format
+msgid "[%1%] %2%: %4%"
+msgstr "[%1%] %2%: %4%"
+
+#, boost-format
+msgid "line %1% [%2%]: %4%"
+msgstr "rad %1% [%2%]: %4%"
+
+#, boost-format
+msgid "line %1% [%2%] %3%: %4%"
+msgstr "rad %1% [%2%] %3%: %4%"
+
+#, fuzzy, boost-format
+msgid "line %1% [%2%]: Unknown key ‘%4%’ used"
+msgstr "rad %1% [%2%]: Otillåtna nyckeln \"%4%\" används"
+
+#, fuzzy
+msgid "This option may be present in a newer version"
+msgstr "Den här flaggan kommer att tas bort i framtiden"
+
+#, fuzzy
+msgid ""
+"This option will be removed in the future; please update your configuration"
+msgstr "Den här flaggan kommer att tas bort i framtiden"
+
+msgid "This option has been removed, and no longer has any effect"
+msgstr "Den här flaggan har tagits bort och har inte längre någon effekt"
+
+msgid "Failed to set timeout handler"
+msgstr "Misslyckades med att ställa in hanterare för tidsgräns"
+
+msgid "Failed to set timeout"
+msgstr "Misslyckades med att ställa in tidsgräns"
+
+msgid "Failed to cancel timeout"
+msgstr "Misslyckades med att avbryta tidsgräns"
+
+msgid "Failed to lock file"
+msgstr "Misslyckades med att låsa filen"
+
+#, fuzzy
+msgid "Failed to unlock file"
+msgstr "Misslyckades med att låsa filen"
+
+#. TRANSLATORS: %4% = time in seconds
+#, boost-format
+msgid "Failed to lock file (timed out after %4% seconds)"
+msgstr "Misslyckades med att låsa filen (tidsgränsen nådd efter %4% sekunder)"
+
+#. TRANSLATORS: %4% = time in seconds
+#, fuzzy, boost-format
+msgid "Failed to unlock file (timed out after %4% seconds)"
+msgstr "Misslyckades med att låsa filen (tidsgränsen nådd efter %4% sekunder)"
+
+#. TRANSLATORS: %4% = time in seconds
+#. TRANSLATORS: %5% = integer process ID
+#, boost-format
+msgid ""
+"Failed to lock device (timed out after %4% seconds; lock held by PID %5%)"
+msgstr ""
+"Misslyckades med att låsa enheten (tidsgränsen nådd efter %4% sekunder; "
+"låset hålls av pid %5%)"
+
+msgid "Failed to test device lock"
+msgstr "Misslyckades med att testa enhetslås"
+
+#. TRANSLATORS: %4% = time in seconds
+#. TRANSLATORS: %5% = integer process ID
+#, boost-format
+msgid ""
+"Failed to unlock device (timed out after %4% seconds; lock held by PID %5%)"
+msgstr ""
+"Misslyckades med att låsa upp enheten (tidsgränsen nådd efter %4% sekunder; "
+"låset hålls av pid %5%)"
+
+#. TRANSLATORS: "I" is an abbreviation of "Information"
+msgid "I: "
+msgstr "I: "
+
+#. TRANSLATORS: "W" is an abbreviation of "Warning"
+msgid "W: "
+msgstr "V: "
+
+#. TRANSLATORS: "E" is an abbreviation of "Error"
+msgid "E: "
+msgstr "F: "
+
+#. TRANSLATORS: %1% = integer debug level
+#. TRANSLATORS: "D" is an abbreviation of "Debug"
+#, boost-format
+msgid "D(%1%): "
+msgstr "FS(%1%): "
+
+#. TRANSLATORS: %1% = mount file name
+#, fuzzy, boost-format
+msgid "Failed to open mount file ‘%1%’"
+msgstr "Misslyckades med att öppna \"%1%\""
+
+#. TRANSLATORS: %1% = mount file name
+#, fuzzy, boost-format
+msgid "Failed to read mount file ‘%1%’"
+msgstr "Misslyckades med att läsa katalogen \"%1%\""
+
+#. TRANSLATORS: %1% = value (arbitrary text)
+#, fuzzy, boost-format
+msgid "Could not parse value ‘%1%’"
+msgstr "Kunde inte tolka värdet \"%1%\""
+
+#. TRANSLATORS: %1% = integer personality ID
+#, fuzzy, boost-format
+msgid "Personality ‘%1%’ is unknown"
+msgstr "Personligheten \"%1%\" är okänd"
+
+#. TRANSLATORS: %1% = personality name
+#, fuzzy, boost-format
+msgid "Failed to set personality ‘%1%’"
+msgstr "Misslyckades med att ställa in personligheten \"%1%\""
+
+#. TRANSLATORS: %1% = a comma-separated list of personality names
+#, boost-format
+msgid "Valid personalities: %1%\n"
+msgstr "Giltiga personligheter: %1%\n"
+
+msgid "Failed to fork child"
+msgstr "Misslyckades med att grena barnprocess"
+
+msgid "Wait for child failed"
+msgstr "Väntan på barnprocess misslyckades"
+
+#. TRANSLATORS: %1% = command name
+#. TRANSLATORS: %1% = command
+#. TRANSLATORS: %1% = command name
+#, fuzzy, boost-format
+msgid "Failed to execute “%1%”"
+msgstr "Misslyckades med att starta \"%1%\""
+
+#, fuzzy
+msgid "Failed to create pipe"
+msgstr "Misslyckades med att läsa status på filen"
+
+#, fuzzy
+msgid "Failed to duplicate file descriptor"
+msgstr "Misslyckades med att läsa status på filen"
+
+#, fuzzy
+msgid "Failed to poll file descriptor"
+msgstr "Misslyckades med att läsa status på filen"
+
+#, fuzzy
+msgid "Failed to read file descriptor"
+msgstr "Misslyckades med att läsa status på filen"
+
+#. TRANSLATORS: %1% = command
+#, fuzzy, boost-format
+msgid "Executing ‘%1%’"
+msgstr "Kör \"%1%\""
+
+#. TRANSLATORS: %1% = directory
+#, fuzzy, boost-format
+msgid "Failed to change to directory ‘%1%’"
+msgstr "Misslyckades med att byta till katalogen \"%1%\""
+
+#. TRANSLATORS: %4% = directory
+#, fuzzy, boost-format
+msgid "Falling back to directory ‘%4%’"
+msgstr "Faller tillbaka på katalogen \"%4%\""
+
+msgid "Child dumped core"
+msgstr "Barnprocess dumpade minnet"
+
+# coredump? Bättre ord?
+msgid "Child exited abnormally (reason unknown; not a signal or core dump)"
+msgstr ""
+"Barnprocess avslutades onormalt (anledning är okänd; inte en signal eller "
+"minnesdump)"
+
+#. TRANSLATORS: %4% = signal name
+#, fuzzy, boost-format
+msgid "Child terminated by signal ‘%4%’"
+msgstr "Barnprocess avslutades av signalen \"%4%\""
+
+#. TRANSLATORS: %1% = directory
+#, fuzzy, boost-format
+msgid "Failed to change root to directory ‘%1%’"
+msgstr "Misslyckades med att byta rot till katalogen \"%1%\""
+
+#. TRANSLATORS: %1% = chroot name
+#, fuzzy, boost-format
+msgid "No chroot found matching name or alias ‘%1%’"
+msgstr "Ingen chroot hittades som matchar namnet eller aliaset \"%1%\""
+
+msgid "Failed to lock chroot"
+msgstr "Misslyckades med att låsa chroot"
+
+msgid "Chroot setup failed"
+msgstr "Konfigurationen av chroot misslyckades"
+
+#. TRANSLATORS: %1% = chroot name
+msgid "Failed to unlock chroot"
+msgstr "Misslyckades med att låsa upp chroot"
+
+#. TRANSLATORS: %1% = command
+#, fuzzy, boost-format
+msgid "Command “%1%” must have an absolute path"
+msgstr "Kommandot \"%1%\" måste ha en absolut sökväg"
+
+#. TRANSLATORS: A supplementary group is the list of additional
+#. system groups a user belongs to, in addition to their default
+#. group.
+msgid "Failed to get supplementary groups"
+msgstr "Misslyckades med att få tag på tilläggsgrupper"
+
+#. TRANSLATORS: A supplementary group is the list of additional
+#. system groups a user belongs to, in addition to their default
+#. group.
+msgid "Failed to get supplementary group count"
+msgstr "Misslyckades med att få tag på antalet tilläggsgrupper"
+
+#. TRANSLATORS: %1% = integer group ID
+#, fuzzy, boost-format
+msgid "Failed to set group ‘%1%’"
+msgstr "Misslyckades med att ställa in gruppen \"%1%\""
+
+msgid "Failed to set supplementary groups"
+msgstr "Misslyckades med att ställa in tilläggsgrupper"
+
+msgid "Failed to drop root permissions"
+msgstr "Misslyckades med att släppa root-rättigheter"
+
+#. TRANSLATORS: %1% = chroot name
+#. TRANSLATORS: %4% = session identifier
+#, boost-format
+msgid ""
+"%1%: Chroot does not support setting a session ID; ignoring session ID ‘%4%’"
+msgstr ""
+
+#. TRANSLATORS: %1% = command
+#, fuzzy, boost-format
+msgid "Shell ‘%1%’ not available"
+msgstr "Skalet \"%1%\" är inte tillgängligt"
+
+#. TRANSLATORS: %4% = command
+#, fuzzy, boost-format
+msgid "Falling back to shell ‘%4%’"
+msgstr "Faller tillbaka på skalet \"%4%\""
+
+#. TRANSLATORS: %4% = signal name
+#, fuzzy, boost-format
+msgid "Caught signal ‘%4%’"
+msgstr "Fångade signalen \"%4%\""
+
+#. TRANSLATORS: %4% = signal name
+#, fuzzy, boost-format
+msgid "Failed to set signal handler ‘%4%’"
+msgstr "Misslyckades med att ställa in signalhanteraren \"%4%\""
+
+#. TRANSLATORS: %1% = integer user ID
+#, fuzzy, boost-format
+msgid "Failed to set user ‘%1%’"
+msgstr "Misslyckades med att ställa in användaren \"%1%\""
+
+#. TRANSLATORS: %1% = user name
+#. TRANSLATORS: %2% = user name
+#. TRANSLATORS: Please translate "->" as a right arrow, e.g. U+2192
+#, fuzzy, boost-format
+msgid "(%1%→%2%): User switching is not permitted"
+msgstr "(%1%->%2%): Byte av användare tillåts inte"
+
+msgid "Error saving terminal settings"
+msgstr "Fel vid sparandet av terminalinställningar"
+
+msgid "Error restoring terminal settings"
+msgstr "Fel vid återställandet av terminalinställningar"
+
+#. TRANSLATORS: %1% = chroot name
+#. TRANSLATORS: %4% = command
+#, fuzzy, boost-format
+msgid "[%1% chroot] Running login shell: ‘%4%’"
+msgstr "[%1% chroot] Kör inloggningsskal: \"%4%\""
+
+#. TRANSLATORS: %1% = chroot name
+#. TRANSLATORS: %4% = command
+#, fuzzy, boost-format
+msgid "[%1% chroot] Running shell: ‘%4%’"
+msgstr "[%1% chroot] Kör skal: \"%4%\""
+
+#. TRANSLATORS: %1% = chroot name
+#. TRANSLATORS: %2% = user name
+#. TRANSLATORS: %3% = user name
+#. TRANSLATORS: %4% = command
+#. TRANSLATORS: Please translate "->" as a right arrow, e.g. U+2192
+#, fuzzy, boost-format
+msgid "[%1% chroot] (%2%→%3%) Running login shell: ‘%4%’"
+msgstr "[%1% chroot] (%2%->%3%) Kör inloggningsskal: \"%4%\""
+
+#. TRANSLATORS: %1% = chroot name
+#. TRANSLATORS: %2% = user name
+#. TRANSLATORS: %3% = user name
+#. TRANSLATORS: %4% = command
+#. TRANSLATORS: Please translate "->" as a right arrow, e.g. U+2192
+#, fuzzy, boost-format
+msgid "[%1% chroot] (%2%→%3%) Running shell: ‘%4%’"
+msgstr "[%1% chroot] (%2%->%3%) Kör skal: \"%4%\""
+
+#. TRANSLATORS: %1% = chroot name
+#. TRANSLATORS: %4% = command
+#, fuzzy, boost-format
+msgid "[%1% chroot] Running command: “%4%”"
+msgstr "[%1% chroot] Kör kommando: \"%4%\""
+
+#. TRANSLATORS: %1% = chroot name
+#. TRANSLATORS: %2% = user name
+#. TRANSLATORS: %3% = user name
+#. TRANSLATORS: %4% = command
+#. TRANSLATORS: Please translate "->" as a right arrow, e.g. U+2192
+#, fuzzy, boost-format
+msgid "[%1% chroot] (%2%→%3%) Running command: “%4%”"
+msgstr "[%1% chroot] (%2%->%3%) Kör kommando: \"%4%\""
+
+#, boost-format
+msgid "stage=%1%"
+msgstr "steg=%1%"
+
+msgid ""
+"The directory does not exist inside the chroot.  Use the --directory option "
+"to run the command in a different directory."
+msgstr ""
+
+msgid "terminating immediately"
+msgstr "avslutar omedelbart"
+
+#. TRANSLATORS: Format string for date representation:
+#. %d = day (number, e.g. 14)
+#. %b = month (three letters, e.g. Jul)
+#. %Y = year (four digits, e.g. 2006)
+#. If required, any of the standard strftime(3)
+#. format specifiers may be used instead, as long as
+#. the day, month and year are clearly displayed in
+#. the equivalent standard method for your locale.
+msgid "%d %b %Y"
+msgstr "%d %b %Y"
+
+msgid "Failed to stat file"
+msgstr "Misslyckades med att läsa status på filen"
+
+#, fuzzy
+msgid "Failed to stat file descriptor"
+msgstr "Misslyckades med att läsa status på filen"
+
+#. TRANSLATORS: %4% = file
+#, fuzzy, boost-format
+msgid "No chroots are defined in ‘%4%’"
+msgstr "Inga chrootmiljöer har definierats \"%4%\""
+
+#. TRANSLATORS: %4% = file
+#. TRANSLATORS: %5% = file
+#, fuzzy, boost-format
+msgid "No chroots are defined in ‘%4%’ or ‘%5%’"
+msgstr "Inga chrootmiljöer har definierats i \"%4%\" eller \"%5%\""
+
+#. TRANSLATORS: %1% = file
+#, fuzzy, boost-format
+msgid "The specified chroots are not defined in ‘%1%’"
+msgstr "De angivna chrootmiljöerna är inte definierade i \"%1%\""
+
+#, boost-format
+msgid "%1%: Invalid session name"
+msgstr ""
+
+#, fuzzy
+msgid "Installed chroot facets:"
+msgstr "Tillgängliga chroot: "
+
+#. TRANSLATORS: %1% = program name
+#. TRANSLATORS: %2% = program version
+#. TRANSLATORS: %3% = current date
+#, boost-format
+msgid "schroot configuration generated by %1% %2% on %3%"
+msgstr "schroot-konfiguration genererad av %1% %2% den %3%"
+
+msgid "Chroot selection"
+msgstr "Val av chroot"
+
+msgid "Chroot environment"
+msgstr "Chroot-miljö"
+
+#, fuzzy
+msgid "Session actions"
+msgstr "Session hanterad"
+
+#, fuzzy
+msgid "Session options"
+msgstr "Session hanterad"
+
+msgid "List available chroots"
+msgstr "Lista tillgängliga chroot"
+
+msgid "Show information about selected chroots"
+msgstr "Visa information om valda chroot"
+
+msgid "Dump configuration of selected chroots"
+msgstr "Dumpa konfigurationen för valda chroot"
+
+msgid "Use specified chroot"
+msgstr "Använd angiven chroot"
+
+msgid "Command to run"
+msgstr "Kommando att köra"
+
+msgid "Exactly one chroot must be specified when beginning a session"
+msgstr "Endast en chroot får anges vid början av en session"
+
+msgid ""
+"--session-name is not permitted for the specified action; did you mean to "
+"use --chroot?"
+msgstr ""
+
+msgid "Unknown action specified"
+msgstr "Okänd åtgärd angiven"
+
+msgid "--session-name is not permitted for the specified action"
+msgstr ""
+
+#, fuzzy
+msgid "Invalid session name"
+msgstr "ogiltig grupp"
+
+#. TRANSLATORS: %1% = file
+#, fuzzy, boost-format
+msgid "Failed to find ‘%1%’"
+msgstr "Misslyckades med att hitta chroot \"%1%\""
+
+#. TRANSLATORS: '...' is an ellipsis e.g. U+2026,
+#. and '-' is an em-dash.
+#, fuzzy
+msgid "[OPTION…] — list mount points"
+msgstr "[FLAGGA...] - lista monteringspunkter"
+
+msgid "Mount"
+msgstr "Montera"
+
+msgid "Mountpoint to check (full path)"
+msgstr "Monteringspunkt att kontrollera (fullständig sökväg)"
+
+msgid "No mount point specified"
+msgstr "Ingen monteringspunkt angiven"
+
+#, fuzzy, boost-format
+msgid "Failed to resolve path “%1%”"
+msgstr "Misslyckades med att starta \"%1%\""
+
+#. TRANSLATORS: '...' is an ellipsis e.g. U+2026,
+#. and '-' is an em-dash.
+#, fuzzy
+msgid "[OPTION…] — mount filesystems"
+msgstr "[FLAGGA...] - lista monteringspunkter"
+
+msgid "Perform a simulation of actions which would be taken"
+msgstr ""
+
+#, fuzzy
+msgid "fstab file to read (full path)"
+msgstr "Monteringspunkt att kontrollera (fullständig sökväg)"
+
+#, fuzzy
+#~ msgid "line %1%: Deprecated key ‘%4%’ used"
+#~ msgstr "rad %1% [%2%]: Utfasade nyckeln \"%4%\" används"
+
+#, fuzzy
+#~ msgid "Deprecated key ‘%4%’ used"
+#~ msgstr "[%1%]: Den utfasade nyckeln \"%4%\" används"
+
+#, fuzzy
+#~ msgid "line %1%: Disallowed key ‘%4%’ used"
+#~ msgstr "rad %1% [%2%]: Otillåtna nyckeln \"%4%\" används"
+
+#, fuzzy
+#~ msgid "Disallowed key ‘%4%’ used"
+#~ msgstr "[%1%]: Den otillåtna nyckeln \"%4%\" används"
+
+#, fuzzy
+#~ msgid "line %1%: Duplicate key ‘%4%’"
+#~ msgstr "rad %1% [%2%]: Dubblett av nyckeln \"%4%\""
+
+#, fuzzy
+#~ msgid "line %1%: Required key ‘%4%’ is missing"
+#~ msgstr "rad %1% [%2%]: Nödvändiga nyckeln \"%4%\" saknas"
+
+#, fuzzy
+#~ msgid "Required key ‘%4%’ is missing"
+#~ msgstr "[%1%]: Nödvändiga nyckeln \"%4%\" saknas"
+
+#, fuzzy
+#~ msgid "line %1%: Obsolete key ‘%4%’ used"
+#~ msgstr "rad %1% [%2%]: Föråldrade nyckeln \"%4%\" används"
+
+#, fuzzy
+#~ msgid "Obsolete key ‘%4%’ used"
+#~ msgstr "[%1%]: Den föråldrade nyckeln \"%4%\" används"
+
+#, fuzzy
+#~ msgid "%2%: %4%"
+#~ msgstr "[%1%]: %4%"
+
+#, fuzzy
+#~ msgid "line %1%: %3%: %4%"
+#~ msgstr "rad %1% [%2%]: %4%"
+
+#~ msgid "This option will be removed in the future"
+#~ msgstr "Den här flaggan kommer att tas bort i framtiden"
+
+#, fuzzy
+#~ msgid "Build options"
+#~ msgstr "Dolda flaggor"
+
+#, fuzzy
+#~ msgid "Package version options"
+#~ msgstr "Session hanterad"
+
+#, fuzzy
+#~ msgid "Build environment options"
+#~ msgstr "Dolda flaggor"
+
+#, fuzzy
+#~ msgid "User options"
+#~ msgstr "Allmänna flaggor"
+
+#, fuzzy
+#~ msgid "Special options"
+#~ msgstr "Allmänna flaggor"
+
+#, fuzzy
+#~ msgid "Update chroot environment"
+#~ msgstr "Chroot-miljö"
+
+#, fuzzy
+#~ msgid "Chroot environment to build in"
+#~ msgstr "Chroot-miljö"
+
+#~ msgid "Failed to release device lock (lock held by PID %4%)"
+#~ msgstr "Misslyckades med att släppa enhetslåset (låset hålls av pid %4%)"
+
+#~ msgid "Failed to release device lock"
+#~ msgstr "Misslyckades med att släppa enhetslåset"
+
+#~ msgid "Failed to stat device"
+#~ msgstr "Misslyckades med att läsa status på enheten"
+
+#, fuzzy
+#~ msgid "[OPTION…] — release a device lock"
+#~ msgstr "[FLAGGA...] - släpp ett enhetslås"
+
+#, fuzzy
+#~ msgid "No PID specified; forcing release of lock"
+#~ msgstr "Ingen pid angiven; tvingar släpp av lås"
+
+#~ msgid "Lock"
+#~ msgstr "Lås"
+
+#~ msgid "Device to unlock (full path)"
+#~ msgstr "Enhet att låsa upp (full sökväg)"
+
+#~ msgid "Process ID owning the lock"
+#~ msgstr "Process-id som äger låset"
+
+#~ msgid "No device specified"
+#~ msgstr "Ingen enhet angiven"
+
+#~ msgid "No such chroot"
+#~ msgstr "Ingen sådan chroot"
+
+#, fuzzy
+#~ msgid "Device locking"
+#~ msgstr "Enhet"
+
+#~ msgid "unknown"
+#~ msgstr "okänd"
+
+#, fuzzy
+#~ msgid ""
+#~ "Exactly one chroot must be specified when creating or removing a session"
+#~ msgstr "Endast en chroot får anges vid början av en session"
+
+#, fuzzy
+#~ msgid "Create a chroot"
+#~ msgstr "Välj alla chroot"
+
+#, fuzzy
+#~ msgid "Remove a chroot"
+#~ msgstr "Välj alla chroot"
+
+#, fuzzy
+#~ msgid "Failed to execute ‘%1%’"
+#~ msgstr "Misslyckades med att starta \"%1%\""
+
+#~ msgid "Failed to execute \"%1%\""
+#~ msgstr "Misslyckades med att starta \"%1%\""
+
+#~ msgid "--- %1% ---"
+#~ msgstr "--- %1% ---"
+
+#~ msgid "Failed to execute '%1%'"
+#~ msgstr "Misslyckades med att starta \"%1%\""
+
+#~ msgid "%1% chroot (dchroot-dsa compatibility)"
+#~ msgstr "%1% chroot (dchroot-dsa-kompatibilitet)"
+
+#~ msgid "%1% chroot (dchroot compatibility)"
+#~ msgstr "%1% chroot (dchroot-kompatibilitet)"
+
+#~ msgid "To allow users access to the chroots, use the users or groups keys."
+#~ msgstr ""
+#~ "För att tillåta användare att komma åt chrootmiljöerna, använd användar- "
+#~ "eller gruppnycklarna."
+
+#~ msgid ""
+#~ "To allow password-less root access, use the root-users or root-groups "
+#~ "keys."
+#~ msgstr ""
+#~ "För att tillåta roottillgång utan lösenord, använd nycklarna för root-"
+#~ "users eller root-groups."
+
+#~ msgid "Remove '%1%' to use the new configuration."
+#~ msgstr "Ta bort \"%1%\" för att använda den nya konfigurationen."
+
+#~ msgid "Running schroot in %1% compatibility mode"
+#~ msgstr "Kör schroot i %1%-kompatibelt läge"
+
+#~ msgid "Run \"schroot\" for full capabilities"
+#~ msgstr "Kör \"schroot\" med fullständiga färdigheter"
+
+#~ msgid "Run \"%1%\""
+#~ msgstr "Kör \"%1%\""
+
+#~ msgid "to migrate to a schroot configuration."
+#~ msgstr "för att migrera till en schroot-konfiguration."
+
+#~ msgid "Edit '%1%' to add appropriate user and/or group access."
+#~ msgstr ""
+#~ "Redigera \"%1%\" för att lägga till lämplig användar- och/eller "
+#~ "gruppåtkomst."
+
+#~ msgid "Priority"
+#~ msgstr "Prioritet"
+
+#~ msgid "--chroot may not be used with --list"
+#~ msgstr "--chroot får inte användas med --list"
+
+#~ msgid "Failed to find chroot '%1%'"
+#~ msgstr "Misslyckades med att hitta chroot \"%1%\""
+
+#~ msgid "Failed to open directory '%1%'"
+#~ msgstr "Misslyckades med att öppna katalogen \"%1%\""
+
+#~ msgid "Failed to read directory '%1%'"
+#~ msgstr "Misslyckades med att läsa katalogen \"%1%\""
+
+# Borde det bli "Kör körskript"? Kaka på kaka?
+#~ msgid "Run Execution Scripts"
+#~ msgstr "Kör skript"
+
+#~ msgid "Failed to open '%1%'"
+#~ msgstr "Misslyckades med att öppna \"%1%\""
+
+#~ msgid "Failed to close '%1%'"
+#~ msgstr "Misslyckades med att stänga \"%1%\""
+
+#~ msgid "Session management"
+#~ msgstr "Sessionshantering"
+
+#, fuzzy
+#~ msgid "csbuild session restriction"
+#~ msgstr "sessionsbegränsning för dchroot"
+
+#~ msgid "(%1%->%2%): dchroot sessions do not support user switching"
+#~ msgstr "(%1%->%2%): dchroot-sessioner har inte stöd för byte av användare"
+
+#, fuzzy
+#~ msgid "%1% chroot: Alias '%2%' already associated with another chroot"
+#~ msgstr "%1% chroot: alias \"%2%\" är redan associerat med ett annat chroot"
+
+#, fuzzy
+#~ msgid "%1% chroot: A deprecated parameter '%2%' has been specified."
+#~ msgstr "%1% chroot: En gammal parameter \"%2%\" har angivits."
+
+#, fuzzy
+#~ msgid "%1% chroot: An obsolete parameter '%2%' has been specified."
+#~ msgstr "%1% chroot: En föråldrad parameter \"%2%\" har angivits."
+
+#, fuzzy
+#~ msgid "Failed to acquire lock"
+#~ msgstr "misslyckades med att skaffa ett lås: %1%"
+
+#, fuzzy
+#~ msgid "Failed to acquire device lock"
+#~ msgstr "misslyckades med att skaffa ett enhetslås"
+
+#, fuzzy
+#~ msgid ""
+#~ "Failed to release device lock (timed out after %4% seconds; lock held by "
+#~ "PID %5%)"
+#~ msgstr ""
+#~ "misslyckades med att släppa enhetslås som hölls av pid %1% (tidsgräns är "
+#~ "%2% sekunder)"
+
+#~ msgid "%1%: No such chroot"
+#~ msgstr "%1%: Inget sådant chroot"
+
+#~ msgid ""
+#~ "Only one chroot may be specified when recovering, running or ending a "
+#~ "session"
+#~ msgstr ""
+#~ "Endast ett chroot får anges vid återhämtning, körning eller avslutning av "
+#~ "en session"
+
+#, fuzzy
+#~ msgid "Failed to stat device '%1%': %2%"
+#~ msgstr "Misslyckades med att läsa status på enhet %1%: %2%"
+
+#, fuzzy
+#~ msgid "'%1%' is not a block device"
+#~ msgstr "%1% är inte en blockenhet"
+
+#~ msgid "%1%: failed to release device lock"
+#~ msgstr "%1%: misslyckades med att släppa enhetslås"
+
+#, fuzzy
+#~ msgid "Failed to acquire device lock (timed out)"
+#~ msgstr "misslyckades med att skaffa ett enhetslås"
+
+#, fuzzy
+#~ msgid "Failed to release device lock (timed out)"
+#~ msgstr "misslyckades med att släppa enhetslås"
+
+#, fuzzy
+#~ msgid "No error"
+#~ msgstr "inga fel"
+
+#, fuzzy
+#~ msgid "Duplicate key"
+#~ msgstr "dubblett av nyckel"
+
+#~ msgid "%1% \"%2%\""
+#~ msgstr "%1% \"%2%\""
+
+#~ msgid "line %1%: %3%"
+#~ msgstr "rad %1%: %3%"
+
+#~ msgid "line %1%: %2% \"%3%\""
+#~ msgstr "rad %1%: %2% \"%3%\""
+
+#~ msgid "line %1%: %2%"
+#~ msgstr "rad %1%: %2%"
+
+#~ msgid "line %1% [%2%]: %3%"
+#~ msgstr "rad %1% [%2%]: %3%"
+
+#~ msgid "line %1% [%2%] %3%: %5%"
+#~ msgstr "rad %1% [%2%] %3%: %5%"
+
+#~ msgid "line %1% [%2%] %3%: %4% \"%5%\""
+#~ msgstr "rad %1% [%2%] %3%: %4% \"%5%\""
+
+#~ msgid "[%1%]: %2% \"%3%\""
+#~ msgstr "[%1%]: %2% \"%3%\""
+
+#~ msgid "[%1%]: %2%"
+#~ msgstr "[%1%]: %2%"
+
+#~ msgid "[%1%] %2%: %3% \"%4%\""
+#~ msgstr "[%1%] %2%: %3% \"%4%\""
+
+#~ msgid "[%1%] %2%: %3%"
+#~ msgstr "[%1%] %2%: %3%"
+
+#, fuzzy
+#~ msgid "%1% chroot"
+#~ msgstr "%1%: Inget sådant chroot"
+
+#~ msgid "Lock options"
+#~ msgstr "Låsflaggor"
+
+#, fuzzy
+#~ msgid "--- Session ---\n"
+#~ msgstr "  --- Session ---\n"
+
+#, fuzzy
+#~ msgid "Can't get supplementary groups: %1%"
+#~ msgstr "kan inte hämta tilläggsgrupper: %1%"
+
+#~ msgid "Invalid verbosity level: %1%, falling back to \"normal\""
+#~ msgstr "Ogiltig informationsnivå: %1%, faller tillbaka till \"normal\""
+
+#~ msgid "Could not exec \"%1%\": %2%"
+#~ msgstr "Kunde inte starta \"%1%\": %2%"
+
+#~ msgid "PAM error: %1%"
+#~ msgstr "PAM-fel: %1%"
+
+#~ msgid "Could not set gid to '%1%'"
+#~ msgstr "Kunde inte sätta gid till \"%1%\""
+
+#~ msgid "Could not chdir to '%1%': %2%"
+#~ msgstr "Kunde inte byta katalog till \"%1%\": %2%"
+
+#~ msgid "Could not chroot to '%1%': %2%"
+#~ msgstr "Kunde inte chroot till \"%1%\": %2%"
+
+#~ msgid "Could not set uid to '%1%'"
+#~ msgstr "Kunde inte sätta uid till \"%1%\""
+
+#~ msgid "Falling back to '%1%'"
+#~ msgstr "Faller tillbaka på \"%1%\""
+
+#, fuzzy
+#~ msgid "Caught hangup signal, terminating..."
+#~ msgstr "fångade påläggningssignal, terminerar..."
+
+#~ msgid "schroot-listmounts (Debian sbuild) %1%\n"
+#~ msgstr "schroot-listmounts (Debian sbuild) %1%\n"
+
+#~ msgid "schroot-releaselock (Debian sbuild) %1%\n"
+#~ msgstr "schroot-releaselock (Debian sbuild) %1%\n"
+
+#~ msgid "%1%: not a regular file"
+#~ msgstr "%1%: inte en vanlig fil"
+
+#~ msgid "Session failure: %1%"
+#~ msgstr "Sessionsfel: %1%"

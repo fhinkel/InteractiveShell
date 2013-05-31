@@ -1,0 +1,734 @@
+.\" Copyright © 2005-2013  Roger Leigh <rleigh@debian.org>
+.\"
+.\" schroot is free software: you can redistribute it and/or modify it
+.\" under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" schroot is distributed in the hope that it will be useful, but
+.\" WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+.\" General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see
+.\" <http://www.gnu.org/licenses/>.
+.\"
+.so config.man
+.TH SCHROOT.CONF 5 "\*[RELEASE_DATE]" "Version \*[VERSION]" "Debian sbuild"
+.SH NAME
+schroot.conf \- chroot definition file for schroot
+.SH DESCRIPTION
+\f[BI]schroot.conf\fP is a plain UTF-8 text file, describing the chroots
+available for use with schroot.
+.PP
+Comments are introduced following a \[oq]\f[CR]\[sh]\fP\[cq] (\[lq]hash\[rq])
+character at the beginning of a line, or following any other text.  All text
+right of the \[oq]\f[CR]\[sh]\fP\[cq] is treated as a comment.
+.PP
+The configuration format is an INI-style format, split into groups of key-value
+pairs separated by section names in square brackets.
+.SS General options
+A chroot is defined as a group of key-value pairs, which is started by a name
+in square brackets on a line by itself.  The file may contain multiple groups
+which therefore define multiple chroots.
+.PP
+A chroot definition is started by the name of the chroot in square brackets.
+For example,
+.IP
+\f[CR]\[lB]sid\[rB]
+.PP
+The name is subject to certain naming restrictions.  For further details, see
+the section \[lq]\fIChroot Names\fP\[rq] below.
+.PP
+This is then followed by several key-value pairs, one per line:
+.TP
+\f[CBI]type=\fP\f[CI]type\fP
+The type of the chroot.  Valid types are \[oq]plain\[cq], \[oq]directory\[cq],
+\[oq]file\[cq], \[oq]loopback\[cq], \[oq]block\-device\[cq],
+\[oq]btrfs\-snapshot\[cq] and \[oq]lvm\-snapshot\[cq].  If empty or omitted,
+the default type is \[oq]plain\[cq].  Note that \[oq]plain\[cq] chroots do not
+run setup scripts and mount filesystems; \[oq]directory\[cq] is recommended for
+normal use (see \[lq]\fIPlain and directory chroots\fP\[rq], below).
+.TP
+\f[CBI]description=\fP\f[CI]description\fP
+A short description of the chroot.  This may be localised for different
+languages; see the section \[lq]\fILocalisation\fP\[rq] below.
+.TP
+\f[CBI]priority=\fP\f[CI]number\fP
+Set the priority of a chroot.  \f[CI]number\fP is a positive integer indicating
+whether a distribution is older than another.  For example, \[lq]oldstable\[rq]
+and \[lq]oldstable-security\[rq] might be \[oq]0\[cq], while \[lq]stable\[rq]
+and \[lq]stable-security\[rq] are \[oq]1\[cq], \[lq]testing\[rq] is \[oq]2\[cq]
+and \[lq]unstable\[rq] is \[oq]3\[cq].  The values are not important, but the
+difference between them is.  This option is deprecated and no longer used by
+schroot, but is still permitted to be used; it will be obsoleted and removed in
+a future release.
+.TP
+\f[CBI]message-verbosity=\fP\f[CI]verbosity\fP
+Set the verbosity of messages printed by schroot when setting up, running
+commands and cleaning up the chroot.  Valid settings are \[oq]quiet\[cq]
+(suppress most messages), \[oq]normal\[cq] (the default) and \[oq]verbose\[cq]
+(show all messages).  This setting is overridden by the options \fI\-\-quiet\fP
+and \fI\-\-verbose\fP.
+.TP
+\f[CBI]users=\fP\f[CI]user1,user2,...\fP
+A comma-separated list of users which are allowed access to the chroot.  If
+empty or omitted, no users will be allowed access (unless a group they belong
+to is also specified in \f[CI]groups\fP).
+.TP
+\f[CBI]groups=\fP\f[CI]group1,group2,...\fP
+A comma-separated list of groups which are allowed access to the chroot.  If
+empty or omitted, no groups of users will be allowed access.
+.TP
+\f[CBI]root\-users=\fP\f[CI]user1,user2,...\fP
+A comma-separated list of users which are allowed \fBpassword-less\fP root
+access to the chroot.  If empty or omitted, no users will be allowed root
+access without a password (but if a user or a group they belong to is in
+\f[CI]users\fP or \f[CI]groups\fP, respectively, they may gain access with a
+password).  See the section \[lq]\fISecurity\fP\[rq] below.
+.TP
+\f[CBI]root\-groups=\fP\f[CI]group1,group2,...\fP
+A comma-separated list of groups which are allowed \fBpassword-less\fP root
+access to the chroot.  If empty or omitted, no users will be allowed root
+access without a password (but if a user or a group they belong to is in
+\f[CI]users\fP or \f[CI]groups\fP, respectively, they may gain access with a
+password).  See the section \[lq]\fISecurity\fP\[rq] below.
+.TP
+\f[CBI]aliases=\fP\f[CI]alias1,alias2,...\fP
+A comma-separated list of aliases (alternate names) for this chroot.  For
+example, a chroot named \[lq]sid\[rq] might have an \[oq]unstable\[cq] alias
+for convenience.  Aliases are subject to the same naming restrictions as the
+chroot name itself.
+.TP
+\f[CBI]profile=\fP\f[CI]directory\fP
+.TP
+\f[CBI]script\-config=\fP\f[CI]filename\fP
+The behaviour of the chroot setup scripts may be customised on a per-chroot
+basis by setting a specific configuration profile.  The directory is relative
+to \fI\*[SCHROOT_SYSCONF_DIR]\fP.  The default is \[oq]default\[cq].  The files
+in this directory are sourced by the setup scripts, and so their behaviour may
+be customised by selecting the appropriate profile.  Alternatives are
+\[oq]minimal\[cq] (minimal configuration), \[oq]desktop\[cq] (for running
+desktop applications in the chroot, making more functionality from the host
+system available in the chroot) and \[oq]sbuild\[cq] (for using the chroot for
+Debian package building).  Other packages may provide additional profiles.  The
+default values of the keys \f[CI]setup.config\fP, \f[CI]setup.copyfiles\fP,
+\f[CI]setup.fstab\fP and \f[CI]setup.nssdatabases\fP are set based upon the
+\f[CI]profile\fP setting.
+.IP
+Note that the \f[CI]profile\fP key replaces the older \f[CI]script\-config\fP
+key.  The \f[CI]script\-config\fP key is exactly the same as \f[CI]profile\fP,
+but has \[lq]\fI/config\fP\[rq] appended to it.  The default filename is
+\[oq]default/config\[cq].  Either of these keys may be used.  If both are
+present, then \f[CI]script\-config\fP will take precedence (\f[CI]profile\fP
+will be unset).  \f[CI]script\-config\fP is deprecated and will be removed in a
+future release.  Note that \f[CI]profile\fP is equivalent to
+\f[CI]script\-config\fP if the file sourced by \f[CI]script\-config\fP only
+contains the standard variables provided by schroot; if any additional
+variables or shell script fragments have been added, please also set
+\f[CI]setup.config\fP, which will continue to allow this file to be sourced.
+It is recommended to replace the use of the sourced file with additional keys
+in schroot.conf where possible, but it will continue to be possible to source
+an additional configuration file using \f[CI]setup.config\fP.
+.IP
+Desktop users should note that the fstab file \fIdesktop/fstab\fP will need
+editing if you use gdm3; please see the comments in this file for further
+instructions.  The \f[CI]preserve\-environment\fP key should also be set to
+\[oq]true\[cq] so that the environment is preserved inside the chroot.
+.IP
+If none of the configuration profiles provided above meet your needs, then they
+may be edited to further customise them, and/or copied and used as a template
+for entirely new profiles.
+.IP
+Note that the different profiles have different security implications; see the
+section \[lq]\fISecurity\fP\[rq] below for further details.
+.TP
+\f[CBI]setup.config=\fP\f[CI]filename\fP
+This key specifies a file which the setup scripts will source when they are
+run.  This defaults to the same value as set by \f[CI]script\-config\fP.  The
+file is a Bourne shell script, and in consequence may contain any valid shell
+code, in addition to simple variable assignments.  This will, for example,
+allow behaviour to be customised according to the specific chroot type or name.
+Note that the script will be sourced once for each and every script invocation,
+and must be idempotent.
+.IP
+All the default settings in this file are now settable using configuration keys
+in \fIschroot.conf\fP, as detailed below.  Existing configuration should be
+modified to use these keys in place of this file.  See
+.BR schroot-script-config (5)
+for further details.  This type of setup script configuration file is no longer
+provided as part of the standard profiles, but will continue to be sourced if
+present and this key is set.
+.TP
+\f[CBI]setup.copyfiles=\fP\f[CI]filename\fP
+A file containing a list of files to copy into the chroot (one file per line).
+The file will have the same absolute location inside the chroot.
+.TP
+\f[CBI]setup.fstab=\fP\f[CI]filename\fP
+The filesystem table file to be used to mount filesystems within the chroot.
+The format of this file is the same as for \fI/etc/fstab\fP, documented in
+.BR fstab (5).
+The only difference is that the mountpoint path \fIfs_dir\fP is relative to the
+chroot, rather than the root.  Also note that mountpoints are canonicalised on
+the host, which will ensure that absolute symlinks point inside the chroot, but
+complex paths containing multiple symlinks may be resolved incorrectly; it is
+inadvisable to use nested symlinks as mountpoints.
+.TP
+\f[CBI]setup.nssdatabases=\fP\f[CI]filename\fP
+A file listing the system databases to copy into the chroot.  The default
+databases are \[oq]passwd\[cq], \[oq]shadow\[cq], \[oq]group\[cq] and
+\[oq]gshadow\[cq].  Other potential databases which could be added include
+\[oq]services\[cq], \[oq]protocols\[cq], \[oq]networks\[cq], and
+\[oq]hosts\[cq].  The databases are copied using
+.BR getent (1)
+so all database sources listed in \fI/etc/nsswitch.conf\fP will be used for
+each database.
+.TP
+\f[CBI]setup.services=\fP\f[CI]service1,service2,...\fP
+A comma-separated list of services to run in the chroot.  These will be started
+when the session is started, and stopped when the session is ended.
+.TP
+\f[CBI]command\-prefix=\fP\f[CI]command,option1,option2,...\fP
+A comma-separated list of a command and the options for the command.  This
+command and its options will be prefixed to all commands run inside the chroot.
+This is useful for adding commands such as nice, ionice or eatmydata for all
+commands run inside the chroot.  nice and ionice will affect CPU and I/O
+scheduling.  eatmydata ingores filesystem fsync operations, and is useful for
+throwaway snapshot chroots where you don't care about dataloss, but do care
+about high speed.
+.TP
+\f[CBI]personality=\fP\f[CI]persona\fP
+Set the personality (process execution domain) to use.  This option is useful
+when using a 32-bit chroot on 64-bit system, for example.  Valid options on
+Linux are \[oq]bsd\[cq], \[oq]hpux\[cq], \[oq]irix32\[cq], \[oq]irix64\[cq],
+\[oq]irixn32\[cq], \[oq]iscr4\[cq], \[oq]linux\[cq], \[oq]linux32\[cq],
+\[oq]linux_32bit\[cq], \[oq]osf4\[cq], \[oq]osr5\[cq], \[oq]riscos\[cq],
+\[oq]scorvr3\[cq], \[oq]solaris\[cq], \[oq]sunos\[cq], \[oq]svr4\[cq],
+\[oq]uw7\[cq], \[oq]wysev386\[cq], and \[oq]xenix\[cq].  The default value is
+\[oq]linux\[cq].  There is also the special option \[oq]undefined\[cq]
+(personality not set).  For a 32-bit chroot on a 64-bit system,
+\[oq]linux32\[cq] is the option required.  The only valid option for non-Linux
+systems is \[oq]undefined\[cq].  The default value for non-Linux systems is
+\[oq]undefined\[cq].
+.TP
+\f[CBI]preserve\-environment=\fP\f[CI]true\fP|\f[CI]false\fP
+By default, the environment will not be preserved inside the chroot, instead a
+minimal environment will be used.  Set to \f[CI]true\fP to always preserve the
+environment.  This is useful for example when running X applications inside the
+chroot, which need the environment to function correctly.  The environment may
+also be preserved using the \fI\-\-preserve\-environment\fP option.
+.TP
+\f[CBI]shell=\fP\f[CI]shell\fP
+When running a login shell a number of potential shells will be considered, in
+this order: the command in the SHELL environment variable (if
+\fI\-\-preserve\-environment\fP is used, or \f[CI]preserve\-environment\fP is
+enabled), the user's shell in the \[oq]passwd\[cq] database, \fI/bin/bash\fP
+and finally \fI/bin/sh\fP.  This setting overrides this list, and will use the
+shell specified.  It may be overridden using the \fI\-\-shell\fP option.
+.TP
+\f[CBI]environment\-filter=\fP\f[CI]regex\fP
+The environment to be set in the chroot will be filtered in order to remove
+environment variables which may pose a security risk.  Any environment variable
+matching the specified POSIX extended regular expression will be removed prior
+to executing any command in the chroot.
+.IP
+Potentially dangerous environment variables are removed for safety by default
+using the following regular expression:
+.na
+\[lq]\f[CR]^(BASH_ENV\:|CDPATH\:|ENV\:|HOSTALIASES\:|IFS\:|KRB5_CONFIG\:|KRBCONFDIR\:|KRBTKFILE\:|KRB_CONF\:|LD_.*\:|LOCALDOMAIN\:|NLSPATH\:|PATH_LOCALE\:|RES_OPTIONS\:|TERMINFO\:|TERMINFO_DIRS\:|TERMPATH)$\fP\[rq].
+.ad
+.SS Plain and directory chroots
+Chroots of type \[oq]plain\[cq] or \[oq]directory\[cq] are directories
+accessible in the filesystem.  The two types are equivalent except for the fact
+that directory chroots run setup scripts, whereas plain chroots do not.  In
+consequence, filesystems such as \fI/proc\fP are not mounted in plain chroots;
+it is the responsibility of the system administrator to configure such chroots
+by hand, whereas directory chroots are automatically configured.  Additionally,
+directory chroots implement the \fBfilesystem union chroot\fP options (see
+\[lq]\fIFilesystem Union chroot options\fP\[rq], below).
+.PP
+These chroot types have an additional (mandatory) configuration option:
+.TP
+\f[CBI]directory=\fP\f[CI]directory\fP
+The directory containing the chroot environment.  This is where the root will
+be changed to when executing a login shell or a command.  The directory must
+exist and have read and execute permissions to allow users access to it.  Note
+that on Linux systems it will be bind-mounted elsewhere for use as a chroot;
+the directory for \[oq]plain\[cq] chroots is mounted with the \fI\-\-rbind\fP
+option to
+.BR mount (8),
+while for \[oq]directory\[cq] chroots \fI\-\-bind\fP is used instead so that
+sub-mounts are not preserved (they should be set in the \fIfstab\fP file just
+like in \fI/etc/fstab\fP on the host).
+.SS File chroots
+Chroots of type \[oq]file\[cq] are files on the current filesystem containing
+an archive of the chroot files.  They implement the \fBsource chroot\fP options
+(see \[lq]\fISource chroot options\fP\[rq], below).  Note that a corresponding
+source chroot (of type \[oq]file\[cq]) will be created for each chroot of this
+type; this is for convenient access to the source archive, e.g. for the purpose
+of updating. These additional options are also implemented:
+.TP
+\f[CBI]file=\fP\f[CI]filename\fP
+The file containing the archived chroot environment (mandatory).  This must be
+a tar (tape archive), optionally compressed with gzip or bzip2.  The file
+extensions used to determine the type are are \fI.tar\fP, \fI.tar.gz\fP,
+\fI.tar.bz2\fP, \fI.tgz\fP, and \fI.tbz\fP.  This file must be owned by the
+root user, and not be writable by other.  Note that zip archives are no longer
+supported; zip was not able to archive named pipes and device nodes, so was not
+suitable for archiving chroots.
+.TP
+\f[CBI]location=\fP\f[CI]path\fP
+This is the path to the chroot \fIinside\fP the archive.  For example, if the
+archive contains a chroot in \fI/squeeze\fP, you would specify
+\[lq]/squeeze\[rq] here.  If the chroot is the only thing in the archive,
+i.e. \fI/\fP is the root filesystem for the chroot, this option should be left
+blank, or omitted entirely.
+.SS Loopback chroots
+Chroots of type \[oq]loopback\[cq] are a filesystem available as a file on
+disk, accessed via a loopback mount.  The file will be loopback mounted and
+unmounted on demand.  Loopback chroots implement the \fBmountable chroot\fP and
+\fBfilesystem union chroot\fP options (see \[lq]\fIMountable chroot
+options\fP\[rq] and \[lq]\fIFilesystem Union chroot options\fP\[rq], below),
+plus an additional option:
+.TP
+\f[CBI]file=\fP\f[CI]filename\fP
+This is the filename of the file containing the filesystem, including the
+absolute path.  For example \[lq]/srv/chroot/sid\[rq].
+.SS Block device chroots
+Chroots of type \[oq]block\-device\[cq] are a filesystem available on an
+unmounted block device.  The device will be mounted and unmounted on demand.
+Block device chroots implement the \fBmountable chroot\fP and \fBfilesystem
+union chroot\fP options (see \[lq]\fIMountable chroot options\fP\[rq] and
+\[lq]\fIFilesystem Union chroot options\fP\[rq], below), plus an additional
+option:
+.TP
+\f[CBI]device=\fP\f[CI]device\fP
+This is the device name of the block device, including the absolute path.  For
+example, \[lq]/dev/sda5\[rq].
+.SS Btrfs snapshot chroots
+Chroots of type \[oq]btrfs\-snapshot\[cq] are a Btrfs snapshot created from an
+existing Btrfs subvolume on a mounted Btrfs filesystem.  A snapshot will be
+created from this source subvolume on demand at the start of a session, and
+then the snapshot will be mounted.  At the end of the session, the snapshot
+will be unmounted and deleted.  This chroot type implements the \fBsource
+chroot\fP options (see \[lq]\fISource chroot options\fP\[rq], below).  Note
+that a corresponding source chroot (of type \[oq]directory\[cq]) will be
+created for each chroot of this type; this is for convenient access to the
+source volume. These additional options are also implemented:
+.TP
+\f[CBI]btrfs\-source\-subvolume=\fP\f[CI]directory\fP
+The directory containing the source subvolume.
+.TP
+\f[CBI]btrfs\-snapshot\-directory=\fP\f[CI]directory\fP
+The directory in which to store the snapshots of the above source subvolume.
+.SS LVM snapshot chroots
+Chroots of type \[oq]lvm\-snapshot\[cq] are a filesystem available on an LVM
+logical volume (LV).  A snapshot LV will be created from this LV on demand, and
+then the snapshot will be mounted.  At the end of the session, the snapshot LV
+will be unmounted and removed.
+.PP
+LVM snapshot chroots implement the \fBsource chroot\fP options (see
+\[lq]\fISource chroot options\fP\[rq], below), and all the options for
+\[oq]block\-device\[cq].  Note that a corresponding source chroot (of type
+\[oq]block-device\[cq]) will be created for each chroot of this type; this is
+for convenient access to the source device. This additional option is also
+implemented:
+.TP
+\f[CBI]lvm-snapshot-options=\fP\f[CI]snapshot_options\fP
+Snapshot options.  These are additional options to pass to lvcreate(8).  For
+example, \[lq]\-L 2g\[rq] to create a snapshot 2 GiB in size.
+.B Note:
+the LV name (\fI\-n\fP), the snapshot option (\fI\-s\fP) and the original LV
+path may not be specfied here; they are set automatically by schroot.
+.SS Custom chroots
+Chroots of type \[oq]custom\[cq] are a special type of chroot, used for
+implementing new types of chroot not supported by any of the above chroot
+types.  This may be useful for implementing and testing a new chroot type
+without needing to write any C++ code.  However, you will need to write your
+own setup script to do the setup work, since by itself this chroot type does
+very little.  You will also need to add custom keys to your chroot definition
+for use in the setup script; unlike the configuration for the above chroot
+types, no validation of the options will take place unless you do it yourself
+in your custom setup script.  These additional options are also implemented:
+.TP
+\f[CBI]custom-session-cloneable=\fP\f[CI]true\fP|\f[CI]false\fP
+Set whether or not sessions may be cloned using this chroot (enabled by
+default).
+.TP
+\f[CBI]custom-session-purgeable=\fP\f[CI]true\fP|\f[CI]false\fP
+Set whether or not sessions may be cloned using this chroot (disabled by
+default).
+.TP
+\f[CBI]custom-source-cloneable=\fP\f[CI]true\fP|\f[CI]false\fP
+Set whether or not source chroots may be cloned using this chroot (disabled by
+default).
+.SS Source chroot options
+The \[oq]btrfs\-snapshot\[cq], \[oq]file\[cq] and \[oq]lvm-snapshot\[cq] chroot
+types implement source chroots.  Additionally, chroot types with union support
+enabled implement source chroots (see \[lq]\fIFilesystem Union chroot
+options\fP\[rq], below).  These are chroots which automatically create a copy
+of themselves before use, and are usually session managed.  These chroots
+additionally provide an extra chroot in the \fIsource:\fP namespace, to allow
+convenient access to the original (non-snapshotted) data, and to aid in chroot
+maintenance.  I.e. for a chroot named \fIwheezy\fP (\fIchroot:wheezy\fP), a
+corresponding \fIsource:wheezy\fP chroot will be created.  For compatibility
+with older versions of schroot which did not support namespaces, a chroot with
+a \fI\-source\fP suffix appended to the chroot name will be created in addition
+(i.e. \fIwheezy\-source\fP using the above example).  Note that these
+compatibility names will be removed in schroot 1.5.0, so the use of the
+\fIsource:\fP namespace is preferred over the use of the \fI-source\fP suffix
+form.  See
+.BR schroot (1)
+for further details.
+.PP
+These chroots provide the following additional options:
+.TP
+\f[CBI]source\-clone=\fP\f[CI]true\fP|\f[CI]false\fP
+Set whether the source chroot should be automatically cloned (created) for this
+chroot.  The default is \f[CI]true\fP to automatically clone, but if desired
+may be disabled by setting to \f[CI]false\fP.  If disabled, the source chroot
+will be inaccessible.
+.TP
+\f[CBI]source\-users=\fP\f[CI]user1,user2,...\fP
+A comma-separated list of users which are allowed access to the source chroot.
+If empty or omitted, no users will be allowed access.  This will become the
+\f[CI]users\fP option in the source chroot.
+.TP
+\f[CBI]source\-groups=\fP\f[CI]group1,group2,...\fP
+A comma-separated list of groups which are allowed access to the source chroot.
+If empty or omitted, no users will be allowed access.  This will become the
+\f[CI]groups\fP option in the source chroot.
+.TP
+\f[CBI]source\-root\-users=\fP\f[CI]user1,user2,...\fP
+A comma-separated list of users which are allowed \fBpassword-less\fP root
+access to the source chroot.  If empty or omitted, no users will be allowed
+root access without a password (but if a user is in \f[CI]users\fP, they may
+gain access with a password).  This will become the \f[CI]root\-users\fP option
+in the source chroot.  See the section \[lq]\fISecurity\fP\[rq] below.
+.TP
+\f[CBI]source\-root\-groups=\fP\f[CI]group1,group2,...\fP
+A comma-separated list of groups which are allowed \fBpassword-less\fP root
+access to the source chroot.  If empty or omitted, no users will be allowed
+root access without a password (but if a user's group is in \f[CI]groups\fP,
+they may gain access with a password).  This will become the
+\f[CI]root\-groups\fP option in the source chroot.  See the section
+\[lq]\fISecurity\fP\[rq] below.
+.SS Mountable chroot options
+The \[oq]block\-device\[cq], \[oq]loopback\[cq] and \[oq]lvm-snapshot\[cq]
+chroot types implement device mounting.  These are chroots which require the
+mounting of a device in order to access the chroot.  These chroots provide the
+following additional options:
+.TP
+\f[CBI]mount\-options=\fP\f[CI]options\fP
+Mount options for the block device.  These are additional options to pass to
+.BR mount (8).
+For example, \[lq]\-o atime,sync,user_xattr\[rq].
+.TP
+\f[CBI]location=\fP\f[CI]path\fP
+This is the path to the chroot \fIinside\fP the filesystem on the device.  For
+example, if the filesystem contains a chroot in \fI/chroot/sid\fP, you would
+specify \[lq]/chroot/sid\[rq] here.  If the chroot is the only thing on the
+filesystem, i.e. \fI/\fP is the root filesystem for the chroot, this option
+should be left blank, or omitted entirely.
+.SS Filesystem Union chroot options
+The \[oq]block\-device\[cq], \[oq]directory\[cq] and \[oq]loopback\[cq] chroot
+types allow for the creation of a session using filesystem unions to overlay
+the original filesystem with a separate writable directory.  The original
+filesystem is read-only, with any modifications made to the filesystem made in
+the overlying writable directory, leaving the original filesystem unchanged.  A
+union permits multiple sessions to access and make changes to a single chroot
+simultaneously, while keeping the changes private to each session.  To enable
+this feature, set \f[CI]union\-type\fP to any supported value.  If enabled, the
+chroot will also be a \fBsource chroot\fP, which will provide additional
+options (see \[lq]\fISource chroot options\fP\[rq], above).  All entries are
+optional.
+.TP
+\f[CBI]union\-type=\fP\f[CI]type\fP
+Set the union filesystem type.  Currently supported filesystems are
+\[oq]aufs\[cq], \[oq]overlayfs\[cq] and \[oq]unionfs\[cq].  The default is
+\[oq]none\[cq], which disables this feature.
+.TP
+\f[CBI]union\-mount\-options=\fP\f[CI]options\fP
+Union filesystem mount options (branch configuration), used for mounting the
+union filesystem specified with \fIunion\-type\fP.  This replaces the complete
+\[lq]\-o\[rq] string for mount and allows for the creation of complex
+filesystem unions.  Note that \[oq]aufs\[cq], \[oq]overlayfs\[cq] and
+\[oq]unionfs\[cq] each have different supported mount options.
+.B Note:
+One can use the variables \[lq]${CHROOT_UNION_OVERLAY_DIRECTORY}\[rq] and
+\[lq]${CHROOT_UNION_UNDERLAY_DIRECTORY}\[rq] to refer to the writable overlay
+session directory and read-only underlying directory which are to form the
+union.  See
+.BR schroot\-setup (5)
+for a complete variable list.
+.TP
+\f[CBI]union\-overlay\-directory\fP\f[CI]=directory\fP
+Specify the directory where the writeable overlay session directories will be
+created.  The default is \[oq]\*[SCHROOT_OVERLAY_DIR]\[cq].
+.TP
+\f[CBI]union\-underlay\-directory\fP\f[CI]=directory\fP
+Specify the directory where the read-only underlying directories will be
+created.  The default is \[oq]\*[SCHROOT_UNDERLAY_DIR]\[cq].
+.SS Chroot isolation
+.PP
+On Linux systems, it is possible to isolate some resources when running a
+command inside the chroot.  These include:
+.TP
+\[bu]
+The network
+.TP
+\[bu]
+System V semaphore undo lists
+.TP
+\[bu]
+System V IPC messages, semaphores and shared memory
+.TP
+\[bu]
+The UTS (uname) namespace
+.PP
+.TP
+\f[CBI]unshare.net=\fP\f[CI]true\fP|\f[CI]false\fP
+Unshare networking.  Network devices will not be shared with the host.  By
+default, only the local loopback interface will be available.  A custom setup
+script could make additional adjustments to the networking configuration.
+.TP
+\f[CBI]unshare.sysvipc=\fP\f[CI]true\fP|\f[CI]false\fP
+Unshare System V IPC.  This creates a new IPC namespace (messages, semaphores
+and shared memory are not shared with the host).
+.TP
+\f[CBI]unshare.sysvsem=\fP\f[CI]true\fP|\f[CI]false\fP
+Unshare System V semaphore undo values.  This creates a separate undo list.
+.TP
+\f[CBI]unshare.uts=\fP\f[CI]true\fP|\f[CI]false\fP
+Unshare the UTS namespace.  A different hostname and domainname may be
+configured in the chroot, and will not be shared with the host.
+.PP
+Note that to specify this as overrides on the command-line, the key names
+should be added to the \f[CI]user\-modifiable\-keys\fP or
+\f[CI]rootr\-modifiable\-keys\fP keys keys.  See the section
+\[lq]\fICustomisation\fP\[rq] below.
+.SS Customisation
+.PP
+In addition to the configuration keys listed above, it is possible to add
+custom keys.  These keys will be used to add additional environment
+variables to the setup script environment when setup scripts are run.  The only
+restriction is that the key name consists only of alphanumeric characters and
+hyphens, begins with an alphabet character and contains at least one period.
+That is to say, that it matches the extended regular expression
+\[lq]^([a-z][a-z0-9]*\\.)+[a-z][a-z0-9-]*$\[rq].
+.PP
+For example:
+.RS
+.EX
+debian.apt-update=true
+debian.distribution=unstable
+.EE
+.RE
+.PP
+would set the following environment:
+.RS
+.EX
+DEBIAN_APT_UPDATE=true
+DEBIAN_DISTRIBUTION=unstable
+.EE
+.RE
+.PP
+Note that it is an error to use different key names which would set the same
+environment variable by mixing periods and hyphens.
+.PP
+Custom configuration keys may also be modified at runtime using the
+\fI\-\-option\fP option.  However, for security, only selected keys may be
+modified.  These keys are specified using the following options:
+.TP
+\f[CBI]user\-modifiable\-keys=\fP\f[CI]key1,key2,..\fP
+Set the keys which users may modify using \fI\-\-option\fP.
+.TP
+\f[CBI]root\-modifiable\-keys=\fP\f[CI]key1,key2,..\fP Set the keys which the
+root user may modify using \fI\-\-option\fP.  Note that the root user may use
+the keys specified in \f[CI]user\-modifiable\-keys\fP in addition to those
+specified here.
+.SS Localisation
+.PP
+Some keys may be localised in multiple languages.  This is achieved by adding
+the locale name in square brackets after the key name.  For example:
+.RS
+.EX
+description[en_GB]=\f[CI]British English translation\fP
+.EE
+.RE
+.PP
+This will localise the \f[CI]description\fP key for the en_GB locale.
+.RS
+.EX
+description[fr]=\f[CI]French translation\fP
+.EE
+.RE
+.PP
+This will localise the \f[CI]description\fP key for all French locales.
+.SH CHROOT NAMES
+A number of characters or words are not permitted in a chroot name, session
+name or configuration filename.  The name may not contain a leading period
+(\[oq].\[cq]).  The characters \[oq]:\[cq] (colon), \[oq],\[cq] (comma) and
+\[oq]/\[cq] (forward slash) are not permitted anywhere in the name.  The name
+may also not contain a trailing tilde (\[oq]~\[cq]).  The rationale for these
+restrictions is given below.
+.TP
+.RB \[oq] . \[cq]
+A leading period could be used to create a name with a relative path in it, in
+combination with \[oq]/\[cq], and this could allow overwriting of files on the
+host filesystem.  Not allowing this character also means hidden files cannot be
+created.  It also means some editor backups are automatically ignored.  Periods
+are allowed anywhere else in the name.
+.TP
+.RB \[oq] : \[cq]
+A colon is used as a namespace delimiter, and so is not permitted as part of a
+chroot or session name.  LVM snapshot names may also not contain this character
+due to a naming restriction by
+.BR lvcreate (8).
+.TP
+.RB \[oq] / \[cq]
+Names containing this character are not valid filenames.  A forward slash would
+potentially allow creation of files in subdirectories.
+.TP
+.RB \[oq] , \[cq]
+Commas are used to separate items in lists.  Aliases are separated by commas
+and hence can't contain commas in their name.
+.TP
+.RB \[oq] ~ \[cq]
+Filenames containing trailing tildes are used for editor backup files, which
+are ignored.  Tildes are allowed anywhere else in the name.
+.TP
+.RB \[oq] dpkg-old \[cq]
+.TQ
+.RB \[oq] dpkg-dist \[cq]
+.TQ
+.RB \[oq] dpkg-new \[cq]
+.TQ
+.RB \[oq] dpkg-tmp \[cq]
+These names may not appear at the end of a name.  These are saved copies of
+conffiles used by the dpkg package manager, and will be ignored.
+.SH SECURITY
+.SS Untrusted users
+Note that giving untrusted users root access to chroots is a \fBserious
+security risk\fP!  Although the untrusted user will only have root access to
+files inside the chroot, in practice there are many obvious ways of breaking
+out of the chroot and of disrupting services on the host system.  As always,
+this boils down to \fItrust\fP.
+.PP
+.B Do not give chroot root access to users you would not trust
+.B with root access to the host system.
+.SS Profiles
+Depending upon which profile you have configured with the
+\f[CI]script\-config\fP option, different filesystems will be mounted inside
+the chroot, and different files will be copied into the chroot from the host.
+Some profiles will mount the host's \fI/dev\fP, while others will not.  Some
+profiles also bind mount additional parts of the host filesystem in order to
+allow use of certain features, including user's home directories and specific
+parts of \fI/var\fP.  Check the profile's \fIfstab\fP file to be certain of
+what will be mounted, and the other profile files to see which files and system
+databases will be copied into the chroot.  Choose a different profile or edit
+the files to further restrict what is made available inside the chroot.
+.PP
+There is a tradeoff between security (keeping the chroot as minimal as
+possible) and usability (which sometimes requires access to parts of the host
+filesystem).  The different profiles make different tradeoffs, and it is
+important that you assess which meets the security/usability tradeoff you
+require.
+.SH EXAMPLE
+.EX
+# Sample configuration
+
+[sid]
+type=plain
+description=Debian unstable
+description[fr_FR]=Debian instable
+directory=/srv/chroot/sid
+priority=3
+users=jim
+groups=sbuild
+root\-users=rleigh
+aliases=unstable,default
+
+[etch]
+type=block\-device
+description=Debian testing (32\-bit)
+priority=2
+groups=users
+#groups=sbuild\-security
+aliases=testing
+device=/dev/hda_vg/etch_chroot
+mount\-options=\-o atime
+personality=linux32
+
+[sid\-file]
+type=file
+description=Debian sid file\-based chroot
+priority=3
+groups=sbuild
+file=/srv/chroots/sid.tar.gz
+
+[sid\-snapshot]
+type=lvm\-snapshot
+description=Debian unstable LVM snapshot
+priority=3
+groups=sbuild
+users=rleigh
+source\-root\-users=rleigh
+source\-root\-groups=admin
+device=/dev/hda_vg/sid_chroot
+mount\-options=\-o atime,sync,user_xattr
+lvm\-snapshot\-options=\-\-size 2G
+.EE
+.SH FILES
+.SS Chroot definitions
+.TP
+\f[BI]\*[SCHROOT_CONF]\fP
+The system-wide chroot definition file.  This file must be owned by the root
+user, and not be writable by other.
+.TP
+\f[BI]\*[SCHROOT_CONF_CHROOT_D]\fP
+Additional chroot definitions may be placed in files under this directory.
+They are treated in exactly that same manner as \fI\*[SCHROOT_CONF]\fP.  Each
+file may contain one or more chroot definitions.
+.SS Setup script configuration
+The directory \f[BI]\*[SCHROOT_SYSCONF_DIR]/default\fP contains the default
+settings used by setup scripts.
+.TP
+\f[BI]config\fP
+Main configuration file read by setup scripts.  The format of this file is
+described in
+.BR schroot\-script\-config (5).
+This is the default value for the \f[CI]script\-config\fP key.  Note that this
+was formerly named \fI\*[SCHROOT_SYSCONF_DIR]/script\-defaults\fP.  The following
+files are referenced by default:
+.TP
+\f[BI]copyfiles\fP
+A list of files to copy into the chroot from the host system.  Note that this
+was formerly named \fI\*[SCHROOT_SYSCONF_DIR]/copyfiles\-defaults\fP.
+.TP
+\f[BI]fstab\fP
+A file in the format decribed in
+.BR fstab (5),
+used to mount filesystems inside the chroot.  The mount location is relative to
+the root of the chroot.  Note that this was formerly named
+\fI\*[SCHROOT_SYSCONF_DIR]/mount\-defaults\fP.
+.TP
+\f[BI]nssdatabases\fP
+System databases (as described in \fI/etc/nsswitch.conf\fP on GNU/Linux
+systems) to copy into the chroot from the host.  Note that this was formerly
+named \fI\*[SCHROOT_SYSCONF_DIR]/nssdatabases\-defaults\fP.
+.so authors.man
+.so copyright.man
+.SH SEE ALSO
+.BR sbuild (1),
+.BR schroot (1),
+.BR schroot\-script\-config (5),
+.BR schroot\-faq (7),
+.BR mount (8).
+.\"#
+.\"# The following sets edit modes for GNU EMACS
+.\"# Local Variables:
+.\"# mode:nroff
+.\"# fill-column:79
+.\"# End:

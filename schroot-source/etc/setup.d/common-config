@@ -1,0 +1,61 @@
+# Copyright © 2012-2013  Roger Leigh <rleigh@debian.org>
+#
+# schroot is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# schroot is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see
+# <http://www.gnu.org/licenses/>.
+#
+#####################################################################
+
+# Common configuration for use in schroot setup scripts
+
+# Source setup.config if set
+if [ -n "${SETUP_CONFIG}" ]; then
+    SETUP_CONFIG="${SYSCONF_DIR}/${SETUP_CONFIG}"
+    if [ -f "$SETUP_CONFIG" ]; then
+        . "$SETUP_CONFIG"
+    fi
+fi
+# Source script-config if set.  If the file is no longer present
+# (likely for upgrades), then set the defaults here.
+if [ -n "$CHROOT_SCRIPT_CONFIG" ]; then
+    FSTAB="$(dirname "$CHROOT_SCRIPT_CONFIG")/fstab"
+    COPYFILES="$(dirname "$CHROOT_SCRIPT_CONFIG")/copyfiles"
+    NSSDATABASES="$(dirname "$CHROOT_SCRIPT_CONFIG")/nssdatabases"
+    if [ -f "$CHROOT_SCRIPT_CONFIG" ]; then
+        . "$CHROOT_SCRIPT_CONFIG"
+    fi
+fi
+
+# Set absolute paths
+if [ -n "${SETUP_FSTAB}" ]; then
+    SETUP_FSTAB="${SYSCONF_DIR}/${SETUP_FSTAB}"
+fi
+if [ -n "${SETUP_COPYFILES}" ]; then
+    SETUP_COPYFILES="${SYSCONF_DIR}/${SETUP_COPYFILES}"
+fi
+if [ -n "${SETUP_NSSDATABASES}" ]; then
+    SETUP_NSSDATABASES="${SYSCONF_DIR}/${SETUP_NSSDATABASES}"
+fi
+
+# For backward compatibility with old script-config files.  This
+# overrides the new profile userdata settings.  It will be removed in
+# 1.7.x
+if [ -n "$FSTAB" ]; then
+    SETUP_FSTAB="$FSTAB"
+fi
+if [ -n "$COPYFILES" ]; then
+    SETUP_COPYFILES="$COPYFILES"
+fi
+if [ -n "$NSSDATABASES" ]; then
+    SETUP_NSSDATABASES="$NSSDATABASES"
+fi

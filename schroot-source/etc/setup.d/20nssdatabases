@@ -1,0 +1,65 @@
+#!/bin/sh
+# Copyright © 2005-2013  Roger Leigh <rleigh@debian.org>
+#
+# schroot is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# schroot is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see
+# <http://www.gnu.org/licenses/>.
+#
+#####################################################################
+
+set -e
+
+. "$SETUP_DATA_DIR/common-data"
+. "$SETUP_DATA_DIR/common-functions"
+. "$SETUP_DATA_DIR/common-config"
+
+# Copy NSS database from host to chroot
+# $1: database name
+# $2: destination file name
+dup_nss()
+{
+    info "Copying $1 database to $2"
+    getent "$1" > "$2"
+}
+
+if [ $STAGE = "setup-start" ] || [ $STAGE = "setup-recover" ]; then
+
+    if [ -n "$SETUP_NSSDATABASES" ]; then
+        if [ -f "$SETUP_NSSDATABASES" ]; then
+            while read db; do
+                if echo "$db" | egrep -q '^(#|$)' ; then
+                    continue
+                fi
+
+                # Device and inode
+                dr=$(/usr/bin/stat --format="%d %i" "/etc/$db")
+                # This one can fail since it might not exist yet
+                dc=$(/usr/bin/stat --format="%d %i" "${CHROOT_PATH}/etc/$db" 2>/dev/null || :)
+
+                # If the database inside and outside the chroot is the
+                # same, it's very likely that dup_nss would blank the
+                # database, so skip it.
+                if [ "$dr" = "$dc" ]; then
+                    warn "$db files '/etc/$db' and '${CHROOT_PATH}/etc/$db' are the same file; skipping"
+                    continue;
+                fi
+
+                dup_nss "$db" "${CHROOT_PATH}/etc/$db"
+            done < "$SETUP_NSSDATABASES"
+        else
+            fatal "nssdatabases file '$SETUP_NSSDATABASES' does not exist"
+        fi
+    fi
+
+fi
+

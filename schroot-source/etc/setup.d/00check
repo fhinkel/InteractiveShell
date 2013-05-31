@@ -1,0 +1,54 @@
+#!/bin/sh
+# Copyright © 2005-2013  Roger Leigh <rleigh@debian.org>
+#
+# schroot is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# schroot is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see
+# <http://www.gnu.org/licenses/>.
+#
+#####################################################################
+
+set -e
+
+. "$SETUP_DATA_DIR/common-data"
+. "$SETUP_DATA_DIR/common-functions"
+. "$SETUP_DATA_DIR/common-config"
+
+# Plain chroots should not be able to use scripts, but check anyway to
+# be safe.
+if [ $CHROOT_TYPE = "plain" ]; then
+    fatal "plain chroots may not run setup scripts; use directory instead"
+fi
+
+# Skip if run at inappropriate point.
+if [ $STAGE = "setup-start" ] || [ $STAGE = "setup-recover" ] && [ "$(basename "$0")" = "99check" ]; then
+    exit 0;
+elif [ $STAGE = "setup-stop" ] && [ "$(basename "$0")" = "00check" ]; then
+    exit 0;
+fi
+
+info "STAGE=$STAGE"
+info "STATUS=$STATUS"
+if [ "$VERBOSE" = "verbose" ]; then
+    env | sort
+fi
+
+# A basic safety check, so that the root filesystem doesn't get
+# toasted by accident.
+if [ -z "$CHROOT_PATH" ] \
+    || [ "$CHROOT_PATH" = "/" ] \
+    || ( [ -z "$CHROOT_UNION_TYPE" ] \
+         && [ "$CHROOT_DIRECTORY" = "/" ] ) \
+    || [ "$CHROOT_UNION_OVERLAY_DIRECTORY" = "/" ]
+then
+    fatal "Invalid chroot mount path or directory"
+fi

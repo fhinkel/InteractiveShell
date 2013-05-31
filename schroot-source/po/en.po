@@ -1,0 +1,1354 @@
+# schroot British English translation.
+# Copyright © 2005-2012 Roger Leigh <rleigh@debian.org>
+# This file is distributed under the same license as the schroot package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: schroot 0.1.2\n"
+"Report-Msgid-Bugs-To: Roger Leigh <rleigh@debian.org>\n"
+"POT-Creation-Date: 2013-05-05 00:58+0100\n"
+"PO-Revision-Date: 2013-05-05 01:00+0100\n"
+"Last-Translator: Roger Leigh <rleigh@debian.org>\n"
+"Language-Team: English <rleigh@debian.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. TRANSLATORS: '...' is an ellipsis e.g. U+2026, and '-'
+#. is an em-dash.
+msgid "[OPTION…] chroot [COMMAND] — run command or shell in a chroot"
+msgstr "[OPTION…] chroot [COMMAND] — run command or shell in a chroot"
+
+msgid "Print paths to available chroots"
+msgstr "Print paths to available chroots"
+
+msgid "Select all chroots"
+msgstr "Select all chroots"
+
+msgid "Directory to use"
+msgstr "Directory to use"
+
+msgid "Only one command may be specified"
+msgstr "Only one command may be specified"
+
+msgid "Command must have an absolute path"
+msgstr "Command must have an absolute path"
+
+msgid "No chroot specified"
+msgstr "No chroot specified"
+
+#. TRANSLATORS: %1% = chroot name
+#. TRANSLATORS: %2% = command
+#, boost-format
+msgid "[%1% chroot] Running command: “%2%”"
+msgstr "[%1% chroot] Running command: “%2%”"
+
+#. TRANSLATORS: '...' is an ellipsis e.g. U+2026, and '-'
+#. is an em-dash.
+msgid "[OPTION…] [COMMAND] — run command or shell in a chroot"
+msgstr "[OPTION…] [COMMAND] — run command or shell in a chroot"
+
+msgid "Print path to selected chroot"
+msgstr "Print path to selected chroot"
+
+msgid "Preserve user environment"
+msgstr "Preserve user environment"
+
+msgid "--quiet and --verbose may not be used at the same time"
+msgstr "--quiet and --verbose may not be used at the same time"
+
+msgid "Using verbose output"
+msgstr "Using verbose output"
+
+msgid "--chroot and --all may not be used at the same time"
+msgstr "--chroot and --all may not be used at the same time"
+
+msgid "Using --chroots only"
+msgstr "Using --chroots only"
+
+msgid "Print location of selected chroots"
+msgstr "Print location of selected chroots"
+
+msgid "Select all chroots and active sessions"
+msgstr "Select all chroots and active sessions"
+
+msgid "Select all active sessions"
+msgstr "Select all active sessions"
+
+msgid "Select all source chroots"
+msgstr "Select all source chroots"
+
+msgid "Do not include aliases"
+msgstr "Do not include aliases"
+
+msgid "Shell to use as login shell"
+msgstr "Shell to use as login shell"
+
+msgid "Username (default current user)"
+msgstr "Username (default current user)"
+
+msgid "Set option"
+msgstr "Set option"
+
+msgid "Begin, run and end a session automatically (default)"
+msgstr "Begin, run and end a session automatically (default)"
+
+msgid "Begin a session; returns a session ID"
+msgstr "Begin a session; returns a session ID"
+
+msgid "Recover an existing session"
+msgstr "Recover an existing session"
+
+msgid "Run an existing session"
+msgstr "Run an existing session"
+
+msgid "End an existing session"
+msgstr "End an existing session"
+
+msgid "Session name (defaults to an automatically generated name)"
+msgstr "Session name (defaults to an automatically generated name)"
+
+msgid "Force operation, even if it fails"
+msgstr "Force operation, even if it fails"
+
+#. TRANSLATORS: %1% = program name
+#. TRANSLATORS: %2% = program version
+#. TRANSLATORS: %3% = release date
+#, boost-format
+msgid "%1% (Debian sbuild) %2% (%3%)"
+msgstr "%1% (Debian sbuild) %2% (%3%)"
+
+#. TRANSLATORS: %1% = copyright year (start)
+#. TRANSLATORS: %2% = copyright year (end)
+#, boost-format
+msgid "Copyright © %1%–%2% Roger Leigh"
+msgstr "Copyright © %1%–%2% Roger Leigh"
+
+msgid "Written by Roger Leigh"
+msgstr "Written by Roger Leigh"
+
+msgid ""
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+msgstr ""
+"This is free software; see the source for copying conditions.  There is NO\n"
+"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+
+msgid "Configured features:"
+msgstr "Configured features:"
+
+msgid "Usage:"
+msgstr "Usage:"
+
+#. TRANSLATORS: %1% = program name
+#, boost-format
+msgid "Run “%1% --help” to list usage example and all available options"
+msgstr "Run “%1% --help” to list usage example and all available options"
+
+#, boost-format
+msgid "%1%: invalid action"
+msgstr "%1%: invalid action"
+
+msgid "Only one action may be specified"
+msgstr "Only one action may be specified"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "General options"
+msgstr "General options"
+
+msgid "Hidden options"
+msgstr "Hidden options"
+
+msgid "Show help options"
+msgstr "Show help options"
+
+msgid "Print version information"
+msgstr "Print version information"
+
+msgid "Show less output"
+msgstr "Show less output"
+
+msgid "Show more output"
+msgstr "Show more output"
+
+msgid "Enable debugging messages"
+msgstr "Enable debugging messages"
+
+msgid "Invalid debug level"
+msgstr "Invalid debug level"
+
+msgid "dchroot session restriction"
+msgstr "dchroot session restriction"
+
+msgid "Failed to get hostname"
+msgstr "Failed to get hostname"
+
+#. TRANSLATORS: %1% = user name or user ID
+#, boost-format
+msgid "User ‘%1%’ not found"
+msgstr "User ‘%1%’ not found"
+
+#. TRANSLATORS: %1% = group name or group ID
+#. TRANSLATORS: %1% = group name
+#, boost-format
+msgid "Group ‘%1%’ not found"
+msgstr "Group ‘%1%’ not found"
+
+msgid "Authentication failed"
+msgstr "Authentication failed"
+
+msgid "Access not authorised"
+msgstr "Access not authorised"
+
+msgid "PAM is already initialised"
+msgstr "PAM is already initialised"
+
+msgid "PAM error"
+msgstr "PAM error"
+
+msgid "PAM failed to shut down cleanly"
+msgstr "PAM failed to shut down cleanly"
+
+#. TRANSLATORS: %1% = program name (PAM service name)
+#, boost-format
+msgid "You do not have permission to access the %1% service."
+msgstr "You do not have permission to access the %1% service."
+
+msgid "This failure will be reported."
+msgstr "This failure will be reported."
+
+msgid "No controlling terminal"
+msgstr "No controlling terminal"
+
+msgid "Timed out"
+msgstr "Timed out"
+
+#. TRANSLATORS: Please use an ellipsis e.g. U+2026
+msgid "Time is running out…"
+msgstr "Time is running out…"
+
+msgid "Failed to get terminal settings"
+msgstr "Failed to get terminal settings"
+
+#. TRANSLATORS: %1% = integer
+#, boost-format
+msgid "Unsupported conversation type ‘%1%’"
+msgstr "Unsupported conversation type ‘%1%’"
+
+msgid "Password: "
+msgstr "Password: "
+
+msgid "Password:"
+msgstr "Password:"
+
+#, boost-format
+msgid "[schroot] password for %1%: "
+msgstr "[schroot] password for %1%: "
+
+msgid "An unknown exception occurred"
+msgstr "An unknown exception occurred"
+
+msgid "Pluggable Authentication Modules"
+msgstr "Pluggable Authentication Modules"
+
+msgid "Set RUSER"
+msgstr "Set RUSER"
+
+msgid "Set RHOST"
+msgstr "Set RHOST"
+
+msgid "Set TTY"
+msgstr "Set TTY"
+
+msgid "Set USER"
+msgstr "Set USER"
+
+msgid "Chroot creation failed"
+msgstr "Chroot creation failed"
+
+msgid "Device name not set"
+msgstr "Device name not set"
+
+#. TRANSLATORS: %1% = chroot type name
+#, boost-format
+msgid "Unknown chroot type ‘%1%’"
+msgstr "Unknown chroot type ‘%1%’"
+
+msgid "Device must have an absolute path"
+msgstr "Device must have an absolute path"
+
+msgid "Failed to lock device"
+msgstr "Failed to lock device"
+
+msgid "File is not a block device"
+msgstr "File is not a block device"
+
+msgid "Failed to unlock device"
+msgstr "Failed to unlock device"
+
+msgid "Directory must have an absolute path"
+msgstr "Directory must have an absolute path"
+
+#, boost-format
+msgid "Attempt to use facet ‘%1%’ which is not present"
+msgstr "Attempt to use facet ‘%1%’ which is not present"
+
+#, boost-format
+msgid "Attempt to add object ‘%1%’ which is not a facet"
+msgstr "Attempt to add object ‘%1%’ which is not a facet"
+
+#, boost-format
+msgid "Attempt to add facet ‘%1%’ which is already in use"
+msgstr "Attempt to add facet ‘%1%’ which is already in use"
+
+msgid "File must have an absolute path"
+msgstr "File must have an absolute path"
+
+msgid "Failed to acquire file lock"
+msgstr "Failed to acquire file lock"
+
+msgid "File is not a regular file"
+msgstr "File is not a regular file"
+
+msgid "File is not owned by user root"
+msgstr "File is not owned by user root"
+
+msgid "File has write permissions for others"
+msgstr "File has write permissions for others"
+
+msgid "Failed to discard file lock"
+msgstr "Failed to discard file lock"
+
+msgid "Location must have an absolute path"
+msgstr "Location must have an absolute path"
+
+msgid "Invalid name"
+msgstr "Invalid name"
+
+#, boost-format
+msgid "Could not set profile name from script configuration path ‘%1%’"
+msgstr "Could not set profile name from script configuration path ‘%1%’"
+
+#. TRANSLATORS: unlink refers to the C function which removes a file
+msgid "Failed to unlink session file"
+msgstr "Failed to unlink session file"
+
+msgid "Failed to write session file"
+msgstr "Failed to write session file"
+
+msgid "Message verbosity is invalid"
+msgstr "Message verbosity is invalid"
+
+#, boost-format
+msgid "Namespace separator ‘%1%’ may not be used in a chroot name"
+msgstr "Namespace separator ‘%1%’ may not be used in a chroot name"
+
+msgid "Naming restrictions are documented in schroot.conf(5)"
+msgstr "Naming restrictions are documented in schroot.conf(5)"
+
+#, boost-format
+msgid "Namespace separator ‘%1%’ may not be used in an alias name"
+msgstr "Namespace separator ‘%1%’ may not be used in an alias name"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Message Verbosity"
+msgstr "Message Verbosity"
+
+msgid "Users"
+msgstr "Users"
+
+msgid "Groups"
+msgstr "Groups"
+
+msgid "Root Users"
+msgstr "Root Users"
+
+msgid "Root Groups"
+msgstr "Root Groups"
+
+msgid "Aliases"
+msgstr "Aliases"
+
+msgid "Preserve Environment"
+msgstr "Preserve Environment"
+
+msgid "Default Shell"
+msgstr "Default Shell"
+
+msgid "Environment Filter"
+msgstr "Environment Filter"
+
+msgid "Run Setup Scripts"
+msgstr "Run Setup Scripts"
+
+msgid "Configuration Profile"
+msgstr "Configuration Profile"
+
+msgid "Script Configuration"
+msgstr "Script Configuration"
+
+msgid "Session Managed"
+msgstr "Session Managed"
+
+msgid "Session Cloned"
+msgstr "Session Cloned"
+
+msgid "Session Purged"
+msgstr "Session Purged"
+
+msgid "Command Prefix"
+msgstr "Command Prefix"
+
+msgid "Mount Location"
+msgstr "Mount Location"
+
+msgid "Path"
+msgstr "Path"
+
+msgid "Chroot"
+msgstr "Chroot"
+
+msgid "Session"
+msgstr "Session"
+
+msgid "Source"
+msgstr "Source"
+
+#. TRANSLATORS: %1% = chroot alias name
+#. TRANSLATORS: %4% = chroot name
+#, boost-format
+msgid "Alias ‘%1%’ already associated with ‘%4%’ chroot"
+msgstr "Alias ‘%1%’ already associated with ‘%4%’ chroot"
+
+#. TRANSLATORS: %1% = chroot name
+#, boost-format
+msgid "%1%: Chroot not found"
+msgstr "%1%: Chroot not found"
+
+#. TRANSLATORS: %1% = comma-separated list of chroot names
+#, boost-format
+msgid "%1%: Chroots not found"
+msgstr "%1%: Chroots not found"
+
+#. TRANSLATORS: %1% = chroot name
+#, boost-format
+msgid "A chroot or alias ‘%1%’ already exists with this name"
+msgstr "A chroot or alias ‘%1%’ already exists with this name"
+
+msgid "Failed to open file"
+msgstr "Failed to open file"
+
+msgid "No such namespace"
+msgstr "No such namespace"
+
+msgid "Duplicate names are not allowed"
+msgstr "Duplicate names are not allowed"
+
+msgid "Available chroots: "
+msgstr "Available chroots: "
+
+msgid "Device"
+msgstr "Device"
+
+msgid "Support for ‘block-device’ chroots"
+msgstr "Support for ‘block-device’ chroots"
+
+msgid "Support for ‘btrfs-snapshot’ chroots"
+msgstr "Support for ‘btrfs-snapshot’ chroots"
+
+msgid "Btrfs Source Subvolume"
+msgstr "Btrfs Source Subvolume"
+
+msgid "Btrfs Snapshot Directory"
+msgstr "Btrfs Snapshot Directory"
+
+msgid "Btrfs Snapshot Name"
+msgstr "Btrfs Snapshot Name"
+
+msgid "Support for ‘custom’ chroots"
+msgstr "Support for ‘custom’ chroots"
+
+msgid "Directory"
+msgstr "Directory"
+
+msgid "Support for ‘directory’ chroots"
+msgstr "Support for ‘directory’ chroots"
+
+msgid "Support for ‘file’ chroots"
+msgstr "Support for ‘file’ chroots"
+
+msgid "File"
+msgstr "File"
+
+msgid "File Repack"
+msgstr "File Repack"
+
+msgid "Location"
+msgstr "Location"
+
+msgid "Support for filesystem unioning"
+msgstr "Support for filesystem unioning"
+
+#. TRANSLATORS: %1% = chroot fs type
+#, boost-format
+msgid "Unknown filesystem union type ‘%1%’"
+msgstr "Unknown filesystem union type ‘%1%’"
+
+msgid "Union overlay must have an absolute path"
+msgstr "Union overlay must have an absolute path"
+
+msgid "Union underlay must have an absolute path"
+msgstr "Union underlay must have an absolute path"
+
+msgid "Filesystem Union Type"
+msgstr "Filesystem Union Type"
+
+msgid "Filesystem Union Mount Options"
+msgstr "Filesystem Union Mount Options"
+
+msgid "Filesystem Union Overlay Directory"
+msgstr "Filesystem Union Overlay Directory"
+
+msgid "Filesystem Union Underlay Directory"
+msgstr "Filesystem Union Underlay Directory"
+
+msgid "Support for ‘loopback’ chroots"
+msgstr "Support for ‘loopback’ chroots"
+
+msgid "Support for ‘lvm-snapshot’ chroots"
+msgstr "Support for ‘lvm-snapshot’ chroots"
+
+msgid "LVM Snapshot Device"
+msgstr "LVM Snapshot Device"
+
+msgid "LVM Snapshot Options"
+msgstr "LVM Snapshot Options"
+
+msgid "Support for filesystem mounting"
+msgstr "Support for filesystem mounting"
+
+msgid "Mount Device"
+msgstr "Mount Device"
+
+msgid "Mount Options"
+msgstr "Mount Options"
+
+msgid "Linux kernel Application Binary Interface switching"
+msgstr "Linux kernel Application Binary Interface switching"
+
+#. TRANSLATORS: "Personality" is the Linux kernel personality
+#. (process execution domain).  See schroot.conf(5).
+msgid "Personality"
+msgstr "Personality"
+
+msgid "Support for ‘plain’ chroots"
+msgstr "Support for ‘plain’ chroots"
+
+msgid "Support for session chroot cloning"
+msgstr "Support for session chroot cloning"
+
+msgid "(session chroot)"
+msgstr "(session chroot)"
+
+msgid "Support for session chroots"
+msgstr "Support for session chroots"
+
+msgid "Original Chroot Name"
+msgstr "Original Chroot Name"
+
+msgid "Selected Chroot Name"
+msgstr "Selected Chroot Name"
+
+msgid "Session ID"
+msgstr "Session ID"
+
+msgid "Support for source chroot cloning"
+msgstr "Support for source chroot cloning"
+
+msgid "Source Users"
+msgstr "Source Users"
+
+msgid "Source Groups"
+msgstr "Source Groups"
+
+msgid "Source Root Users"
+msgstr "Source Root Users"
+
+msgid "Source Root Groups"
+msgstr "Source Root Groups"
+
+msgid "(source chroot)"
+msgstr "(source chroot)"
+
+msgid "Support for source chroots"
+msgstr "Support for source chroots"
+
+msgid "Linux dissassociation of shared execution context"
+msgstr "Linux dissassociation of shared execution context"
+
+#, boost-format
+msgid "Could not unshare ‘%1%’ process execution context"
+msgstr "Could not unshare ‘%1%’ process execution context"
+
+msgid "Unshare Networking"
+msgstr "Unshare Networking"
+
+msgid "Unshare System V IPC"
+msgstr "Unshare System V IPC"
+
+msgid "Unshare System V Semaphores"
+msgstr "Unshare System V Semaphores"
+
+msgid "Unshare UTS namespace"
+msgstr "Unshare UTS namespace"
+
+msgid "User setting of custom configuration parameters"
+msgstr "User setting of custom configuration parameters"
+
+#, boost-format
+msgid "Environment variable ‘%1%’ is ambiguous"
+msgstr "Environment variable ‘%1%’ is ambiguous"
+
+#, boost-format
+msgid "Configuration key ‘%1%’ is ambiguous"
+msgstr "Configuration key ‘%1%’ is ambiguous"
+
+#, boost-format
+msgid "Configuration key ‘%1%’ is not permitted to be modified."
+msgstr "Configuration key ‘%1%’ is not permitted to be modified."
+
+#, boost-format
+msgid "Configuration key name ‘%1%’ is not a permitted name."
+msgstr "Configuration key name ‘%1%’ is not a permitted name."
+
+#. TRANSLATORS: %1% = key name for which value parsing failed
+#. TRANSLATORS: %4% = additional details of error
+#, boost-format
+msgid "%1%: %4%"
+msgstr "%1%: %4%"
+
+#, boost-format
+msgid ""
+"Configuration keys additional to ‘%1%’ would set this setup script "
+"environment variable"
+msgstr ""
+"Configuration keys additional to ‘%1%’ would set this setup script "
+"environment variable"
+
+msgid "User Modifiable Keys"
+msgstr "User Modifiable Keys"
+
+msgid "Root Modifiable Keys"
+msgstr "Root Modifiable Keys"
+
+msgid "User Data"
+msgstr "User Data"
+
+#, boost-format
+msgid ""
+"More than one configuration key would set the ‘%1%’ environment variable"
+msgstr ""
+"More than one configuration key would set the ‘%1%’ environment variable"
+
+msgid "The key is not present in user-modifiable-keys or root-modifiable-keys"
+msgstr "The key is not present in user-modifiable-keys or root-modifiable-keys"
+
+msgid "The key is not present in user-modifiable-keys"
+msgstr "The key is not present in user-modifiable-keys"
+
+msgid "The controlling terminal close-on-execute flag could not be set"
+msgstr "The controlling terminal close-on-execute flag could not be set"
+
+msgid "The controlling terminal file descriptor could not be duplicated"
+msgstr "The controlling terminal file descriptor could not be duplicated"
+
+msgid "true"
+msgstr "true"
+
+msgid "false"
+msgstr "false"
+
+#. TRANSLATORS: %1% = title of section
+#. TRANSLATORS: Please format the --- as a continuous line, e.g. U+2500
+#, boost-format
+msgid "─── %1% ───"
+msgstr "─── %1% ───"
+
+#, boost-format
+msgid "Can't open file ‘%1%’"
+msgstr "Can't open file ‘%1%’"
+
+#, boost-format
+msgid "line %1% [%2%]: Deprecated key ‘%4%’ used"
+msgstr "line %1% [%2%]: Deprecated key ‘%4%’ used"
+
+#, boost-format
+msgid "[%1%]: Deprecated key ‘%4%’ used"
+msgstr "[%1%]: Deprecated key ‘%4%’ used"
+
+#, boost-format
+msgid "line %1% [%2%]: Disallowed key ‘%4%’ used"
+msgstr "line %1% [%2%]: Disallowed key ‘%4%’ used"
+
+#, boost-format
+msgid "[%1%]: Disallowed key ‘%4%’ used"
+msgstr "[%1%]: Disallowed key ‘%4%’ used"
+
+#, boost-format
+msgid "line %1%: Duplicate group ‘%4%’"
+msgstr "line %1%: Duplicate group ‘%4%’"
+
+#, boost-format
+msgid "line %1% [%2%]: Duplicate key ‘%4%’"
+msgstr "line %1% [%2%]: Duplicate key ‘%4%’"
+
+#, boost-format
+msgid "line %1%: Invalid group: “%4%”"
+msgstr "line %1%: Invalid group: “%4%”"
+
+#, boost-format
+msgid "line %1% [%2%]: Invalid key ‘%4%’ used"
+msgstr "line %1% [%2%]: Invalid key ‘%4%’ used"
+
+#, boost-format
+msgid "line %1%: Invalid line: “%4%”"
+msgstr "line %1%: Invalid line: “%4%”"
+
+#, boost-format
+msgid "line %1% [%2%]: Required key ‘%4%’ is missing"
+msgstr "line %1% [%2%]: Required key ‘%4%’ is missing"
+
+#, boost-format
+msgid "[%1%]: Required key ‘%4%’ is missing"
+msgstr "[%1%]: Required key ‘%4%’ is missing"
+
+#, boost-format
+msgid "line %1%: No group specified: “%4%”"
+msgstr "line %1%: No group specified: “%4%”"
+
+#, boost-format
+msgid "line %1%: No key specified: “%4%”"
+msgstr "line %1%: No key specified: “%4%”"
+
+#, boost-format
+msgid "line %1% [%2%]: Obsolete key ‘%4%’ used"
+msgstr "line %1% [%2%]: Obsolete key ‘%4%’ used"
+
+#, boost-format
+msgid "[%1%]: Obsolete key ‘%4%’ used"
+msgstr "[%1%]: Obsolete key ‘%4%’ used"
+
+#, boost-format
+msgid "[%1%]: %4%"
+msgstr "[%1%]: %4%"
+
+#, boost-format
+msgid "[%1%] %2%: %4%"
+msgstr "[%1%] %2%: %4%"
+
+#, boost-format
+msgid "line %1% [%2%]: %4%"
+msgstr "line %1% [%2%]: %4%"
+
+#, boost-format
+msgid "line %1% [%2%] %3%: %4%"
+msgstr "line %1% [%2%] %3%: %4%"
+
+#, boost-format
+msgid "line %1% [%2%]: Unknown key ‘%4%’ used"
+msgstr "line %1% [%2%]: Unknown key ‘%4%’ used"
+
+msgid "This option may be present in a newer version"
+msgstr "This option may be present in a newer version"
+
+msgid ""
+"This option will be removed in the future; please update your configuration"
+msgstr ""
+"This option will be removed in the future; please update your configuration"
+
+msgid "This option has been removed, and no longer has any effect"
+msgstr "This option has been removed, and no longer has any effect"
+
+msgid "Failed to set timeout handler"
+msgstr "Failed to set timeout handler"
+
+msgid "Failed to set timeout"
+msgstr "Failed to set timeout"
+
+msgid "Failed to cancel timeout"
+msgstr "Failed to cancel timeout"
+
+msgid "Failed to lock file"
+msgstr "Failed to lock file"
+
+msgid "Failed to unlock file"
+msgstr "Failed to unlock file"
+
+#. TRANSLATORS: %4% = time in seconds
+#, boost-format
+msgid "Failed to lock file (timed out after %4% seconds)"
+msgstr "Failed to lock file (timed out after %4% seconds)"
+
+#. TRANSLATORS: %4% = time in seconds
+#, boost-format
+msgid "Failed to unlock file (timed out after %4% seconds)"
+msgstr "Failed to unlock file (timed out after %4% seconds)"
+
+#. TRANSLATORS: %4% = time in seconds
+#. TRANSLATORS: %5% = integer process ID
+#, boost-format
+msgid ""
+"Failed to lock device (timed out after %4% seconds; lock held by PID %5%)"
+msgstr ""
+"Failed to lock device (timed out after %4% seconds; lock held by PID %5%)"
+
+msgid "Failed to test device lock"
+msgstr "Failed to test device lock"
+
+#. TRANSLATORS: %4% = time in seconds
+#. TRANSLATORS: %5% = integer process ID
+#, boost-format
+msgid ""
+"Failed to unlock device (timed out after %4% seconds; lock held by PID %5%)"
+msgstr ""
+"Failed to unlock device (timed out after %4% seconds; lock held by PID %5%)"
+
+#. TRANSLATORS: "I" is an abbreviation of "Information"
+msgid "I: "
+msgstr "I: "
+
+#. TRANSLATORS: "W" is an abbreviation of "Warning"
+msgid "W: "
+msgstr "W: "
+
+#. TRANSLATORS: "E" is an abbreviation of "Error"
+msgid "E: "
+msgstr "E: "
+
+#. TRANSLATORS: %1% = integer debug level
+#. TRANSLATORS: "D" is an abbreviation of "Debug"
+#, boost-format
+msgid "D(%1%): "
+msgstr "D(%1%): "
+
+#. TRANSLATORS: %1% = mount file name
+#, boost-format
+msgid "Failed to open mount file ‘%1%’"
+msgstr "Failed to open mount file ‘%1%’"
+
+#. TRANSLATORS: %1% = mount file name
+#, boost-format
+msgid "Failed to read mount file ‘%1%’"
+msgstr "Failed to read mount file ‘%1%’"
+
+#. TRANSLATORS: %1% = value (arbitrary text)
+#, boost-format
+msgid "Could not parse value ‘%1%’"
+msgstr "Could not parse value ‘%1%’"
+
+#. TRANSLATORS: %1% = integer personality ID
+#, boost-format
+msgid "Personality ‘%1%’ is unknown"
+msgstr "Personality ‘%1%’ is unknown"
+
+#. TRANSLATORS: %1% = personality name
+#, boost-format
+msgid "Failed to set personality ‘%1%’"
+msgstr "Failed to set personality ‘%1%’"
+
+#. TRANSLATORS: %1% = a comma-separated list of personality names
+#, boost-format
+msgid "Valid personalities: %1%\n"
+msgstr "Valid personalities: %1%\n"
+
+msgid "Failed to fork child"
+msgstr "Failed to fork child"
+
+msgid "Wait for child failed"
+msgstr "Wait for child failed"
+
+#. TRANSLATORS: %1% = command name
+#. TRANSLATORS: %1% = command
+#. TRANSLATORS: %1% = command name
+#, boost-format
+msgid "Failed to execute “%1%”"
+msgstr "Failed to execute “%1%”"
+
+msgid "Failed to create pipe"
+msgstr "Failed to create pipe"
+
+msgid "Failed to duplicate file descriptor"
+msgstr "Failed to duplicate file descriptor"
+
+msgid "Failed to poll file descriptor"
+msgstr "Failed to poll file descriptor"
+
+msgid "Failed to read file descriptor"
+msgstr "Failed to read file descriptor"
+
+#. TRANSLATORS: %1% = command
+#, boost-format
+msgid "Executing ‘%1%’"
+msgstr "Executing ‘%1%’"
+
+#. TRANSLATORS: %1% = directory
+#, boost-format
+msgid "Failed to change to directory ‘%1%’"
+msgstr "Failed to change to directory ‘%1%’"
+
+#. TRANSLATORS: %4% = directory
+#, boost-format
+msgid "Falling back to directory ‘%4%’"
+msgstr "Falling back to directory ‘%4%’"
+
+msgid "Child dumped core"
+msgstr "Child dumped core"
+
+msgid "Child exited abnormally (reason unknown; not a signal or core dump)"
+msgstr "Child exited abnormally (reason unknown; not a signal or core dump)"
+
+#. TRANSLATORS: %4% = signal name
+#, boost-format
+msgid "Child terminated by signal ‘%4%’"
+msgstr "Child terminated by signal ‘%4%’"
+
+#. TRANSLATORS: %1% = directory
+#, boost-format
+msgid "Failed to change root to directory ‘%1%’"
+msgstr "Failed to change root to directory ‘%1%’"
+
+#. TRANSLATORS: %1% = chroot name
+#, boost-format
+msgid "No chroot found matching name or alias ‘%1%’"
+msgstr "No chroot found matching name or alias ‘%1%’"
+
+msgid "Failed to lock chroot"
+msgstr "Failed to lock chroot"
+
+msgid "Chroot setup failed"
+msgstr "Chroot setup failed"
+
+#. TRANSLATORS: %1% = chroot name
+msgid "Failed to unlock chroot"
+msgstr "Failed to unlock chroot"
+
+#. TRANSLATORS: %1% = command
+#, boost-format
+msgid "Command “%1%” must have an absolute path"
+msgstr "Command “%1%” must have an absolute path"
+
+#. TRANSLATORS: A supplementary group is the list of additional
+#. system groups a user belongs to, in addition to their default
+#. group.
+msgid "Failed to get supplementary groups"
+msgstr "Failed to get supplementary groups"
+
+#. TRANSLATORS: A supplementary group is the list of additional
+#. system groups a user belongs to, in addition to their default
+#. group.
+msgid "Failed to get supplementary group count"
+msgstr "Failed to get supplementary group count"
+
+#. TRANSLATORS: %1% = integer group ID
+#, boost-format
+msgid "Failed to set group ‘%1%’"
+msgstr "Failed to set group ‘%1%’"
+
+msgid "Failed to set supplementary groups"
+msgstr "Failed to set supplementary groups"
+
+msgid "Failed to drop root permissions"
+msgstr "Failed to drop root permissions"
+
+#. TRANSLATORS: %1% = chroot name
+#. TRANSLATORS: %4% = session identifier
+#, boost-format
+msgid ""
+"%1%: Chroot does not support setting a session ID; ignoring session ID ‘%4%’"
+msgstr ""
+"%1%: Chroot does not support setting a session ID; ignoring session ID ‘%4%’"
+
+#. TRANSLATORS: %1% = command
+#, boost-format
+msgid "Shell ‘%1%’ not available"
+msgstr "Shell ‘%1%’ not available"
+
+#. TRANSLATORS: %4% = command
+#, boost-format
+msgid "Falling back to shell ‘%4%’"
+msgstr "Falling back to shell ‘%4%’"
+
+#. TRANSLATORS: %4% = signal name
+#, boost-format
+msgid "Caught signal ‘%4%’"
+msgstr "Caught signal ‘%4%’"
+
+#. TRANSLATORS: %4% = signal name
+#, boost-format
+msgid "Failed to set signal handler ‘%4%’"
+msgstr "Failed to set signal handler ‘%4%’"
+
+#. TRANSLATORS: %1% = integer user ID
+#, boost-format
+msgid "Failed to set user ‘%1%’"
+msgstr "Failed to set user ‘%1%’"
+
+#. TRANSLATORS: %1% = user name
+#. TRANSLATORS: %2% = user name
+#. TRANSLATORS: Please translate "->" as a right arrow, e.g. U+2192
+#, boost-format
+msgid "(%1%→%2%): User switching is not permitted"
+msgstr "(%1%→%2%): User switching is not permitted"
+
+msgid "Error saving terminal settings"
+msgstr "Error saving terminal settings"
+
+msgid "Error restoring terminal settings"
+msgstr "Error restoring terminal settings"
+
+#. TRANSLATORS: %1% = chroot name
+#. TRANSLATORS: %4% = command
+#, boost-format
+msgid "[%1% chroot] Running login shell: ‘%4%’"
+msgstr "[%1% chroot] Running login shell: ‘%4%’"
+
+#. TRANSLATORS: %1% = chroot name
+#. TRANSLATORS: %4% = command
+#, boost-format
+msgid "[%1% chroot] Running shell: ‘%4%’"
+msgstr "[%1% chroot] Running shell: ‘%4%’"
+
+#. TRANSLATORS: %1% = chroot name
+#. TRANSLATORS: %2% = user name
+#. TRANSLATORS: %3% = user name
+#. TRANSLATORS: %4% = command
+#. TRANSLATORS: Please translate "->" as a right arrow, e.g. U+2192
+#, boost-format
+msgid "[%1% chroot] (%2%→%3%) Running login shell: ‘%4%’"
+msgstr "[%1% chroot] (%2%→%3%) Running login shell: ‘%4%’"
+
+#. TRANSLATORS: %1% = chroot name
+#. TRANSLATORS: %2% = user name
+#. TRANSLATORS: %3% = user name
+#. TRANSLATORS: %4% = command
+#. TRANSLATORS: Please translate "->" as a right arrow, e.g. U+2192
+#, boost-format
+msgid "[%1% chroot] (%2%→%3%) Running shell: ‘%4%’"
+msgstr "[%1% chroot] (%2%→%3%) Running shell: ‘%4%’"
+
+#. TRANSLATORS: %1% = chroot name
+#. TRANSLATORS: %4% = command
+#, boost-format
+msgid "[%1% chroot] Running command: “%4%”"
+msgstr "[%1% chroot] Running command: “%4%”"
+
+#. TRANSLATORS: %1% = chroot name
+#. TRANSLATORS: %2% = user name
+#. TRANSLATORS: %3% = user name
+#. TRANSLATORS: %4% = command
+#. TRANSLATORS: Please translate "->" as a right arrow, e.g. U+2192
+#, boost-format
+msgid "[%1% chroot] (%2%→%3%) Running command: “%4%”"
+msgstr "[%1% chroot] (%2%→%3%) Running command: “%4%”"
+
+#, boost-format
+msgid "stage=%1%"
+msgstr "stage=%1%"
+
+msgid ""
+"The directory does not exist inside the chroot.  Use the --directory option "
+"to run the command in a different directory."
+msgstr ""
+"The directory does not exist inside the chroot.  Use the --directory option "
+"to run the command in a different directory."
+
+msgid "terminating immediately"
+msgstr "terminating immediately"
+
+#. TRANSLATORS: Format string for date representation:
+#. %d = day (number, e.g. 14)
+#. %b = month (three letters, e.g. Jul)
+#. %Y = year (four digits, e.g. 2006)
+#. If required, any of the standard strftime(3)
+#. format specifiers may be used instead, as long as
+#. the day, month and year are clearly displayed in
+#. the equivalent standard method for your locale.
+msgid "%d %b %Y"
+msgstr "%d %b %Y"
+
+msgid "Failed to stat file"
+msgstr "Failed to stat file"
+
+msgid "Failed to stat file descriptor"
+msgstr "Failed to stat file descriptor"
+
+#. TRANSLATORS: %4% = file
+#, boost-format
+msgid "No chroots are defined in ‘%4%’"
+msgstr "No chroots are defined in ‘%4%’"
+
+#. TRANSLATORS: %4% = file
+#. TRANSLATORS: %5% = file
+#, boost-format
+msgid "No chroots are defined in ‘%4%’ or ‘%5%’"
+msgstr "No chroots are defined in ‘%4%’ or ‘%5%’"
+
+#. TRANSLATORS: %1% = file
+#, boost-format
+msgid "The specified chroots are not defined in ‘%1%’"
+msgstr "The specified chroots are not defined in ‘%1%’"
+
+#, boost-format
+msgid "%1%: Invalid session name"
+msgstr "%1%: Invalid session name"
+
+msgid "Installed chroot facets:"
+msgstr "Installed chroot facets:"
+
+#. TRANSLATORS: %1% = program name
+#. TRANSLATORS: %2% = program version
+#. TRANSLATORS: %3% = current date
+#, boost-format
+msgid "schroot configuration generated by %1% %2% on %3%"
+msgstr "schroot configuration generated by %1% %2% on %3%"
+
+msgid "Chroot selection"
+msgstr "Chroot selection"
+
+msgid "Chroot environment"
+msgstr "Chroot environment"
+
+msgid "Session actions"
+msgstr "Session actions"
+
+msgid "Session options"
+msgstr "Session options"
+
+msgid "List available chroots"
+msgstr "List available chroots"
+
+msgid "Show information about selected chroots"
+msgstr "Show information about selected chroots"
+
+msgid "Dump configuration of selected chroots"
+msgstr "Dump configuration of selected chroots"
+
+msgid "Use specified chroot"
+msgstr "Use specified chroot"
+
+msgid "Command to run"
+msgstr "Command to run"
+
+msgid "Exactly one chroot must be specified when beginning a session"
+msgstr "Exactly one chroot must be specified when beginning a session"
+
+msgid ""
+"--session-name is not permitted for the specified action; did you mean to "
+"use --chroot?"
+msgstr ""
+"--session-name is not permitted for the specified action; did you mean to "
+"use --chroot?"
+
+msgid "Unknown action specified"
+msgstr "Unknown action specified"
+
+msgid "--session-name is not permitted for the specified action"
+msgstr "--session-name is not permitted for the specified action"
+
+msgid "Invalid session name"
+msgstr "Invalid session name"
+
+#. TRANSLATORS: %1% = file
+#, boost-format
+msgid "Failed to find ‘%1%’"
+msgstr "Failed to find ‘%1%’"
+
+#. TRANSLATORS: '...' is an ellipsis e.g. U+2026,
+#. and '-' is an em-dash.
+msgid "[OPTION…] — list mount points"
+msgstr "[OPTION…] — list mount points"
+
+msgid "Mount"
+msgstr "Mount"
+
+msgid "Mountpoint to check (full path)"
+msgstr "Mountpoint to check (full path)"
+
+msgid "No mount point specified"
+msgstr "No mount point specified"
+
+#, boost-format
+msgid "Failed to resolve path “%1%”"
+msgstr "Failed to resolve path “%1%”"
+
+#. TRANSLATORS: '...' is an ellipsis e.g. U+2026,
+#. and '-' is an em-dash.
+msgid "[OPTION…] — mount filesystems"
+msgstr "[OPTION…] — mount filesystems"
+
+msgid "Perform a simulation of actions which would be taken"
+msgstr "Perform a simulation of actions which would be taken"
+
+msgid "fstab file to read (full path)"
+msgstr "fstab file to read (full path)"
+
+#~ msgid "line %1%: Deprecated key ‘%4%’ used"
+#~ msgstr "line %1%: Deprecated key ‘%4%’ used"
+
+#~ msgid "Deprecated key ‘%4%’ used"
+#~ msgstr "Deprecated key ‘%4%’ used"
+
+#~ msgid "line %1%: Disallowed key ‘%4%’ used"
+#~ msgstr "line %1%: Disallowed key ‘%4%’ used"
+
+#~ msgid "Disallowed key ‘%4%’ used"
+#~ msgstr "Disallowed key ‘%4%’ used"
+
+#~ msgid "line %1%: Duplicate key ‘%4%’"
+#~ msgstr "line %1%: Duplicate key ‘%4%’"
+
+#~ msgid "line %1%: Required key ‘%4%’ is missing"
+#~ msgstr "line %1%: Required key ‘%4%’ is missing"
+
+#~ msgid "Required key ‘%4%’ is missing"
+#~ msgstr "Required key ‘%4%’ is missing"
+
+#~ msgid "line %1%: Obsolete key ‘%4%’ used"
+#~ msgstr "line %1%: Obsolete key ‘%4%’ used"
+
+#~ msgid "Obsolete key ‘%4%’ used"
+#~ msgstr "Obsolete key ‘%4%’ used"
+
+#~ msgid "%2%: %4%"
+#~ msgstr "%2%: %4%"
+
+#~ msgid "line %1%: %3%: %4%"
+#~ msgstr "line %1%: %3%: %4%"
+
+#~ msgid "This option will be removed in the future"
+#~ msgstr "This option will be removed in the future"
+
+#~ msgid "[OPTION…] — build Debian packages from source"
+#~ msgstr "[OPTION…] — build Debian packages from source"
+
+#~ msgid "Build options"
+#~ msgstr "Build options"
+
+#~ msgid "Package version options"
+#~ msgstr "Package version options"
+
+#~ msgid "Build environment options"
+#~ msgstr "Build environment options"
+
+#~ msgid "User options"
+#~ msgstr "User options"
+
+#~ msgid "Build dependency override options"
+#~ msgstr "Build dependency override options"
+
+#~ msgid "Special options"
+#~ msgstr "Special options"
+
+#~ msgid "Build source packages (default)"
+#~ msgstr "Build source packages (default)"
+
+#~ msgid "Don't log program output"
+#~ msgstr "Don't log program output"
+
+#~ msgid "Run in batch mode"
+#~ msgstr "Run in batch mode"
+
+#~ msgid "dpkg-buildpackage option"
+#~ msgstr "dpkg-buildpackage option"
+
+#~ msgid "dpkg-buildpackage options (space-separated)"
+#~ msgstr "dpkg-buildpackage options (space-separated)"
+
+#~ msgid "Distribution to build for"
+#~ msgstr "Distribution to build for"
+
+#~ msgid "Archive to build for"
+#~ msgstr "Archive to build for"
+
+#~ msgid "Build architecture"
+#~ msgstr "Build architecture"
+
+#~ msgid "Build architecture \"all\" packages"
+#~ msgstr "Build architecture \"all\" packages"
+
+#~ msgid "Build a source package"
+#~ msgstr "Build a source package"
+
+#~ msgid "Force building of a source package, irrespective of Debian version"
+#~ msgstr "Force building of a source package, irrespective of Debian version"
+
+#~ msgid "Make a binary non-maintainer upload (changelog entry)"
+#~ msgstr "Make a binary non-maintainer upload (changelog entry)"
+
+#~ msgid "Make a binary non-maintainer upload (binNMU number)"
+#~ msgstr "Make a binary non-maintainer upload (binNMU number)"
+
+#~ msgid "Append version suffix"
+#~ msgstr "Append version suffix"
+
+#~ msgid "Update chroot environment"
+#~ msgstr "Update chroot environment"
+
+#~ msgid "Chroot environment to build in"
+#~ msgstr "Chroot environment to build in"
+
+#~ msgid "Purge build mode"
+#~ msgstr "Purge build mode"
+
+#~ msgid "Purge dependencies mode"
+#~ msgstr "Purge dependencies mode"
+
+#~ msgid "Run setup hook script in chroot prior to building"
+#~ msgstr "Run setup hook script in chroot prior to building"
+
+#~ msgid "GPG key identifier"
+#~ msgstr "GPG key identifier"
+
+#~ msgid "Package maintainer"
+#~ msgstr "Package maintainer"
+
+#~ msgid "Package uploader"
+#~ msgstr "Package uploader"
+
+#~ msgid "Add a build dependency"
+#~ msgstr "Add a build dependency"
+
+#~ msgid "Add a build conflict"
+#~ msgstr "Add a build conflict"
+
+#~ msgid "Add an architecture-independent build dependency"
+#~ msgstr "Add an architecture-independent build dependency"
+
+#~ msgid "Add an architecture-independent build conflict"
+#~ msgstr "Add an architecture-independent build conflict"
+
+#~ msgid "Specify algorithm for dependency checking"
+#~ msgstr "Specify algorithm for dependency checking"
+
+#~ msgid "Build using the current GCC development snapshot"
+#~ msgstr "Build using the current GCC development snapshot"
+
+#~ msgid "Package to build"
+#~ msgstr "Package to build"
+
+#~ msgid "--makebinNMU missing"
+#~ msgstr "--makebinNMU missing"
+
+#~ msgid "--binNMU missing"
+#~ msgstr "--binNMU missing"

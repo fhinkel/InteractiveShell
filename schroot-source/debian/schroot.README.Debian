@@ -1,0 +1,12 @@
+schroot for Debian
+------------------
+
+Other alternative packages to schroot are dchroot and fakechroot.
+These serve different needs, and may be more appropriate.  schroot is
+a drop-in replacement for dchroot, and offers much more functionality.
+fakechroot may be more secure if users want to have some approximation
+of root access in a chroot, but you don't want to give them full root
+access.
+
+
+ -- Roger Leigh <rleigh@debian.org>, Fri, 22 Oct 2010 22:18:01 +0100

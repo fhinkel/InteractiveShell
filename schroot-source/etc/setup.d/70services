@@ -1,0 +1,54 @@
+#!/bin/sh
+# Copyright © 2012-2013  Roger Leigh <rleigh@debian.org>
+#
+# schroot is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# schroot is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see
+# <http://www.gnu.org/licenses/>.
+#
+#####################################################################
+
+# Starts and stops services inside the chroot.
+# We start and stop with invoke-rc.d --force, so that normal
+# invoke-rc.d use inside the chroot can continue to rely on
+# policy-rc.d to function.
+# Set setup.services=service1,service2 in schroot.conf
+# Services are started in the specified order.
+# Services are stopped in the reverse order of starting.
+
+set -e
+
+. "$SETUP_DATA_DIR/common-data"
+. "$SETUP_DATA_DIR/common-functions"
+. "$SETUP_DATA_DIR/common-config"
+
+if [ $STAGE = "setup-start" ] || [ $STAGE = "setup-recover" ]; then
+
+    info "Starting services"
+
+    SETUP_SERVICES=$(echo "$SETUP_SERVICES" | tr ',' '\n')
+
+    for service in $SETUP_SERVICES; do
+        chroot "$CHROOT_PATH" /usr/sbin/invoke-rc.d --force "$service" start
+    done
+
+elif [ $STAGE = "setup-stop" ]; then
+
+    info "Stopping services"
+
+    SETUP_SERVICES=$(echo "$SETUP_SERVICES" | tr ',' '\n' | tac)
+
+    for service in $SETUP_SERVICES; do
+        chroot "$CHROOT_PATH" /usr/sbin/invoke-rc.d --force "$service" stop || true
+    done
+fi
+

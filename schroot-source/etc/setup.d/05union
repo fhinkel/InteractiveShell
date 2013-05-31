@@ -1,0 +1,67 @@
+#!/bin/sh
+# Copyright © 2008-2013  Jan-Marek Glogowski <glogow@fbihome.de>
+#
+# schroot is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# schroot is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see
+# <http://www.gnu.org/licenses/>.
+#
+#####################################################################
+
+set -e
+
+. "$SETUP_DATA_DIR/common-data"
+. "$SETUP_DATA_DIR/common-functions"
+. "$SETUP_DATA_DIR/common-config"
+
+if [ -n "${CHROOT_UNION_TYPE}" ] && [ "${CHROOT_UNION_TYPE}" != 'none' ]; then
+
+    if [ $STAGE = "setup-start" ]; then
+        mkdir "${CHROOT_UNION_OVERLAY_DIRECTORY}"
+        if [ ! -d "$CHROOT_UNION_OVERLAY_DIRECTORY" ]; then
+            fatal "$CHROOT_UNION_OVERLAY_DIRECTORY does not exist, and could not be created"
+        fi
+
+        mkdir "${CHROOT_UNION_UNDERLAY_DIRECTORY}"
+        if [ ! -d "$CHROOT_UNION_UNDERLAY_DIRECTORY" ]; then
+            fatal "$CHROOT_UNION_UNDERLAY_DIRECTORY does not exist, and could not be created"
+        fi
+
+    elif [ $STAGE = "setup-recover" ]; then
+        if [ ! -d "${CHROOT_UNION_OVERLAY_DIRECTORY}" ]; then
+            fatal "Missing overlay directory for session: can't recover"
+        fi
+        if [ ! -d "${CHROOT_UNION_UNDERLAY_DIRECTORY}" ]; then
+            fatal "Missing underlay directory for session: can't recover"
+        fi
+
+    elif [ $STAGE = "setup-stop" ]; then
+        if [ "$CHROOT_SESSION_PURGE" = "true" ]; then
+            info "Purging $CHROOT_UNION_OVERLAY_DIRECTORY"
+            if [ -d "${CHROOT_UNION_OVERLAY_DIRECTORY}" ]; then
+                rm -rf "${CHROOT_UNION_OVERLAY_DIRECTORY}"
+            fi
+
+            # For safety, use rmdir rather than rm -rf in case
+            # umount failed.
+            info "Removing $CHROOT_UNION_UNDERLAY_DIRECTORY"
+            if [ -d "${CHROOT_UNION_UNDERLAY_DIRECTORY}" ]; then
+                if ! rmdir "${CHROOT_UNION_UNDERLAY_DIRECTORY}"; then
+                    warn "Please unmount any filesystems and remove any files under $CHROOT_UNION_UNDERLAY_DIRECTORY"
+                    fatal "Failed to remove $CHROOT_UNION_UNDERLAY_DIRECTORY (directory not empty)."
+                fi
+            fi
+        fi
+    fi
+
+fi
+

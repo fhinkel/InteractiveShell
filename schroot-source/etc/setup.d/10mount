@@ -1,0 +1,241 @@
+#!/bin/sh
+# Copyright © 2005-2013  Roger Leigh <rleigh@debian.org>
+# Copyright © 2009-2013  Jan-Marek Glogowski <glogow@fbihome.de>
+#
+# schroot is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# schroot is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see
+# <http://www.gnu.org/licenses/>.
+#
+#####################################################################
+
+set -e
+
+. "$SETUP_DATA_DIR/common-data"
+. "$SETUP_DATA_DIR/common-functions"
+. "$SETUP_DATA_DIR/common-config"
+
+# Mount a filesystem
+# $1: mount options
+# $2: mount device
+# $3: mount location
+do_mount()
+{
+    info "Mounting $2 on $3"
+
+    if [ -h "$3" ]; then
+        fatal "$3 is a symbolic link, not usable as a mountpoint"
+    fi
+    if [ ! -d "$3" ]; then
+        mkdir -p "$3"
+    fi
+    if [ ! -d "$3" ]; then
+        fatal "$3 does not exist, and could not be created"
+    fi
+
+    info "$MOUNT_VERBOSE $1 $2 $3"
+    mount $MOUNT_VERBOSE $1 "$2" "$3"
+}
+
+# Unmount all filesystems under specified location
+# $1: mount base location
+do_umount_all()
+{
+    if [ -d "$1" ]; then
+        # Note that flock is used here to prevent races reading
+        # /proc/mounts, which on current (Linux 2.6.32) kernels is
+        # racy.  If other processes are mounting or unmounting
+        # filesystems as we read it, we can miss mount entries due to
+        # the file changing as we read it.  This needs fixing in the
+        # kernel, but an exclusive lock surrounding the
+        # listmounts invocation is a partial fix.  This
+        # prevents racing when multiple schroot processes are running.
+        # Note that this does not prevent the problem when programs
+        # other than schroot mount and unmount filesystems (since they
+        # don't create the lock).
+        if [ -e /var/lock/schroot ]; then
+            if [ ! -d /var/lock/schroot ]; then
+                error "/var/lock/schroot is not a directory"
+                exit 1
+            fi
+        else
+            mkdir -m 0700 /var/lock/schroot
+        fi
+
+        if [ "$(stat -c "%u %g %a" /var/lock/schroot)" != "0 0 700" ]; then
+            error "/var/lock/schroot is not owned by root:root, or lacks 0700 permissions"
+            exit 1
+        fi
+
+        ( flock 9
+            mounts="$("$LIBEXEC_DIR/listmounts" -m "$1")"
+            if [ "x$mounts" != 'x' ]; then
+                echo "$mounts" |
+                while read mountloc; do
+                    info "Unmounting $mountloc"
+                    umount "$mountloc" || exit 1
+                done || exit 1
+            fi
+        ) 9>"/var/lock/schroot/umount"
+    else
+        warn "Mount location $1 no longer exists; skipping unmount"
+    fi
+}
+
+# Mount a filesystem union
+# $1: the mount location
+do_mount_fs_union()
+{
+    # Prepare mount options (branch config) for union type
+    if [ -z "$CHROOT_UNION_MOUNT_OPTIONS" ]; then
+        case $CHROOT_UNION_TYPE in
+            unionfs)
+                CHROOT_UNION_MOUNT_OPTIONS="dirs=${CHROOT_UNION_OVERLAY_DIRECTORY}=rw,${CHROOT_UNION_UNDERLAY_DIRECTORY}=ro"
+                ;;
+            aufs)
+                CHROOT_UNION_MOUNT_OPTIONS="br:${CHROOT_UNION_OVERLAY_DIRECTORY}:${CHROOT_UNION_UNDERLAY_DIRECTORY}=ro"
+                ;;
+            overlayfs)
+                CHROOT_UNION_MOUNT_OPTIONS="lowerdir=${CHROOT_UNION_UNDERLAY_DIRECTORY},upperdir=${CHROOT_UNION_OVERLAY_DIRECTORY}"
+                ;;
+        esac
+    fi
+
+    info "Using '$CHROOT_UNION_TYPE' for filesystem union"
+
+    # Try mounting fs
+    mount -t "$CHROOT_UNION_TYPE" -o "$CHROOT_UNION_MOUNT_OPTIONS" "$CHROOT_NAME" "$1"
+}
+
+if [ "$VERBOSE" = "verbose" ]; then
+    MOUNT_VERBOSE="-v"
+#  FSCK_VERBOSE="-V"
+fi
+
+if [ "$CHROOT_TYPE" = "directory" ] \
+    || [ "$CHROOT_TYPE" = "file" ] \
+    || [ "$CHROOT_TYPE" = "loopback" ] \
+    || [ "$CHROOT_TYPE" = "block-device" ] \
+    || [ "$CHROOT_TYPE" = "lvm-snapshot" ] \
+    || [ "$CHROOT_TYPE" = "btrfs-snapshot" ]; then
+
+    if [ "${CHROOT_UNION_TYPE:-none}" != "none" ]; then
+        CREATE_UNION="yes"
+    else
+        CREATE_UNION="no"
+    fi
+
+    if [ $STAGE = "setup-start" ] || [ $STAGE = "setup-recover" ]; then
+
+        case "$HOST_OS" in
+            freebsd* | k*bsd*-gnu) :
+                BINDOPT="-t nullfs"
+                ;;
+            *):
+                BINDOPT="--bind"
+                ;;
+        esac
+
+        if [ "$CHROOT_TYPE" = "directory" ]; then
+            CHROOT_MOUNT_OPTIONS="$BINDOPT $CHROOT_MOUNT_OPTIONS"
+            CHROOT_MOUNT_DEVICE="$CHROOT_DIRECTORY"
+            if [ ! -d "$CHROOT_DIRECTORY" ]; then
+                fatal "Directory '$CHROOT_DIRECTORY' does not exist"
+            fi
+        elif [ "$CHROOT_TYPE" = "file" ]; then
+            CHROOT_MOUNT_OPTIONS="$BINDOPT $CHROOT_MOUNT_OPTIONS"
+            CHROOT_MOUNT_DEVICE="${CHROOT_FILE_UNPACK_DIR}/${SESSION_ID}"
+        elif [ "$CHROOT_TYPE" = "block-device" ]; then
+            if [ ! "$DEVTYPE" "$CHROOT_DEVICE" ]; then
+                fatal "Device '$CHROOT_DEVICE' does not exist"
+            fi
+        elif [ "$CHROOT_TYPE" = "btrfs-snapshot" ]; then
+            CHROOT_MOUNT_OPTIONS="$BINDOPT $CHROOT_MOUNT_OPTIONS"
+            CHROOT_MOUNT_DEVICE="$CHROOT_BTRFS_SNAPSHOT_NAME"
+        elif [ "$CHROOT_TYPE" = "loopback" ]; then
+            if [ ! -f "$CHROOT_FILE" ]; then
+                    fatal "File '$CHROOT_FILE' does not exist"
+            fi
+
+            case "$HOST_OS" in
+                freebsd* | k*bsd*-gnu):
+                    LOOP_DEVICE="/dev/$(/sbin/mdconfig -a -t vnode -f "$CHROOT_FILE")"
+                    CHROOT_MOUNT_DEVICE="$LOOP_DEVICE"
+                    ;;
+                *):
+                    LOOP_DEVICE="$(/sbin/losetup -j "$CHROOT_FILE" | sed -e 's/:.*$//')"
+                    if [ -z "$LOOP_DEVICE" ]; then
+                        CHROOT_MOUNT_DEVICE="$CHROOT_FILE"
+                        CHROOT_MOUNT_OPTIONS="-o loop $CHROOT_MOUNT_OPTIONS"
+                    else
+                        CHROOT_MOUNT_DEVICE="$LOOP_DEVICE"
+                    fi
+                    ;;
+            esac
+        fi
+
+        if [ ! -d "$CHROOT_MOUNT_LOCATION" ]; then
+            mkdir -p "$CHROOT_MOUNT_LOCATION"
+        fi
+        if [ ! -d "$CHROOT_MOUNT_LOCATION" ]; then
+            fatal "$CHROOT_MOUNT_LOCATION does not exist, and could not be created"
+        fi
+
+        # If recovering, we want to remount all filesystems to ensure
+        # a sane state.
+        if [ $STAGE = "setup-recover" ]; then
+            if [ "$CREATE_UNION" = "yes" ]; then
+                do_umount_all "$CHROOT_UNION_UNDERLAY_DIRECTORY"
+            fi
+            do_umount_all "$CHROOT_MOUNT_LOCATION"
+        fi
+
+        if [ "$CREATE_UNION" = "yes" ]; then
+            do_mount "$CHROOT_MOUNT_OPTIONS" "$CHROOT_MOUNT_DEVICE" "$CHROOT_UNION_UNDERLAY_DIRECTORY"
+            do_mount_fs_union "$CHROOT_MOUNT_LOCATION"
+        else
+            do_mount "$CHROOT_MOUNT_OPTIONS" "$CHROOT_MOUNT_DEVICE" "$CHROOT_MOUNT_LOCATION"
+        fi
+
+    elif [ $STAGE = "setup-stop" ]; then
+
+        do_umount_all "$CHROOT_MOUNT_LOCATION"
+        if [ "$CREATE_UNION" = "yes" ]; then
+            do_umount_all "$CHROOT_UNION_UNDERLAY_DIRECTORY"
+        fi
+
+        # Purge mount location.
+        # The contents of file chroots are purged separately, because
+        # we might want to repack the contents.
+        if echo "$CHROOT_MOUNT_LOCATION" | grep -q "^$MOUNT_DIR/"; then
+            if [ -d "$CHROOT_MOUNT_LOCATION" ]; then
+                rmdir "$CHROOT_MOUNT_LOCATION"
+            fi
+        fi
+
+    fi
+
+fi
+
+# Mount filesystems from fstab for all chroot types
+if [ $STAGE = "setup-start" ] || [ $STAGE = "setup-recover" ]; then
+
+    if [ -n "$SETUP_FSTAB" ]; then
+        if [ -f "$SETUP_FSTAB" ]; then
+            "$LIBEXEC_DIR/mount" $MOUNT_VERBOSE \
+                -f "$SETUP_FSTAB" -m "$CHROOT_PATH"
+        else
+            fatal "setup_fstab file '$SETUP_FSTAB' does not exist"
+        fi
+    fi
+
+fi

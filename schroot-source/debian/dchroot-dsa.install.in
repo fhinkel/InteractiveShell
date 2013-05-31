@@ -1,0 +1,2 @@
+debian/install/usr/bin/dchroot-dsa               usr/bin
+debian/install/usr/share/man/man1/dchroot-dsa.1  usr/share/man/man1

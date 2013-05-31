@@ -1,0 +1,9 @@
+#!/bin/sh
+# Fix ownership and permissions of binaries, for testing before installation.
+
+set -e
+
+[ -x schroot/schroot ] && chown root:root schroot/schroot && chmod +s schroot/schroot
+[ -x dchroot/dchroot ] && chown root:root dchroot/dchroot && chmod +s dchroot/dchroot
+[ -x dchroot-dsa/dchroot-dsa ] && chown root:root dchroot-dsa/dchroot-dsa && chmod +s dchroot-dsa/dchroot-dsa
+

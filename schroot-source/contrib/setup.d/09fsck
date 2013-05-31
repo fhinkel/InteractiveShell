@@ -1,0 +1,45 @@
+#!/bin/sh
+# Copyright © 2005-2007  Roger Leigh <rleigh@debian.org>
+# Copyright © 2008-2009  Martin F. Krafft <madduck@debian.org>
+#
+# schroot is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# schroot is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see
+# <http://www.gnu.org/licenses/>.
+#
+#####################################################################
+
+set -e
+
+if [ -f "$CHROOT_SCRIPT_CONFIG" ]; then
+  . "$CHROOT_SCRIPT_CONFIG"
+fi
+
+if [ "$VERBOSE" = "verbose" ]; then
+  FSCK_VERBOSE="-V"
+fi
+
+if [ "$CHROOT_TYPE" = "block-device" ] || [ "$CHROOT_TYPE" = "lvm-snapshot" ]; then
+
+  if [ $1 = "setup-start" ] || [ $1 = "setup-recover" ]; then
+    ret=0
+    /sbin/fsck $FSCK_VERBOSE -Ta "$CHROOT_MOUNT_DEVICE" || ret=$?
+
+    case "$ret" in
+      0|1) :;;
+      *)
+        echo "fsck failed with return code $ret (see fsck(8))." >&2
+        exit 1
+        ;;
+    esac
+  fi
+fi

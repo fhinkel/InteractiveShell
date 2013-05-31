@@ -1,0 +1,46 @@
+#!/bin/bash
+# Copyright © 2010  Sascha Silbe <sascha-pgp@silbe.org>
+#
+# schroot is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License version 3
+# as published by the Free Software Foundation.
+#
+# schroot is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see
+# <http://www.gnu.org/licenses/>.
+#
+#####################################################################
+# 10mount-ssh: "Forward" ssh-agent to chroot.
+# Performs a bind-mount of the ssh-agent socket directory. Clean-up
+# happens at session end in setup.d/10mount.
+#####################################################################
+
+set -e
+
+ACTION="$1"
+STATUS="$2"
+
+if [ "$STATUS" != ok ] ; then
+    exit 0
+fi
+
+# Extract SSH_AUTH_SOCK from environment of schroot process ($PID)
+SSH_AUTH_SOCK="$(tr '\0' '\n' < /proc/"$PID"/environ | grep ^SSH_AUTH_SOCK | head -n 1 |sed -e 's/^SSH_AUTH_SOCK=//')"
+if [ -z "${SSH_AUTH_SOCK:-}" ] ; then
+    exit 0
+fi
+
+SOCK_DIR="$(dirname "${SSH_AUTH_SOCK}")"
+
+if [ "$ACTION" = "setup-start" ] ; then
+    if [ -e "${CHROOT_PATH}/${SSH_AUTH_SOCK}" ] ; then
+        exit 0
+    fi
+    mkdir -p "${CHROOT_PATH}/${SOCK_DIR}"
+    mount -o bind "${SOCK_DIR}" "${CHROOT_PATH}/${SOCK_DIR}"
+fi

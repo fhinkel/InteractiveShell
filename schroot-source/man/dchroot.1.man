@@ -1,0 +1,290 @@
+.\" t
+.\" Copyright © 2005-2013  Roger Leigh <rleigh@debian.org>
+.\"
+.\" schroot is free software: you can redistribute it and/or modify it
+.\" under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation, either version 3 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" schroot is distributed in the hope that it will be useful, but
+.\" WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+.\" General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program.  If not, see
+.\" <http://www.gnu.org/licenses/>.
+.\"
+.so config.man
+.ds PROGRAM dchroot
+.TH DCHROOT 1 "\*[RELEASE_DATE]" "Version \*[VERSION]" "Debian sbuild"
+.SH NAME
+dchroot \- enter a chroot environment
+.SH SYNOPSIS
+.B dchroot
+.RB [ \-h \[or] \-\-help " \[or] " \-V \[or] \-\-version
+.RB " \[or] " \-l \[or] \-\-list " \[or] " \-i \[or] \-\-info
+.RB " \[or] " \-\-config " \[or] " \-\-location ]
+.RB [ "\-\-directory=\fIdirectory\fP" ]
+.RB [ \-d \[or] \-\-preserve\-environment ]
+.RB [ \-q \[or] \-\-quiet " \[or] " \-v \[or] \-\-verbose ]
+.RB [ "\-c \fIchroot\fP" \[or] "\-\-chroot=\fIchroot\fP"
+.RB " \[or] " \-\-all ]
+.RB [ COMMAND " [ " ARG1 " [ " ARG2 " [ " ARGn ]]]]
+.SH DESCRIPTION
+\fBdchroot\fP allows the user to run a command or a login shell in a chroot
+environment.  If no command is specified, a login shell will be started in the
+user's home directory inside the chroot.
+.PP
+The command is one or more arguments which will be run in the user's default
+shell using its \fI\-c\fP option.  As a result, shell code may be embedded
+in this argument.  If multiple command options are used, they are concatenated
+together, separated by spaces.  Users should be aware of the shell quoting
+issues this presents, and should use \fBschroot\fP if necessary, which does not
+have any quoting issues.
+.PP
+The directory the command or login shell is run in depends upon the context.
+See \fI\-\-directory\fP option below for a complete description.
+.PP
+This version of dchroot is a compatibility wrapper around the
+.BR schroot (1)
+program.  It is provided for backward compatibility with the dchroot
+command-line options, but schroot is recommended for future use.  See the
+section \[lq]\fIIncompatibilities\fP\[rq] below for known incompatibilities
+with older versions of dchroot.
+.PP
+If no chroot is specified, the chroot name or alias \[oq]default\[cq] will be
+used as a fallback.
+.SH OPTIONS
+\fBdchroot\fP accepts the following options:
+.SS Basic options
+.TP
+.BR \-h ", " \-\-help
+Show help summary.
+.TP
+.BR \-a ", " \-\-all
+Select all chroots.
+.TP
+.BR \-c ", " \-\-chroot=\fIchroot\fP
+Specify a chroot to use.  This option may be used multiple times to specify
+more than one chroot, in which case its effect is similar to \fI\-\-all\fP.
+.TP
+.BR \-l ", " \-\-list
+List all available chroots.
+.TP
+.BR \-i ", " \-\-info
+Print detailed information about the specified chroots.  Note that earlier
+versions of dchroot did not include this option.
+.TP
+.BR \-p ", " \-\-path
+Print location (path) of the specified chroots.
+.TP
+.BR \-\-config
+Print configuration of the specified chroots.  This is useful for testing that
+the configuration in use is the same as the configuration file.  Any comments
+in the original file will be missing.  Note that earlier versions of dchroot
+did not include this option.
+.TP
+.BR \-\-directory=\fIdirectory\fP
+Change to \fIdirectory\fP inside the chroot before running the command or login
+shell.  If \fIdirectory\fP is not available, dchroot will exit with an error
+status.
+.IP
+The default behaviour is as follows (all directory paths are inside the
+chroot).  Unless the \fI\-\-preserve\-environment\fP option is used to preserve
+the environment, the login shell or command will run in the user's home
+directory, or \fI/\fP if the home directory is not available.  When the
+\fI\-\-preserve\-environment\fP option is used, it will attempt to use the
+current working directory, again falling back to \fI/\fP if it is not
+accessible.  If none of the directories are available, dchroot will exit with
+an error status.
+.TP
+.BR \-d ", " \-\-preserve\-environment
+Preserve the user's environment inside the chroot environment.  The default is
+to use a clean environment; this option copies the entire user environment and
+sets it in the session.
+.TP
+.BR \-q ", " \-\-quiet
+Print only essential messages.
+.TP
+.BR \-v ", " \-\-verbose
+Print all messages.  Note that earlier versions of dchroot did not include this
+option.
+.TP
+.BR \-V ", " \-\-version
+Print version information.
+.PP
+Note that earlier versions of dchroot did not provide long options.
+.SH INCOMPATIBILITIES
+.SS Debian dchroot prior to version 0.99.0
+.IP \[bu]
+Log messages are worded and formatted differently.
+.IP \[bu]
+.BR su (1)
+is no longer used to run commands in the chroot; this is done by dchroot
+internally.  This change may cause subtle differences.  If you find an
+incompatibility, please report it so it may be corrected.
+.IP \[bu]
+dchroot provides a restricted subset of the functionality implemented by
+\fBschroot\fP, but is still schroot underneath.  Thus dchroot is still subject
+to schroot security checking, including PAM authentication and authorisation,
+and session management, for example, and hence may behave slightly differently
+to older dchroot versions in some circumstances.
+.SS Debian dchroot prior to version 1.5.1
+.IP \[bu]
+This version of dchroot uses \fIschroot.conf\fP to store the configuration for
+available chroots, rather than the \fIdchroot.conf\fP file used historically.
+dchroot supported automatic migration of \fIdchroot.conf\fP to the
+\fIschroot.conf\fP keyfile format with its \fI\-\-config\fP option from
+versions 0.2.2 to 1.5.0; support for the old format is now no longer available.
+.SS DSA dchroot
+Machines run by the Debian System Administrators for the Debian Project have a
+\fBdchroot-dsa\fP package which provides an alternate dchroot implementation.
+.IP \[bu]
+All the above incompatibilities apply.
+.IP \[bu]
+This version of dchroot has incompatible command-line options, and while some
+of those options are supported or have equivalent options by a different name,
+the \fI\-c\fP option is not required to specify a chroot, and this version of
+dchroot cannot implement this behaviour in a backward-compatible manner
+(because if \fI\-c\fP is omitted, the default chroot is used).  DSA dchroot
+uses the first non-option as the chroot to use, only allowing one chroot to be
+used at once.
+.SH DIRECTORY FALLBACKS
+.PP
+dchroot will select an appropriate directory to use within the chroot based
+upon whether the \fI\-\-directory\fP or \fI\-\-preserve\-environment\fP options
+are used.  When explicitly specifying a directory, only one directory will be
+used for safety and consistency, while for a login shell or command several
+possibilities may be tried.  Note that due to multiple fallbacks being
+considered for commands, it is dangerous to run commands using dchroot; use
+schroot instead.  The following subsections list the fallback sequence for each
+case.  CWD is the current working directory, DIR is the directory specified
+with \fI\-\-directory\fP.
+.SS Login shell or command
+.TS
+box;
+l|lw(4i).
+Transition
+(Host \[->] Chroot)	Comment
+_
+CWD \[->] passwd pw_dir	T{
+Normal behaviour (if \-\-directory and \fI\-\-preserve\-environment\fP are not
+used)
+T}
+CWD \[->] /	T{
+If passwd pw_dir is nonexistent
+T}
+\fBFAIL\fP	T{
+If / is nonexistent
+T}
+.TE
+.SS \-\-preserve\-environment used
+.TS
+box;
+l|lw(4i).
+Transition
+(Host \[->] Chroot)	Comment
+_
+CWD \[->] CWD	T{
+Normal behaviour (if \fI\-\-preserve\-environment\fP used)
+T}
+CWD \[->] /	T{
+If CWD is nonexistent
+T}
+\fBFAIL\fP	T{
+If / is nonexistent
+T}
+.TE
+.SS \-\-directory used
+.TS
+box;
+l|lw(4i).
+Transition
+(Host \[->] Chroot)	Comment
+_
+CWD \[->] DIR	Normal behaviour
+\fBFAIL\fP	If DIR is nonexistent
+.TE
+.PP
+No fallbacks should exist under any circumstances.
+.SS Debugging
+.PP
+Note that \fI\-\-debug=notice\fP will show the internal fallback list computed
+for the session.
+.SH EXAMPLES
+.EX
+$ \f[CB]dchroot \-l\fP\[CR]
+Available chroots: sarge [default], sid
+
+$ \f[CB]dchroot \-p sid\fP\[CR]
+/srv/chroot/sid
+
+$ \f[CB]dchroot \-q \-c sid \-\- uname \-smr\fP\[CR]
+Linux 2.6.16.17 ppc
+$ \f[CB]dchroot \-q \-c sid \-\- "uname \-smr"\fP\[CR]
+Linux 2.6.16.17 ppc
+
+$ \f[CB]dchroot -q -c sid "ls -1 / | tac | head -n 4"\fP\[CR]
+var
+usr
+tmp
+sys
+
+$ \f[CB]dchroot \-c sid\fP\[CR]
+I: [sid chroot] Running login shell: \[lq]/bin/bash\[rq]
+$ 
+.EE
+.LP
+Use \fI\-\-\fP to allow options beginning with \[oq]\-\[cq] or \[oq]\-\-\[cq]
+in the command to run in the chroot.  This prevents them being interpreted as
+options for dchroot itself.  Note that the top line was echoed to standard
+error, and the remaining lines to standard output.  This is intentional, so
+that program output from commands run in the chroot may be piped and redirected
+as required; the data will be the same as if the command was run directly on
+the host system.
+.SH TROUBLESHOOTING
+If something is not working, and it's not clear from the error messages what is
+wrong, try using the \fB\-\-debug=\fP\fIlevel\fP option to turn on debugging
+messages.  This gives a great deal more information.  Valid debug levels are
+\[oq]none\[cq], and \[oq]notice\[cq], \[oq]info\[cq], \[oq]warning\[cq] and
+\[oq]critical\[cq] in order of increasing severity.  The lower the severity
+level, the more output.
+.PP
+If you are still having trouble, the developers may be contacted on the mailing
+list:
+.br
+\f[CR]Debian\ buildd-tools\ Developers
+.br
+<buildd-tools-devel@lists.alioth.debian.org>\fP
+.SH BUGS
+On the \fBmips\fP and \fBmipsel\fP architectures, Linux kernels up to and
+including at least version 2.6.17 have broken
+.BR personality (2)
+support, which results in a failure to set the personality.  This will be seen
+as an \[lq]Operation not permitted\[rq] (EPERM) error.  To work around this
+problem, set \f[CI]personality\fP to \[oq]undefined\[cq], or upgrade to a more
+recent kernel.
+.SH FILES
+.TP
+\f[BI]\*[SCHROOT_CONF]\fP
+The system-wide \fBschroot\fP definition file.  This file must be owned by the
+root user, and not be writable by other.
+.so authors.man
+.PP
+This implementation of dchroot uses the same command-line options as the
+original \fBdchroot\fP by David Kimdon \f[CR]<dwhedon@debian.org>\fP, but is an
+independent implementation.
+.so copyright.man
+.SH SEE ALSO
+.BR schroot (1),
+.BR sbuild (1),
+.BR chroot (2),
+.BR schroot-setup (5),
+.BR schroot.conf (5).
+.\"#
+.\"# The following sets edit modes for GNU EMACS
+.\"# Local Variables:
+.\"# mode:nroff
+.\"# fill-column:79
+.\"# End:

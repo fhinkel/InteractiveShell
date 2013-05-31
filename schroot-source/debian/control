@@ -1,0 +1,230 @@
+Source: schroot
+Section: admin
+Priority: optional
+Maintainer: Debian buildd-tools Developers <buildd-tools-devel@lists.alioth.debian.org>
+Uploaders: Roger Leigh <rleigh@debian.org>
+Build-Depends:
+ debhelper (>= 9),
+ autotools-dev,
+ pkg-config,
+ libpam0g-dev,
+ libboost-dev,
+ libboost-iostreams-dev,
+ libboost-program-options-dev,
+ libboost-regex-dev,
+ libboost-filesystem-dev,
+ gettext,
+ libcppunit-dev,
+ groff-base,
+ po4a (>= 0.40)
+Build-Depends-Indep:
+ doxygen,
+ graphviz
+Standards-Version: 3.9.3
+Vcs-Browser: http://git.debian.org/?p=buildd-tools/schroot.git
+Vcs-Git: git://git.debian.org/git/buildd-tools/schroot
+
+Package: schroot-common
+Architecture: all
+Depends: ${misc:Depends}
+Description: common files for schroot
+ schroot allows users to execute commands or interactive shells in
+ different chroots.  Any number of named chroots may be created, and
+ access permissions given to each, including root access for normal
+ users, on a per-user or per-group basis.  Additionally, schroot can
+ switch to a different user in the chroot, using PAM for
+ authentication and authorisation.  All operations are logged for
+ security.
+ .
+ This package provides translations for localisation of schroot
+ programs.
+
+Package: libsbuild-1.7.0
+Architecture: any
+Section: libs
+Pre-Depends: multiarch-support
+Depends:
+ ${shlibs:Depends}, ${misc:Depends},
+Suggests: libsbuild-1.7.0-dbg
+Description: shared library for the Debian source builder
+ libsbuild provides facilities to manage and access chroots, as part of
+ schroot.
+ .
+ schroot allows users to execute commands or interactive shells in
+ different chroots.  Any number of named chroots may be created, and
+ access permissions given to each, including root access for normal
+ users, on a per-user or per-group basis.  Additionally, schroot can
+ switch to a different user in the chroot, using PAM for
+ authentication and authorisation.  All operations are logged for
+ security.
+ .
+ This package contains the shared library.
+
+Package: libsbuild-dev
+Architecture: any
+Section: libdevel
+Depends:
+ ${shlibs:Depends}, ${misc:Depends},
+ libsbuild-1.7.0 (= ${binary:Version}),
+ pkg-config (>= 0.14.0)
+Suggests:
+ libsbuild-1.7.0-dbg,
+ libsbuild-doc
+Description: development files for the Debian source builder
+ libsbuild provides facilities to manage and access chroots, as part of
+ schroot.
+ .
+ schroot allows users to execute commands or interactive shells in
+ different chroots.  Any number of named chroots may be created, and
+ access permissions given to each, including root access for normal
+ users, on a per-user or per-group basis.  Additionally, schroot can
+ switch to a different user in the chroot, using PAM for
+ authentication and authorisation.  All operations are logged for
+ security.
+ .
+ This package contains the header files needed to develop applications
+ which make use of sbuild.
+
+Package: libsbuild-1.7.0-dbg
+Architecture: any
+Section: debug
+Priority: extra
+Depends:
+ ${misc:Depends},
+ libsbuild-1.7.0 (= ${binary:Version}),
+Conflicts:
+ schroot-dbg
+Description: Debugging symbols for the Debian source builder
+ libsbuild provides facilities to manage and access chroots, as part of
+ schroot.
+ .
+ schroot allows users to execute commands or interactive shells in
+ different chroots.  Any number of named chroots may be created, and
+ access permissions given to each, including root access for normal
+ users, on a per-user or per-group basis.  Additionally, schroot can
+ switch to a different user in the chroot, using PAM for
+ authentication and authorisation.  All operations are logged for
+ security.
+ .
+ This package contains debugging symbols for the libsbuild package,
+ and dependent packages including schroot, dchroot and dchroot-dsa.
+
+Package: libsbuild-doc
+Architecture: all
+Section: doc
+Depends: ${misc:Depends}
+Suggests: libsbuild-dev
+Description: development documentation for the Debian source builder
+ libsbuild provides facilities to manage and access chroots, as part of
+ schroot.
+ .
+ schroot allows users to execute commands or interactive shells in
+ different chroots.  Any number of named chroots may be created, and
+ access permissions given to each, including root access for normal
+ users, on a per-user or per-group basis.  Additionally, schroot can
+ switch to a different user in the chroot, using PAM for
+ authentication and authorisation.  All operations are logged for
+ security.
+ .
+ This package contains the API documentation needed to develop
+ applications which make use of libsbuild.
+
+Package: schroot
+Architecture: any
+Depends:
+ ${shlibs:Depends}, ${misc:Depends},
+ schroot-common (=${source:Version})
+Conflicts: dchroot (<< 0.13)
+Replaces:
+ buildd (<< 0.62.3-1),
+ sbuild (<< 0.62.3-1)
+Enhances: sbuild
+Breaks:
+ sbuild (<< 0.62.6),
+# We need the --find option of update-binfmts
+ binfmt-support (<< 2.0.1)
+Suggests: debootstrap, lvm2, btrfs-tools, aufs-modules | unionfs-modules, qemu-user-static
+Description: Execute commands in a chroot environment
+ schroot allows users to execute commands or interactive shells in
+ different chroots.  Any number of named chroots may be created, and
+ access permissions given to each, including root access for normal
+ users, on a per-user or per-group basis.  Additionally, schroot can
+ switch to a different user in the chroot, using PAM for
+ authentication and authorisation.  All operations are logged for
+ security.
+ .
+ Several different types of chroot are supported, including normal
+ directories in the filesystem, and also block devices.  Sessions,
+ persistent chroots created on the fly from files (tar with optional
+ compression) and Btrfs and LVM snapshots are also supported.
+ .
+ schroot supports kernel personalities, allowing the programs run
+ inside the chroot to have a different personality.  For example,
+ running 32-bit chroots on 64-bit systems, or even running binaries
+ from alternative operating systems such as SVR4 or Xenix.
+ .
+ schroot also integrates with sbuild, to allow building packages with
+ all supported chroot types, including session-managed chroot types
+ such as Btrfs and LVM snapshots.
+ .
+ schroot shares most of its options with dchroot, but offers vastly
+ more functionality.
+
+Package: dchroot
+Architecture: any
+Suggests: debootstrap
+Depends:
+ ${misc:Depends}, ${shlibs:Depends},
+ schroot (= ${binary:Version}),
+ schroot-common (=${source:Version})
+Description: Execute commands in a chroot environment
+ dchroot allows users to execute commands or interactive shells in
+ different chroots.  A typical installation might provide 'stable',
+ 'testing' and 'unstable' chroots.  Users can move between chroots as
+ necessary.
+ .
+ NOTE: the schroot package provides a better implementation of
+ dchroot.  In particular:
+  * dchroot quoting issues are not present.  dchroot runs commands in
+    the chroot with -c option of the user's default shell; when
+    multiple command options are used, the options are concatenated
+    together, separated by spaces.  This concatenation breaks shell
+    quoting.
+  * schroot implements fine-grained access controls based on users
+    and groups, either of which may be granted the ability to gain
+    root access to the chroot if required.
+ Using schroot will avoid these issues, as well as provide additional
+ functionality dchroot does not possess.
+
+Package: dchroot-dsa
+Architecture: any
+Suggests: debootstrap
+Depends:
+ ${misc:Depends}, ${shlibs:Depends},
+ schroot (= ${binary:Version}), ${shlibs:Depends},
+ schroot-common (=${source:Version})
+Description: Execute commands in a chroot environment
+ dchroot allows users to execute commands or interactive shells in
+ different chroots.  A typical installation might provide 'stable',
+ 'testing' and 'unstable' chroots.  Users can move between chroots as
+ necessary.
+ .
+ This package provides a dchroot-dsa binary which is compatible with
+ the command-line options and configuration file format used by the
+ dchroot-dsa dchroot maintained by the Debian System Administrators
+ used on machines administered for the Debian Project.
+ .
+ NOTE: the schroot package provides a better implementation of
+ dchroot-dsa.  In particular:
+  * dchroot-dsa only allows the specification of a single command with
+    an absolute path, and no options may be used with the command;
+    schroot allows the use of relative and absolute paths with no
+    limit on the number of options.
+  * dchroot-dsa only allows one chroot to be used at once; schroot will
+    allow the use of as many chroots as desired.
+  * dchroot-dsa allows access to be restricted to named users; schroot
+    implements finer-grained access controls based on users and groups,
+    either of which may be granted the ability to gain root access to
+    the chroot if required.
+ Using schroot will avoid these issues, as well as provide significant
+ additional functionality dchroot-dsa does not possess.

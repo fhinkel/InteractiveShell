@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+
+PACKAGE="$(sed -ne '/^Welcome to /{s/Welcome to[[:space:]][[:space:]]*\([[:alnum:]][[:alnum:]]*\)[[:space:]][[:space:]]*\([[:alnum:]][[:alnum:].-]*\)\..*/\1/p;q}' < NEWS)"
+VERSION="$(sed -ne '/^Welcome to /{s/Welcome to[[:space:]][[:space:]]*\([[:alnum:]][[:alnum:]]*\)[[:space:]][[:space:]]*\([[:alnum:]][[:alnum:].-]*\)\..*/\2/p;q}' < NEWS)"
+
+if [ -z "$PACKAGE" ] || [ -z "$VERSION" ]; then
+  echo "Error parsing package name and version from NEWS"
+  exit 1
+fi
+
+echo "Tagging ${PACKAGE} version ${VERSION} as 'release/${PACKAGE}-${VERSION}'"
+git tag -s "release/${PACKAGE}-${VERSION}" -m "${PACKAGE} version ${VERSION}"

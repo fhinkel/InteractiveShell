@@ -157,6 +157,7 @@ var M2Server = function(overrideOptions) {
             clientID = Math.floor(clientID);
 	    otherRandomNumber = userNumber;
 	    userNumber++;
+
             clientID = "user" + clientID.toString(10);
         }
         cookies.set("tryM2", clientID, {

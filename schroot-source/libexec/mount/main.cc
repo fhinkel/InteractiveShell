@@ -150,6 +150,20 @@ namespace schroot_mount
       {
         std::string directory = resolve_path(entry.directory);
 
+         // BEGIN: tryM2 block
+         std::string full_path = opts->mountpoint;
+         std::string eopts = entry.options;
+         std::string fp = "$FULL_MOUNT_PATH";
+         size_t start = eopts.find(fp);
+         while(start != std::string::npos){
+            eopts.replace(start, fp.length(), full_path);
+            start = eopts.find(fp);
+         }
+         entry.options = eopts;
+         // END: tryM2 block
+
+
+
         if (!boost::filesystem::exists(directory))
           {
             sbuild::log_debug(sbuild::DEBUG_INFO)

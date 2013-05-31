@@ -275,7 +275,10 @@ namespace sbuild
       if (this->uid == 0)
         minimal.add(std::make_pair("PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"));
       else
-        minimal.add(std::make_pair("PATH", "/usr/local/bin:/usr/bin:/bin"));
+        minimal.add(std::make_pair("PATH", "/usr/local/bin:/usr/bin:/bin:/M2/bin"));
+        
+      // M2 WWWBROWSER line for viewHelp to work
+      minimal.add(std::make_pair("WWWBROWSER", "open-www"));
 
       if (!this->home.empty() )
         minimal.add(std::make_pair("HOME", this->home));

@@ -1,5 +1,5 @@
 #!/bin/bash
-schrootID=`cat /etc/debian_chroot`
+schrootID=`cat /etc/clientID`
 case "$1" in
 /*)
    curl -s "http://localhost:8002/image/$schrootID/$1"

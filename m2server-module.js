@@ -195,8 +195,18 @@ var M2Server = function(overrideOptions) {
                 */
                 require('child_process').exec('sudo -u ' + clients[clientID].systemUserName +
                     ' schroot -c ' + clients[clientID].schrootType + ' -n ' + clients[clientID].schrootName + ' -b', function() { 
-                    callbackFcn(clientID);
+                        // write cookie to /etc/clientID, it is needed for curl in open calls
+                        var filename = "/usr/local/var/lib/schroot/mount/" + clients[clientID].systemUserName + "/etc/clientID";
+                        fs.writeFile(filename, clientID, function(err) {
+                            if(err) {
+                                logClient(clientID, err);
+                            } else {
+                                logClient(clientID, "File with clientID ie., the user cookie, was written successfully.");
+                            }
+                        });
+                        callbackFcn(clientID);
                 });
+                
             });
         } else {
             callbackFcn(clientID);

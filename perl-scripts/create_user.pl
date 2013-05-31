@@ -21,11 +21,11 @@ $cpulimit  =$ARGV[3];
 #print $user;
 
 $ex = `id $user`;
-if($ex == ""){
-#	print "Users exists.\n";
+if($ex != ""){
+	print "Users exists.\n";
 	exit;
 }
-# print "Creating new user.\n";
+print "Creating new user.\n";
 
 # Create the new user:
 system "useradd -G m2users $user -d /home/m2user";

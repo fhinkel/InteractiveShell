@@ -1,2 +1,2 @@
-schrootID=`cat /etc/debian_chroot`
+schrootID=`cat /etc/clientID`
 curl -s http://localhost:8002/viewHelp/$schrootID/$1 

@@ -20,6 +20,13 @@ $cpulimit  =$ARGV[3];
 #print "We are starting a new user: ";
 #print $user;
 
+$ex = `id $user`;
+if($ex == ""){
+#	print "Users exists.\n";
+	exit;
+}
+# print "Creating new user.\n";
+
 # Create the new user:
 system "useradd -G m2users $user -d /home/m2user";
 # -G: Add user to group
@@ -32,7 +39,7 @@ system "useradd -G m2users $user -d /home/m2user";
 ################################
 ##  Schroot config
 ################################
-open (CONFIG, ">>/usr/local/etc/schroot/chroot.d/$schroot_type.conf");
+open (CONFIG, ">/usr/local/etc/schroot/chroot.d/$schroot_type.conf");
 print CONFIG "[$schroot_type]\n";
 print CONFIG "description=Ubuntu precise pangolin clone chroot\n";
 print CONFIG "directory=/fakeroots/clone\n";

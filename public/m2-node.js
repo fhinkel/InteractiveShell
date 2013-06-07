@@ -328,6 +328,9 @@ trym2.saveFiles = function(filenames) {
 };
 
 trym2.doUpfileClick = function () {
+    $("#upfile").val("");
+    console.log("Click file: " + typeof($("#upfile")) );
+    
     $("#upfile").click();
 };
 
@@ -371,7 +374,7 @@ trym2.doUpload = function () {
     }
     
     $.ajax({
-        url: '/upload/' + new Date(), // prevent Chrome and Safari caching ajax call
+        url: '/upload', 
         type: 'POST',
         data: formData,
         cache: false,
@@ -495,7 +498,7 @@ $(document).ready(function() {
     $("#inputBtn").click(trym2.showTerminal);
     $("#saveBtn").click(trym2.saveInteractions);
     $("#uploadBtn").click(trym2.doUpfileClick);
-    $("#upfile").change(trym2.doUpload);
+    $("#upfile").on('change', trym2.doUpload);
 
     $("#tutorialBtn").click(function() {
         trym2.loadLesson(trym2.tutorialNr, trym2.lessonNr);

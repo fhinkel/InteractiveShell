@@ -357,7 +357,8 @@ trym2.saveInteractions = function() {
 trym2.doUpload = function () {
     var obj = this;
     var file = obj.files[0];
-    var fileName = obj.value.split("\\");
+    var fileName = obj.value.split("\\"); // this is an array
+    fileName = fileName[fileName.length-1]; // take the last element
     var formData = new FormData();
     formData.append('file', file);
     console.log("process form " + file );

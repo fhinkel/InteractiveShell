@@ -361,7 +361,6 @@ trym2.doUpload = function () {
     fileName = fileName[fileName.length-1]; // take the last element
     var formData = new FormData();
     formData.append('file', file);
-    formData.append('preventCache', new Date());
     console.log("process form " + file );
     console.log(file.size);      
     if (file.size > trym2.MAXFILESIZE) {
@@ -372,7 +371,7 @@ trym2.doUpload = function () {
     }
     
     $.ajax({
-        url: '/upload',
+        url: '/upload/' + new Date(), // prevent Chrome and Safari caching ajax call
         type: 'POST',
         data: formData,
         cache: false,

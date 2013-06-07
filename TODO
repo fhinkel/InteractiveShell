@@ -1,5 +1,29 @@
+
+6/7/13
+* fixed bug with caching file in Chrome for uploads
+
+
+
+5/31/2013
+* Should we check for cookies? Should we create users when user does not accept cookies, like for curl?
+* secure cookies?  avoid spoofing of users?
+* write a jsag paper about this
+* get "!cat /etc/passwd", /groups, /shadow should be cleaned
+* fork the schroot git
+* restrict network access of schroots, we need curl to work on 
+    localhost and also for tutorials uploaded by users. If we restrict network access to localhost, 
+    we need to rethink tutorial strategy, maybe use iptables
+* typing into right hand side
+
+Major stuff: 
+* Android
+* tutorials management strategy
+
+
+
+
 5/15/2013
-typing into right hand side
+
 notify user if using Internet Explorer (DONE), or viewHelp on Mobile device etc. 
 
 5/10/2013
@@ -37,16 +61,13 @@ We need another port for a test server that we can use before we go live now tha
 
 upload: owned by root DONE
 /home can't use mv etc DONE
-running get "!open .txt" returns a wrong link
+running get "!open .txt" returns a wrong link DONE
 
 
 3/25/2013
 *tutorial name should be displayed inside lessons, font DONE
 *update readme for github
 *strategy for tutorials
-*JSAG article, got started
-* Create new tutorial
-* subdomain from Dan
 *JSAG article
 * Create new tutorial DONE
 

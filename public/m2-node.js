@@ -444,11 +444,16 @@ $(document).ready(function() {
     // terminal should open and new text should appear at the bottom
     $('#M2Out').bind('keypress', function(e) {
         console.log("handler for keypress() called");
-        trym2.showTerminal();
-        $("#M2In").focus();
-        console.log("M2In has now the focus");
+        $("#inputBtn").trigger("click");
+        $("#inputBtn").prop("checked", true).button("refresh");
+        $("M2In").focus();
+        trym2.setCaretPosition('#M2In', $('#M2In')[0].selectionEnd + 1);
+        $("#M2In").val( $("#M2In").val() +  "\n-- Evaluate a line or selection by typing Shift+Enter\n-- or by clicking on Evaluate.");
         var c = String.fromCharCode(e.which);
-        $("#M2In").val( $("#M2In").val() + "\n" + c);
+        $("#M2In").val( $("#M2In").val() + "\n" + c).focus();
+        console.log("M2In has now the focus");
+
+        $("#M2In").effect( "highlight" );
     });
   
     // Restarting the EventSource after pressing 'esc':

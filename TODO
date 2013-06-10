@@ -1,3 +1,6 @@
+6/10/2013
+* typing into right hand side DONE
+
 
 6/7/13
 * fixed bug with caching file in Chrome for uploads
@@ -13,7 +16,7 @@
 * restrict network access of schroots, we need curl to work on 
     localhost and also for tutorials uploaded by users. If we restrict network access to localhost, 
     we need to rethink tutorial strategy, maybe use iptables
-* typing into right hand side
+
 
 Major stuff: 
 * Android

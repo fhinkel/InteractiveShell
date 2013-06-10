@@ -442,8 +442,16 @@ $(document).ready(function() {
     
     // right hand side typing issue: if user attempts to type into the right hand side, 
     // terminal should open and new text should appear at the bottom
-    $("#outputarea").focus( function(){
-        alert("Outputarea has focus");
+    $("#M2Out").focus( function(){
+        console.log("M2Out has focus");
+        
+    });
+    
+    $('#M2Out').bind('keypress', function(e) {
+        console.log("handler for keypress() called")
+    	if(e.keyCode==13){
+    		// Enter pressed... do anything here...
+    	}
     });
   
     // Restarting the EventSource after pressing 'esc':

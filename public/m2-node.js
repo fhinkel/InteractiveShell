@@ -439,6 +439,12 @@ trym2.startEventSource = function() {
 $(document).ready(function() {
     // send server our client.eventStream
     trym2.startEventSource();
+    
+    // right hand side typing issue: if user attempts to type into the right hand side, 
+    // terminal should open and new text should appear at the bottom
+    $("#outputarea").focus( function(){
+        alert("Outputarea has focus");
+    });
   
     // Restarting the EventSource after pressing 'esc':
       $(document).keyup(function(e) {

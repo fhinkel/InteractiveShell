@@ -439,6 +439,17 @@ trym2.startEventSource = function() {
 $(document).ready(function() {
     // send server our client.eventStream
     trym2.startEventSource();
+    
+    // right hand side typing issue: if user attempts to type into the right hand side, 
+    // terminal should open and new text should appear at the bottom
+    $('#M2Out').bind('keypress', function(e) {
+        console.log("handler for keypress() called");
+        trym2.showTerminal();
+        $("#M2In").focus();
+        console.log("M2In has now the focus");
+        var c = String.fromCharCode(e.which);
+        $("#M2In").val( $("#M2In").val() + "\n" + c);
+    });
   
     // Restarting the EventSource after pressing 'esc':
       $(document).keyup(function(e) {

@@ -42,7 +42,7 @@ system "useradd -G m2users $user -d /home/m2user";
 open (CONFIG, ">/usr/local/etc/schroot/chroot.d/$schroot_type.conf");
 print CONFIG "[$schroot_type]\n";
 print CONFIG "description=Ubuntu precise pangolin clone chroot\n";
-print CONFIG "directory=/fakeroots/clone\n";
+print CONFIG "directory=/fakeroot/clone\n";
 print CONFIG "root-users=\n";
 print CONFIG "type=directory\n";
 print CONFIG "users=$user\n";

@@ -441,18 +441,16 @@ $(document).ready(function() {
     trym2.startEventSource();
     
     // right hand side typing issue: if user attempts to type into the right hand side, 
-    // terminal should open and new text should appear at the bottom
-    $('#M2Out').bind('keypress', function(e) {
-        console.log("handler for keypress() called");
+    // input opens and all typing is appended to M2In
+    $('#M2Out').bind('keydown', function() {
+        console.log("handler for keypdown() called");
         $("#inputBtn").trigger("click");
         $("#inputBtn").prop("checked", true).button("refresh");
-        $("M2In").focus();
-        trym2.setCaretPosition('#M2In', $('#M2In')[0].selectionEnd + 1);
-        $("#M2In").val( $("#M2In").val() +  "\n-- Evaluate a line or selection by typing Shift+Enter\n-- or by clicking on Evaluate.");
-        var c = String.fromCharCode(e.which);
-        $("#M2In").val( $("#M2In").val() + "\n" + c).focus();
-        console.log("M2In has now the focus");
-
+        var s = $("#M2In").val() +  "\n-- Evaluate a line or selection by typing Shift+Enter\n-- or by clicking on Evaluate.\n";
+        $("#M2In").val( s );
+        console.log(s);
+        trym2.setCaretPosition('#M2In', $('#M2In').val().length);
+        trym2.scrollDown("#M2In");
         $("#M2In").effect( "highlight" );
     });
   

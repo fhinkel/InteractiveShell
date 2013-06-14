@@ -6,3 +6,4 @@
 *.ps
 *.pdf
 *.dvi
+node_modules

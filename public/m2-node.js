@@ -5,7 +5,9 @@ var trym2 = {
     tutorialNr: 0,
     tutorialScrollTop: 0,  // this value is where we set the scrollTop of "#lesson" so we can reset it back
                            // when we navigate back (from Input or Index views).
-    tutorials: []
+    tutorials: [],
+    m2out_index: 0,
+    interactiveString: 0
 };
 
 ///////////////////
@@ -428,8 +430,14 @@ trym2.startEventSource = function() {
             //console.log(event);
             if (msg !== "") {
                 //console.log("We got a chat message: ");
-                $("#M2Out").val($("#M2Out").val() + msg);
-                trym2.scrollDown("#M2Out");
+                if(trym2.interactiveString == 0){
+                  $("#M2Out").val($("#M2Out").val() + msg);
+                  trym2.scrollDown("#M2Out");
+                } else {
+                    $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2out_index) + msg + trym2.interactiveString);
+                    trym2.m2out_index += msg.length;
+                  trym2.scrollDown("#M2Out");
+                }
             }
         }
     }
@@ -442,16 +450,35 @@ $(document).ready(function() {
     
     // right hand side typing issue: if user attempts to type into the right hand side, 
     // input opens and all typing is appended to M2In
-    $('#M2Out').bind('keydown', function() {
-        console.log("handler for keypdown() called");
-        $("#inputBtn").trigger("click");
+    $('#M2Out').bind('keypress', function(e) {
+        console.log("handler for keypress called");
+        console.log($("#M2Out").val().length);
+        //console.log(e);
+        if(trym2.interactiveString == 0){
+            trym2.m2out_index = $("#M2Out").val().length;
+            if(e.keyCode == 13){ return;}
+            trym2.interactiveString = String.fromCharCode(e.keyCode);
+            $("#M2Out").val($("#M2Out").val() + String.fromCharCode(e.keyCode));
+        } else {
+            if(e.keyCode == 13){
+               console.log(trym2.interactiveString);
+               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2out_index));
+               trym2.postMessage('/chat', trym2.interactiveString + "\n")();
+               trym2.interactiveString = 0;
+               return;
+            }
+            trym2.interactiveString += String.fromCharCode(e.keyCode);
+            console.log("IS: " + trym2.interactiveString);
+            $("#M2Out").val($("#M2Out").val() + String.fromCharCode(e.keyCode));
+        }
+        /* $("#inputBtn").trigger("click");
         $("#inputBtn").prop("checked", true).button("refresh");
         var s = $("#M2In").val() +  "\n-- Evaluate a line or selection by typing Shift+Enter\n-- or by clicking on Evaluate.\n";
         $("#M2In").val( s );
         console.log(s);
         trym2.setCaretPosition('#M2In', $('#M2In').val().length);
         trym2.scrollDown("#M2In");
-        $("#M2In").effect( "highlight" );
+        $("#M2In").effect( "highlight" ); */
     });
   
     // Restarting the EventSource after pressing 'esc':

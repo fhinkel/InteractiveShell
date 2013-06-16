@@ -450,10 +450,24 @@ $(document).ready(function() {
     
     // right hand side typing issue: if user attempts to type into the right hand side, 
     // input opens and all typing is appended to M2In
+    
+    // This deals with backspace.
+    // Not that we cannot move back and forth in the interactiveString.
+    $('#M2Out').bind('keyup', function(e) {
+        //console.log(e);
+        if((e.keyCode == 8) && (trym2.interactiveString != 0)){
+            console.log("handler for backspace");
+            if(trym2.interactiveString.length > 0){
+               trym2.interactiveString = trym2.interactiveString.substring(0,trym2.interactiveString.length -1);
+               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2out_index) + trym2.interactiveString);
+            }
+        }
+    
+    });
+    
+    // This deals with single letters.
     $('#M2Out').bind('keypress', function(e) {
         console.log("handler for keypress called");
-        console.log($("#M2Out").val().length);
-        //console.log(e);
         if(trym2.interactiveString == 0){
             trym2.m2out_index = $("#M2Out").val().length;
             if(e.keyCode == 13){ return;}

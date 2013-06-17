@@ -444,7 +444,8 @@ trym2.startEventSource = function() {
 $(document).ready(function() {
     // send server our client.eventStream
     trym2.startEventSource();
-    
+   
+    $("#M2Out").val("");
     // right hand side typing issue: if user attempts to type into the right hand side, 
     // input opens and all typing is appended to M2In
     
@@ -458,6 +459,8 @@ $(document).ready(function() {
                var msg = $("#M2Out").val().substring(trym2.m2out_index, l);
                console.log(msg);
                $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2out_index));
+               $("#M2In").val($("#M2In").val() + "\n" + msg);
+               trym2.scrollDown("#M2In");
                trym2.postMessage('/chat',  msg + "\n")();
             } else {
                $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2out_index));

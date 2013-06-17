@@ -6,8 +6,7 @@ var trym2 = {
     tutorialScrollTop: 0,  // this value is where we set the scrollTop of "#lesson" so we can reset it back
                            // when we navigate back (from Input or Index views).
     tutorials: [],
-    m2out_index: 0,
-    interactiveString: 0
+    m2out_index: 0
 };
 
 ///////////////////
@@ -430,14 +429,12 @@ trym2.startEventSource = function() {
             //console.log(event);
             if (msg !== "") {
                 //console.log("We got a chat message: ");
-                if(trym2.interactiveString == 0){
-                  $("#M2Out").val($("#M2Out").val() + msg);
+                var before = $("#M2Out").val().substring(0, trym2.m2out_index),
+                    after = $("#M2Out").val().substring(trym2.m2out_index+1, $("#M2Out").val().length);
+                  //length = $("#M2Out").val().length;
+                  $("#M2Out").val(before + msg + after);
                   trym2.scrollDown("#M2Out");
-                } else {
-                    $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2out_index) + msg + trym2.interactiveString);
-                    trym2.m2out_index += msg.length;
-                  trym2.scrollDown("#M2Out");
-                }
+                  trym2.m2out_index += msg.length;
             }
         }
     }
@@ -451,22 +448,48 @@ $(document).ready(function() {
     // right hand side typing issue: if user attempts to type into the right hand side, 
     // input opens and all typing is appended to M2In
     
-    // This deals with backspace.
-    // Not that we cannot move back and forth in the interactiveString.
-    $('#M2Out').bind('keyup', function(e) {
-        //console.log(e);
-        if((e.keyCode == 8) && (trym2.interactiveString != 0)){
-            console.log("handler for backspace");
-            if(trym2.interactiveString.length > 0){
-               trym2.interactiveString = trym2.interactiveString.substring(0,trym2.interactiveString.length -1);
-               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2out_index) + trym2.interactiveString);
+    // On pressing return send last part of M2Out to M2 and remove it.
+    $('#M2Out').bind('keypress', function(e) {
+        if(e.keyCode == 13){
+            console.log("handler for enter");
+            console.log($("#M2Out").val().length + " " + trym2.m2out_index);
+            if($("#M2Out").val().length > trym2.m2out_index){
+               var l = $("#M2Out").val().length;
+               var msg = $("#M2Out").val().substring(trym2.m2out_index, l);
+               console.log(msg);
+               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2out_index));
+               trym2.postMessage('/chat',  msg + "\n")();
+            } else {
+               console.log("Nothing to enter.");
             }
         }
-    
+    });
+
+
+    // If something is entered, change to end of textarea, if at wrong position.
+    $('#M2Out').bind('keydown', function(e) {
+        var pos = $("#M2Out")[0].selectionStart;
+       if(pos < trym2.m2out_index){
+       console.log(start + " Moving to end."); 
+         trym2.setCaretPosition('#M2Out', $('#M2Out').val().length);
+        }
+    });
+
+    // This deals with backspace.
+    // We may not shorten the string entered by M2.
+    $('#M2Out').bind('keyup', function(e) {
+        if(e.keyCode == 8){
+            console.log("handler for backspace");
+            if($("#M2Out").val().length < trym2.m2out_index){
+               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2out_index) + " ");
+            } else {
+               console.log("Backspace is ok.");
+            }
+        }
     });
     
     // This deals with single letters.
-    $('#M2Out').bind('keypress', function(e) {
+    /*$('#M2Out').bind('keypress', function(e) {
         console.log("handler for keypress called");
         if(trym2.interactiveString == 0){
             trym2.m2out_index = $("#M2Out").val().length;
@@ -485,15 +508,15 @@ $(document).ready(function() {
             console.log("IS: " + trym2.interactiveString);
             $("#M2Out").val($("#M2Out").val() + String.fromCharCode(e.keyCode));
         }
-        /* $("#inputBtn").trigger("click");
+         $("#inputBtn").trigger("click");
         $("#inputBtn").prop("checked", true).button("refresh");
         var s = $("#M2In").val() +  "\n-- Evaluate a line or selection by typing Shift+Enter\n-- or by clicking on Evaluate.\n";
         $("#M2In").val( s );
         console.log(s);
         trym2.setCaretPosition('#M2In', $('#M2In').val().length);
         trym2.scrollDown("#M2In");
-        $("#M2In").effect( "highlight" ); */
-    });
+        $("#M2In").effect( "highlight" ); 
+    });*/
   
     // Restarting the EventSource after pressing 'esc':
       $(document).keyup(function(e) {

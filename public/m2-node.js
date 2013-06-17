@@ -499,6 +499,7 @@ $(document).ready(function() {
             } else {
                $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex) + trym2.cmdHistory[trym2.cmdHistory.index]);
             }
+            trym2.scrollDown("#M2Out");
             e.preventDefault();
         }
        // This deals with backspace.

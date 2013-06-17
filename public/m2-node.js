@@ -459,7 +459,7 @@ $(document).ready(function() {
                var msg = $("#M2Out").val().substring(trym2.m2out_index, l);
                console.log(msg);
                $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2out_index));
-               $("#M2In").val($("#M2In").val() + "\n" + msg);
+               $("#M2In").val($("#M2In").val() + msg + "\n");
                trym2.scrollDown("#M2In");
                trym2.postMessage('/chat',  msg + "\n")();
             } else {

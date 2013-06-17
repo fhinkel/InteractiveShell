@@ -460,6 +460,7 @@ $(document).ready(function() {
                $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2out_index));
                trym2.postMessage('/chat',  msg + "\n")();
             } else {
+               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2out_index));
                console.log("Nothing to enter.");
             }
         }
@@ -468,6 +469,7 @@ $(document).ready(function() {
 
     // If something is entered, change to end of textarea, if at wrong position.
     $('#M2Out').bind('keydown', function(e) {
+       // The keys 37, 38, 39 and 40 are the arrow keys.
        if( (e.keyCode > 40) || (e.keyCode < 37)){
           var pos = $("#M2Out")[0].selectionStart;
           if(pos < trym2.m2out_index){

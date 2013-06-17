@@ -6,8 +6,8 @@ var trym2 = {
     tutorialScrollTop: 0,  // this value is where we set the scrollTop of "#lesson" so we can reset it back
                            // when we navigate back (from Input or Index views).
     tutorials: [],
-    m2outIndex: 0,
-    cmdHistory: []        // History of M2 commands for shell-like arrow navigation
+    m2outIndex: 0,         // End of real M2 output in M2Out textarea, without user's typing.   
+    cmdHistory: []         // History of M2 commands for shell-like arrow navigation
 };
 
 ///////////////////

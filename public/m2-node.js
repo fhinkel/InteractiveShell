@@ -7,8 +7,7 @@ var trym2 = {
                            // when we navigate back (from Input or Index views).
     tutorials: [],
     m2outIndex: 0,
-    cmdHistory: [],        // History of M2 commands for shell-like arrow navigation
-    cmdIndex: 0
+    cmdHistory: []        // History of M2 commands for shell-like arrow navigation
 };
 
 ///////////////////

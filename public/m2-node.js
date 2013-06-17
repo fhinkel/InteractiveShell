@@ -6,7 +6,9 @@ var trym2 = {
     tutorialScrollTop: 0,  // this value is where we set the scrollTop of "#lesson" so we can reset it back
                            // when we navigate back (from Input or Index views).
     tutorials: [],
-    m2out_index: 0
+    m2outIndex: 0,
+    cmdHistory: [],        // History of M2 commands for shell-like arrow navigation
+    cmdIndex: 0
 };
 
 ///////////////////
@@ -295,6 +297,7 @@ trym2.postMessage = function(url, msg) {
             }
         };
         xhr.send(msg); // Send the message
+        trym2.cmdHistory.index = trym2.cmdHistory.push(msg.substring(0,msg.length -1));
         return true;
     }
 };
@@ -429,12 +432,12 @@ trym2.startEventSource = function() {
             //console.log(event);
             if (msg !== "") {
                 //console.log("We got a chat message: ");
-                var before = $("#M2Out").val().substring(0, trym2.m2out_index),
-                    after = $("#M2Out").val().substring(trym2.m2out_index+1, $("#M2Out").val().length);
+                var before = $("#M2Out").val().substring(0, trym2.m2outIndex),
+                    after = $("#M2Out").val().substring(trym2.m2outIndex+1, $("#M2Out").val().length);
                   //length = $("#M2Out").val().length;
                   $("#M2Out").val(before + msg + after);
                   trym2.scrollDown("#M2Out");
-                  trym2.m2out_index += msg.length;
+                  trym2.m2outIndex += msg.length;
             }
         }
     }
@@ -443,9 +446,10 @@ trym2.startEventSource = function() {
 
 $(document).ready(function() {
     // send server our client.eventStream
+    $("#M2Out").val("");
+    trym2.cmdHistory.index = 0;
     trym2.startEventSource();
    
-    $("#M2Out").val("");
     // right hand side typing issue: if user attempts to type into the right hand side, 
     // input opens and all typing is appended to M2In
     
@@ -453,17 +457,17 @@ $(document).ready(function() {
     $('#M2Out').bind('keypress', function(e) {
         if(e.keyCode == 13){
             console.log("handler for enter");
-            console.log($("#M2Out").val().length + " " + trym2.m2out_index);
-            if($("#M2Out").val().length > trym2.m2out_index){
+            console.log($("#M2Out").val().length + " " + trym2.m2outIndex);
+            if($("#M2Out").val().length > trym2.m2outIndex){
                var l = $("#M2Out").val().length;
-               var msg = $("#M2Out").val().substring(trym2.m2out_index, l);
+               var msg = $("#M2Out").val().substring(trym2.m2outIndex, l);
                console.log(msg);
-               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2out_index));
+               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex));
                $("#M2In").val($("#M2In").val() + msg + "\n");
                trym2.scrollDown("#M2In");
                trym2.postMessage('/chat',  msg + "\n")();
             } else {
-               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2out_index));
+               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex));
                console.log("Nothing to enter.");
             }
         }
@@ -475,27 +479,41 @@ $(document).ready(function() {
        // The keys 37, 38, 39 and 40 are the arrow keys.
        if( (e.keyCode > 40) || (e.keyCode < 37)){
           var pos = $("#M2Out")[0].selectionStart;
-          if(pos < trym2.m2out_index){
+          if(pos < trym2.m2outIndex){
           console.log(pos + " Moving to end."); 
             trym2.setCaretPosition('#M2Out', $('#M2Out').val().length);
            }
-        } else {
-         console.log("Arrow key.");
+        } else if ((e.keyCode == 38) || (e.keyCode == 40)){
+            console.log("Arrow key.");
+            if ((e.keyCode == 40) && (trym2.cmdHistory.index < trym2.cmdHistory.length)) { // DOWN
+               trym2.cmdHistory.index++;
+            }
+            if((e.keyCode == 38) && (trym2.cmdHistory.index > 0)){ // UP
+               if(trym2.cmdHistory.index == trym2.cmdHistory.length){
+                  trym2.cmdHistory.current = $("#M2Out").val().substring(trym2.m2outIndex, $("#M2Out").val().length); 
+               }
+               trym2.cmdHistory.index--;
+            }
+            if(trym2.cmdHistory.index == trym2.cmdHistory.length){
+               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex) + trym2.cmdHistory.current);
+            } else {
+               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex) + trym2.cmdHistory[trym2.cmdHistory.index]);
+            }
+            e.preventDefault();
         }
-    });
-
-    // This deals with backspace.
-    // We may not shorten the string entered by M2.
-    $('#M2Out').bind('keyup', function(e) {
+       // This deals with backspace.
+       // We may not shorten the string entered by M2.
         if(e.keyCode == 8){
             console.log("handler for backspace");
-            if($("#M2Out").val().length < trym2.m2out_index){
-               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2out_index) + " ");
+            if($("#M2Out").val().length == trym2.m2outIndex){
+               e.preventDefault();
+               //$("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex) + " ");
             } else {
                console.log("Backspace is ok.");
             }
         }
     });
+
     
   
     // Restarting the EventSource after pressing 'esc':

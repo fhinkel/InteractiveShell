@@ -468,10 +468,14 @@ $(document).ready(function() {
 
     // If something is entered, change to end of textarea, if at wrong position.
     $('#M2Out').bind('keydown', function(e) {
-        var pos = $("#M2Out")[0].selectionStart;
-       if(pos < trym2.m2out_index){
-       console.log(start + " Moving to end."); 
-         trym2.setCaretPosition('#M2Out', $('#M2Out').val().length);
+       if( (e.keyCode > 40) || (e.keyCode < 37)){
+          var pos = $("#M2Out")[0].selectionStart;
+          if(pos < trym2.m2out_index){
+          console.log(pos + " Moving to end."); 
+            trym2.setCaretPosition('#M2Out', $('#M2Out').val().length);
+           }
+        } else {
+         console.log("Arrow key.");
         }
     });
 
@@ -488,35 +492,6 @@ $(document).ready(function() {
         }
     });
     
-    // This deals with single letters.
-    /*$('#M2Out').bind('keypress', function(e) {
-        console.log("handler for keypress called");
-        if(trym2.interactiveString == 0){
-            trym2.m2out_index = $("#M2Out").val().length;
-            if(e.keyCode == 13){ return;}
-            trym2.interactiveString = String.fromCharCode(e.keyCode);
-            $("#M2Out").val($("#M2Out").val() + String.fromCharCode(e.keyCode));
-        } else {
-            if(e.keyCode == 13){
-               console.log(trym2.interactiveString);
-               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2out_index));
-               trym2.postMessage('/chat', trym2.interactiveString + "\n")();
-               trym2.interactiveString = 0;
-               return;
-            }
-            trym2.interactiveString += String.fromCharCode(e.keyCode);
-            console.log("IS: " + trym2.interactiveString);
-            $("#M2Out").val($("#M2Out").val() + String.fromCharCode(e.keyCode));
-        }
-         $("#inputBtn").trigger("click");
-        $("#inputBtn").prop("checked", true).button("refresh");
-        var s = $("#M2In").val() +  "\n-- Evaluate a line or selection by typing Shift+Enter\n-- or by clicking on Evaluate.\n";
-        $("#M2In").val( s );
-        console.log(s);
-        trym2.setCaretPosition('#M2In', $('#M2In').val().length);
-        trym2.scrollDown("#M2In");
-        $("#M2In").effect( "highlight" ); 
-    });*/
   
     // Restarting the EventSource after pressing 'esc':
       $(document).keyup(function(e) {

@@ -460,6 +460,8 @@ trym2.M2OutKeypress = function() {
                trym2.scrollDown("#M2In");
                trym2.postMessage('/chat',  msg + "\n")();
             } else {
+               // We don't want empty lines send to M2 at pressing return twice.
+               e.preventDefault();
                // $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex));
                // console.log("Nothing to enter.");
             }

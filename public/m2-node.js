@@ -296,7 +296,9 @@ trym2.postMessage = function(url, msg) {
             }
         };
         xhr.send(msg); // Send the message
-        trym2.cmdHistory.index = trym2.cmdHistory.push(msg.substring(0,msg.length -1));
+        if(typeof msg != 'undefined'){
+           trym2.cmdHistory.index = trym2.cmdHistory.push(msg.substring(0,msg.length -1));
+        }
         return true;
     }
 };

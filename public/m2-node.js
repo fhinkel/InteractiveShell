@@ -445,6 +445,34 @@ trym2.startEventSource = function() {
 };
 
 
+trym2.interactiveEval = function(inputField) {
+    return function(e) {
+        if(e.keyCode == 13){
+            console.log("handler for enter");
+            console.log(inputField.val().length + " " + trym2.m2outIndex);
+            if(inputField.val().length > trym2.m2outIndex){
+               var l = inputField.val().length;
+               var msg = inputField.val().substring(trym2.m2outIndex, l);
+               console.log(msg);
+               inputField.val(inputField.val().substring(0,trym2.m2outIndex));
+               $("#M2In").val($("#M2In").val() + msg + "\n");
+               trym2.scrollDown("#M2In");
+               trym2.postMessage('/chat',  msg + "\n")();
+            } else {
+               inputField.val(inputField.val().substring(0,trym2.m2outIndex));
+               console.log("Nothing to enter.");
+            }
+        }
+        /* // Trying to interrupt for ctrl+shift+c.
+        if (e.keyCode == 67 && e.shiftKey && e.ctrlKey) {
+            e.preventDefault();
+            // do not make a line break or remove selected text when sending
+            trym2.postMessage('/interrupt')();
+        }*/
+    };
+};
+
+
 $(document).ready(function() {
     // send server our client.eventStream
     $("#M2Out").val("");
@@ -455,29 +483,7 @@ $(document).ready(function() {
     // input opens and all typing is appended to M2In
     
     // On pressing return send last part of M2Out to M2 and remove it.
-    $('#M2Out').bind('keypress', function(e) {
-        if(e.keyCode == 13){
-            console.log("handler for enter");
-            console.log($("#M2Out").val().length + " " + trym2.m2outIndex);
-            if($("#M2Out").val().length > trym2.m2outIndex){
-               var l = $("#M2Out").val().length;
-               var msg = $("#M2Out").val().substring(trym2.m2outIndex, l);
-               console.log(msg);
-               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex));
-               $("#M2In").val($("#M2In").val() + msg + "\n");
-               trym2.scrollDown("#M2In");
-               trym2.postMessage('/chat',  msg + "\n")();
-            } else {
-               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex));
-               console.log("Nothing to enter.");
-            }
-        }
-        if (e.keyCode == ckey && e.shiftKey && e.ctrlKey) {
-            e.preventDefault();
-            // do not make a line break or remove selected text when sending
-            trym2.postMessage('/interrupt')();
-        }
-    });
+    $('#M2Out').keypress( trym2.interactiveEval($('#M2Out')));
 
 
     // If something is entered, change to end of textarea, if at wrong position.

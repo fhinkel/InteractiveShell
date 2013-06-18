@@ -445,22 +445,23 @@ trym2.startEventSource = function() {
 };
 
 
+// On pressing return send last part of M2Out to M2 and remove it.
 trym2.M2OutKeypress = function() {
     return function(e) {
-        if(e.keyCode == 13){
-            console.log("handler for enter");
-            console.log($("#M2Out").val().length + " " + trym2.m2outIndex);
+        if(e.keyCode == 13){ // Return
+            // console.log("handler for return");
+            // console.log($("#M2Out").val().length + " " + trym2.m2outIndex);
             if($("#M2Out").val().length > trym2.m2outIndex){
                var l = $("#M2Out").val().length;
                var msg = $("#M2Out").val().substring(trym2.m2outIndex, l);
-               console.log(msg);
+               // console.log(msg);
                $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex));
                $("#M2In").val($("#M2In").val() + msg + "\n");
                trym2.scrollDown("#M2In");
                trym2.postMessage('/chat',  msg + "\n")();
             } else {
-               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex));
-               console.log("Nothing to enter.");
+               // $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex));
+               // console.log("Nothing to enter.");
             }
         }
         /* // Trying to interrupt for ctrl+shift+c.
@@ -472,17 +473,18 @@ trym2.M2OutKeypress = function() {
     };
 };
 
+// If something is entered, change to end of textarea, if at wrong position.
 trym2.M2OutKeydown = function() {
    return function(e) {
        // The keys 37, 38, 39 and 40 are the arrow keys.
        if( (e.keyCode > 40) || (e.keyCode < 37)){
           var pos = $("#M2Out")[0].selectionStart;
           if(pos < trym2.m2outIndex){
-          console.log(pos + " Moving to end."); 
+            //console.log(pos + " Moving to end."); 
             trym2.setCaretPosition('#M2Out', $('#M2Out').val().length);
-           }
+          }
         } else if ((e.keyCode == 38) || (e.keyCode == 40)){
-            console.log("Arrow key.");
+            // console.log("Arrow key.");
             if ((e.keyCode == 40) && (trym2.cmdHistory.index < trym2.cmdHistory.length)) { // DOWN
                trym2.cmdHistory.index++;
             }
@@ -503,12 +505,12 @@ trym2.M2OutKeydown = function() {
        // This deals with backspace.
        // We may not shorten the string entered by M2.
         if(e.keyCode == 8){
-            console.log("handler for backspace");
+            // console.log("handler for backspace");
             if($("#M2Out").val().length == trym2.m2outIndex){
                e.preventDefault();
                //$("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex) + " ");
             } else {
-               console.log("Backspace is ok.");
+               // console.log("Backspace is ok.");
             }
         }
    };
@@ -516,20 +518,15 @@ trym2.M2OutKeydown = function() {
 
 
 $(document).ready(function() {
-    // send server our client.eventStream
+    // Init procedures for right hand side.
     $("#M2Out").val("");
+    $('#M2Out').keypress( trym2.M2OutKeypress());
+    $('#M2Out').keydown(trym2.M2OutKeydown());
     trym2.cmdHistory.index = 0;
+    
+    // send server our client.eventStream
     trym2.startEventSource();
    
-    // On pressing return send last part of M2Out to M2 and remove it.
-    $('#M2Out').keypress( trym2.M2OutKeypress());
-
-
-    // If something is entered, change to end of textarea, if at wrong position.
-    $('#M2Out').keydown(trym2.M2OutKeydown());
-
-    
-  
     // Restarting the EventSource after pressing 'esc':
       $(document).keyup(function(e) {
         //console.log("Got a key:"+e.keyCode);

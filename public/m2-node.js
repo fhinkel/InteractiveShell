@@ -445,21 +445,21 @@ trym2.startEventSource = function() {
 };
 
 
-trym2.interactiveEval = function(inputField) {
+trym2.M2OutKeypress = function() {
     return function(e) {
         if(e.keyCode == 13){
             console.log("handler for enter");
-            console.log(inputField.val().length + " " + trym2.m2outIndex);
-            if(inputField.val().length > trym2.m2outIndex){
-               var l = inputField.val().length;
-               var msg = inputField.val().substring(trym2.m2outIndex, l);
+            console.log($("#M2Out").val().length + " " + trym2.m2outIndex);
+            if($("#M2Out").val().length > trym2.m2outIndex){
+               var l = $("#M2Out").val().length;
+               var msg = $("#M2Out").val().substring(trym2.m2outIndex, l);
                console.log(msg);
-               inputField.val(inputField.val().substring(0,trym2.m2outIndex));
+               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex));
                $("#M2In").val($("#M2In").val() + msg + "\n");
                trym2.scrollDown("#M2In");
                trym2.postMessage('/chat',  msg + "\n")();
             } else {
-               inputField.val(inputField.val().substring(0,trym2.m2outIndex));
+               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex));
                console.log("Nothing to enter.");
             }
         }
@@ -472,22 +472,8 @@ trym2.interactiveEval = function(inputField) {
     };
 };
 
-
-$(document).ready(function() {
-    // send server our client.eventStream
-    $("#M2Out").val("");
-    trym2.cmdHistory.index = 0;
-    trym2.startEventSource();
-   
-    // right hand side typing issue: if user attempts to type into the right hand side, 
-    // input opens and all typing is appended to M2In
-    
-    // On pressing return send last part of M2Out to M2 and remove it.
-    $('#M2Out').keypress( trym2.interactiveEval($('#M2Out')));
-
-
-    // If something is entered, change to end of textarea, if at wrong position.
-    $('#M2Out').bind('keydown', function(e) {
+trym2.M2OutKeydown = function() {
+   return function(e) {
        // The keys 37, 38, 39 and 40 are the arrow keys.
        if( (e.keyCode > 40) || (e.keyCode < 37)){
           var pos = $("#M2Out")[0].selectionStart;
@@ -525,7 +511,22 @@ $(document).ready(function() {
                console.log("Backspace is ok.");
             }
         }
-    });
+   };
+};
+
+
+$(document).ready(function() {
+    // send server our client.eventStream
+    $("#M2Out").val("");
+    trym2.cmdHistory.index = 0;
+    trym2.startEventSource();
+   
+    // On pressing return send last part of M2Out to M2 and remove it.
+    $('#M2Out').keypress( trym2.M2OutKeypress());
+
+
+    // If something is entered, change to end of textarea, if at wrong position.
+    $('#M2Out').keydown(trym2.M2OutKeyDown());
 
     
   

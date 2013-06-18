@@ -472,6 +472,11 @@ $(document).ready(function() {
                console.log("Nothing to enter.");
             }
         }
+        if (e.keyCode == ckey && e.shiftKey && e.ctrlKey) {
+            e.preventDefault();
+            // do not make a line break or remove selected text when sending
+            trym2.postMessage('/interrupt')();
+        }
     });
 
 

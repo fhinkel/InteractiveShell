@@ -526,7 +526,7 @@ $(document).ready(function() {
 
 
     // If something is entered, change to end of textarea, if at wrong position.
-    $('#M2Out').keydown(trym2.M2OutKeyDown());
+    $('#M2Out').keydown(trym2.M2OutKeydown());
 
     
   

@@ -238,7 +238,7 @@ var M2Server = function(overrideOptions) {
             m2 = spawn('M2');
             logClient(clientID, "Spawning new M2 process...");
         }
-
+      
         m2.on('exit', function(returnCode, signal) {
             // the schroot might still be valid or unmounted
             logClient(clientID, "M2 exited.");
@@ -414,6 +414,11 @@ var M2Server = function(overrideOptions) {
             }, 1000);
             if (client.m2) {
                 client.m2.kill();
+                client.m2.stdin.end(); // This line is needed to remove commands stuck in
+                                       // the stdin pipe. Else we get 
+                                       // Error: read ECONNRESET
+                                       //    at errnoException (net.js:884:11)
+                                       //    at Pipe.onread (net.js:539:19)
                 runShellCommand("killall -u " + clients[clientID].systemUserName, function(ret) {
                     console.log("We removed processes associates to " +
                         clientID + " with result: " + ret);

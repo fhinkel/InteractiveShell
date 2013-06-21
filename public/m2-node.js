@@ -515,6 +515,10 @@ trym2.M2OutKeydown = function() {
                // console.log("Backspace is ok.");
             }
         }
+        if(e.keyCode == 9){
+            e.preventDefault();
+            // Do something for tab-completion.
+        }
    };
 };
 

@@ -434,9 +434,36 @@ trym2.startEventSource = function() {
             if (msg !== "") {
                 //console.log("We got a chat message: ");
                 var before = $("#M2Out").val().substring(0, trym2.m2outIndex),
-                    after = $("#M2Out").val().substring(trym2.m2outIndex+1, $("#M2Out").val().length);
+                    after = $("#M2Out").val().substring(trym2.m2outIndex, $("#M2Out").val().length);
+
                   //length = $("#M2Out").val().length;
-                  $("#M2Out").val(before + msg + after);
+                  //console.log(trym2.beingExecuted[0]);
+                  var msgSplit = msg.split("\n");
+                  var enabled = 1;
+                  var afterSplit = after.split("\n");
+                  while(msgSplit.length > 0){
+                     var line = msgSplit.shift();
+                     //console.log("line: "+line);
+                     if(/^i\d+ : .*/.test(line)){
+                        enabled = 1;
+                        //console.log("Enabling!");
+                     }
+                     if(/^o\d+ = .*/.test(line)){
+                        enabled = 0;
+                        //console.log("Disabling!");
+                     }
+                     if((enabled == 1) && !(/^\s*$/.test(line))){
+                        //trym2.cmdHistory.lastExecuted++;
+                        //console.log("Next cmd.");
+                        afterSplit.shift();
+                     }
+                  }
+                  
+                  if(/^Macaulay2, version \d\.\d/.test(msg)){
+                     $("#M2Out").val(before + msg);
+                  } else {
+                     $("#M2Out").val(before + msg + afterSplit.join("\n"));
+                  }
                   trym2.scrollDown("#M2Out");
                   trym2.m2outIndex += msg.length;
             }
@@ -453,12 +480,15 @@ trym2.M2OutKeypress = function() {
             // console.log($("#M2Out").val().length + " " + trym2.m2outIndex);
             if($("#M2Out").val().length > trym2.m2outIndex){
                var l = $("#M2Out").val().length;
-               var msg = $("#M2Out").val().substring(trym2.m2outIndex, l);
+               var input = $("#M2Out").val().substring(trym2.m2outIndex, l);
+               var split = input.split("\n");
+               var msg = split.pop();
                // console.log(msg);
-               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex));
+               //$("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex));
                $("#M2In").val($("#M2In").val() + msg + "\n");
                trym2.scrollDown("#M2In");
                trym2.postMessage('/chat',  msg + "\n")();
+               //e.preventDefault();
             } else {
                // We don't want empty lines send to M2 at pressing return twice.
                e.preventDefault();
@@ -529,6 +559,7 @@ $(document).ready(function() {
     $('#M2Out').keypress( trym2.M2OutKeypress());
     $('#M2Out').keydown(trym2.M2OutKeydown());
     trym2.cmdHistory.index = 0;
+    trym2.cmdHistory.lastExecuted = 0;
     
     // send server our client.eventStream
     trym2.startEventSource();

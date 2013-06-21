@@ -1,9 +1,21 @@
+6/19/2013
+Franzi's thoughts: 
+* use grunt? (JavaScript Runner to automate testing, jsLint, deployment, etc)
+* web sockets instead of Ajax + SSE? Websockets has some overhead, whereas 
+    SSE does not, but our SSE implementation is very hard to understand and maintain, websockets has
+    fallback mechanism for older browsers
+* automated testing, Selenium?
+* refactor m2-node.js, it is really long and hard to navigate
+* automatic deployment? Push to the server without being on the server? What tools can do that? 
+
+
+
 6/10/2013
 * typing into right hand side DONE
 
 
 6/7/13
-* fixed bug with caching file in Chrome for uploads
+* fixed bug with caching file in Chrome for uploads 
 
 
 

@@ -639,26 +639,32 @@ var M2Server = function(overrideOptions) {
                     "/home/m2user/";
                 form.uploadDir = schrootPath;
             }
-            form.on('file', function(name, file) {
-                if (options.SCHROOT) {
-                    var newpath = schrootPath;
-                } else {
-                    newpath = "/tmp/";
-                }
-                fs.rename(file.path, newpath + file.name, function(error) {
-                    if (error) {
-                        logClient(clientID, "Error in renaming file: " + error);
-                        response.writeHead(500, {
-                            "Content-Type": "text/html"
-                        });
-                        response.end('rename failed: ' + error);
-                        return;
+            try {
+                form.on('file', function(name, file) {
+                    if (options.SCHROOT) {
+                        var newpath = schrootPath;
+                    } else {
+                        newpath = "/tmp/";
                     }
-                    if (options.SCHROOT){
-                        runShellCommand("chown " + clients[clientID].systemUserName + ":" + clients[clientID].systemUserName + " " + newpath + file.name, function(e) {console.log("Chown: " + e);});
-                    }
+                    // I think it is only renamed when the full file arrived
+                    fs.rename(file.path, newpath + file.name, function(error) {
+                        if (error) {
+                            logClient(clientID, "Error in renaming file: " + error);
+                            response.writeHead(500, {
+                                "Content-Type": "text/html"
+                            });
+                            response.end('rename failed: ' + error);
+                            return;
+                        }
+                        if (options.SCHROOT){
+                            runShellCommand("chown " + clients[clientID].systemUserName + ":" + clients[clientID].systemUserName + " " + newpath + file.name, function(e) {console.log("Chown: " + e);});
+                        }
+                    });
                 });
-            });
+            }
+            catch(e) {
+                console.log("We got a problem with file upload: " + e);
+            }
             form.on('end', function() {
                 response.writeHead(200, {
                     "Content-Type": "text/html"

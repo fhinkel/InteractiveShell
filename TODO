@@ -1,5 +1,7 @@
 6/21/2013
 * disable autocorrection (e.g. Upper case) on iPad 
+* restrict size of array that keeps track of command history
+
 
 6/19/2013
 Franzi's thoughts: 

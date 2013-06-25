@@ -21,8 +21,9 @@ $cpulimit  =$ARGV[3];
 #print $user;
 
 $ex = `id $user`;
-if($ex != ""){
+if($ex ne ""){
 	print "Users exists.\n";
+	system "rm /usr/local/var/lib/schroot/mount/$user/home/m2user/*";
 	exit;
 }
 print "Creating new user.\n";

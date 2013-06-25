@@ -438,24 +438,15 @@ trym2.startEventSource = function() {
 
                   //length = $("#M2Out").val().length;
                   //console.log(trym2.beingExecuted[0]);
-                  var msgSplit = msg.split("\n");
-                  var enabled = 1;
+                  var currIndex = -1;
                   var afterSplit = after.split("\n");
-                  while(msgSplit.length > 0){
-                     var line = msgSplit.shift();
-                     //console.log("line: "+line);
-                     if(/^i\d+ : .*/.test(line)){
-                        enabled = 1;
-                        //console.log("Enabling!");
-                     }
-                     if(/^o\d+ = .*/.test(line)){
-                        enabled = 0;
-                        //console.log("Disabling!");
-                     }
-                     if((enabled == 1) && !(/^\s*$/.test(line))){
-                        //trym2.cmdHistory.lastExecuted++;
-                        //console.log("Next cmd.");
+                  while(afterSplit.length > 0){
+                     var nextIndex = msg.indexOf(afterSplit[0]);
+                     if(nextIndex > currIndex){
                         afterSplit.shift();
+                        currIndex = nextIndex;
+                     } else {
+                        break;
                      }
                   }
                   

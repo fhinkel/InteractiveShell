@@ -633,40 +633,40 @@ var M2Server = function(overrideOptions) {
             logClient(clientID, "received: /upload");
             var formidable = require('./node-formidable');
             var form = new formidable.IncomingForm;
+            
+            form.uploadDir = '/tmp/foo';
+            
             var schrootPath;
             if (options.SCHROOT) {
                 schrootPath = "/usr/local/var/lib/schroot/mount/" + clients[clientID].schrootName +
                     "/home/m2user/";
                 form.uploadDir = schrootPath;
             }
-            try {
-                form.on('file', function(name, file) {
-                    if (options.SCHROOT) {
-                        var newpath = schrootPath;
-                    } else {
-                        newpath = "/tmp/";
+ 
+            form.on('file', function(name, file) {
+                if (options.SCHROOT) {
+                    var newpath = schrootPath;
+                } else {
+                    newpath = "/tmp/";
+                }
+                // I think it is only renamed when the full file arrived
+                fs.rename(file.path, newpath + file.name, function(error) {
+                    if (error) {
+                        logClient(clientID, "Error in renaming file: " + error);
+                        response.writeHead(500, {
+                            "Content-Type": "text/html"
+                        });
+                        response.end('rename failed: ' + error);
+                        return;
                     }
-                    // I think it is only renamed when the full file arrived
-                    fs.rename(file.path, newpath + file.name, function(error) {
-                        if (error) {
-                            logClient(clientID, "Error in renaming file: " + error);
-                            response.writeHead(500, {
-                                "Content-Type": "text/html"
-                            });
-                            response.end('rename failed: ' + error);
-                            return;
-                        }
-                        if (options.SCHROOT){
-                            runShellCommand("chown " + clients[clientID].systemUserName + ":" + clients[clientID].systemUserName + " " + newpath + file.name, function(e) {console.log("Chown: " + e);});
-                        }
-                    });
+                    if (options.SCHROOT){
+                        runShellCommand("chown " + clients[clientID].systemUserName + ":" + clients[clientID].systemUserName + " " + newpath + file.name, function(e) {console.log("Chown: " + e);});
+                    }
                 });
-            }
-            catch(e) {
-                console.log("We got a problem with file upload: " + e);
-            }
+            });
+
             form.on('end', function() {
-	    	console.log("end received from formidable form");
+	    	    console.log("end received from formidable form");
                 response.writeHead(200, {
                     "Content-Type": "text/html"
                 });
@@ -674,12 +674,10 @@ var M2Server = function(overrideOptions) {
             });
             form.on('error', function() {
                 logClient(clientID, 'received error in upload: ' );
-		request.resume();
-                //response.writeHead(200, {
-                //    "Content-Type": "text/html"
-                //});
-                //response.end('Some error has occurred: ' + error);
-                //response.end('upload not complete!');
+                response.writeHead(500, {
+                    "Content-Type": "text/html"
+                });
+                response.end('upload not complete!');
             });
 
             form.parse(request);

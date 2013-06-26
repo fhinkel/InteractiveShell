@@ -385,13 +385,9 @@ trym2.doUpload = function () {
         cache: false,
         contentType: false,
         processData: false,
-	error: function(data) {
-		console.log("404 error");
-	},
         statusCode: {
-            404: function(data) {
-	    	console.log("404 error");
-                $("<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'>Uploading failed.</div>").dialog({dialogClass: 'alert' });
+            500: function(data) {
+                $("<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Uploading failed.</div>").dialog({dialogClass: 'alert' });
             }
         },
         success: function(data) {

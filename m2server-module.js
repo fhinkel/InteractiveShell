@@ -631,7 +631,7 @@ var M2Server = function(overrideOptions) {
     var uploadM2Package = function(request, response, next) {
         assureClient(request, response, function(clientID) {
             logClient(clientID, "received: /upload");
-            var formidable = require('formidable');
+            var formidable = require('./node-formidable');
             var form = new formidable.IncomingForm;
             var schrootPath;
             if (options.SCHROOT) {
@@ -666,17 +666,20 @@ var M2Server = function(overrideOptions) {
                 console.log("We got a problem with file upload: " + e);
             }
             form.on('end', function() {
+	    	console.log("end received from formidable form");
                 response.writeHead(200, {
                     "Content-Type": "text/html"
                 });
                 response.end('upload complete!');
             });
-            form.on('error', function(error) {
-                logClient(clientID, 'received error in upload: ' + error);
-                response.writeHead(200, {
-                    "Content-Type": "text/html"
-                });
-                response.end('Some error has occurred: ' + error);
+            form.on('error', function() {
+                logClient(clientID, 'received error in upload: ' );
+		request.resume();
+                //response.writeHead(200, {
+                //    "Content-Type": "text/html"
+                //});
+                //response.end('Some error has occurred: ' + error);
+                //response.end('upload not complete!');
             });
 
             form.parse(request);

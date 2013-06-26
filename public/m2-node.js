@@ -371,7 +371,7 @@ trym2.doUpload = function () {
     formData.append('file', file);
     console.log("process form " + file );
     console.log(file.size);      
-    if (file.size > trym2.MAXFILESIZE) {
+    if (false) { //file.size > trym2.MAXFILESIZE) {
         $("<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Your file is too big to upload.  Sorry!</div>").dialog({
              dialogClass: 'alert', 
          });
@@ -385,8 +385,12 @@ trym2.doUpload = function () {
         cache: false,
         contentType: false,
         processData: false,
+	error: function(data) {
+		console.log("404 error");
+	},
         statusCode: {
-            500: function(data) {
+            404: function(data) {
+	    	console.log("404 error");
                 $("<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'>Uploading failed.</div>").dialog({dialogClass: 'alert' });
             }
         },

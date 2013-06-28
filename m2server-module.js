@@ -238,7 +238,7 @@ var M2Server = function(overrideOptions) {
             m2 = spawn('M2');
             logClient(clientID, "Spawning new M2 process...");
         }
-
+      
         m2.on('exit', function(returnCode, signal) {
             // the schroot might still be valid or unmounted
             logClient(clientID, "M2 exited.");
@@ -414,6 +414,11 @@ var M2Server = function(overrideOptions) {
             }, 1000);
             if (client.m2) {
                 client.m2.kill();
+                client.m2.stdin.end(); // This line is needed to remove commands stuck in
+                                       // the stdin pipe. Else we get 
+                                       // Error: read ECONNRESET
+                                       //    at errnoException (net.js:884:11)
+                                       //    at Pipe.onread (net.js:539:19)
                 runShellCommand("killall -u " + clients[clientID].systemUserName, function(ret) {
                     console.log("We removed processes associates to " +
                         clientID + " with result: " + ret);
@@ -626,20 +631,22 @@ var M2Server = function(overrideOptions) {
     var uploadM2Package = function(request, response, next) {
         assureClient(request, response, function(clientID) {
             logClient(clientID, "received: /upload");
-            var formidable = require('formidable');
-            var form = new formidable.IncomingForm;
+            var formidable = require('./node-formidable');
+            var form = new formidable.IncomingForm;            
             var schrootPath;
             if (options.SCHROOT) {
                 schrootPath = "/usr/local/var/lib/schroot/mount/" + clients[clientID].schrootName +
                     "/home/m2user/";
                 form.uploadDir = schrootPath;
             }
+ 
             form.on('file', function(name, file) {
                 if (options.SCHROOT) {
                     var newpath = schrootPath;
                 } else {
                     newpath = "/tmp/";
                 }
+                // I think it is only renamed when the full file arrived
                 fs.rename(file.path, newpath + file.name, function(error) {
                     if (error) {
                         logClient(clientID, "Error in renaming file: " + error);
@@ -654,18 +661,20 @@ var M2Server = function(overrideOptions) {
                     }
                 });
             });
+
             form.on('end', function() {
+	    	    console.log("end received from formidable form");
                 response.writeHead(200, {
                     "Content-Type": "text/html"
                 });
                 response.end('upload complete!');
             });
-            form.on('error', function(error) {
-                logClient(clientID, 'received error in upload: ' + error);
-                response.writeHead(200, {
+            form.on('error', function() {
+                logClient(clientID, 'received error in upload: ' );
+                response.writeHead(500, {
                     "Content-Type": "text/html"
                 });
-                response.end('Some error has occurred: ' + error);
+                response.end('upload not complete!');
             });
 
             form.parse(request);

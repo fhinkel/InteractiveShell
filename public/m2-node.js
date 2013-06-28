@@ -371,7 +371,7 @@ trym2.doUpload = function () {
     formData.append('file', file);
     console.log("process form " + file );
     console.log(file.size);      
-    if (file.size > trym2.MAXFILESIZE) {
+    if (false) { //file.size > trym2.MAXFILESIZE) {
         $("<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Your file is too big to upload.  Sorry!</div>").dialog({
              dialogClass: 'alert', 
          });
@@ -387,7 +387,7 @@ trym2.doUpload = function () {
         processData: false,
         statusCode: {
             500: function(data) {
-                $("<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'>Uploading failed.</div>").dialog({dialogClass: 'alert' });
+                $("<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Uploading failed.</div>").dialog({dialogClass: 'alert' });
             }
         },
         success: function(data) {
@@ -434,9 +434,27 @@ trym2.startEventSource = function() {
             if (msg !== "") {
                 //console.log("We got a chat message: ");
                 var before = $("#M2Out").val().substring(0, trym2.m2outIndex),
-                    after = $("#M2Out").val().substring(trym2.m2outIndex+1, $("#M2Out").val().length);
+                    after = $("#M2Out").val().substring(trym2.m2outIndex, $("#M2Out").val().length);
+
                   //length = $("#M2Out").val().length;
-                  $("#M2Out").val(before + msg + after);
+                  //console.log(trym2.beingExecuted[0]);
+                  var currIndex = -1;
+                  var afterSplit = after.split("\n");
+                  while(afterSplit.length > 0){
+                     var nextIndex = msg.indexOf(afterSplit[0]);
+                     if(nextIndex > currIndex){
+                        afterSplit.shift();
+                        currIndex = nextIndex;
+                     } else {
+                        break;
+                     }
+                  }
+                  
+                  if(/^Macaulay2, version \d\.\d/.test(msg)){
+                     $("#M2Out").val(before + msg);
+                  } else {
+                     $("#M2Out").val(before + msg + afterSplit.join("\n"));
+                  }
                   trym2.scrollDown("#M2Out");
                   trym2.m2outIndex += msg.length;
             }
@@ -453,12 +471,15 @@ trym2.M2OutKeypress = function() {
             // console.log($("#M2Out").val().length + " " + trym2.m2outIndex);
             if($("#M2Out").val().length > trym2.m2outIndex){
                var l = $("#M2Out").val().length;
-               var msg = $("#M2Out").val().substring(trym2.m2outIndex, l);
+               var input = $("#M2Out").val().substring(trym2.m2outIndex, l);
+               var split = input.split("\n");
+               var msg = split.pop();
                // console.log(msg);
-               $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex));
+               //$("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex));
                $("#M2In").val($("#M2In").val() + msg + "\n");
                trym2.scrollDown("#M2In");
                trym2.postMessage('/chat',  msg + "\n")();
+               //e.preventDefault();
             } else {
                // We don't want empty lines send to M2 at pressing return twice.
                e.preventDefault();
@@ -515,6 +536,10 @@ trym2.M2OutKeydown = function() {
                // console.log("Backspace is ok.");
             }
         }
+        if(e.keyCode == 9){
+            e.preventDefault();
+            // Do something for tab-completion.
+        }
    };
 };
 
@@ -525,6 +550,7 @@ $(document).ready(function() {
     $('#M2Out').keypress( trym2.M2OutKeypress());
     $('#M2Out').keydown(trym2.M2OutKeydown());
     trym2.cmdHistory.index = 0;
+    trym2.cmdHistory.lastExecuted = 0;
     
     // send server our client.eventStream
     trym2.startEventSource();

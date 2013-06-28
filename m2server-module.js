@@ -631,7 +631,7 @@ var M2Server = function(overrideOptions) {
     var uploadM2Package = function(request, response, next) {
         assureClient(request, response, function(clientID) {
             logClient(clientID, "received: /upload");
-            var formidable = require('./node-formidable');
+            var formidable = require('formidable');
             var form = new formidable.IncomingForm;            
             var schrootPath;
             if (options.SCHROOT) {
@@ -770,6 +770,10 @@ var M2Server = function(overrideOptions) {
         }
     }
     initializeServer();
+    
+    process.on('uncaughtException', function(err) {
+      console.log('Caught exception in global process object: ' + err);
+    });
 
     // These are the methods available from the outside:
     return {

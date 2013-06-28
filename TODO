@@ -1,3 +1,28 @@
+What do we need to make this really useful for the fall semester? 
+* data persistence
+* tutorial uploads
+* handle many concurrent clients - load balancing
+* email homework assignments to teachers for grading? 
+* announce it
+* database with tutorials an feedback/user information on tutorials. MongoDB? or couchDB? 
+    can we use a standard solution for up/down voting tutorials?
+* we want a curated and organized list of tutorials
+* extra node in M2 package documentation that is lifted automatically into tutorial
+
+
+
+6/28/2013
+* data persistence of command history on client side
+* data persistence of output on client side, especially useful for long running computations, 
+    or persistence on server side, and a way of sending it to the client when reconnecting
+*Vagrant: Up and Running? 
+
+Tutorial uploads: 
+    *front end interface
+    *transform from simple doc format, on the fly?
+    *where do we store them?
+
+
 6/21/2013
 * disable autocorrection (e.g. Upper case) on iPad 
 * restrict size of array that keeps track of command history

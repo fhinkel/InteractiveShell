@@ -466,33 +466,20 @@ trym2.startEventSource = function() {
 // On pressing return send last part of M2Out to M2 and remove it.
 trym2.M2OutKeypress = function() {
     return function(e) {
-        if(e.keyCode == 13){ // Return
-            // console.log("handler for return");
-            // console.log($("#M2Out").val().length + " " + trym2.m2outIndex);
-            if($("#M2Out").val().length > trym2.m2outIndex){
+        if(e.keyCode == 13) { // Return
+            if($("#M2Out").val().length > trym2.m2outIndex) {
                var l = $("#M2Out").val().length;
                var input = $("#M2Out").val().substring(trym2.m2outIndex, l);
                var split = input.split("\n");
                var msg = split.pop();
-               // console.log(msg);
-               //$("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex));
                $("#M2In").val($("#M2In").val() + msg + "\n");
                trym2.scrollDown("#M2In");
                trym2.postMessage('/chat',  msg + "\n")();
-               //e.preventDefault();
             } else {
                // We don't want empty lines send to M2 at pressing return twice.
                e.preventDefault();
-               // $("#M2Out").val($("#M2Out").val().substring(0,trym2.m2outIndex));
-               // console.log("Nothing to enter.");
             }
         }
-        /* // Trying to interrupt for ctrl+shift+c.
-        if (e.keyCode == 67 && e.shiftKey && e.ctrlKey) {
-            e.preventDefault();
-            // do not make a line break or remove selected text when sending
-            trym2.postMessage('/interrupt')();
-        }*/
     };
 };
 
@@ -509,10 +496,11 @@ trym2.M2OutKeydown = function() {
        var cKey = 67;
        var ctrlKeyCode = 17;
        
-       if( ((e.keyCode > arrowDown) || (e.keyCode < arrowLeft)) 
-            && !(e.ctrlKey && e.keyCode==cKey)
-            && e.keyCode!=ctrlKeyCode
-            ){
+       if( (e.keyCode > arrowDown) || (e.keyCode < arrowLeft) ) { //  we did not receive an arrow key
+           if ( (e.ctrlKey && e.keyCode==cKey) || e.keyCode==ctrlKeyCode ) {
+               return;
+           }
+           // we need to move cursor to end of input
           var pos = $("#M2Out")[0].selectionStart;
           if(pos < trym2.m2outIndex){
             //console.log(pos + " Moving to end."); 

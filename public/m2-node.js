@@ -498,7 +498,7 @@ trym2.M2OutKeydown = function() {
        var metaKeyCodes = [224, 17, 91, 93];
        
        if( (e.keyCode > arrowDown) || (e.keyCode < arrowLeft) ) { //  we did not receive an arrow key
-           if ( (e.ctrlKey && e.keyCode==cKey) || e.keyCode==ctrlKeyCode ) { // do not jump to bottom on Ctrl+C or on Ctrl
+           if ( (e.ctrlKey && e.keyCode == cKey) || e.keyCode == ctrlKeyCode ) { // do not jump to bottom on Ctrl+C or on Ctrl
                return;
            }
            

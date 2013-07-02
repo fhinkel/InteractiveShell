@@ -496,22 +496,34 @@ trym2.M2OutKeypress = function() {
     };
 };
 
+
+
 // If something is entered, change to end of textarea, if at wrong position.
 trym2.M2OutKeydown = function() {
    return function(e) {
        // The keys 37, 38, 39 and 40 are the arrow keys.
-       if( (e.keyCode > 40) || (e.keyCode < 37)){
+       var arrowUp = 38;
+       var arrowDown = 40;
+       var arrowLeft = 37;
+       var arrowRight = 39;
+       var cKey = 67;
+       var ctrlKeyCode = 17;
+       
+       if( ((e.keyCode > arrowDown) || (e.keyCode < arrowLeft)) 
+            && !(e.ctrlKey && e.keyCode==cKey)
+            && e.keyCode!=ctrlKeyCode
+            ){
           var pos = $("#M2Out")[0].selectionStart;
           if(pos < trym2.m2outIndex){
             //console.log(pos + " Moving to end."); 
             trym2.setCaretPosition('#M2Out', $('#M2Out').val().length);
           }
-        } else if ((e.keyCode == 38) || (e.keyCode == 40)){
+        } else if ((e.keyCode == arrowUp) || (e.keyCode == arrowDown)){
             // console.log("Arrow key.");
-            if ((e.keyCode == 40) && (trym2.cmdHistory.index < trym2.cmdHistory.length)) { // DOWN
+            if ((e.keyCode == arrowDown) && (trym2.cmdHistory.index < trym2.cmdHistory.length)) { // DOWN
                trym2.cmdHistory.index++;
             }
-            if((e.keyCode == 38) && (trym2.cmdHistory.index > 0)){ // UP
+            if((e.keyCode == arrowUp) && (trym2.cmdHistory.index > 0)){ // UP
                if(trym2.cmdHistory.index == trym2.cmdHistory.length){
                   trym2.cmdHistory.current = $("#M2Out").val().substring(trym2.m2outIndex, $("#M2Out").val().length); 
                }

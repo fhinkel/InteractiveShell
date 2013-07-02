@@ -495,11 +495,19 @@ trym2.M2OutKeydown = function() {
        var arrowRight = 39;
        var cKey = 67;
        var ctrlKeyCode = 17;
+       var metaKeyCodes = [224, 17, 91, 93];
        
        if( (e.keyCode > arrowDown) || (e.keyCode < arrowLeft) ) { //  we did not receive an arrow key
-           if ( (e.ctrlKey && e.keyCode==cKey) || e.keyCode==ctrlKeyCode ) {
+           if ( (e.ctrlKey && e.keyCode==cKey) || e.keyCode==ctrlKeyCode ) { // do not jump to bottom on Ctrl+C or on Ctrl
                return;
            }
+           
+           // for MAC OS
+           if ( (e.metaKey && e.keyCode == cKey) || (metaKeyCodes.indexOf(e.keyCode) > -1) ) { // do not jump to bottom on Command+C or on Command
+               return;
+           }
+           
+           
            // we need to move cursor to end of input
           var pos = $("#M2Out")[0].selectionStart;
           if(pos < trym2.m2outIndex){

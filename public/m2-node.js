@@ -7,7 +7,8 @@ var trym2 = {
                            // when we navigate back (from Input or Index views).
     tutorials: [],
     m2outIndex: 0,         // End of real M2 output in M2Out textarea, without user's typing.   
-    cmdHistory: []         // History of M2 commands for shell-like arrow navigation
+    cmdHistory: [],         // History of M2 commands for shell-like arrow navigation
+    dataSentIndex: 0
 };
 
 ///////////////////
@@ -297,7 +298,10 @@ trym2.postMessage = function(url, msg) {
         };
         xhr.send(msg); // Send the message
         if(typeof msg != 'undefined'){
-           trym2.cmdHistory.index = trym2.cmdHistory.push(msg.substring(0,msg.length -1));
+           var input = msg.split("\n");
+           for(var line in input){
+              trym2.cmdHistory.index = trym2.cmdHistory.push(line.substring(0,line.length -1));
+           }
         }
         return true;
     }
@@ -443,6 +447,8 @@ trym2.startEventSource = function() {
                   while(afterSplit.length > 0){
                      var nextIndex = msg.indexOf(afterSplit[0]);
                      if(nextIndex > currIndex){
+                        trym2.dataSentIndex -= afterSplit[0].length+1;
+
                         afterSplit.shift();
                         currIndex = nextIndex;
                      } else {
@@ -457,6 +463,7 @@ trym2.startEventSource = function() {
                   }
                   trym2.scrollDown("#M2Out");
                   trym2.m2outIndex += msg.length;
+                  trym2.dataSentIndex += msg.length;
             }
         }
     }
@@ -469,11 +476,14 @@ trym2.M2OutKeypress = function() {
         if(e.keyCode == 13) { // Return
             if($("#M2Out").val().length > trym2.m2outIndex) {
                var l = $("#M2Out").val().length;
-               var input = $("#M2Out").val().substring(trym2.m2outIndex, l);
-               var split = input.split("\n");
-               var msg = split.pop();
+               var msg = $("#M2Out").val().substring(trym2.dataSentIndex, l);
+               
+               
                $("#M2In").val($("#M2In").val() + msg + "\n");
                trym2.scrollDown("#M2In");
+               
+               trym2.dataSentIndex += msg.length;
+               
                trym2.postMessage('/chat',  msg + "\n")();
             } else {
                // We don't want empty lines send to M2 at pressing return twice.

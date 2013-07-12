@@ -297,10 +297,13 @@ trym2.postMessage = function(url, msg) {
             }
         };
         xhr.send(msg); // Send the message
+        console.log("Message: "+msg);
         if(typeof msg != 'undefined'){
            var input = msg.split("\n");
+           
            for(var line in input){
-              trym2.cmdHistory.index = trym2.cmdHistory.push(line.substring(0,line.length -1));
+            console.log("Line: "+input[line]);
+              trym2.cmdHistory.index = trym2.cmdHistory.push(input[line]);
            }
         }
         return true;
@@ -436,19 +439,26 @@ trym2.startEventSource = function() {
             var msg = event.data; // Get text from event object
             //console.log(event);
             if (msg !== "") {
-                //console.log("We got a chat message: ");
+                console.log("We got a chat message: "+msg);
+                console.log("It has the length: "+msg.length);
                 var before = $("#M2Out").val().substring(0, trym2.m2outIndex),
                     after = $("#M2Out").val().substring(trym2.m2outIndex, $("#M2Out").val().length);
 
                   //length = $("#M2Out").val().length;
                   //console.log(trym2.beingExecuted[0]);
                   var currIndex = -1;
+                  console.log("After: "+after+". "+after.length);
                   var afterSplit = after.split("\n");
-                  while(afterSplit.length > 0){
+                  while((after.length > 0) && (afterSplit.length > 1)){
+                     console.log("as[0]: "+afterSplit[0]);
                      var nextIndex = msg.indexOf(afterSplit[0]);
+                     if(afterSplit[0].length==0){
+                        nextIndex = currIndex+1;
+                     }
                      if(nextIndex > currIndex){
                         trym2.dataSentIndex -= afterSplit[0].length+1;
-
+                        console.log("Found: "+afterSplit[0]+" "+nextIndex);
+                        console.log("I am subtracting something to annoy you.");
                         afterSplit.shift();
                         currIndex = nextIndex;
                      } else {
@@ -458,12 +468,14 @@ trym2.startEventSource = function() {
                   
                   if(/^Macaulay2, version \d\.\d/.test(msg)){
                      $("#M2Out").val(before + msg);
+                     trym2.dataSentIndex = trym2.m2outIndex;
                   } else {
                      $("#M2Out").val(before + msg + afterSplit.join("\n"));
                   }
                   trym2.scrollDown("#M2Out");
                   trym2.m2outIndex += msg.length;
                   trym2.dataSentIndex += msg.length;
+                  console.log("Setting index to: "+trym2.m2outIndex+" vs "+ $("#M2Out").val().length+" vs "+trym2.dataSentIndex);
             }
         }
     }
@@ -482,7 +494,7 @@ trym2.M2OutKeypress = function() {
                $("#M2In").val($("#M2In").val() + msg + "\n");
                trym2.scrollDown("#M2In");
                
-               trym2.dataSentIndex += msg.length;
+               trym2.dataSentIndex += msg.length+1;
                
                trym2.postMessage('/chat',  msg + "\n")();
             } else {

@@ -10,7 +10,7 @@
 \usepackage[utf8]{inputenc}
 
 % Setup for fullpage use
-\usepackage{fullpage}
+\usepackage{fullpage, hyperref}
 
 % Uncomment some of the following if you use the features
 %
@@ -86,9 +86,11 @@ Motivation (simple for students, simple interface, no time for installation in c
 
 
 \section{How to use the website}
+The right hand side provides a shell like environment running Macaulay2. You can type into it, as well as use the arrow keys for navigating through your command history.
+
 On the left hand side, the user can navigate between {\it Home}, {\it Tutorial}, and {\it Input}. {\it Home} shows the table of contents of tutorials. {\it Tutorial} shows the currently selected tutorial. Tutorials are interactive and contain executable pieces of Macaulay2 code that are run by clicking on them. {\it Input} shows a terminal window in which the user can type commands and execute them.  
 
-The right hand half shows the output of a Macaulay2 terminal. All code executed either by clicking on interactive parts in a tutorial or by entering code in the {\it Input} window, appears on the right hand side together with the output from Macaulay2 to those results. 
+All code executed either by clicking on interactive parts in a tutorial or by entering code in the {\it Input} window, appears on the right hand side together with the output from Macaulay2 to those results. 
 
 The {\it Reset} button resets a Macaulay2 session, i.e., stopping a running calculation, deleting all variables, unloading all packages, and loading the standard packages. 
 
@@ -118,7 +120,7 @@ This lead to several new questions:
 \item How do we distinguish the users on the system?
 \item How can we limit resources to prevent one user from breaking the system? e.g. via fork bombs.
 \item How do we clean up after a user has left?
-\item blablabla?
+%\item blablabla?
 \end{enumerate}
 
 The answer to the second question was to create and delete users on the fly. Since this implies that the server must be run as root, we decided to run it inside a virtual machine in order not to compromise the security of the host system.
@@ -138,11 +140,8 @@ Control groups (cgroups) allow you to restrict the number of CPU shares and the 
 
 Now any Macaulay2 command can be run in this schroot inside the corresponding cgroups.
 
-Lars!
-link to tutorial from Lars for setting up your own server, link to github
-
-
+You can find a detailed description how to set up this environment on \cite{trym2-github} in the file {\tt configuring\_linux.tex}.
 
 \bibliographystyle{plain}
-\bibliography{}
+\bibliography{references}
 \end{document}

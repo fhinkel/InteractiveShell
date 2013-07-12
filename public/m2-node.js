@@ -302,8 +302,10 @@ trym2.postMessage = function(url, msg) {
            var input = msg.split("\n");
            
            for(var line in input){
-            console.log("Line: "+input[line]);
-              trym2.cmdHistory.index = trym2.cmdHistory.push(input[line]);
+	      if(input[line].length > 0){
+		      console.log("Line: "+input[line]);
+		      trym2.cmdHistory.index = trym2.cmdHistory.push(input[line]);
+	      }
            }
         }
         return true;
@@ -486,11 +488,12 @@ trym2.startEventSource = function() {
 trym2.M2OutKeypress = function() {
     return function(e) {
         if(e.keyCode == 13) { // Return
+            trym2.setCaretPosition('#M2Out', $('#M2Out').val().length);
             if($("#M2Out").val().length > trym2.m2outIndex) {
                var l = $("#M2Out").val().length;
                var msg = $("#M2Out").val().substring(trym2.dataSentIndex, l);
                
-               
+              console.log("Sending message: "+msg); 
                $("#M2In").val($("#M2In").val() + msg + "\n");
                trym2.scrollDown("#M2In");
                

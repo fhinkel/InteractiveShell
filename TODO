@@ -1,3 +1,40 @@
+2013-07-15
+Planning structure:
+   Want: * TAB completion
+         * Tutorial management w/ user login
+Server side
+   * user-module
+      * start + assert + delete user
+      * find ClientID
+      * clientID.exists
+   * shell-module (two modules, one for schroots, one without)
+     One shell per user or global shellobject to distinguish between non-schroot and schroot?
+      * Constructor setting up directories, etc.
+      * Create persistent instance of M2
+      * Pipe output back and forth
+      * Restart+Interrupt
+      * Delete
+      * property: path for file interactions
+      * getClientIDFromUrl
+   * main m2server-module
+      * server app
+      * startSource
+      * EventStream bla
+      * stats + admin
+Client side
+   * Maybe a shell object?
+      * History management
+      * Bind key events on shell window
+      * parts of postMessage go here
+      * chatOnData
+   * Improve show+hide methods for tutorial, terminal, home
+      * Sometimes one has to click twice
+   * Tutorials module 
+      * makeAccordion?
+      * load the tutorials from files
+      * Uploading tutorials
+      
+
 2013-07-12
 * Check user management, i.e. user deletion for bugs on machine w/ schroots.
 

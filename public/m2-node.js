@@ -30,12 +30,10 @@ var shellObject = function(shellID) {
     $(shell).keypress(function(e) {
         var l, msg, input;
         if (e.keyCode == 13) { // Return
-            console.log(shell);
             trym2.setCaretPosition(shell, $(shell).val().length);
             if ($(shell).val().length > outIndex) {
                 l = $(shell).val().length;
                 msg = $(shell).val().substring(dataSentIndex, l);
-                console.log("Sending message: " + msg);
                 $("#M2In").val($("#M2In").val() + msg + "\n");
                 trym2.scrollDown("#M2In");
                 dataSentIndex += msg.length + 1;
@@ -100,7 +98,6 @@ var shellObject = function(shellID) {
         // This deals with backspace.
         // We may not shorten the string entered by M2.
         if (e.keyCode == 8) {
-            // console.log("handler for backspace");
             if ($(shell).val().length == outIndex) {
                 e.preventDefault();
                 //$(shell).val($(shell).val().substring(0,outIndex) + " ");
@@ -115,26 +112,17 @@ var shellObject = function(shellID) {
     });
 
     $(shell).on("onmessage", function(e, msg) {
-        console.log("We got a chat message: " + msg);
-        console.log("It has the length: " + msg.length);
         var before = $(shell).val().substring(0, outIndex),
             after = $(shell).val().substring(outIndex, $(shell).val().length);
-
-        //length = $(shell).val().length;
-        //console.log(trym2.beingExecuted[0]);
         var currIndex = -1;
-        console.log("After: " + after + ". " + after.length);
         var afterSplit = after.split("\n");
         while ((after.length > 0) && (afterSplit.length > 1)) {
-            console.log("as[0]: " + afterSplit[0]);
             var nextIndex = msg.indexOf(afterSplit[0]);
             if (afterSplit[0].length == 0) {
                 nextIndex = currIndex + 1;
             }
             if (nextIndex > currIndex) {
                 dataSentIndex -= afterSplit[0].length + 1;
-                console.log("Found: " + afterSplit[0] + " " + nextIndex);
-                console.log("I am subtracting something to annoy you.");
                 afterSplit.shift();
                 currIndex = nextIndex;
             } else {
@@ -151,9 +139,6 @@ var shellObject = function(shellID) {
         trym2.scrollDown(shell);
         outIndex += msg.length;
         dataSentIndex += msg.length;
-        console.log("Setting index to: " + outIndex + " vs " + $(shell).val().length +
-            " vs " + dataSentIndex);
-
     });
 };
 

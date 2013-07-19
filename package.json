@@ -1,10 +1,5 @@
-{
-    "name": "m2server",
+{    "name": "m2server",
     "version": "1.0.0",
-    "description": "TryM2, allows to use Macaulay2 in a browser",
-    
-    "dependencies": {
-        "cookies": "0.3.6", 
-        "connect": "2.7.3",
-    }
+    "description": "TryM2, allows to use Macaulay2 in a browser",    
+    "dependencies": { "cookies": "0.3.6", "connect": "2.7.3" }
 }

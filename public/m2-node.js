@@ -4,17 +4,19 @@ var trym2 = {
     lessonNr: 0,
     tutorialNr: 0,
     tutorialScrollTop: 0, // this value is where we set the scrollTop of "#lesson" so we can reset it back
-    // when we navigate back (from Input or Index views).
+    // when we navigate back (from Input or Home views).
     tutorials: []
 };
 
+// initialize with ID (string) of field that should act like a shell,
+//  i.e., command history, taking input and replacing it with output from server
 var shellObject = function(shellID) {
     var shell = shellID;
     var cmdHistory = []; // History of M2 commands for shell-like arrow navigation
     cmdHistory.index = 0;
     var outIndex = 0; // End of real M2 output in M2Out textarea, without user's typing.   
     var dataSentIndex = 0;
-    $(shell).on("track", function(e, msg) {
+    $(shell).on("track", function(e, msg) { // add command to history
         if (typeof msg != 'undefined') {
             input = msg.split("\n");
             for (var line in input) {
@@ -26,6 +28,7 @@ var shellObject = function(shellID) {
         }
 
     });
+    
     // On pressing return send last part of M2Out to M2 and remove it.
     $(shell).keypress(function(e) {
         var l, msg, input;
@@ -55,6 +58,8 @@ var shellObject = function(shellID) {
         var cKey = 67;
         var ctrlKeyCode = 17;
         var metaKeyCodes = [224, 17, 91, 93];
+        var backspace = 8;
+        var tab = 9;
         if ((e.keyCode > arrowDown) || (e.keyCode < arrowLeft)) { //  we did not receive an arrow key
             if ((e.ctrlKey && e.keyCode == cKey) || e.keyCode == ctrlKeyCode) { // do not jump to bottom on Ctrl+C or on Ctrl
                 return;
@@ -65,7 +70,6 @@ var shellObject = function(shellID) {
                 1)) { // do not jump to bottom on Command+C or on Command
                 return;
             }
-
 
             // we need to move cursor to end of input
             var pos = $(shell)[0].selectionStart;
@@ -97,15 +101,12 @@ var shellObject = function(shellID) {
         }
         // This deals with backspace.
         // We may not shorten the string entered by M2.
-        if (e.keyCode == 8) {
+        if (e.keyCode == backspace) {
             if ($(shell).val().length == outIndex) {
                 e.preventDefault();
-                //$(shell).val($(shell).val().substring(0,outIndex) + " ");
-            } else {
-                // console.log("Backspace is ok.");
             }
         }
-        if (e.keyCode == 9) {
+        if (e.keyCode == tab) {
             e.preventDefault();
             // Do something for tab-completion.
         }

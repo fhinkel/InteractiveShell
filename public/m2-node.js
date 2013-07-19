@@ -14,6 +14,18 @@ var shellObject = function(shellID){
     cmdHistory.index = 0;
     var outIndex =  0;         // End of real M2 output in M2Out textarea, without user's typing.   
     var dataSentIndex = 0;
+    $(shell).on("track", function(e, msg){
+        if(typeof msg != 'undefined'){
+           input = msg.split("\n");
+           for(var line in input){
+               if(input[line].length > 0){
+                  console.log("Line: "+input[line]);
+                  cmdHistory.index = cmdHistory.push(input[line]);
+               }
+           }
+        }
+
+    });
     // On pressing return send last part of M2Out to M2 and remove it.
     $(shell).keypress(function(e) {
         var l, msg, input;
@@ -27,15 +39,6 @@ var shellObject = function(shellID){
                $("#M2In").val($("#M2In").val() + msg + "\n");
                trym2.scrollDown("#M2In");
                dataSentIndex += msg.length+1;
-              if(typeof msg != 'undefined'){
-                 input = msg.split("\n");
-                 for(var line in input){
-                     if(input[line].length > 0){
-                        console.log("Line: "+input[line]);
-                        cmdHistory.index = cmdHistory.push(input[line]);
-                     }
-                 }
-              }
                trym2.postMessage('/chat',  msg + "\n")();
             } else {
                // We don't want empty lines send to M2 at pressing return twice.
@@ -435,6 +438,7 @@ trym2.postMessage = function(url, msg) {
             }
         };
         xhr.send(msg); // Send the message
+        $("#M2Out").trigger("track", msg);
         return true;
     }
 };

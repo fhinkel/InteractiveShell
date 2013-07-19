@@ -485,8 +485,7 @@ trym2.startEventSource = function() {
 
 
 // On pressing return send last part of M2Out to M2 and remove it.
-trym2.M2OutKeypress = function() {
-    return function(e) {
+trym2.M2OutKeypress = function(e) {
         if(e.keyCode == 13) { // Return
             trym2.setCaretPosition('#M2Out', $('#M2Out').val().length);
             if($("#M2Out").val().length > trym2.m2outIndex) {
@@ -505,14 +504,12 @@ trym2.M2OutKeypress = function() {
                e.preventDefault();
             }
         }
-    };
 };
 
 
 
 // If something is entered, change to end of textarea, if at wrong position.
-trym2.M2OutKeydown = function() {
-   return function(e) {
+trym2.M2OutKeydown = function(e) {
        // The keys 37, 38, 39 and 40 are the arrow keys.
        var arrowUp = 38;
        var arrowDown = 40;
@@ -573,15 +570,14 @@ trym2.M2OutKeydown = function() {
             e.preventDefault();
             // Do something for tab-completion.
         }
-   };
 };
 
 
 $(document).ready(function() {
     // Init procedures for right hand side.
     $("#M2Out").val("");
-    $('#M2Out').keypress( trym2.M2OutKeypress());
-    $('#M2Out').keydown(trym2.M2OutKeydown());
+    $('#M2Out').keypress(trym2.M2OutKeypress);
+    $('#M2Out').keydown(trym2.M2OutKeydown);
     trym2.cmdHistory.index = 0;
     trym2.cmdHistory.lastExecuted = 0;
     

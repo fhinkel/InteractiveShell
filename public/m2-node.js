@@ -143,6 +143,54 @@ var shellObject = function(shellID) {
     });
 };
 
+
+// this object is responsible for changing the content on the left as the users
+// naviges between home, tutorial, and input
+var navBar = {
+    // elements that should be shown when active
+    input: {
+        elements: ["#inputarea", "#sendBtn"],
+        show: function() {
+            $("#lesson").scrollTop();
+        }
+    },
+    home: {
+        elements: ["#home"],
+        show: function() {
+            trym2.tutorialScrollTop = $("#lesson").scrollTop();
+        }
+    },
+    tutorial: {
+        elements: ["#lesson", "#previousBtn", "#nextBtn", "#pageIndex"],
+        show: function() {
+            console.log("show tut");  
+            $("#pageIndex").button("option", "label", (trym2.lessonNr + 1) + "/" +
+                  maxLesson).show().unbind().css('cursor', 'default');
+        }
+    },
+
+    activate: function( tab ) {
+        var tabs = [this.home, this.tutorial, this.input];
+        
+        console.log("tab: " + tab);
+        tab.show();
+        for ( var i in tab.elements) {
+            $(tab.elements[i]).show();
+        }
+        console.log("tabs: " + tabs);
+        for (i in this.tabs) {
+            var otherTab = tabs[i];
+            console.log( "otherTab: " + otherTab);
+            if ( otherTab != tab) {
+                //console.log("tabs not equal");
+                for (var j in otherTab.elements) {
+                    $(otherTab.elements[j]).hide(); 
+                }
+            }
+        }
+    }
+};
+
 ///////////////////
 // Tutorial code //
 ///////////////////
@@ -624,6 +672,10 @@ $(document).ready(function() {
     // Init procedures for right hand side.
     $("#M2Out").val("");
     shellObject("#M2Out");
+    console.log("elements in home: " + navBar.home.elements);
+    
+  
+    
 
     // send server our client.eventStream
     trym2.startEventSource();
@@ -760,6 +812,8 @@ $(document).ready(function() {
         $("#inputBtn").prop("checked", true).button("refresh");
         return false;
     });
+    
+      navBar.activate(navBar.input);
 
 
 });

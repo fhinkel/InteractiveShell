@@ -12,7 +12,7 @@ var trym2 = {
 //  i.e., command history, taking input and replacing it with output from server
 var shellObject = function(shellArea, historyArea) {
     var shell = shellArea;
-    var history = historyArea
+    var history = historyArea;
     var cmdHistory = []; // History of M2 commands for shell-like arrow navigation
     cmdHistory.index = 0;
     var outIndex = 0; // End of real M2 output in M2Out textarea, without user's typing.   

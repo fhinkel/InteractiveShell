@@ -148,49 +148,43 @@ var shellObject = function(shellID) {
 // naviges between home, tutorial, and input
 var navBar = {
     // elements that should be shown when active
-    input: {
-        elements: ["#inputarea", "#sendBtn"],
-        btn: "#inputBtn",
-        show: function() {
-            $("#lesson").scrollTop();
-        }
-    },
     home: {
         elements: ["#home"],
         btn: "#homeBtn",
         show: function() {
-            console.log( "home.show() was called" );
+            console.log( "home.show()" );
             trym2.tutorialScrollTop = $("#lesson").scrollTop();
         }
     },
     tutorial: {
         elements: ["#lesson", "#previousBtn", "#nextBtn", "#pageIndex"],
         btn: "#tutorialBtn",
-        show: function() {
-            console.log("show tut");  
+        show: function( maxLesson ) {
+            console.log("tutorial.show()");  
             $("#pageIndex").button("option", "label", (trym2.lessonNr + 1) + "/" +
                   maxLesson).show().unbind().css('cursor', 'default');
         }
     },
+    input: {
+        elements: ["#inputarea", "#sendBtn"],
+        btn: "#inputBtn",
+        show: function() {
+            console.log("input.show()");
+            $("#lesson").scrollTop();
+        }
+    },
 
-    activate: function( tab ) {
-        var tabs = [this.home, this.tutorial, this.input];
-        
+    activate: function( tab, maxLesson ) {
+        var tabs = [this.home, this.tutorial, this.input];        
         console.log("activate tab: " + tab);
         $(tab.btn).prop("checked", true).button("refresh");
-        tab.show();
+        tab.show( maxLesson );
         for ( var i in tab.elements) {
-            console.log(typeof tab.elements[i] )
-            console.log(tab.elements[i] + ".show()" );
-            console.log("manual: " + $("#home").val() );
-            console.log( $(tab.elements[i]).val());
             $(tab.elements[i]).show();
         }
         for (i in tabs) {
             var otherTab = tabs[i];
-            console.log( "otherTab: " + otherTab.elements);
             if ( otherTab != tab) {
-                console.log("tabs not equal");
                 for (var j in otherTab.elements) {
                     $(otherTab.elements[j]).hide(); 
                 }
@@ -235,7 +229,7 @@ trym2.makeAccordion = function(tutorials) {
             $(this).toggleClass("ui-state-hover");
         })
             .click(function() {
-            console.log($(this).html());
+            //console.log($(this).html());
             $(this)
                 .toggleClass(
                 "ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top")
@@ -293,7 +287,6 @@ trym2.makeAccordion = function(tutorials) {
         var tutorialId = $(this).attr('tutorialid'),
             tutorialIdNr = parseInt(tutorialId.match(/\d/g), 10);
         trym2.loadLesson(tutorialIdNr, 0);
-        $("#tutorialBtn").prop("checked", true).button("refresh");
         return false;
     });
 };
@@ -306,7 +299,6 @@ trym2.submenuItemCallback = function() {
     console.log(lessonId);
     //console.log("You clicked a submenuItem: " + $(this).html());
     trym2.loadLesson(tutorialIdNr, lessonIdNr);
-    $("#tutorialBtn").prop("checked", true).button("refresh");
     return false;
 };
 
@@ -323,18 +315,15 @@ trym2.loadLesson = function(tutorialid, lessonid) {
     var maxLesson = trym2.tutorials[trym2.tutorialNr].lessons.length;
     var lessonContent = trym2.tutorials[trym2.tutorialNr].lessons[trym2.lessonNr]
         .html;
-    $("#inputarea").hide();
-    $("#sendBtn").hide();
-    $("#previousBtn").show();
-    $("#nextBtn").show();
-    $("#pageIndex").button("option", "label", (trym2.lessonNr + 1) + "/" +
-        maxLesson).show().unbind().css('cursor', 'default');;
+
     if (changedLesson) {
         var title = trym2.tutorials[trym2.tutorialNr].title.text();
         $("#lesson").html(lessonContent).prepend("<h3>" + title + "</h3>").show();
         $("#lesson").scrollTop(0);
     };
-    $("#home").hide();
+
+    navBar.activate(navBar.tutorial, maxLesson);
+    
 };
 
 trym2.switchLesson = function(incr) {
@@ -458,29 +447,6 @@ trym2.setCaretPosition = function(inputField, caretPos) {
     }
 }
 
-trym2.showTerminal = function() {
-    trym2.tutorialScrollTop = $("#lesson").scrollTop();
-    $("#lesson").hide();
-    $("#inputarea").show();
-    $("#sendBtn").show();
-    $("#pageIndex").hide();
-    $("#previousBtn").hide();
-    $("#nextBtn").hide();
-    $("#home").hide();
-    return false;
-};
-
-trym2.showhome = function() {
-    trym2.tutorialScrollTop = $("#lesson").scrollTop();
-    $("#inputarea").hide();
-    $("#sendBtn").hide();
-    $("#lesson").hide();
-    $("#pageIndex").hide();
-    $("#previousBtn").hide();
-    $("#nextBtn").hide();
-    $("#home").show();
-    return false;
-};
 
 trym2.postMessage = function(url, msg) {
     return function() {
@@ -671,19 +637,10 @@ trym2.startEventSource = function() {
 };
 
 
-
-
-
-
-
 $(document).ready(function() {
     // Init procedures for right hand side.
     $("#M2Out").val("");
-    shellObject("#M2Out");
-    console.log("elements in home: " + navBar.home.elements);
-    
-  
-    
+    shellObject("#M2Out");    
 
     // send server our client.eventStream
     trym2.startEventSource();
@@ -747,7 +704,9 @@ $(document).ready(function() {
     $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
     $("#resetBtn").click(trym2.postMessage('/restart'));
     $("#interruptBtn").click(trym2.postMessage('/interrupt'));
-    $("#inputBtn").click(trym2.showTerminal);
+    $("#inputBtn").click(function() {
+        navBar.activate(navBar.input);
+    });
     $("#saveBtn").click(trym2.saveInteractions);
     $("#uploadBtn").click(trym2.doUpfileClick);
     $("#upfile").on('change', trym2.doUpload);
@@ -760,7 +719,9 @@ $(document).ready(function() {
         //console.log("lesson!");
     });
 
-    $("#homeBtn").click(trym2.showhome);
+    $("#homeBtn").click( function() {
+        navBar.activate(navBar.home); 
+    });
 
     $(document).on("click", ".submenuItem", trym2.submenuItemCallback);
 
@@ -775,30 +736,12 @@ $(document).ready(function() {
         trym2.postMessage('/chat', code)();
     });
 
-    $("#inputarea").hide();
-    $("#home").hide();
-    $("#sendBtn").hide();
-    $("#pageIndex").hide();
-    $("#previousBtn").hide();
-    $("#nextBtn").hide();
-
     var tutorialNames = ["tutorials/welcome2.html",
             "tutorials/getting-started.html",
             "tutorials/Beginning.html",
             "tutorials/elementary-groebner.html"
     ];
     $("#home").append("<div id=\"accordion\"></div>");
-
-    trym2.getTutorials(0, tutorialNames, function() {
-        trym2.makeAccordion(trym2.tutorials);
-        // Do we actually need this line?
-        trym2.loadLesson(0, 0); // welcome tutorial
-        // The before line loaded the tutorial.
-        // To get out 'home' page we have to click the corresponding button.
-        // Instead one could also call the corrsponding method, but this
-        // really doesn't make any difference.
-        $("#homeBtn").click();
-    });
 
     $("#nextBtn").click(function() {
         trym2.switchLesson(1);
@@ -821,5 +764,16 @@ $(document).ready(function() {
         return false;
     });
     
-      navBar.activate(navBar.input);
+    trym2.getTutorials(0, tutorialNames, function() {
+        trym2.makeAccordion(trym2.tutorials);
+        // Do we actually need this line?
+        //trym2.loadLesson(0, 0); // welcome tutorial
+        // The before line loaded the tutorial.
+        // To get out 'home' page we have to click the corresponding button.
+        // Instead one could also call the corrsponding method, but this
+        // really doesn't make any difference.
+        
+    });
+    
+    navBar.activate(navBar.home); 
 });

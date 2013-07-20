@@ -150,18 +150,22 @@ var navBar = {
     // elements that should be shown when active
     input: {
         elements: ["#inputarea", "#sendBtn"],
+        btn: "#inputBtn",
         show: function() {
             $("#lesson").scrollTop();
         }
     },
     home: {
         elements: ["#home"],
+        btn: "#homeBtn",
         show: function() {
+            console.log( "home.show() was called" );
             trym2.tutorialScrollTop = $("#lesson").scrollTop();
         }
     },
     tutorial: {
         elements: ["#lesson", "#previousBtn", "#nextBtn", "#pageIndex"],
+        btn: "#tutorialBtn",
         show: function() {
             console.log("show tut");  
             $("#pageIndex").button("option", "label", (trym2.lessonNr + 1) + "/" +
@@ -172,17 +176,21 @@ var navBar = {
     activate: function( tab ) {
         var tabs = [this.home, this.tutorial, this.input];
         
-        console.log("tab: " + tab);
+        console.log("activate tab: " + tab);
+        $(tab.btn).prop("checked", true).button("refresh");
         tab.show();
         for ( var i in tab.elements) {
+            console.log(typeof tab.elements[i] )
+            console.log(tab.elements[i] + ".show()" );
+            console.log("manual: " + $("#home").val() );
+            console.log( $(tab.elements[i]).val());
             $(tab.elements[i]).show();
         }
-        console.log("tabs: " + tabs);
-        for (i in this.tabs) {
+        for (i in tabs) {
             var otherTab = tabs[i];
-            console.log( "otherTab: " + otherTab);
+            console.log( "otherTab: " + otherTab.elements);
             if ( otherTab != tab) {
-                //console.log("tabs not equal");
+                console.log("tabs not equal");
                 for (var j in otherTab.elements) {
                     $(otherTab.elements[j]).hide(); 
                 }
@@ -814,6 +822,4 @@ $(document).ready(function() {
     });
     
       navBar.activate(navBar.input);
-
-
 });

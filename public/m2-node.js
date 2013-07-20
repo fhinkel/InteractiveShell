@@ -755,27 +755,8 @@ $(document).ready(function() {
         $(this).removeClass("ui-state-focus");
     });
 
-    $(document).on("click", "#selectTutorialLink", function() {
-        $("#homeBtn").trigger("click");
-        $("#homeBtn").prop("checked", true).button("refresh");
-        return false;
-    });
-    $(document).on("click", "#inputTerminalLink", function() {
-        //$("#inputBtn").trigger("click");
-        $("#inputBtn").trigger("click");
-        $("#inputBtn").prop("checked", true).button("refresh");
-        return false;
-    });
-    
     trym2.getTutorials(0, tutorialNames, function() {
         trym2.makeAccordion(trym2.tutorials);
-        // Do we actually need this line?
-        //trym2.loadLesson(0, 0); // welcome tutorial
-        // The before line loaded the tutorial.
-        // To get out 'home' page we have to click the corresponding button.
-        // Instead one could also call the corrsponding method, but this
-        // really doesn't make any difference.
-        
     });
     
     navBar.activate(navBar.home); 

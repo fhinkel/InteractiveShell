@@ -180,14 +180,14 @@ var navBar = {
     activate: function( tab, maxLesson ) {
         var tabs = [this.home, this.tutorial, this.input];        
         console.log("activate tab: " + tab);
-        $(tab.btn).prop("checked", true).button("refresh");
-        tab.show( maxLesson );
+        $(this[tab].btn).prop("checked", true).button("refresh");
+        this[tab].show( maxLesson );
         for ( var i in tab.elements) {
-            $(tab.elements[i]).show();
+            $(this[tab].elements[i]).show();
         }
         for (i in tabs) {
             var otherTab = tabs[i];
-            if ( otherTab != tab) {
+            if ( otherTab != this[tab]) {
                 for (var j in otherTab.elements) {
                     $(otherTab.elements[j]).hide(); 
                 }
@@ -325,7 +325,7 @@ trym2.loadLesson = function(tutorialid, lessonid) {
         $("#lesson").scrollTop(0);
     };
 
-    navBar.activate(navBar.tutorial, maxLesson);
+    navBar.activate("tutorial", maxLesson);
     
 };
 
@@ -708,7 +708,7 @@ $(document).ready(function() {
     $("#resetBtn").click(trym2.postMessage('/restart'));
     $("#interruptBtn").click(trym2.postMessage('/interrupt'));
     $("#inputBtn").click(function() {
-        navBar.activate(navBar.input);
+        navBar.activate("input");
     });
     $("#saveBtn").click(trym2.saveInteractions);
     $("#uploadBtn").click(trym2.doUpfileClick);
@@ -723,7 +723,7 @@ $(document).ready(function() {
     });
 
     $("#homeBtn").click( function() {
-        navBar.activate(navBar.home); 
+        navBar.activate("home"); 
     });
 
     $(document).on("click", ".submenuItem", trym2.submenuItemCallback);
@@ -755,28 +755,9 @@ $(document).ready(function() {
         $(this).removeClass("ui-state-focus");
     });
 
-    $(document).on("click", "#selectTutorialLink", function() {
-        $("#homeBtn").trigger("click");
-        $("#homeBtn").prop("checked", true).button("refresh");
-        return false;
-    });
-    $(document).on("click", "#inputTerminalLink", function() {
-        //$("#inputBtn").trigger("click");
-        $("#inputBtn").trigger("click");
-        $("#inputBtn").prop("checked", true).button("refresh");
-        return false;
-    });
-    
     trym2.getTutorials(0, tutorialNames, function() {
         trym2.makeAccordion(trym2.tutorials);
-        // Do we actually need this line?
-        //trym2.loadLesson(0, 0); // welcome tutorial
-        // The before line loaded the tutorial.
-        // To get out 'home' page we have to click the corresponding button.
-        // Instead one could also call the corrsponding method, but this
-        // really doesn't make any difference.
-        
     });
     
-    navBar.activate(navBar.home); 
+    navBar.activate("home"); 
 });

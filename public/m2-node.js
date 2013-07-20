@@ -180,14 +180,14 @@ var navBar = {
     activate: function( tab, maxLesson ) {
         var tabs = [this.home, this.tutorial, this.input];        
         console.log("activate tab: " + tab);
-        $(tab.btn).prop("checked", true).button("refresh");
-        tab.show( maxLesson );
+        $(this[tab].btn).prop("checked", true).button("refresh");
+        this[tab].show( maxLesson );
         for ( var i in tab.elements) {
-            $(tab.elements[i]).show();
+            $(this[tab].elements[i]).show();
         }
         for (i in tabs) {
             var otherTab = tabs[i];
-            if ( otherTab != tab) {
+            if ( otherTab != this[tab]) {
                 for (var j in otherTab.elements) {
                     $(otherTab.elements[j]).hide(); 
                 }
@@ -325,7 +325,7 @@ trym2.loadLesson = function(tutorialid, lessonid) {
         $("#lesson").scrollTop(0);
     };
 
-    navBar.activate(navBar.tutorial, maxLesson);
+    navBar.activate("tutorial", maxLesson);
     
 };
 
@@ -708,7 +708,7 @@ $(document).ready(function() {
     $("#resetBtn").click(trym2.postMessage('/restart'));
     $("#interruptBtn").click(trym2.postMessage('/interrupt'));
     $("#inputBtn").click(function() {
-        navBar.activate(navBar.input);
+        navBar.activate("input");
     });
     $("#saveBtn").click(trym2.saveInteractions);
     $("#uploadBtn").click(trym2.doUpfileClick);
@@ -723,7 +723,7 @@ $(document).ready(function() {
     });
 
     $("#homeBtn").click( function() {
-        navBar.activate(navBar.home); 
+        navBar.activate("home"); 
     });
 
     $(document).on("click", ".submenuItem", trym2.submenuItemCallback);
@@ -759,5 +759,5 @@ $(document).ready(function() {
         trym2.makeAccordion(trym2.tutorials);
     });
     
-    navBar.activate(navBar.home); 
+    navBar.activate("home"); 
 });

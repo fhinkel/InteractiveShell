@@ -10,13 +10,14 @@ var trym2 = {
 
 // initialize with ID (string) of field that should act like a shell,
 //  i.e., command history, taking input and replacing it with output from server
-var shellObject = function(shellID) {
-    var shell = shellID;
+var shellObject = function(shellArea, historyArea) {
+    var shell = shellArea;
+    var history = historyArea
     var cmdHistory = []; // History of M2 commands for shell-like arrow navigation
     cmdHistory.index = 0;
     var outIndex = 0; // End of real M2 output in M2Out textarea, without user's typing.   
     var dataSentIndex = 0;
-    $(shell).on("track", function(e, msg) { // add command to history
+    shell.on("track", function(e, msg) { // add command to history
         if (typeof msg != 'undefined') {
             input = msg.split("\n");
             for (var line in input) {
@@ -30,15 +31,17 @@ var shellObject = function(shellID) {
     });
     
     // On pressing return send last part of M2Out to M2 and remove it.
-    $(shell).keypress(function(e) {
+    shell.keypress(function(e) {
         var l, msg, input;
         if (e.keyCode == 13) { // Return
-            trym2.setCaretPosition(shell, $(shell).val().length);
-            if ($(shell).val().length > outIndex) {
-                l = $(shell).val().length;
-                msg = $(shell).val().substring(dataSentIndex, l);
-                $("#M2In").val($("#M2In").val() + msg + "\n");
-                trym2.scrollDown("#M2In");
+            trym2.setCaretPosition(shell, shell.val().length);
+            if (shell.val().length > outIndex) {
+                l = shell.val().length;
+                msg = shell.val().substring(dataSentIndex, l);
+                if(history != undefined){
+                   history.val(history.val() + msg + "\n");
+                   trym2.scrollDown(history);
+                }
                 dataSentIndex += msg.length + 1;
                 trym2.postMessage('/chat', msg + "\n")();
             } else {
@@ -49,7 +52,7 @@ var shellObject = function(shellID) {
     });
 
     // If something is entered, change to end of textarea, if at wrong position.
-    $(shell).keydown(function(e) {
+    shell.keydown(function(e) {
         // The keys 37, 38, 39 and 40 are the arrow keys.
         var arrowUp = 38;
         var arrowDown = 40;
@@ -72,10 +75,10 @@ var shellObject = function(shellID) {
             }
 
             // we need to move cursor to end of input
-            var pos = $(shell)[0].selectionStart;
+            var pos = shell[0].selectionStart;
             if (pos < outIndex) {
                 //console.log(pos + " Moving to end."); 
-                trym2.setCaretPosition(shell, $(shell).val().length);
+                trym2.setCaretPosition(shell, shell.val().length);
             }
         } else if ((e.keyCode == arrowUp) || (e.keyCode == arrowDown)) {
             // console.log("Arrow key.");
@@ -84,16 +87,16 @@ var shellObject = function(shellID) {
             }
             if ((e.keyCode == arrowUp) && (cmdHistory.index > 0)) { // UP
                 if (cmdHistory.index == cmdHistory.length) {
-                    cmdHistory.current = $(shell).val().substring(outIndex, $(
+                    cmdHistory.current = shell.val().substring(outIndex, $(
                         shell).val().length);
                 }
                 cmdHistory.index--;
             }
             if (cmdHistory.index == cmdHistory.length) {
-                $(shell).val($(shell).val().substring(0, outIndex) + cmdHistory
+                shell.val(shell.val().substring(0, outIndex) + cmdHistory
                     .current);
             } else {
-                $(shell).val($(shell).val().substring(0, outIndex) + cmdHistory[
+                shell.val(shell.val().substring(0, outIndex) + cmdHistory[
                     cmdHistory.index]);
             }
             trym2.scrollDown(shell);
@@ -102,7 +105,7 @@ var shellObject = function(shellID) {
         // This deals with backspace.
         // We may not shorten the string entered by M2.
         if (e.keyCode == backspace) {
-            if ($(shell).val().length == outIndex) {
+            if (shell.val().length == outIndex) {
                 e.preventDefault();
             }
         }
@@ -112,9 +115,9 @@ var shellObject = function(shellID) {
         }
     });
 
-    $(shell).on("onmessage", function(e, msg) {
-        var before = $(shell).val().substring(0, outIndex),
-            after = $(shell).val().substring(outIndex, $(shell).val().length);
+    shell.on("onmessage", function(e, msg) {
+        var before = shell.val().substring(0, outIndex),
+            after = shell.val().substring(outIndex, shell.val().length);
         var currIndex = -1;
         var afterSplit = after.split("\n");
         while ((after.length > 0) && (afterSplit.length > 1)) {
@@ -132,10 +135,10 @@ var shellObject = function(shellID) {
         }
 
         if (/^Macaulay2, version \d\.\d/.test(msg)) {
-            $(shell).val(before + msg);
+            shell.val(before + msg);
             dataSentIndex = outIndex;
         } else {
-            $(shell).val(before + msg + afterSplit.join("\n"));
+            shell.val(before + msg + afterSplit.join("\n"));
         }
         trym2.scrollDown(shell);
         outIndex += msg.length;
@@ -351,7 +354,7 @@ trym2.scrollDown = function(area) {
     // You can output the heights and the second one is much larger.
     //console.log("Size: "+mySize);
     //console.log("Height: "+$(area)[0].scrollHeight);
-    $(area).scrollTop($(area)[0].scrollHeight);
+    area.scrollTop(area[0].scrollHeight);
     return false;
     // Return false to cancel the default link action
 };
@@ -378,7 +381,7 @@ trym2.getSelected = function(inputField) {
             end = str.length - 1; // position of last \n 
         }
         // move cursor to beginning of line below 
-        trym2.setCaretPosition(inputField, end + 1);
+        trym2.setCaretPosition($(inputField), end + 1);
     }
     return str.slice(start, end) + "\n";
 };
@@ -386,17 +389,17 @@ trym2.getSelected = function(inputField) {
 
 trym2.setCaretPosition = function(inputField, caretPos) {
     if (inputField != null) {
-        if ($(inputField)[0].createTextRange) {
-            var range = $(inputField)[0].createTextRange();
+        if (inputField[0].createTextRange) {
+            var range = inputField[0].createTextRange();
             range.move('character', caretPos);
             range.select();
         } else {
-            if ($(inputField)[0].selectionStart || $(inputField)[0].selectionStart ===
+            if (inputField[0].selectionStart || $(inputField)[0].selectionStart ===
                 0) {
-                $(inputField)[0].focus();
-                $(inputField)[0].setSelectionRange(caretPos, caretPos);
+                inputField[0].focus();
+                inputField[0].setSelectionRange(caretPos, caretPos);
             } else {
-                $(inputField)[0].focus();
+                inputField[0].focus();
             }
         }
     }
@@ -623,7 +626,7 @@ trym2.startEventSource = function() {
 $(document).ready(function() {
     // Init procedures for right hand side.
     $("#M2Out").val("");
-    shellObject("#M2Out");
+    shellObject($("#M2Out"), $("#M2In"));
 
     // send server our client.eventStream
     trym2.startEventSource();
@@ -711,7 +714,7 @@ $(document).ready(function() {
         var code = $(this).text();
         code = code + "\n";
         $("#M2In").val($("#M2In").val() + code);
-        trym2.scrollDown("#M2In");
+        trym2.scrollDown($("#M2In"));
         trym2.postMessage('/chat', code)();
     });
 

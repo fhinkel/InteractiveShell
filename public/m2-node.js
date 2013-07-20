@@ -182,7 +182,7 @@ var navBar = {
         console.log("activate tab: " + tab);
         $(this[tab].btn).prop("checked", true).button("refresh");
         this[tab].show( maxLesson );
-        for ( var i in tab.elements) {
+        for ( var i in this[tab].elements) {
             $(this[tab].elements[i]).show();
         }
         for (i in tabs) {

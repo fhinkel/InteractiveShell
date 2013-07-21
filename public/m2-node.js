@@ -4,8 +4,11 @@ var trym2 = {
     lessonNr: 0,
     tutorialNr: 0,
     tutorials: [], 
-    firstLoadFlag: true // true until we show tutorial for the first time. Needed because we need to load lesson 0
+    firstLoadFlag: true, // true until we show tutorial for the first time. Needed because we need to load lesson 0
+    MAXFILESIZE: 500000 // max size in bytes for file uploads
 };
+
+
 
 // initialize with ID (string) of field that should act like a shell,
 //  i.e., command history, taking input and replacing it with output from server
@@ -327,23 +330,23 @@ trym2.submenuItemCallback = function() {
 };
 
 trym2.loadLesson = function(tutorialid, lessonid ) {
-    console.log( trym2.tutorialNr + "==" + tutorialid + " or " + trym2.lessonNr + "==" +
+    console.log( this.tutorialNr + "==" + tutorialid + " or " + this.lessonNr + "==" +
         lessonid );
-    var changedLesson = (trym2.tutorialNr != tutorialid || trym2.lessonNr !=
-        lessonid || trym2.firstLoadFlag);
+    var changedLesson = (this.tutorialNr != tutorialid || this.lessonNr !=
+        lessonid || this.firstLoadFlag);
     trym2.firstLoadFlag = false;
-    if (tutorialid >= 0 && tutorialid < trym2.tutorials.length) {
-        trym2.tutorialNr = tutorialid;
+    if (tutorialid >= 0 && tutorialid < this.tutorials.length) {
+        this.tutorialNr = tutorialid;
     };
-    if (lessonid >= 0 && lessonid < trym2.tutorials[trym2.tutorialNr].lessons.length) {
-        trym2.lessonNr = lessonid;
+    if (lessonid >= 0 && lessonid < this.tutorials[this.tutorialNr].lessons.length) {
+        this.lessonNr = lessonid;
     };
-    var lessonContent = trym2.tutorials[trym2.tutorialNr].lessons[trym2.lessonNr]
+    var lessonContent = this.tutorials[this.tutorialNr].lessons[this.lessonNr]
         .html;
 
     if (changedLesson) {
         console.log("Lesson changed");
-        var title = trym2.tutorials[trym2.tutorialNr].title.text();
+        var title = this.tutorials[this.tutorialNr].title.text();
         $("#lesson").html(lessonContent).prepend("<h3>" + title + "</h3>").show();
         $("#lesson").scrollTop(0); //scroll to the top of a new lesson
     }
@@ -351,20 +354,21 @@ trym2.loadLesson = function(tutorialid, lessonid ) {
 
 trym2.switchLesson = function(incr) {
     //console.log("Current lessonNr " + trym2.lessonNr);
-    trym2.loadLesson(trym2.tutorialNr, trym2.lessonNr + incr);
+    this.loadLesson(this.tutorialNr, this.lessonNr + incr);
     navBar.activate("tutorial");
 };
 
-trym2.getTutorials = function(i, tutorialNames, whenDone) {
+trym2.getTutorials = function(i, tutorialNames, callback) {
     if (i < tutorialNames.length) {
         $.get(tutorialNames[i], function(resultHtml) {
+            trym2.inspect(this);
             trym2.tutorials[i] = trym2.makeTutorial(tutorialNames[i],
                 resultHtml);
             console.log(trym2.tutorials[i].title);
-            trym2.getTutorials(i + 1, tutorialNames, whenDone);
+            trym2.getTutorials(i + 1, tutorialNames, callback);
         });
     } else {
-        whenDone();
+        callback();
     };
 };
 
@@ -393,19 +397,15 @@ trym2.getLessonTitles = function(tutorialFile, callback) {
 
 trym2.getAllTitles = function(i, tutorials, next) {
     if (i < tutorials.length) {
-        trym2.getLessonTitles(tutorials[i], function(titles) {
+        this.getLessonTitles(tutorials[i], function(titles) {
             $("#accordion").append(titles);
             console.log("Titles: " + titles);
-            trym2.getAllTitles(i + 1, tutorials, next);
+            this.getAllTitles(i + 1, tutorials, next);
         });
     } else {
         next();
     }
 };
-
-///////////////////
-
-trym2.MAXFILESIZE = 500000; // max size in bytes for file uploads
 
 trym2.inspect = function(obj) {
     for (var prop in obj) {
@@ -576,7 +576,7 @@ trym2.doUpload = function() {
     formData.append('file', file);
     console.log("process form " + file);
     console.log(file.size);
-    if (false) { //file.size > trym2.MAXFILESIZE) {
+    if (file.size > trym2.MAXFILESIZE) {
         $(
             "<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Your file is too big to upload.  Sorry!</div>")
             .dialog({

@@ -1,23 +1,11 @@
-Todo: set caret position needs to be rewritten to get $element passed in instead of string
-
 2013-07-20
-show-hide object: 
-3 tabs, each with different text below, maybe different buttons in right corner
-<a> tags that should function the same way as clicking the tab
-always exactly one tab active
 
-tabObject {
-    elements: [home, tutorial, input], // every element should know what to do! Take responsibility!
-    common: active tab has different color than inactive tabs, left hand side content changes according to tabs
-    difference: buttons on right change/disappear ( <-, ->, evaluate)
-    
-    activate( element ) // activate element and deactivate all other
-    
-    home and input have (sort of) static content, tutorial must know which tutorial to display
-    
-}
+Next we should think about refactoring all tutorial functions 
+and load lessen functions, and then decide, if loadLesson calls 
+activate(tutorial) or the other way round, or if the main 
+routines always call both. 
 
-
+set caret position needs to be rewritten to get $element passed in instead of string
 
 2013-07-15
 Planning structure:

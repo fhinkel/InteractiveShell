@@ -3,10 +3,12 @@
 var trym2 = {
     lessonNr: 0,
     tutorialNr: 0,
-    tutorialScrollTop: 0, // this value is where we set the scrollTop of "#lesson" so we can reset it back
-    // when we navigate back (from Input or Home views).
-    tutorials: []
+    tutorials: [], 
+    firstLoadFlag: true, // true until we show tutorial for the first time. Needed because we need to load lesson 0
+    MAXFILESIZE: 500000 // max size in bytes for file uploads
 };
+
+
 
 // initialize with ID (string) of field that should act like a shell,
 //  i.e., command history, taking input and replacing it with output from server
@@ -46,7 +48,7 @@ var shellObject = function(shellArea, historyArea) {
                 trym2.postMessage('/chat', msg + "\n")();
             } else {
                 // We don't want empty lines send to M2 at pressing return twice.
-                e.preventDefault();
+                e.preventDefault(); 
             }
         }
     });
@@ -147,54 +149,74 @@ var shellObject = function(shellArea, historyArea) {
 };
 
 
-// this object is responsible for changing the content on the left as the users
+// this global variable changes the content on the left as the users
 // naviges between home, tutorial, and input
-var navBar = {
-    // elements that should be shown when active
-    home: {
-        elements: ["#home"],
-        btn: "#homeBtn",
-        show: function() {
-            console.log( "home.show()" );
-            trym2.tutorialScrollTop = $("#lesson").scrollTop();
-        }
-    },
-    tutorial: {
-        elements: ["#lesson", "#previousBtn", "#nextBtn", "#pageIndex"],
-        btn: "#tutorialBtn",
-        show: function( maxLesson ) {
-            console.log("tutorial.show()");  
-            $("#pageIndex").button("option", "label", (trym2.lessonNr + 1) + "/" +
-                  maxLesson).show().unbind().css('cursor', 'default');
-        }
-    },
-    input: {
-        elements: ["#inputarea", "#sendBtn"],
-        btn: "#inputBtn",
-        show: function() {
-            console.log("input.show()");
-            $("#lesson").scrollTop();
-        }
-    },
-
-    activate: function( tab, maxLesson ) {
-        var tabs = [this.home, this.tutorial, this.input];        
-        console.log("activate tab: " + tab);
-        $(this[tab].btn).prop("checked", true).button("refresh");
-        this[tab].show( maxLesson );
-        for ( var i in tab.elements) {
-            $(this[tab].elements[i]).show();
-        }
-        for (i in tabs) {
-            var otherTab = tabs[i];
-            if ( otherTab != this[tab]) {
-                for (var j in otherTab.elements) {
-                    $(otherTab.elements[j]).hide(); 
+// tabs are hard coded as home, tutorial, and input
+// the controller assures that always exactly one tab from the tabs list is active. 
+// usage: navBar.activate("home")
+var navBar = function () {
+    var Controller =  function( tabs ){
+        this.tabs = tabs;
+    };
+    
+    Controller.prototype.activate = function( s, param ) { // string with name of tab, optional extra param for tab.show()
+        console.log("activate tab: " + s);
+        var tab = this.tabs[s];
+        $(tab.btn).prop("checked", true).button("refresh"); // set the color of the tab
+        tab.show( param ); // do a few things for this tab
+        var i, j;
+        for (j in this.tabs) { // hide all other tabs' elements
+            var otherTab = this.tabs[j];
+            if ( otherTab != tab) {
+                for (i in otherTab.elements) {
+                    console.log( otherTab.elements[i] );
+                    $(otherTab.elements[i]).hide(); 
                 }
             }
+        } 
+        for (i in tab.elements) { // show this tab's elements
+            $(tab.elements[i]).show();
         }
-    }
-};
+
+    };
+    
+    var Tab = function(elements, btn, showFunction) {
+        this.elements = elements;
+        this.btn = btn, 
+        this.show = showFunction;
+    };
+
+    var homeTab = new Tab( ["#home"], 
+                              "#homeBtn", 
+                              function() {
+                                    console.log( "home.show()" );
+                              }
+                        );
+
+    var tutorialTab = new Tab(  ["#lesson", "#previousBtn", "#nextBtn", "#pageIndex"],
+                                   "#tutorialBtn",
+                                   function() {
+                                        console.log("tutorial.show()"); 
+                                        var maxLesson = trym2.tutorials[trym2.tutorialNr].lessons.length;
+                                        $("#pageIndex").button("option", "label", (trym2.lessonNr + 1) + "/" +
+                                              maxLesson).show().unbind().css('cursor', 'default');
+                                    }
+                                );
+
+    var inputTab = new Tab( ["#inputarea", "#sendBtn"],
+                               "#inputBtn",
+                            function() {
+                                console.log("input.show()");
+                            }
+                        );
+    
+   return new Controller( {
+       "home" : homeTab, 
+       "tutorial": tutorialTab,
+       "input": inputTab
+   });
+}();
+
 
 ///////////////////
 // Tutorial code //
@@ -290,6 +312,7 @@ trym2.makeAccordion = function(tutorials) {
         var tutorialId = $(this).attr('tutorialid'),
             tutorialIdNr = parseInt(tutorialId.match(/\d/g), 10);
         trym2.loadLesson(tutorialIdNr, 0);
+        navBar.activate("tutorial");
         return false;
     });
 };
@@ -299,51 +322,53 @@ trym2.submenuItemCallback = function() {
         tutorialId = $(this).attr('tutorialid'),
         lessonIdNr = parseInt(lessonId.match(/\d/g), 10),
         tutorialIdNr = parseInt(tutorialId.match(/\d/g), 10);
-    console.log(lessonId);
+    console.log("LessonID: " + lessonId);
     //console.log("You clicked a submenuItem: " + $(this).html());
     trym2.loadLesson(tutorialIdNr, lessonIdNr);
+    navBar.activate("tutorial");
     return false;
 };
 
-trym2.loadLesson = function(tutorialid, lessonid) {
-    var changedLesson = (trym2.tutorialNr != tutorialid || trym2.lessonIdNr !=
-        lessonid);
-
-    if (tutorialid >= 0 && tutorialid < trym2.tutorials.length) {
-        trym2.tutorialNr = tutorialid;
+trym2.loadLesson = function(tutorialid, lessonid ) {
+    console.log( this.tutorialNr + "==" + tutorialid + " or " + this.lessonNr + "==" +
+        lessonid );
+    var changedLesson = (this.tutorialNr != tutorialid || this.lessonNr !=
+        lessonid || this.firstLoadFlag);
+    trym2.firstLoadFlag = false;
+    if (tutorialid >= 0 && tutorialid < this.tutorials.length) {
+        this.tutorialNr = tutorialid;
     };
-    if (lessonid >= 0 && lessonid < trym2.tutorials[trym2.tutorialNr].lessons.length) {
-        trym2.lessonNr = lessonid;
+    if (lessonid >= 0 && lessonid < this.tutorials[this.tutorialNr].lessons.length) {
+        this.lessonNr = lessonid;
     };
-    var maxLesson = trym2.tutorials[trym2.tutorialNr].lessons.length;
-    var lessonContent = trym2.tutorials[trym2.tutorialNr].lessons[trym2.lessonNr]
+    var lessonContent = this.tutorials[this.tutorialNr].lessons[this.lessonNr]
         .html;
 
     if (changedLesson) {
-        var title = trym2.tutorials[trym2.tutorialNr].title.text();
+        console.log("Lesson changed");
+        var title = this.tutorials[this.tutorialNr].title.text();
         $("#lesson").html(lessonContent).prepend("<h3>" + title + "</h3>").show();
-        $("#lesson").scrollTop(0);
-    };
-
-    navBar.activate("tutorial", maxLesson);
-    
+        $("#lesson").scrollTop(0); //scroll to the top of a new lesson
+    }
 };
 
 trym2.switchLesson = function(incr) {
     //console.log("Current lessonNr " + trym2.lessonNr);
-    trym2.loadLesson(trym2.tutorialNr, trym2.lessonNr + incr);
+    this.loadLesson(this.tutorialNr, this.lessonNr + incr);
+    navBar.activate("tutorial");
 };
 
-trym2.getTutorials = function(i, tutorialNames, whenDone) {
+trym2.getTutorials = function(i, tutorialNames, callback) {
     if (i < tutorialNames.length) {
         $.get(tutorialNames[i], function(resultHtml) {
+            trym2.inspect(this);
             trym2.tutorials[i] = trym2.makeTutorial(tutorialNames[i],
                 resultHtml);
             console.log(trym2.tutorials[i].title);
-            trym2.getTutorials(i + 1, tutorialNames, whenDone);
+            trym2.getTutorials(i + 1, tutorialNames, callback);
         });
     } else {
-        whenDone();
+        callback();
     };
 };
 
@@ -372,19 +397,15 @@ trym2.getLessonTitles = function(tutorialFile, callback) {
 
 trym2.getAllTitles = function(i, tutorials, next) {
     if (i < tutorials.length) {
-        trym2.getLessonTitles(tutorials[i], function(titles) {
+        this.getLessonTitles(tutorials[i], function(titles) {
             $("#accordion").append(titles);
             console.log("Titles: " + titles);
-            trym2.getAllTitles(i + 1, tutorials, next);
+            this.getAllTitles(i + 1, tutorials, next);
         });
     } else {
         next();
     }
 };
-
-///////////////////
-
-trym2.MAXFILESIZE = 500000; // max size in bytes for file uploads
 
 trym2.inspect = function(obj) {
     for (var prop in obj) {
@@ -426,7 +447,7 @@ trym2.getSelected = function(inputField) {
             end = str.length - 1; // position of last \n 
         }
         // move cursor to beginning of line below 
-        trym2.setCaretPosition($(inputField), end + 1);
+        this.setCaretPosition($(inputField), end + 1);
     }
     return str.slice(start, end) + "\n";
 };
@@ -555,7 +576,7 @@ trym2.doUpload = function() {
     formData.append('file', file);
     console.log("process form " + file);
     console.log(file.size);
-    if (false) { //file.size > trym2.MAXFILESIZE) {
+    if (file.size > this.MAXFILESIZE) {
         $(
             "<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Your file is too big to upload.  Sorry!</div>")
             .dialog({
@@ -662,17 +683,21 @@ $(document).ready(function() {
 
     $("button").button();
     $("#previousBtn").button({
-        icons: {
-            primary: "ui-icon-arrowthick-1-w"
-        },
+        icons: { primary: "ui-icon-arrowthick-1-w" },
         text: false
+    }).click(function() {
+        trym2.switchLesson(-1);
+        $(this).removeClass("ui-state-focus");
     });
+
     $("#nextBtn").button({
-        icons: {
-            primary: "ui-icon-arrowthick-1-e"
-        },
+        icons: { primary: "ui-icon-arrowthick-1-e" },
         text: false
+    }).click(function() {
+        trym2.switchLesson(1);
+        $(this).removeClass("ui-state-focus");
     });
+
 
     var M2InDefaultText = "" +
         "-- Welcome to Macaulay2 !\n" +
@@ -715,11 +740,8 @@ $(document).ready(function() {
     $("#upfile").on('change', trym2.doUpload);
 
     $("#tutorialBtn").click(function() {
-        trym2.loadLesson(trym2.tutorialNr, trym2.lessonNr);
-        if (trym2.tutorialScrollTop != 0)
-            $("#lesson").scrollTop(trym2.tutorialScrollTop);
-        trym2.tutorialScrollTop = 0;
-        //console.log("lesson!");
+        trym2.loadLesson( trym2.tutorialNr, trym2.lessonNr);
+        navBar.activate("tutorial");
     });
 
     $("#homeBtn").click( function() {
@@ -745,15 +767,6 @@ $(document).ready(function() {
             "tutorials/elementary-groebner.html"
     ];
     $("#home").append("<div id=\"accordion\"></div>");
-
-    $("#nextBtn").click(function() {
-        trym2.switchLesson(1);
-        $(this).removeClass("ui-state-focus");
-    });
-    $("#previousBtn").click(function() {
-        trym2.switchLesson(-1);
-        $(this).removeClass("ui-state-focus");
-    });
 
     trym2.getTutorials(0, tutorialNames, function() {
         trym2.makeAccordion(trym2.tutorials);

@@ -45,7 +45,7 @@ var shellObject = function(shellArea, historyArea) {
                 trym2.postMessage('/chat', msg + "\n")();
             } else {
                 // We don't want empty lines send to M2 at pressing return twice.
-                e.preventDefault();
+                e.preventDefault(); 
             }
         }
     });
@@ -162,9 +162,6 @@ var navBar = function () {
         $(tab.btn).prop("checked", true).button("refresh"); // set the color of the tab
         tab.show( param ); // do a few things for this tab
         var i, j;
-        for (i in tab.elements) { // show this tab's elements
-            $(tab.elements[i]).show();
-        }
         for (j in this.tabs) { // hide all other tabs' elements
             var otherTab = this.tabs[j];
             if ( otherTab != tab) {
@@ -173,6 +170,9 @@ var navBar = function () {
                     $(otherTab.elements[i]).hide(); 
                 }
             }
+        } 
+        for (i in tab.elements) { // show this tab's elements
+            $(tab.elements[i]).show();
         }
 
     };
@@ -308,6 +308,7 @@ trym2.makeAccordion = function(tutorials) {
     $(".menuTitle").on("click", function() {
         var tutorialId = $(this).attr('tutorialid'),
             tutorialIdNr = parseInt(tutorialId.match(/\d/g), 10);
+        navBar.activate("tutorial");
         trym2.loadLesson(tutorialIdNr, 0);
         return false;
     });

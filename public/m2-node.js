@@ -149,52 +149,68 @@ var shellObject = function(shellArea, historyArea) {
 
 // this object is responsible for changing the content on the left as the users
 // naviges between home, tutorial, and input
-var navBar = {
-    // elements that should be shown when active
-    home: {
-        elements: ["#home"],
-        btn: "#homeBtn",
-        show: function() {
-            console.log( "home.show()" );
-            trym2.tutorialScrollTop = $("#lesson").scrollTop();
+var navBar = function () {
+    var NavBarController =  function( tabs ){
+        this.tabs = tabs;
+    };
+    
+    NavBarController.prototype.activate = function( s, param ) { // string with name of tab, maxLesson for show functions
+        console.log("activate tab: " + s);
+        console.log(this.tabs);
+        var tab = this.tabs[s];
+        $(tab.btn).prop("checked", true).button("refresh"); // set the color of the tab
+        tab.show( param ); // do a few things for this tab
+        for ( var i in tab.elements) { // show this tab's elements
+            $(tab.elements[i]).show();
         }
-    },
-    tutorial: {
-        elements: ["#lesson", "#previousBtn", "#nextBtn", "#pageIndex"],
-        btn: "#tutorialBtn",
-        show: function( maxLesson ) {
-            console.log("tutorial.show()");  
-            $("#pageIndex").button("option", "label", (trym2.lessonNr + 1) + "/" +
-                  maxLesson).show().unbind().css('cursor', 'default');
-        }
-    },
-    input: {
-        elements: ["#inputarea", "#sendBtn"],
-        btn: "#inputBtn",
-        show: function() {
-            console.log("input.show()");
-            $("#lesson").scrollTop();
-        }
-    },
-
-    activate: function( tab, maxLesson ) {
-        var tabs = [this.home, this.tutorial, this.input];        
-        console.log("activate tab: " + tab);
-        $(this[tab].btn).prop("checked", true).button("refresh");
-        this[tab].show( maxLesson );
-        for ( var i in this[tab].elements) {
-            $(this[tab].elements[i]).show();
-        }
-        for (i in tabs) {
-            var otherTab = tabs[i];
-            if ( otherTab != this[tab]) {
+        for (i in this.tabs) { // hide all other tabs' elements
+            var otherTab = this.tabs[i];
+            if ( otherTab != tab) {
                 for (var j in otherTab.elements) {
                     $(otherTab.elements[j]).hide(); 
                 }
             }
         }
-    }
-};
+    };
+    
+    var NavBarTab = function(elements, btn, show) {
+        this.elements = elements;
+        this.btn = btn, 
+        this.show = show;
+    };
+
+    var home = new NavBarTab( ["#home"], 
+                              "#homeBtn", 
+                              function() {
+        console.log( "home.show()" );
+        trym2.tutorialScrollTop = $("#lesson").scrollTop();
+    });
+
+    var tutorial = new NavBarTab(  ["#lesson", "#previousBtn", "#nextBtn", "#pageIndex"],
+                                   "#tutorialBtn",
+                                   function( maxLesson ) {
+        console.log("tutorial.show()");  
+        $("#pageIndex").button("option", "label", (trym2.lessonNr + 1) + "/" +
+              maxLesson).show().unbind().css('cursor', 'default');
+    });
+
+    var input = new NavBarTab( ["#inputarea", "#sendBtn"],
+                               "#inputBtn",
+                            function() {
+        console.log("input.show()");
+        $("#lesson").scrollTop();
+    });
+    
+   return new NavBarController( {
+       "home" : home, 
+       "tutorial": tutorial,
+       "input": input
+   });
+}();
+
+
+
+
 
 ///////////////////
 // Tutorial code //

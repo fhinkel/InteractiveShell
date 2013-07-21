@@ -308,8 +308,8 @@ trym2.makeAccordion = function(tutorials) {
     $(".menuTitle").on("click", function() {
         var tutorialId = $(this).attr('tutorialid'),
             tutorialIdNr = parseInt(tutorialId.match(/\d/g), 10);
-        navBar.activate("tutorial");
         trym2.loadLesson(tutorialIdNr, 0);
+        navBar.activate("tutorial");
         return false;
     });
 };
@@ -321,8 +321,8 @@ trym2.submenuItemCallback = function() {
         tutorialIdNr = parseInt(tutorialId.match(/\d/g), 10);
     console.log("LessonID: " + lessonId);
     //console.log("You clicked a submenuItem: " + $(this).html());
-    navBar.activate("tutorial");
     trym2.loadLesson(tutorialIdNr, lessonIdNr);
+    navBar.activate("tutorial");
     return false;
 };
 
@@ -352,6 +352,7 @@ trym2.loadLesson = function(tutorialid, lessonid ) {
 trym2.switchLesson = function(incr) {
     //console.log("Current lessonNr " + trym2.lessonNr);
     trym2.loadLesson(trym2.tutorialNr, trym2.lessonNr + incr);
+    navBar.activate("tutorial");
 };
 
 trym2.getTutorials = function(i, tutorialNames, whenDone) {

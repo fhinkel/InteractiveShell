@@ -683,17 +683,21 @@ $(document).ready(function() {
 
     $("button").button();
     $("#previousBtn").button({
-        icons: {
-            primary: "ui-icon-arrowthick-1-w"
-        },
+        icons: { primary: "ui-icon-arrowthick-1-w" },
         text: false
+    }).click(function() {
+        trym2.switchLesson(-1);
+        $(this).removeClass("ui-state-focus");
     });
+
     $("#nextBtn").button({
-        icons: {
-            primary: "ui-icon-arrowthick-1-e"
-        },
+        icons: { primary: "ui-icon-arrowthick-1-e" },
         text: false
+    }).click(function() {
+        trym2.switchLesson(1);
+        $(this).removeClass("ui-state-focus");
     });
+
 
     var M2InDefaultText = "" +
         "-- Welcome to Macaulay2 !\n" +
@@ -736,8 +740,8 @@ $(document).ready(function() {
     $("#upfile").on('change', trym2.doUpload);
 
     $("#tutorialBtn").click(function() {
-        navBar.activate("tutorial");
         trym2.loadLesson( trym2.tutorialNr, trym2.lessonNr);
+        navBar.activate("tutorial");
     });
 
     $("#homeBtn").click( function() {
@@ -763,15 +767,6 @@ $(document).ready(function() {
             "tutorials/elementary-groebner.html"
     ];
     $("#home").append("<div id=\"accordion\"></div>");
-
-    $("#nextBtn").click(function() {
-        trym2.switchLesson(1);
-        $(this).removeClass("ui-state-focus");
-    });
-    $("#previousBtn").click(function() {
-        trym2.switchLesson(-1);
-        $(this).removeClass("ui-state-focus");
-    });
 
     trym2.getTutorials(0, tutorialNames, function() {
         trym2.makeAccordion(trym2.tutorials);

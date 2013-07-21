@@ -3,8 +3,6 @@
 var trym2 = {
     lessonNr: 0,
     tutorialNr: 0,
-    tutorialScrollTop: 0, // this value is where we set the scrollTop of "#lesson" so we can reset it back
-    // when we navigate back (from Input or Home views).
     tutorials: [], 
     firstLoadFlag: true // true until we show tutorial for the first time. Needed because we need to load lesson 0
 };
@@ -170,7 +168,6 @@ var navBar = function () {
         for (j in this.tabs) { // hide all other tabs' elements
             var otherTab = this.tabs[j];
             if ( otherTab != tab) {
-                otherTab.hide();
                 for (i in otherTab.elements) {
                     console.log( otherTab.elements[i] );
                     $(otherTab.elements[i]).hide(); 
@@ -180,20 +177,16 @@ var navBar = function () {
 
     };
     
-    var Tab = function(elements, btn, showFunction, hideFunction) {
+    var Tab = function(elements, btn, showFunction) {
         this.elements = elements;
         this.btn = btn, 
         this.show = showFunction;
-        this.hide = hideFunction;
     };
 
     var homeTab = new Tab( ["#home"], 
                               "#homeBtn", 
                               function() {
                                     console.log( "home.show()" );
-                              },
-                              function() {
-                                  console.log("home.hide()");
                               }
                         );
 
@@ -204,11 +197,6 @@ var navBar = function () {
                                         var maxLesson = trym2.tutorials[trym2.tutorialNr].lessons.length;
                                         $("#pageIndex").button("option", "label", (trym2.lessonNr + 1) + "/" +
                                               maxLesson).show().unbind().css('cursor', 'default');
-                                    },
-                                    function() {
-                                        // when navigating away from tutorial, remember position                                    
-                                        trym2.tutorialScrollTop = $("#lesson").scrollTop();            
-                                        console.log("tutorial.hide(), scrollTop is now " + trym2.tutorialScrollTop);
                                     }
                                 );
 
@@ -216,9 +204,6 @@ var navBar = function () {
                                "#inputBtn",
                             function() {
                                 console.log("input.show()");
-                            },
-                            function() {
-                                console.log("input.hide()");
                             }
                         );
     
@@ -360,9 +345,7 @@ trym2.loadLesson = function(tutorialid, lessonid ) {
         var title = trym2.tutorials[trym2.tutorialNr].title.text();
         $("#lesson").html(lessonContent).prepend("<h3>" + title + "</h3>").show();
         $("#lesson").scrollTop(0); //scroll to the top of a new lesson
-    } else {
-        $("#lesson").scrollTop(trym2.tutorialScrollTop);
-    };
+    }
 };
 
 trym2.switchLesson = function(incr) {

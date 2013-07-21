@@ -447,7 +447,7 @@ trym2.getSelected = function(inputField) {
             end = str.length - 1; // position of last \n 
         }
         // move cursor to beginning of line below 
-        trym2.setCaretPosition($(inputField), end + 1);
+        this.setCaretPosition($(inputField), end + 1);
     }
     return str.slice(start, end) + "\n";
 };
@@ -576,7 +576,7 @@ trym2.doUpload = function() {
     formData.append('file', file);
     console.log("process form " + file);
     console.log(file.size);
-    if (file.size > trym2.MAXFILESIZE) {
+    if (file.size > this.MAXFILESIZE) {
         $(
             "<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Your file is too big to upload.  Sorry!</div>")
             .dialog({

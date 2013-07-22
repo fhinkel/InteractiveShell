@@ -222,25 +222,9 @@ var navBar = function () {
 // Tutorial code //
 ///////////////////
 
+
 trym2.tutorials = [];
 
-trym2.makeTutorial = function(theUrl, theHtml) {
-    // populate a Tutorial element, and return it
-    var theLessons = [];
-    var tutorial = $("<div>").html(theHtml);
-    $("div", tutorial).each(function() {
-        theLessons.push({
-            title: $("h4:first", $(this)).text(),
-            html: $(this)
-        });
-    });
-    return { // class Tutorial
-        url: theUrl,
-        title: $("<h3>").append($("title", tutorial).text()),
-        current: 0,
-        lessons: theLessons
-    };
-};
 
 trym2.makeAccordion = function(tutorials) {
     for (var i = 0; i < tutorials.length; i++) {
@@ -254,7 +238,6 @@ trym2.makeAccordion = function(tutorials) {
             $(this).toggleClass("ui-state-hover");
         })
             .click(function() {
-            //console.log($(this).html());
             $(this)
                 .toggleClass(
                 "ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top")
@@ -266,23 +249,16 @@ trym2.makeAccordion = function(tutorials) {
                 var y = $(this).position().top;
                 var height = parseInt($("#home").css('height'), 10);
                 var total_height = parseInt($(this).css('height'), 10) + 50;
-                //console.log("y-pos: " + y + " height: " + height + " number of children: " + children);
-                //console.log($(this).position());
-                //console.log("total height: " + total_height + " distance to bottom: " + (height - y));
                 if (height - y < total_height) {
                     var scroll = total_height - height + y;
-                    //console.log("I want to scroll! " + scroll + ' ' + $("#TOC").scrollTop());
                     $("#home").animate({
                         scrollTop: ($("#home").scrollTop() + scroll)
                     }, 400);
-                    //$("#home").scrollTop($("#home").scrollTop() + scroll);
                 }
-
             });
             return false;
         })
             .next();
-
         var div = $("<div>");
         var content = '<ul>';
         var lessons = tutorials[i].lessons;
@@ -308,21 +284,21 @@ trym2.makeAccordion = function(tutorials) {
         $("#accordion").append(title).append(div);
     };
     $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset");
-    $(".menuTitle").on("click", function() {
-        var tutorialId = $(this).attr('tutorialid'),
-            tutorialIdNr = parseInt(tutorialId.match(/\d/g), 10);
-        trym2.loadLesson(tutorialIdNr, 0);
-        navBar.activate("tutorial");
-        return false;
-    });
+    $(".menuTitle").on("click", {lessonIdNr: "0"}, trym2.showLesson);
 };
 
-trym2.submenuItemCallback = function() {
-    var lessonId = $(this).attr('lessonid'),
+trym2.showLesson = function(e) {
+    var lessonId,
+        lessonIdNr,
         tutorialId = $(this).attr('tutorialid'),
-        lessonIdNr = parseInt(lessonId.match(/\d/g), 10),
         tutorialIdNr = parseInt(tutorialId.match(/\d/g), 10);
-    console.log("LessonID: " + lessonId);
+    if(e.data && e.data.lessonIdNr){
+        lessonIdNr = parseInt(e.data.lessonIdNr, 10);
+    } else { // Get number from link attribute
+        lessonId = $(this).attr('lessonid'),
+        lessonIdNr = parseInt(lessonId.match(/\d/g), 10);
+    }
+    //console.log("LessonID: " + lessonId);
     //console.log("You clicked a submenuItem: " + $(this).html());
     trym2.loadLesson(tutorialIdNr, lessonIdNr);
     navBar.activate("tutorial");
@@ -358,53 +334,35 @@ trym2.switchLesson = function(incr) {
     navBar.activate("tutorial");
 };
 
-trym2.getTutorials = function(i, tutorialNames, callback) {
+trym2.makeTutorialsList = function(i, tutorialNames, callback) {
     if (i < tutorialNames.length) {
         $.get(tutorialNames[i], function(resultHtml) {
-            trym2.inspect(this);
-            trym2.tutorials[i] = trym2.makeTutorial(tutorialNames[i],
+            trym2.tutorials[i] = trym2.populateTutorialElement(tutorialNames[i],
                 resultHtml);
             console.log(trym2.tutorials[i].title);
-            trym2.getTutorials(i + 1, tutorialNames, callback);
+            trym2.makeTutorialsList(i + 1, tutorialNames, callback);
         });
     } else {
         callback();
     };
 };
 
-// input: filename with tutorial content
-// return a list of lessons title, each wrapped in a div and link, 
-// <div><a>" + title + "</a></div>  
-// attach a lesson ID
-trym2.getLessonTitles = function(tutorialFile, callback) {
-    $("#menuTutorial").load(tutorialFile, function() {
-        var titles = "<h3>" + $("#menuTutorial title").text() + "</h3>";
-        titles = titles + "<div> <ul>";
-        var i = 1;
-        $("#menuTutorial h4").each(function() {
-            var title = $(this).text();
-            titles = titles +
-                "<li><a href='#' class='submenuItem' lessonid='lesson" +
-                i + "'>" + title + "</a></li>";
-            i = i + 1;
-            //console.log("Title in m2.js: " + title);
+trym2.populateTutorialElement = function(theUrl, theHtml) {
+    // populate a Tutorial element, and return it
+    var theLessons = [];
+    var tutorial = $("<div>").html(theHtml);
+    $("div", tutorial).each(function() {
+        theLessons.push({
+            title: $("h4:first", $(this)).text(),
+            html: $(this)
         });
-        titles = titles + "</ul></div>";
-        //console.log("All titles: " + titles);
-        callback(titles);
     });
-};
-
-trym2.getAllTitles = function(i, tutorials, next) {
-    if (i < tutorials.length) {
-        this.getLessonTitles(tutorials[i], function(titles) {
-            $("#accordion").append(titles);
-            console.log("Titles: " + titles);
-            this.getAllTitles(i + 1, tutorials, next);
-        });
-    } else {
-        next();
-    }
+    return { // class Tutorial
+        url: theUrl,
+        title: $("<h3>").append($("title", tutorial).text()),
+        current: 0,
+        lessons: theLessons
+    };
 };
 
 trym2.inspect = function(obj) {
@@ -416,10 +374,6 @@ trym2.inspect = function(obj) {
 };
 
 trym2.scrollDown = function(area) {
-    //var mySize = $(area).val().length;
-    // You can output the heights and the second one is much larger.
-    //console.log("Size: "+mySize);
-    //console.log("Height: "+$(area)[0].scrollHeight);
     area.scrollTop(area[0].scrollHeight);
     return false;
     // Return false to cancel the default link action
@@ -748,7 +702,7 @@ $(document).ready(function() {
         navBar.activate("home"); 
     });
 
-    $(document).on("click", ".submenuItem", trym2.submenuItemCallback);
+    $(document).on("click", ".submenuItem", trym2.showLesson);
 
     $(document).on("click", "code", function() {
         $(this).effect("highlight", {
@@ -768,7 +722,7 @@ $(document).ready(function() {
     ];
     $("#home").append("<div id=\"accordion\"></div>");
 
-    trym2.getTutorials(0, tutorialNames, function() {
+    trym2.makeTutorialsList(0, tutorialNames, function() {
         trym2.makeAccordion(trym2.tutorials);
     });
     

@@ -1,11 +1,17 @@
+2013-07-24
+TAB completion:
+   * On server or client side?
+Colorization
+Feedback button
+
 2013-07-20
 
 Next we should think about refactoring all tutorial functions 
 and load lessen functions, and then decide, if loadLesson calls 
 activate(tutorial) or the other way round, or if the main 
-routines always call both. 
+routines always call both.   sort of DONE
 
-set caret position needs to be rewritten to get $element passed in instead of string
+set caret position needs to be rewritten to get $element passed in instead of string   DONE
 
 2013-07-15
 Planning structure:
@@ -31,13 +37,13 @@ Server side
       * EventStream bla
       * stats + admin
 Client side
-   * Maybe a shell object?
-      * History management
-      * Bind key events on shell window
-      * parts of postMessage go here
-      * chatOnData
-   * Improve show+hide methods for tutorial, terminal, home
-      * Sometimes one has to click twice
+   * Maybe a shell object?   DONE
+      * History management   DONE
+      * Bind key events on shell window   DONE
+      * parts of postMessage go here   DONE
+      * chatOnData   DONE
+   * Improve show+hide methods for tutorial, terminal, home   DONE
+      * Sometimes one has to click twice ?
    * Tutorials module 
       * makeAccordion?
       * load the tutorials from files

@@ -153,17 +153,13 @@ var shellObject = function(shellArea, historyArea) {
 // naviges between home, tutorial, and input
 // tabs are hard coded as home, tutorial, and input
 // the controller assures that always exactly one tab from the tabs list is active. 
-// usage: navBar.activate("home")
-var navBar = function () {
-    var Controller =  function( tabs ){
-        this.tabs = tabs;
-    };
-    
-    Controller.prototype.activate = function( s, param ) { // string with name of tab, optional extra param for tab.show()
+// usage: trym2.navBar.activate("home")
+trym2.navBar = function () {  
+    this.activate = function( s ) { // string with name of tab
         console.log("activate tab: " + s);
         var tab = this.tabs[s];
         $(tab.btn).prop("checked", true).button("refresh"); // set the color of the tab
-        tab.show( param ); // do a few things for this tab
+        tab.show( ); // do a few things for this tab
         var i, j;
         for (j in this.tabs) { // hide all other tabs' elements
             var otherTab = this.tabs[j];
@@ -177,9 +173,8 @@ var navBar = function () {
         for (i in tab.elements) { // show this tab's elements
             $(tab.elements[i]).show();
         }
-
     };
-    
+   
     var Tab = function(elements, btn, showFunction) {
         this.elements = elements;
         this.btn = btn, 
@@ -209,12 +204,12 @@ var navBar = function () {
                                 console.log("input.show()");
                             }
                         );
-    
-   return new Controller( {
+    this.tabs =  {
        "home" : homeTab, 
        "tutorial": tutorialTab,
        "input": inputTab
-   });
+   };
+   return this;
 }();
 
 
@@ -301,7 +296,7 @@ trym2.showLesson = function(e) {
     //console.log("LessonID: " + lessonId);
     //console.log("You clicked a submenuItem: " + $(this).html());
     trym2.loadLesson(tutorialIdNr, lessonIdNr);
-    navBar.activate("tutorial");
+    trym2.navBar.activate("tutorial");
     return false;
 };
 
@@ -331,7 +326,7 @@ trym2.loadLesson = function(tutorialid, lessonid ) {
 trym2.switchLesson = function(incr) {
     //console.log("Current lessonNr " + trym2.lessonNr);
     this.loadLesson(this.tutorialNr, this.lessonNr + incr);
-    navBar.activate("tutorial");
+    trym2.navBar.activate("tutorial");
 };
 
 trym2.makeTutorialsList = function(i, tutorialNames, callback) {
@@ -687,7 +682,7 @@ $(document).ready(function() {
     $("#resetBtn").click(trym2.postMessage('/restart'));
     $("#interruptBtn").click(trym2.postMessage('/interrupt'));
     $("#inputBtn").click(function() {
-        navBar.activate("input");
+        trym2.navBar.activate("input");
     });
     $("#saveBtn").click(trym2.saveInteractions);
     $("#uploadBtn").click(trym2.doUpfileClick);
@@ -695,11 +690,11 @@ $(document).ready(function() {
 
     $("#tutorialBtn").click(function() {
         trym2.loadLesson( trym2.tutorialNr, trym2.lessonNr);
-        navBar.activate("tutorial");
+        trym2.navBar.activate("tutorial");
     });
 
     $("#homeBtn").click( function() {
-        navBar.activate("home"); 
+        trym2.navBar.activate("home"); 
     });
 
     $(document).on("click", ".submenuItem", trym2.showLesson);
@@ -725,6 +720,5 @@ $(document).ready(function() {
     trym2.makeTutorialsList(0, tutorialNames, function() {
         trym2.makeAccordion(trym2.tutorials);
     });
-    
-    navBar.activate("home"); 
+    trym2.navBar.activate("home"); 
 });

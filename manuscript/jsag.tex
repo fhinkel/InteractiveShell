@@ -69,52 +69,111 @@ Michael Stillman\\Cornell University  }
 
 
 \begin{abstract}
-    A webversion of Macaulay2, a computer algebra system funded by the National Sciences Foundation since 1992. The webversion gives easy access to this sophisticated software without the hurdles that usually come with installing it. This is particularly useful for first time users and students as it is easy to try out. The webversion has all features that a desktop version has and can be used to its full potential. The webversion contains tutorials, that explain different concepts such as an introduction to Gr\"obner bases. Users can develop their own tutorials and provide them to their students, making it a great tool for education. 
+
+    A webversion of Macaulay2, a computer algebra system funded by the
+    National Sciences Foundation since 1992. The webversion gives easy
+    access to this sophisticated software without the hurdles that
+    usually come with installing it. This is particularly useful for
+    first time users and students as it is easy to try out. The
+    webversion has all features that a desktop version has and can be
+    used to its full potential. The webversion contains tutorials,
+    that explain different concepts such as an introduction to
+    Gr\"obner bases. Users can develop their own tutorials and provide
+    them to their students, making it a great tool for education.
+
 \end{abstract}
 
 \section{Introduction}
 \begin{figure}[htb]
     \includegraphics[width=.95\textwidth]{homeWebsite.jpg}
-    \caption{Welcome screen of web version of Macaulay2. The left hand side shows a tutorial giving an introduction to Gr\"obner bases. Text in yellow can be clicked and is then executed by Macaulay2 on the server. The complete output of the calculations is show on the right hand side. {\it Home, Tutorial, Input} let the user change the left hand view, {\it Reset, Interrupt} allow to reset and interrupt the Macaulay2 session on the server, {\it Save}  provides both the input and the output of the current session to the user as a text file, and with {\it Upload} one can upload files that can then be accessed by Macaulay2.}
+    \caption{Welcome screen of web version of Macaulay2. The left hand
+      side shows a tutorial giving an introduction to Gr\"obner
+      bases. Text in yellow can be clicked and is then executed by
+      Macaulay2 on the server. The complete output of the calculations
+      is show on the right hand side. {\it Home, Tutorial, Input} let
+      the user change the left hand view, {\it Reset, Interrupt} allow
+      to reset and interrupt the Macaulay2 session on the server, {\it
+        Save} provides both the input and the output of the current
+      session to the user as a text file, and with {\it Upload} one
+      can upload files that can then be accessed by Macaulay2.}
     \label{fig:home}
 \end{figure}
 
-The online version of Macaulay2 has the same functionality as regular Macaulay2, albeit the user has access to less resources than on his own machine. The user can upload files and load packages, generate files such as images, and has access to shell commands. 
+The online version of Macaulay2 has the same functionality as regular
+Macaulay2, albeit the user has access to less resources than on his
+own machine. The user can upload files and load packages, generate
+files such as images, and has access to shell commands.
 
 
-Motivation (simple for students, simple interface, no time for installation in class, also usable for advanced users (no limitations), other sites (Sage) had heavier interface)
+Motivation (simple for students, simple interface, no time for
+installation in class, also usable for advanced users (no
+limitations), other sites (Sage) had heavier interface)
 
 
 \section{How to use the website}
-The right hand side provides a shell like environment running Macaulay2. You can type into it, as well as use the arrow keys for navigating through your command history.
+The right hand side provides a shell like environment running
+Macaulay2. You can type into it, as well as use the arrow keys for
+navigating through your command history.
 
-On the left hand side, the user can navigate between {\it Home}, {\it Tutorial}, and {\it Input}. {\it Home} shows the table of contents of tutorials. {\it Tutorial} shows the currently selected tutorial. Tutorials are interactive and contain executable pieces of Macaulay2 code that are run by clicking on them. {\it Input} shows a terminal window in which the user can type commands and execute them.  
+On the left hand side, the user can navigate between {\it Home}, {\it
+  Tutorial}, and {\it Input}. {\it Home} shows the table of contents
+of tutorials. {\it Tutorial} shows the currently selected
+tutorial. Tutorials are interactive and contain executable pieces of
+Macaulay2 code that are run by clicking on them. {\it Input} shows a
+terminal window in which the user can type commands and execute them.
 
-All code executed either by clicking on interactive parts in a tutorial or by entering code in the {\it Input} window, appears on the right hand side together with the output from Macaulay2 to those results. 
+All code executed either by clicking on interactive parts in a
+tutorial or by entering code in the {\it Input} window, appears on the
+right hand side together with the output from Macaulay2 to those
+results.
 
-The {\it Reset} button resets a Macaulay2 session, i.e., stopping a running calculation, deleting all variables, unloading all packages, and loading the standard packages. 
+The {\it Reset} button resets a Macaulay2 session, i.e., stopping a
+running calculation, deleting all variables, unloading all packages,
+and loading the standard packages.
 
-The {\it Interrupt} button stops a running calculation, without resetting the Macaulay2 session. 
+The {\it Interrupt} button stops a running calculation, without
+resetting the Macaulay2 session.
 
 \subsection{Features}
-The user can run all Macaulay2 commands that are available in the running version. To obtain the current version running on the server, type {\tt version}. Loading packages is possible, too, with commands such as {\tt loadPackage}. If packages are not available, they can be uploaded to the users session, by clicking the {\it Upload file} button. Similarly, any other file, such as text files, that one might want to manipulate or read data from with Macaulay2 can be uploaded to the user's session. 
+
+The user can run all Macaulay2 commands that are available in the
+running version. To obtain the current version running on the server,
+type {\tt version}. Loading packages is possible, too, with commands
+such as {\tt loadPackage}. If packages are not available, they can be
+uploaded to the users session, by clicking the {\it Upload file}
+button. Similarly, any other file, such as text files, that one might
+want to manipulate or read data from with Macaulay2 can be uploaded to
+the user's session.
 
 \begin{figure}[htb]
     \includegraphics[width=.95\textwidth]{withGraph.jpg}
-    \caption{Screenshot of webversion of Macaulay2 after the user generated an image. Some Macaulay2 packages can generate graphs. By invoking the command {\tt displayGraph}, the image is generated on the server and displayed to the user.}
+    \caption{Screenshot of webversion of Macaulay2 after the user
+      generated an image. Some Macaulay2 packages can generate
+      graphs. By invoking the command {\tt displayGraph}, the image is
+      generated on the server and displayed to the user.}
     \label{fig:graph}
 \end{figure}
 
-Results from a session can be retrieved by using the {\it Save} button. If the user needs to retrieve files, that are stored in his session, those can be retrieved by executing {\tt open} in the user's session. If Macaulay2 generates graphs, those are shown to the user, see Figure \ref{fig:graph}.
+Results from a session can be retrieved by using the {\it Save}
+button. If the user needs to retrieve files, that are stored in his
+session, those can be retrieved by executing {\tt open} in the user's
+session. If Macaulay2 generates graphs, those are shown to the user,
+see Figure \ref{fig:graph}.
 
-Session are usually being kept alive for several days, which allows users to continue their work next time they access server. 
+Session are usually being kept alive for several days, which allows
+users to continue their work next time they access server.
 
 \section{Tutorials}
 writing new tutorials,
+
 \section{Internal structure, schroots}
-One of the first questions that occurred to us in this context was whether to offer a sandboxed version of M2 or M2 with full functionality.
-We settled for the second alternative, since it seemed easier to realize and more likely to attract new users.
-This lead to several new questions:
+
+One of the first questions that occurred to us in this context was
+whether to offer a sandboxed version of M2 or M2 with full
+functionality.  We settled for the second alternative, since it seemed
+easier to realize and more likely to attract new users.  This lead to
+several new questions:
+
 \begin{enumerate}
 \item A fully functional M2 also gives the user system access. How does that impact security and how to deal with it?
 \item How do we distinguish the users on the system?
@@ -123,10 +182,19 @@ This lead to several new questions:
 %\item blablabla?
 \end{enumerate}
 
-The answer to the second question was to create and delete users on the fly. Since this implies that the server must be run as root, we decided to run it inside a virtual machine in order not to compromise the security of the host system.
+The answer to the second question was to create and delete users on
+the fly. Since this implies that the server must be run as root, we
+decided to run it inside a virtual machine in order not to compromise
+the security of the host system.
 
 
-Since any system command can be run from inside M2 which is why we decided to run M2 inside a `secure chroot' (schroot). To provide full funtionality we mount a full system inside the schroot. The mounting happens read only, a few folders are provided with a writable layer, if M2 needs write access to them. In the definition of a user specific schroot there is not root user, so it should not be possible to become root or execute any command via sudo.
+Since any system command can be run from inside M2 which is why we
+decided to run M2 inside a `secure chroot' (schroot). To provide full
+funtionality we mount a full system inside the schroot. The mounting
+happens read only, a few folders are provided with a writable layer,
+if M2 needs write access to them. In the definition of a user specific
+schroot there is not root user, so it should not be possible to become
+root or execute any command via sudo.
 
 When a user connects to the server the following things happen:
 \begin{enumerate}
@@ -136,11 +204,20 @@ When a user connects to the server the following things happen:
 \item The schroot is started.
 \end{enumerate}
 
-Control groups (cgroups) allow you to restrict the number of CPU shares and the memory for a process and all its children. When M2 is executed inside a schroot it is called via {\tt cgexec} with the cgroups specifically created for this user. Using this technique it is possible to limit the total consumption of CPU and memory by each user. Additionally we ensure that the administrator of the virtual machine always is able to execute any command required for maintenance, i.e. if the node server is down or has been compromised.
+Control groups (cgroups) allow you to restrict the number of CPU
+shares and the memory for a process and all its children. When M2 is
+executed inside a schroot it is called via {\tt cgexec} with the
+cgroups specifically created for this user. Using this technique it is
+possible to limit the total consumption of CPU and memory by each
+user. Additionally we ensure that the administrator of the virtual
+machine always is able to execute any command required for
+maintenance, i.e. if the node server is down or has been compromised.
 
-Now any Macaulay2 command can be run in this schroot inside the corresponding cgroups.
+Now any Macaulay2 command can be run in this schroot inside the
+corresponding cgroups.
 
-You can find a detailed description how to set up this environment on \cite{trym2-github} in the file {\tt configuring\_linux.tex}.
+You can find a detailed description how to set up this environment on
+\cite{trym2-github} in the file {\tt configuring\_linux.tex}.
 
 \bibliographystyle{plain}
 \bibliography{references}

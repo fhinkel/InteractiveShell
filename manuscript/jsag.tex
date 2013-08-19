@@ -99,16 +99,61 @@ Michael Stillman\\Cornell University  }
     \label{fig:home}
 \end{figure}
 
-The online version of Macaulay2 has the same functionality as regular
-Macaulay2, albeit the user has access to less resources than on his
-own machine. The user can upload files and load packages, generate
-files such as images, and has access to shell commands.
 
 
-Motivation (simple for students, simple interface, no time for
-installation in class, also usable for advanced users (no
-limitations), other sites (Sage) had heavier interface)
+{\it Try Macaulay2!} is an on-line version of {\it Macaulay2} which
+doesn't require users to download or install the program, and also
+doesn't require users to set up an account and log in.  {\it Try
+  Macaulay2!}  has the same functionality as the version that runs on
+desktop computers, albeit the user might have access to less resources
+than on their own machine.  Users can upload files and
+load packages, generate files such as images, and also have
+access to other shell commands, such as gfan, 4ti2, and code for
+generating images of graphs.
 
+Our motivation for creating this web application was to provide an
+easy to use experience for classroom and student use.  Having students
+download and install software such as {\it Macaulay2} is time
+consuming and inevitably there are some situations for which this
+process fails or takes significant effort to get runnning, e.g. on
+some versions of Windows.  The {\it Try Macaulay2!} web application is
+designed to be able to handle many students at once, and without
+having the users need to create accounts or log in.  We note that the
+site is not only for beginners, it is useful for seasoned experts as
+well.
+
+We considered off the shelf solutions, such as the Sage
+notebook~\cite{sagenotebook}, but decided that we wished for a
+lighter-weight solution, and one that did not require users to create
+new accounts at a web site.  Nothing available seemed to meet our
+needs, hence the current system.
+
+{\it Try Macaulay2!} runs under Chrome, Firefox and Safari, but not
+under Internet Explorer.  On the iPad, it runs under Chrome and
+Safari, although it seems that Chrome offers a nicer user experience.
+On recent versions of Android (SUCH AS??), it runs under Chrome.
+
+In addition to presenting a pleasant interface to an instance of {\it
+  Macaulay2} running on a distant server, a number of tutorials to
+learn {\it Macaulay2} are provided.  Instructors can create their own
+tutorials, and can make them available to their students, as well as
+to other {\it Macaulay2} users.  
+
+In Section 2, we describe the basics of using the web application.
+Section 3 details the creation and making tutorials available.
+Providing a program such as {\it Macaulay2} which allows users to
+access system resources presents a number of challenges to keep users
+from naively or mischevously misusing the sytem.  In Section 4, we
+provide details as to how we structure the application on the server.
+In the last section, we describe some of our wish-list items for
+improving the system.
+
+The system is open source, and available on github (see \cite{github}).
+If you would like more information on using this in your own courses,
+or if you have suggestions, please contact one of us.
+
+We would like to thank Charles Boyd, Dan Grayson, and Greg Smith for
+fruitful discussions on system security and on user interface design.
 
 \section{How to use the website}
 The right hand side provides a shell like environment running
@@ -222,3 +267,25 @@ You can find a detailed description how to set up this environment on
 \bibliographystyle{plain}
 \bibliography{references}
 \end{document}
+
+. What we do?
+  . Provide a web-based M2
+  . Full featured
+  . No creation of accounts needed.
+  . No setup time to use in a class setting.  Students can work immediately, with no setup fuss.
+  . Tutorials to learn M2 provided.
+  . Instructors can create their own tutorials for their students to learn.
+  . Also suitable for advanced users.
+  . The source is open and on github: any user can create a web-based server
+      for others.  Todo: can lock it down to your own self.
+  . This runs acceptably on ipad and android, although having a separate 
+    keyboard is good.  Future: improve experience on tablets.
+
+  section 2: how to use web Macaulay2, an overview of the features.
+  section 3: writing tutorials, making them available.
+  section 4: some details about how the server was written and structured.
+  section 5: wishlist for additional features.
+
+. Why not other solutions, such as the Sage notebook?
+  . need accounts
+  . this solution seems more ``lightweight''

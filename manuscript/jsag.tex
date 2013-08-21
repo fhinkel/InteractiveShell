@@ -51,11 +51,11 @@
 \usepackage{graphicx}
 \fi
 
-\def\tryM2{{\it Try Macaulay2!}}
+\def\tryM2{{\it Try Macaulay2}}
 \def\M2{{\it Macaulay2}}
 
 %\title{Macaulay2 Web Version}
-\title{\tryM2: \M2 on the cloud}
+\title{\tryM2: A web version of \M2}
 \author{Lars Kastner\\ Freie Universit\"at Berlin \and 
 Franziska Hinkelmann\\Mathematical Biosciences Institute\\ Ohio State University \and 
 Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \thanks{Stillman has been supported by NSF grants DMS 08-10909 and 10-02210.} }
@@ -116,21 +116,22 @@ Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \th
 \tryM2 is an on-line version of \M2 which
 doesn't require users to download or install the program, and also
 doesn't require users to set up an account and log in.  \tryM2
-has the same functionality as the version that runs on
-desktop computers, albeit the user might have access to less resources
+has the same functionality as the desktop version,
+albeit the user might have access to less resources
 than on their own machine.  Users can upload files and
 load packages, generate files such as images, and also have
 access to other shell commands, such as gfan, 4ti2, and code for
 generating images of graphs.
 
-Our motivation for creating this web application was to provide an
-easy to use experience for classroom and student use.  Having students
-download and install software such as \M2 is time
+Our primary motivation for creating this web application was to
+provide an easy to use experience for classroom and student use.
+Having students download and install software such as \M2 is time
 consuming and inevitably there are some situations for which this
 process fails or takes significant effort to get runnning, e.g. on
-some versions of Windows.  The \tryM2 web application is
-designed to be able to handle many students at once, and without
-having the users need to create accounts or log in.  We note that the
+some versions of Windows.  The \tryM2 web application is designed to
+be able to handle many students at once, and without having the users
+need to create accounts or log in.  \tryM2 was used at the Syzygyies
+meeting in Berlin in May 2013, with about 70 users.  We note that the
 site is not only for beginners, it is useful for seasoned experts as
 well.
 
@@ -233,26 +234,28 @@ have not closed their browser, or set the browser to remember their
 windows.
 
 \section{Tutorials}
-This section is a mess, because we have not implemented this yet!
-
 Instructors and other users can create their own tutorials for use with \tryM2.
 A \M2 package, {\tt TryMacaulay2} is provided to help with this process.  
-Tutorials are written in Macaulay2 ``SimpleDoc'' format, and then translated to an html format
-so that code can be evaluated by clicking on it.
+First, you write your tutorial in \M2's {\it SimpleDoc} format, which includes example \M2 code.
+Then, run the \M2 command script {\tt makeTutorial} to create an html document, and finally 
+load this into your {\tt running web.macaulay2.com} session.  Iterate this process
+to improve your tutorial.
 
-There are two ways to make tutorials available.  While you are developing your tutorial, the 
-best method is the following:
+Once satisfied with the tutorial, make it available to your students either as a file on the web,
+or have them download the file.  They then load this tutorial into their {\tt running web.macaulay2.com} session.
+
+The following steps to create a tutorial are also documented in the package {\tt TryMacaulay2}.
 \begin{enumerate}
-\item Create your tutorial in a file, e.g. {\tt my-wonderful-tutorial.simpledoc}, using
-simpledoc format.  
-\item Click on {\tt "Upload Tutorial"}.  The server will translate your tutorial into html, and 
-the resulting tutorial will be loaded as the current one.
+\item Create a tutorial in simpledoc format, say {\tt foo.simpledoc}.  For an example, type into \M2, {\tt viewHelp "TryMacaulay2"}.
+\item Use {\tt makeTutorial "foo.simpledoc"} to create a file "foo.trym2".
+\item In the {\it Home} screen in \tryM2, click on the {\it Load Tutorial} button, and select this file.
 \end{enumerate}
 
-Once it is ready for others to use, either you can give them the file, and they can follow these same steps,
-or you can upload it to the \tryM2 server, for anyone to use.  This process requires you to 
+Once your students have a copy of the file {\tt "foo.trym2"}, then can also load the tutorial into their \tryM2
+session, as in the third step.
 
-To find out how to write your own tutorial do {\tt viewHelp "TryMacaulay2"} inside of \M2.
+In the future, we plan to automate this process, allowing instructors to upload tutorials that all \M2 users 
+can view and work through.
 
 \section{Internal structure, schroots}
 

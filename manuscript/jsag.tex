@@ -113,7 +113,7 @@ Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \th
 
 
 
-\tryM2 is an on-line version of \M2 which
+\tryM2 is an on-line version of \M2 \cite{M2} which
 doesn't require users to download or install the program, and also
 doesn't require users to set up an account and log in.  \tryM2
 has the same functionality as the desktop version,
@@ -144,7 +144,7 @@ needs, hence the current system.
 \tryM2 runs under the Chrome, Firefox and Safari web browsers, but not
 under Internet Explorer.  On the iPad, it runs under Chrome and
 Safari, although it seems that Chrome offers a nicer user experience.
-On recent versions of Android, it runs under Chrome.
+It runs under recent versions of Android ($4.0$ and higher).
 
 In addition to presenting an interface to an instance of \M2
 running on a distant server, a number of tutorials to
@@ -262,7 +262,7 @@ can view and work through.
 The \tryM2 web server runs on a virtual machine on a linux computer on the web.
 The server is implemented using {\tt node.js}, and the client
 communicates with the server via asynchronous AJAX calls, which often
-provides very responsive interaction with the server.
+provides very responsive interaction with the server \cite{nodejs}.
 
 Any user with moderate knowledge of linux can set up their own {\it try Macaulay2}
 server.  Detailed directions for doing so are in the github repository \cite{github}.
@@ -289,7 +289,7 @@ decided to run it inside a virtual machine in order not to compromise
 the security of the host system.
 
 Since any system command can be run from inside \M2, we
-decided to run M2 inside a `secure chroot' (schroot). To provide full
+decided to run M2 inside a `secure chroot' (schroot) \cite{schroot}. To provide full
 functionality we mount a full file system inside the schroot. The mounting
 happens read only, except that the few folders that \M2 needs write access to are provided with a writable layer.
 In the definition of a user specific
@@ -305,7 +305,7 @@ When a user connects to the server the following happens:
 \end{enumerate}
 
 Control groups (cgroups) allow you to restrict the number of CPU
-shares and the memory for a process and all its children. When M2 is
+shares and the memory for a process and all its children \cite{cgroups}. When M2 is
 executed inside a schroot it is called via {\tt cgexec} with the
 cgroups specifically created for this user. Using this technique it is
 possible to limit the total consumption of CPU and memory by each
@@ -328,8 +328,8 @@ line completion and colorization of \M2 code.  However, an important
 design decision is to keep the interface as simple as possible.
 
 The system we have written was designed with \M2 in mind, but 
-the entire structure will work for other command line programs such as Singular \cite{},
-and GAP \cite{}.  We are currently working on creating a similar server for Singular.
+the entire structure will work for other command line programs such as Singular \cite{singular},
+and GAP \cite{GAP4}.  We are currently working on creating a similar server for Singular.
 Tutorials for other systems may be created in the same way as \M2 tutorials.
 
 \bibliographystyle{plain}

@@ -1,1 +1,0 @@
-schroot binary: setuid-binary usr/bin/schroot 4755 root/root

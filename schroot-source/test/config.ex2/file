@@ -1,6 +1,0 @@
-[sid-file]
-type=file
-description=Debian sid snapshot
-priority=3
-groups=sbuild,root
-file=/srv/chroots/sid.tar.gz

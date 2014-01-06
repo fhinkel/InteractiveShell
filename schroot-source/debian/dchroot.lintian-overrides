@@ -1,1 +1,0 @@
-dchroot binary: setuid-binary usr/bin/dchroot 4755 root/root

@@ -1,3 +1,0 @@
-dev             /dev            devfs   rw,bind         0       0
-dev             /dev/fd         fdescfs rw,bind         0       0
-/home/buildd/build-trees  /build  nullfs  rw            0       0

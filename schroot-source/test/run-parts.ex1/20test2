@@ -1,8 +1,0 @@
-#!/bin/sh
-#echo "20test2 $1" >&2
-
-if [ "$1" = "fail" ]; then
-  exit 1
-fi
-
-exit 0

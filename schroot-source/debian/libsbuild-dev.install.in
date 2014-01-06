@@ -1,3 +1,0 @@
-debian/install/usr/include          usr
-debian/install/@LIBDIR@/libsbuild.so  @LIBDIR@
-debian/install/@LIBDIR@/pkgconfig    @LIBDIR@

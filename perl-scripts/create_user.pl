@@ -55,7 +55,7 @@ close (CONFIG);
 ##  Schroot fstab stuff
 ################################
 system "cp -r /usr/local/etc/schroot/clone /usr/local/etc/schroot/$schroot_type";
-system "sed -i \"s/\\\$FULL_MOUNT_PATH/\/usr\/local\/var\/lib\/schroot\/mount\/$schroot_type/g\" /usr/local/etc/schroot/$schroot_type/fstab";
+system "sed -i \"s/\\\$FULL_MOUNT_PATH/\\/usr\\/local\\/var\\/lib\\/schroot\\/mount\\/$schroot_type/g\" /usr/local/etc/schroot/$schroot_type/fstab";
 
 
 ################################

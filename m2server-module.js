@@ -249,6 +249,7 @@ var M2Server = function(overrideOptions) {
     };
 
     var spawnSchroot = function(clientID, cmd){
+        var spawn = require('child_process').spawn;
             /*
                Starting M2 in a secure way requires several steps:
                1. cgexec adds our process to two cgroups that create_user.pl created.

@@ -114,7 +114,7 @@ var M2Server = function(overrideOptions) {
 
     var runShellCommand = function(cmd, callbackFcn) {
         // runs a command, and calls the callbackFnc with the output from stdout
-
+	console.log("XXX "+cmd);
         require('child_process').exec(cmd, function(error, stdout, stderr) {
             //console.log("runShellCommand result:" + stdout);
             callbackFcn(stdout);
@@ -194,6 +194,8 @@ var M2Server = function(overrideOptions) {
                      below upon entering the schroot.
                   -b is the begin flag.
                 */
+                logClient(clientID,'sudo -u ' + clients[clientID].systemUserName +
+                    ' schroot -c ' + clients[clientID].schrootType + ' -n ' + clients[clientID].schrootName + ' -b');
                 require('child_process').exec('sudo -u ' + clients[clientID].systemUserName +
                     ' schroot -c ' + clients[clientID].schrootType + ' -n ' + clients[clientID].schrootName + ' -b', function() { 
                         // write cookie to /etc/clientID, it is needed for curl in open calls
@@ -232,7 +234,8 @@ var M2Server = function(overrideOptions) {
             */
             var m2 = spawn('sudo', ['cgexec', '-g', 'cpu,memory:' + clients[clientID].systemUserName,
                     'sudo', '-u', clients[clientID].systemUserName, 'nice', 'schroot', '-c', clients[clientID].schrootName,
-                                    '-u', clients[clientID].systemUserName, '-d', '/home/m2user/', '-r', 'M2'
+                                    '-u', clients[clientID].systemUserName, '-d', '/home/m2user/', '-r', '--', 
+				    'bash' ,'-c', 'export\ A=3\;\ M2'
             ]);
         } else {
             m2 = spawn('M2');

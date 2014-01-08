@@ -238,11 +238,13 @@ Instructors and other users can create their own tutorials for use with \tryM2.
 A \M2 package, {\tt TryMacaulay2} is provided to help with this process.  
 First, you write your tutorial in \M2's {\it SimpleDoc} format, which includes example \M2 code.
 Then, run the \M2 command script {\tt makeTutorial} to create an html document, and finally 
-load this into your {\tt running web.macaulay2.com} session.  Iterate this process
+load this into your {\tt running web.macaulay2.com} session using the {\tt uploadTutorial} button at the bottom of the tutorial list.
+You will be prompted for the  html document which the {\tt makeTutorial} script created.
+Iterate this process
 to improve your tutorial.
 
 Once satisfied with the tutorial, make it available to your students either as a file on the web,
-or have them download the file.  They then load this tutorial into their {\tt running web.macaulay2.com} session.
+or have them download the file.  They then load this tutorial into their {\tt running web.macaulay2.com} session using the {\tt uploadTutorial} button as well.
 
 The following steps to create a tutorial are also documented in the package {\tt TryMacaulay2}.
 \begin{enumerate}
@@ -251,11 +253,12 @@ The following steps to create a tutorial are also documented in the package {\tt
 \item In the {\it Home} screen in \tryM2, click on the {\it Load Tutorial} button, and select this file.
 \end{enumerate}
 
+In the case that you don't have access to \M2 on your local machine, you can upload the  {\it SimpleDoc} file to the server, convert it there and then download it using the \M2 {\tt open} function.
+
 Once your students have a copy of the file {\tt "foo.trym2"}, then can also load the tutorial into their \tryM2
 session, as in the third step.
 
-In the future, we plan to automate this process, allowing instructors to upload tutorials that all \M2 users 
-can view and work through.
+
 
 \section{Internal structure, schroots}
 

@@ -485,10 +485,15 @@ trym2.saveFiles = function(filenames) {
     });
 };
 
+trym2.doUptutorialClick = function() {
+    $("#uptutorial").val("");
+    console.log("Click tutorial: " + typeof($("#uptutorial")));
+    $("#uptutorial").click();
+};
+
 trym2.doUpfileClick = function() {
     $("#upfile").val("");
     console.log("Click file: " + typeof($("#upfile")));
-
     $("#upfile").click();
 };
 
@@ -515,6 +520,54 @@ trym2.saveInteractions = function() {
     xhr.send(JSON.stringify(msg));
     return true;
 };
+
+trym2.uploadTutorial = function() {
+    var obj = this;
+    var file = obj.files[0];
+    var fileName = obj.value.split("\\"); // this is an array
+    fileName = fileName[fileName.length - 1]; // take the last element
+    var formData = new FormData();
+    formData.append('file', file);
+    console.log("process form " + file);
+    console.log(file.size);
+    if (file.size > this.MAXFILESIZE) {
+        $(
+            "<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Your file is too big to upload.  Sorry!</div>")
+            .dialog({
+            dialogClass: 'alert',
+        });
+        return false;
+    }
+
+    $.ajax({
+        url: '/uploadTutorial',
+        type: 'POST',
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        statusCode: {
+            500: function(data) {
+                $(
+                    "<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Uploading failed.</div>")
+                    .dialog({
+                    dialogClass: 'alert'
+                });
+            }
+        },
+        success: function(data) {
+            console.log("Tutorial uploaded successfully!" + data);
+            $("<div class='smallFont'>" + fileName +
+                " has been uploaded and can be used by anybody on this website. You can delete it by clicking on the 'x'.</div>")
+                .dialog({
+                dialogClass: ' alert',
+                title: 'File uploaded'
+            });
+        }
+    });
+    return false;
+}
+
 
 trym2.doUpload = function() {
     var obj = this;
@@ -687,6 +740,8 @@ $(document).ready(function() {
     $("#saveBtn").click(trym2.saveInteractions);
     $("#uploadBtn").click(trym2.doUpfileClick);
     $("#upfile").on('change', trym2.doUpload);
+    $("#uploadTutorialBtn").click(trym2.doUptutorialClick);
+    $("#uptutorial").on('change', trym2.uploadTutorial);
 
     $("#tutorialBtn").click(function() {
         trym2.loadLesson( trym2.tutorialNr, trym2.lessonNr);

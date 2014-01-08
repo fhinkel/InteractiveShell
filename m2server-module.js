@@ -848,6 +848,18 @@ var M2Server = function(overrideOptions) {
         });
     };
 
+    var getListOfTutorials = function(request, response) {
+        var tutorials =  ["tutorials/welcome2.html",
+                "tutorials/getting-started.html",
+                "tutorials/Beginning.html",
+                "tutorials/elementary-groebner.html"
+        ];
+        response.writeHead(200, {
+            "Content-Type": "text/html"
+        });
+        response.end(tutorials);
+    };
+    
     var app = connect()
         .use(connect.logger('dev'))
         .use(connect.favicon())
@@ -868,6 +880,7 @@ var M2Server = function(overrideOptions) {
         .use('/interrupt', interruptAction)
         .use('/restart', restartAction)
         .use('/save', saveAction)
+        .use('/getListOfTutorials', getListOfTutorials)
         .use(unhandled);
     //.use(connect.errorHandler());
 

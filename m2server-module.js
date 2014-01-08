@@ -691,69 +691,12 @@ var M2Server = function(overrideOptions) {
     	response.end();
     };
     
-    var uploadTutorial = function(request, response, next) {
-        assureClient(request, response, function(clientID) {
-            logClient(clientID, "received: /upload");
-            var formidable = require('formidable');
-            var form = new formidable.IncomingForm;            
-            var filename;
-            var temporaryFilename;
-            
-            form.on('file', function(name, file) {
-               var path = "public/tutorials/";
-                filename = path + file.name;
-                temporaryFilename = file.path;
-            });
-            
-            form.on('end', function() {
-	    	    console.log("end received from formidable form");
-                fs.exists(filename, function(exists){
-                  if(exists){
-                     logClient(clientID, "File exists.");
-                     response.writeHead(500, {
-                         "Content-Type": "text/html"
-                     });
-                     response.end('Filename is taken. Choose a different one. Please. Pretty please');
-                  } else {
-                      // I think it is only renamed when the full file arrived
-                      fs.rename(temporaryFilename, filename, function(error) {
-                          if (error) {
-                              logClient(clientID, "Error in renaming file: " + error);
-                              response.writeHead(500, {
-                                  "Content-Type": "text/html"
-                              });
-                              response.end('rename failed: ' + error);
-                          } else {
-                            response.writeHead(200, {
-                                "Content-Type": "text/html"
-                            });
-                            response.end('upload complete!');
-                             if (options.SCHROOT){
-                               setOwnershipToUser(clientID, filename);
-                             }
-                          }
-                      });
-                  }
-                });
-            });
-
-            form.on('error', function() {
-                logClient(clientID, 'received error in upload: ' );
-                response.writeHead(500, {
-                    "Content-Type": "text/html"
-                });
-                response.end('upload not complete!');
-            });
-
-            form.parse(request);
-        });
-    };
-
     var setOwnershipToUser = function(clientID, filename){
-                                 runShellCommand("chown " + clients[clientID].systemUserName + ":" + clients[clientID].systemUserName + " " + filename, function(e) {console.log("Chown: " + e);});
+        runShellCommand("chown " + clients[clientID].systemUserName + ":" + clients[clientID].systemUserName + " " 
+            + filename, function(e)          {console.log("Chown: " + e);});
     };
 
-    var uploadM2Package = function(request, response, next) {
+    var uploadFile = function(request, response, next) {
         assureClient(request, response, function(clientID) {
             logClient(clientID, "received: /uploadTutorial");
             var formidable = require('formidable');
@@ -864,8 +807,7 @@ var M2Server = function(overrideOptions) {
         .use(connect.logger('dev'))
         .use(connect.favicon())
         .use(connect.static('public'))
-        .use('/upload', uploadM2Package)
-        .use('/uploadTutorial', uploadTutorial)
+        .use('/upload', uploadFile)
         .use('/var/folders', connect.static('/var/folders'))
         .use('/usr/local/var/lib/schroot/mount', connect.static('/usr/local/var/lib/schroot/mount'))
         .use('/M2', connect.static('/M2'))

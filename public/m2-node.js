@@ -272,17 +272,29 @@ trym2.appendTutorialToAccordion = function(title, lessons, index) {
         div.append(content).addClass(
             "ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom");
     }
-    $("#accordion").append(title).append(div);
+    $("#uploadTutorialBtn").before(title);
+    $("#uploadTutorialBtn").before(div);
+}
+
+trym2.appendUploadTutorialButtonToAccordion = function(){
+   var h3 = $("<h3>");
+   h3.prop("id", "uploadTutorialBtn");
+   h3.html("Upload Tutorial");
+   h3.click(trym2.doUptutorialClick);
+   h3.addClass(
+        "ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons");
+   $("#accordion").append(h3);
 }
 
 trym2.makeAccordion = function(tutorials) {
     $("#home").append("<div id=\"accordion\"></div>");
-
+    trym2.appendUploadTutorialButtonToAccordion();
     for (var i = 0; i < tutorials.length; i++) {
         var title = tutorials[i].title; //this is an <h3>
         var lessons = tutorials[i].lessons;
         trym2.appendTutorialToAccordion(title, lessons, i);
     };
+
     $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset");
     $(".menuTitle").on("click", {lessonIdNr: "0"}, trym2.showLesson);
 };
@@ -747,7 +759,6 @@ $(document).ready(function() {
     $("#saveBtn").click(trym2.saveInteractions);
     $("#uploadBtn").click(trym2.doUpfileClick);
     $("#upfile").on('change', trym2.doUpload);
-    $("#uploadTutorialBtn").click(trym2.doUptutorialClick);
     $("#uptutorial").on('change', trym2.uploadTutorial);
 
     $("#tutorialBtn").click(function() {

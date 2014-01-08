@@ -680,7 +680,7 @@ trym2.getTutorialNames = function() {
           success: function(data) {
               console.log("Obtaining list of tutorials successful: " + data);
               
-              var tutorialNames =  data.split(",");
+              var tutorialNames =  JSON.parse(data);
               
               $("#home").append("<div id=\"accordion\"></div>");
 

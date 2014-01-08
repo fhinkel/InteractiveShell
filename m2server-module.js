@@ -857,7 +857,7 @@ var M2Server = function(overrideOptions) {
         response.writeHead(200, {
             "Content-Type": "text/html"
         });
-        response.end(tutorials.toString());
+        response.end(JSON.stringify(tutorials));
     };
     
     var app = connect()

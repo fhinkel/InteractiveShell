@@ -662,6 +662,36 @@ trym2.startEventSource = function() {
     }
 };
 
+trym2.getTutorialNames = function() {
+    console.log("Obtain tutorial names.");
+
+    $.ajax({
+          url: '/getListOfTutorials',
+          type: 'GET',
+          statusCode: {
+              500: function(data) {
+                  $(
+                      "<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Obtaining list of tutorials failed.</div>")
+                      .dialog({
+                      dialogClass: 'alert'
+                  });
+              }
+          },
+          success: function(data) {
+              console.log("Obtaining list of tutorials successful: " + data);
+              
+              var tutorialNames =  data.split(",");
+              
+              $("#home").append("<div id=\"accordion\"></div>");
+
+              trym2.makeTutorialsList(0, tutorialNames, function() {
+                  trym2.makeAccordion(trym2.tutorials);
+              });
+          }
+      });
+      return false;
+};
+
 
 $(document).ready(function() {
     // Init procedures for right hand side.
@@ -765,15 +795,7 @@ $(document).ready(function() {
         trym2.postMessage('/chat', code)();
     });
 
-    var tutorialNames = ["tutorials/welcome2.html",
-            "tutorials/getting-started.html",
-            "tutorials/Beginning.html",
-            "tutorials/elementary-groebner.html"
-    ];
-    $("#home").append("<div id=\"accordion\"></div>");
+    trym2.getTutorialNames();
 
-    trym2.makeTutorialsList(0, tutorialNames, function() {
-        trym2.makeAccordion(trym2.tutorials);
-    });
     trym2.navBar.activate("home"); 
 });

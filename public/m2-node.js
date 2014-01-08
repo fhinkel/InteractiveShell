@@ -533,7 +533,7 @@ trym2.uploadTutorial = function() {
     console.log("Process file for tutorial upload:" + fileName);    
 
     var reader = new FileReader();
-    reader.readAsText(file, "UTF-8");
+    reader.readAsText(file);
 
     // Closure to capture the file information.
     reader.onload = function(event) {
@@ -549,7 +549,6 @@ trym2.uploadTutorial = function() {
         trym2.appendTutorialToAccordion(title, lessons, lastIndex);
     };
     
-    reader.readAsDataURL(file);
 
     return false;
 }

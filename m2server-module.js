@@ -792,15 +792,18 @@ var M2Server = function(overrideOptions) {
     };
 
     var getListOfTutorials = function(request, response) {
-        var tutorials =  ["tutorials/welcome2.html",
-                "tutorials/getting-started.html",
-                "tutorials/Beginning.html",
-                "tutorials/elementary-groebner.html"
-        ];
-        response.writeHead(200, {
-            "Content-Type": "text/html"
+        fs.readdir("public/tutorials/", function(err, files){
+           var tutorials = files.map(function(filename){
+               return "tutorials/" + filename;
+           });
+           console.log("Files: "+tutorials);
+           response.writeHead(200, {
+               "Content-Type": "text/html"
+           });
+           response.end(JSON.stringify(tutorials));
+        
         });
-        response.end(JSON.stringify(tutorials));
+        
     };
     
     var app = connect()

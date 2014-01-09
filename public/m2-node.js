@@ -559,25 +559,18 @@ trym2.uploadTutorial = function() {
     
         var lessons = newTutorial.lessons;
         trym2.appendTutorialToAccordion(title, lessons, lastIndex);
-        trym2.insertDeleteButton();
+        trym2.insertDeleteButtonAtLastTutorial();
     };
-    
-
     return false;
 }
 
-trym2.insertDeleteButton = function() {
+trym2.insertDeleteButtonAtLastTutorial = function() {
    var lastTitle = $("#uploadTutorialBtn").prev().prev();
-   // lastTitle.prepend('<span class="ui-dialog-close ui-icon ui-accordion-header-icon ui-icon-triangle-1-e"></span>');
    var lastDiv = $("#uploadTutorialBtn").prev();
    var deleteButton = $("<span>");
    deleteButton.addClass("close-icon ui-icon ui-icon-close");
-   //var innerSpan = $("<span>");
-   //innerSpan.addClass("ui-icon ui-icon-closethick");
-   //deleteButton.append(innerSpan);
    lastTitle.prepend(deleteButton);
    deleteButton.click(trym2.removeTutorial(lastTitle,lastDiv,deleteButton));
-
 }
 
 trym2.removeTutorial = function(title, div, button){

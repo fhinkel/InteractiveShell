@@ -21,18 +21,37 @@
 
 newPackage(
         "DocConverter",
-        Version => "0.1", 
-        Date => "",
-        Authors => {{Name => "Mike Stillman, Franziska Hinkelmann", 
-                  Email => "hinkelmann.1@mbi.osu.edu", 
-                  HomePage => ""}},
-        Headline => "Convert simpleDOC to HTML for TryM2 tutorials",
-        DebuggingMode => true
+        Version => "0.5", 
+        Date => "Jan 2014",
+        Authors => {
+            {
+                Name => "Mike Stillman", 
+                Email => "mike@math.cornell.edu", 
+                HomePage=>"http://www.math.cornell.edu/~mike"
+                },
+            {
+                Name => "Franziska Hinkelmann", 
+                Email => "fhinkel@gmail.com"
+                },
+            {
+                Name => "Lars Kastner", 
+                Email => "", 
+                HomePage=>""
+                }
+            },
+        Headline => "Convert tutorial and simpleDOC formats to HTML for TryM2 tutorials",
+        DebuggingMode => true,
+        PackageExports => {"Text"}
         )
 
-needsPackage "Text"
-
-export {convert, keywordRE, descriptionRE, tutorialToSimpleDoc}
+export {
+     convert,
+     convertSimpledocToHtml,
+     convertContents,
+     tutorialToSimpleDoc,
+     simpledocExample,
+     tutorialExample
+     }
 
 keywordRE = ///^\s*Key|^\s*Headline|^\s*Description///
 descriptionRE = ///^\s*Text|^\s*Code|^\s*Example///
@@ -81,7 +100,7 @@ toHtml String := (s) ->  (
   s = replaceWithValueOf s;
   --print s;
   s = html TEX s;
-  s | "<BR>\n"
+  s | "<br/>\n"
   )
 
 toHtmlPara = method()
@@ -96,17 +115,78 @@ printHead = method()
 printHead String := title -> (
      s :=  "<html>\n";
      s = s |  "  <head>\n";
-     s = s |  "\n    <title>\n";
-     s = s |   title;
-     s = s | "\n";
+     s = s |  "    <title>\n";
+     s = s |  title | "\n";
      s = s |  "    </title>\n";
      s = s |  "  </head>\n";
      s = s |  "<body>\n"  
      )
 
-convert = method()
-convert String := (filename) -> (
-     contents := lines get filename;
+processTextSection = (lines) -> (
+     -- Each line should be either completely blank, or
+     -- have some text.  Each contiguous group of non-empty lines
+     -- will be wrapped in a <p></p>.
+     -- A string is returned.
+     ----return toHtmlPara concatenate between("\n", lines); -- all lines in a text section
+     -- this next part is new.  Is it valid?  8 Jan 2014 MES
+     stripSpace := apply(lines, line -> replace("^\\s*", "", line));
+     groups := sublists(stripSpace,
+          line -> #line > 0,
+          toList,
+          identity);
+     concatenate apply(groups, g -> if not instance(g, List) 
+          then ""
+          else (   "<p>\n"
+                 | concatenate apply(g, g1 -> "    " | html TEX g1 | "\n") 
+                 | "</p>\n")
+     ))
+
+initialSpaceSize = (line) -> (
+     -- Returns the number of spaces at the beginning of the line.
+     -- NO tabs are allowed in line!!
+     initialSpace := regex("^ *", line);
+     initialSpace#0#1
+     )
+processExampleSection = (lines) -> (
+     -- Each line should be either completely blank, or
+     -- have some text.  Each line with more indentation than the
+     -- previous is appended to a <code> block
+     -- A string is returned.
+     sizes := lines / initialSpaceSize;
+     minsize := min sizes;
+     if minsize != sizes#0 then error "The first line of an Example section should have the
+        smallest indentation of all lines in the section.";
+     lines = apply(lines, line -> substring(line, minsize));
+     pos := positions(sizes, i -> i == minsize);
+     pos = append(pos, #lines);
+     concatenate for i from 0 to #pos - 2 list (
+          -- we make a single <code>m2code</code> from each of these
+          -- where m2code might be several lines, in which case it is:
+          -- <code>line1<br/>
+          -- line2<br/>
+          -- line3</code><br/>
+          first := pos#i;
+          last := pos#(i+1)-1;
+          if first == last then (
+               "<code>" | lines#first | "</code><br/>\n"
+          ) else (
+               "<code>" | 
+               concatenate (for j from first to last-1 list (lines#j | "<br/>\n"))
+               | lines#last | "</code><br/>\n"
+               )
+          )
+     )
+
+processSUBSECTION = (lines) -> (
+     -- lines should be of length 1 here.
+     concatenate for line in lines list (
+       "<h4>" | replace("^ *", "", line) | "</h4>\n"
+       )
+     )
+
+convertContents = method()
+convertContents String := (docstring) -> (
+     contents := lines docstring;
      contents = select(contents, s -> not match(///^\s*--///, s));
      M := groupLines(contents, keywordRE);
      --MKey := first select(M, x -> match(///^\s*Key///, first x));
@@ -124,11 +204,9 @@ convert String := (filename) -> (
 	       -- Keyword is: Text, Code, Example (that is it at the moment)
 	       k := first m;
 	       if k === "Text" then
-	          toHtmlPara concatenate between("\n", m#1) -- all lines in a text section
-	       else if k === "Example" then (
-              m1 := select(last m, x -> not match(///^\s*$///, x));
-              concatenate apply(m1, x -> "        <code>"| replace(///^\s*///, "", x) |"</code><br>\n")
-            )
+                processTextSection m#1
+	       else if k === "Example" then 
+                processExampleSection m#1
 	       else if k === "Code" then (
             if match( ///^\s*SUBSECTION///, first last m) then (
               s := "";
@@ -147,6 +225,12 @@ convert String := (filename) -> (
       s | cc | "    </div>\n  </body>\n</html>\n"
      )
 
+convert = method()
+convert String := (filename) -> convertContents get filename
+
+
+convertSimpledocToHtml = method()
+convertSimpledocToHtml String := (docstring) -> convertContents docstring
 
 mat := (pat,line) -> class line === String and match(pat,line)
 
@@ -204,13 +288,171 @@ tutorialToSimpleDoc String := (x) -> (
           )
      )
 
+simpledocExample = ///Keyword
+    "unused"
+Headline
+    My wonderful tutorial (by F. Bar)
+Description
+    Code
+        SUBSECTION "Name of the first lesson in the tutorial"
+    Text
+        Some text, allowing TeX, and things like {\tt ring}.
+
+        A blank line in a Text section places the parts in separate paragraphs.
+        Here is a second line for this paragraph.
+    Example
+        R = ZZ/32003
+        f = i -> i^3
+        g = (x) -> (
+             x^2-x-1
+             )  -- these 3 lines will be placed in one clickable button.
+    Code
+        SUBSECTION "Name of the second lesson in the tutorial"
+    Text
+        Some more text, and perhaps some math like $x^2-x-1$.
+        Or whatever.
+    Example
+        S = QQ[a..d]
+///
+
+doc ///
+Key
+  DocConverter
+Headline
+  Conversion from simpledoc format to the html format of web.macaulay2.com
+Description
+  Text
+    Tutorials for use with the web based Macaulay2, at
+    web.macaulay2.com, are required to be in a special html format.
+    This package is able to translate simpledoc and then Macaulay2
+    tutorial format, to the required html format, suitable for
+    uploading to web.macaulay2.com/submit.
+    
+    For example, here is an example/template simpledoc file that you
+    may base your own examples from:
+
+  Example
+    print simpledocExample;
+  Text
+    The command @TO "convert"@ will create an html file named:
+    filename.html, which may be uploaded to web.macaulay2.com.
+  Example
+    --convert "filename.simpledoc"
+  Text
+    The workhorse for the convert routine is @TO "convertContents"@,
+    which takes a string which is in simpledoc and returns a string,
+    which is html.
+  Example
+    convertContents simpledocExample
+  Text
+    You may then write this to a file "eg.html" in the usual way.
+  Pre
+    "eg.html" << convertContents simpledocExample << close
+  Text
+    There are a number of tutorials written for Macaulay2 in an older,
+    not well documented format.  For example:
+  Example
+     print tutorialExample;
+  Text
+    Use @TO "tutorialToSimpleDoc"@ to translate to simpledoc, and then
+    @TO "convertContents"@ to convert it to the html format required
+    at web.macaulay2.com
+Caveat
+  Not all features of the simpledoc format are available, see 
+  @TO"convertContents"@.
+SeeAlso
+  SimpleDoc
+///
+
+doc ///
+Key
+    convertSimpledocToHtml
+Headline
+    Convert simpledoc format to html for tutorials
+Usage
+    convertSimpledocToHtml filename
+Inputs
+    filename:String
+Outputs
+    :String
+      The html of the tutorial, suitable for use as a tutorial at web.macaulay2.com
+Description
+  Text
+    The input file is expected to be in @TO "SimpleDoc"@ format.
+    However, not all such files are accepted.  Here is a template of
+    what is allowed and expected:
+  Pre
+    Keyword
+        "unused"
+    Headline
+        Name of the tutorial (by F. Bar)
+    Description
+        Code
+            SUBSECTION "Name of the first lesson in the tutorial"
+        Text
+            Some text, allowing TeX, and things like {\tt ring}.
+            
+            A blank line in a Text section places the parts in separate paragraphs.
+        Example
+            R = ZZ/32003
+            f = i -> i^3
+            g = (x) -> (
+                 x^2-x-1
+                 )  -- these 3 lines will be placed in one clickable button.
+        Code
+            SUBSECTION "Name of the second lesson in the tutorial"
+        Text
+            ...
+        Example
+            ...
+        ...
+  Text
+    Here is an example input string, useful as an example or template.
+
+  Example
+    print simpledocExample;
+  Text
+
+    The output format is html, which may be used as a tutorial at web.macaulay2.com.
+    Here is an example output.
+
+  Example
+    print convertSimpledocToHtml simpledocExample;
+  Text
+
+    The following keywords, allowed in simpledoc documentation, are ignored:
+    {\bf Key,Usage, Inputs, Outputs, Consequences, SeeAlso, Subnodes, Caveat} 
+    are all ignored.
+
+SeeAlso
+  "SimpleDoc"
+///
+
 end
 
+// test of processTextSection
+restart
+debug loadPackage "DocConverter"
+contents = lines simpledocExample
+contents = select(contents, s -> not match(///^\s*--///, s));
+M = groupLines(contents, keywordRE);
+groups = groupLines(M#2#1, descriptionRE)
+group = groups#1#1
+processTextSection group
+group = groups#2#1
+processExampleSection group
+
+s = ///
+         Your first input prompt will be {\tt "i1 : "}.  In response to the prompt,
+         type {\tt 2+2} and press return.  The expression you entered will be
+         evaluated - no punctuation is required at the end of the line.
+///
 restart
 loadPackage "DocConverter"
---L = convert "beginningM2.simpledoc";
-L = convert "tutorials/gettingStarted.simpledoc";
+L = convert "gettingStarted.simpledoc";
 "public/tutorials/getting-started.html" << L << close;
+
+
 fn = "Beginning.html"
 fn << L << close
 get ("!open " | fn)

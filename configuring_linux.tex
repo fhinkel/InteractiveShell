@@ -262,14 +262,6 @@ sudo apt-get install debootstrap gettext doxygen po4a autoconf groff libboost-de
    libpam0g-dev libboost-iostreams-dev libtool
 \end{verbatim}
 
-For modifying schroot
-
-\begin{verbatim}
-sudo apt-get install g++
-   libboost-regex-dev libboost-filesystem-dev
-sudo emerge debootstrap gettext boost lockev util-linux btrfs-progs lvm2 pam xz-utils\ 
-   groff doxygen graphviz po4a gettext cppunit debianutils dchroot libintl aufs-util
-\end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Installing schroot from source
@@ -311,99 +303,9 @@ tmpfs    /tmpetc  tmpfs  nodev,nouid  0  0
 none  /etc  aufs  br:$FULL_MOUNT_PATH/tmpfs=rw:/etc=ro  0  0
 \end{verbatim}
 
-In order to do so:
-
-\begin{verbatim}
-git clone git://git.debian.org/git/buildd-tools/schroot schroot-source
-\end{verbatim}
-
-If all packages from the start are installed this works.
-Now for the editing
-
-\begin{verbatim}
-vim schroot-source/bin/schroot-mount/schroot-mount-main.cc
-\end{verbatim}
-
-Go to the action\_mount method and after the line
-
-\begin{verbatim}
-std::string directory = resolve_path(entry.directory);
-\end{verbatim}
-
-insert the following
-
-\begin{verbatim}
-std::string full_path = opts->mountpoint;
-std::string eopts = entry.options;
-std::string fp = "$FULL_MOUNT_PATH";
-size_t start = eopts.find(fp);
-while(start != std::string::npos){
-   eopts.replace(start, fp.length(), full_path);
-   start = eopts.find(fp);
-}
-entry.options = eopts;
-\end{verbatim}
-
 
 Now you are done with this part.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% The path of the WWWBROWSER
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{The path of the WWWBROWSER}
-Edit the following file
-
-\begin{verbatim}
-vim schroot-source/sbuild/sbuild-auth.cc
-\end{verbatim}
-and after the lines with
-
-\begin{verbatim}
-if (this->uid == 0)
-    minimal.add(std::make_pair("PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/bin/X11"));
-  else
-    minimal.add(std::make_pair("PATH", "/usr/local/bin:/usr/bin:/bin:/M2/bin"));
-\end{verbatim}
-insert the line
-
-\begin{verbatim}
- minimal.add(std::make_pair("WWWBROWSER", "open-www"));
-\end{verbatim}
-
-Note: In the 'else'-block we changed the PATH according to our need.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Making and installing
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Making and installing}
-To make and install the changes do the following:
-\begin{verbatim}
-cd schroot-source
-./bootstrap
-./configure
-make -j8
-sudo make install
-\end{verbatim}
-
-Gentoo: At this stage, schroot needs to be compiled as C++11. Do
-\begin{verbatim}
-./configure CXX="g++4.8.0 -std=c++11"
-\end{verbatim}
-
-Note: Possibly the ./bootstrap yields errors with some hint at 'm4\_pattern\_allow'. Then one has to add the following line at the top of the configure.ac:
-\begin{verbatim}
-m4_pattern_allow([AM_PATH_CPPUNIT]);
-\end{verbatim}
-and later remove the line that the configure process complains about in the configure file.
-
-Note: To update it should suffice to pull the schroot-source git and then run ./configure and make again. Hopefully git is able to merge our changes.
-
-Gentoo: In Gentoo everything should run without throwing any erros. However the file /etc/pam.d/schroot needs to be modified: It should look like
-\begin{verbatim}
-auth    include         system-auth
-account include         system-auth
-session include         system-auth
-\end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% The master

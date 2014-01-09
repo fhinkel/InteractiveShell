@@ -331,7 +331,9 @@ trym2.appendLoadTutorialTitleToAccordion = function(){
 trym2.appendInstructionsToAccordion = function(){
    console.log("Adding Instructions.");
    var instructions = $("<div>");
-   instructions.html("Rablabla bla. Bla? Blubb!");
+   $.get("uploadTutorialHelp.txt", function(content){
+      instructions.append(document.createTextNode(content));
+   });
    instructions.prop("id", "loadTutorialInstructions");
    instructions.addClass(
                "ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom").hide();

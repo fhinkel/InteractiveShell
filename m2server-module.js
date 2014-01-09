@@ -786,16 +786,27 @@ var M2Server = function(overrideOptions) {
             });
         });
     };
+    
+    var moveWelcomeTutorialToBeginning = function(tutorials, firstTutorial) {
+        var index = tutorials.indexOf(firstTutorial);
+        if (index >- 1) {
+            tutorials.splice(index,1);
+            tutorials.unshift(firstTutorial);
+        }
+        return tutorials;
+    };
 
     var getListOfTutorials = function(request, response) {
         fs.readdir("public/tutorials/", function(err, files){
            var tutorials = files.map(function(filename){
                return "tutorials/" + filename;
            });
-           console.log("Files: "+tutorials);
+           console.log("Files: " + tutorials);
            response.writeHead(200, {
                "Content-Type": "text/html"
            });
+           
+           tutorials = moveWelcomeTutorialToBeginning(tutorials, "tutorials/welcome2.html");
            response.end(JSON.stringify(tutorials));
         
         });

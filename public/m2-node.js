@@ -279,7 +279,7 @@ trym2.appendTutorialToAccordion = function(title, lessons, index) {
 trym2.appendUploadTutorialButtonToAccordion = function(){
    var h3 = $("<h3>");
    h3.prop("id", "uploadTutorialBtn");
-   h3.html("Upload Tutorial");
+   h3.html("Load Tutorial");
    h3.click(trym2.doUptutorialClick);
    h3.addClass(
         "ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons");
@@ -570,7 +570,7 @@ trym2.insertDeleteButtonAtLastTutorial = function() {
    var deleteButton = $("<span>");
    deleteButton.addClass("close-icon ui-icon ui-icon-close");
    lastTitle.prepend(deleteButton);
-   deleteButton.click(trym2.removeTutorial(lastTitle,lastDiv,deleteButton));
+   deleteButton.click(trym2.removeTutorial(lastTitle, lastDiv, deleteButton));
 }
 
 trym2.removeTutorial = function(title, div, button){
@@ -580,7 +580,6 @@ trym2.removeTutorial = function(title, div, button){
       title.remove();
    }
 }
-
 
 trym2.doUpload = function() {
     var obj = this;
@@ -696,7 +695,6 @@ trym2.importTutorials = function() {
       });
       return false;
 };
-
 
 $(document).ready(function() {
     // Init procedures for right hand side.

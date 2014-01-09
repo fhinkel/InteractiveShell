@@ -808,9 +808,7 @@ var M2Server = function(overrideOptions) {
            
            tutorials = moveWelcomeTutorialToBeginning(tutorials, "tutorials/welcome2.html");
            response.end(JSON.stringify(tutorials));
-        
-        });
-        
+        });      
     };
     
     var app = connect()

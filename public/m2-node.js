@@ -272,23 +272,75 @@ trym2.appendTutorialToAccordion = function(title, lessons, index) {
         div.append(content).addClass(
             "ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom");
     }
-    $("#uploadTutorialBtn").before(title);
-    $("#uploadTutorialBtn").before(div);
+    $("#loadTutorialMenu").before(title);
+    $("#loadTutorialMenu").before(div);
 }
 
-trym2.appendUploadTutorialButtonToAccordion = function(){
-   var h3 = $("<h3>");
-   h3.prop("id", "uploadTutorialBtn");
-   h3.html("Load Tutorial");
-   h3.click(trym2.doUptutorialClick);
-   h3.addClass(
+trym2.appendLoadTutorialMenuToAccordion = function(){
+   trym2.appendLoadTutorialTitleToAccordion();
+   trym2.appendInstructionsToAccordion();
+   trym2.addExpandLoadTutorialInstructionsButton();
+   trym2.addLoadTutorialButton();
+}
+
+trym2.addLoadTutorialButton = function(){
+   console.log("Adding buttons.");
+   var loadTutorialButton = $("<a>");
+   loadTutorialButton.prop("id", "loadTutorialButton");
+   loadTutorialButton.html("Load Tutorial");
+   $("#loadTutorialMenu").append(loadTutorialButton);
+   $("#loadTutorialButton").click(trym2.doUptutorialClick);
+}
+
+trym2.addExpandLoadTutorialInstructionsButton = function(){
+   var expandButton = $("<span>");
+   expandButton.addClass("ui-icon ui-accordion-header-icon ui-icon-triangle-1-e");
+   expandButton.click(function() {
+      var title = $("#loadTutorialMenu");
+      var instructions = $("#loadTutorialInstructions");
+      expandButton.toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s");
+      title.toggleClass(
+         "ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top");
+      instructions.slideToggle(function() {
+         // Needs improvement! Possibly do this synchronously with the slide toggle,
+         // i.e. not as a callback.
+         var y = $(this).position().top;
+         var height = parseInt($("#home").css('height'), 10);
+         var total_height = parseInt($(this).css('height'), 10) + 50;
+         if (height - y < total_height) {
+            var scroll = total_height - height + y;
+            $("#home").animate({
+            scrollTop: ($("#home").scrollTop() + scroll)
+            }, 400);
+         }
+      });
+   });
+   $("#loadTutorialMenu").append(expandButton);
+
+}
+
+trym2.appendLoadTutorialTitleToAccordion = function(){
+   console.log("Adding Title.");
+   var title = $("<h3>");
+   title.prop("id", "loadTutorialMenu");
+   title.addClass(
         "ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons");
-   $("#accordion").append(h3);
+   $("#accordion").append(title);
+}
+
+trym2.appendInstructionsToAccordion = function(){
+   console.log("Adding Instructions.");
+   var instructions = $("<div>");
+   instructions.html("Rablabla bla. Bla? Blubb!");
+   instructions.prop("id", "loadTutorialInstructions");
+   instructions.addClass(
+               "ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom").hide();
+   $("#accordion").append(instructions);
 }
 
 trym2.makeAccordion = function(tutorials) {
     $("#home").append("<div id=\"accordion\"></div>");
-    trym2.appendUploadTutorialButtonToAccordion();
+    trym2.appendLoadTutorialMenuToAccordion();
     for (var i = 0; i < tutorials.length; i++) {
         var title = tutorials[i].title; //this is an <h3>
         var lessons = tutorials[i].lessons;
@@ -565,8 +617,8 @@ trym2.uploadTutorial = function() {
 }
 
 trym2.insertDeleteButtonAtLastTutorial = function() {
-   var lastTitle = $("#uploadTutorialBtn").prev().prev();
-   var lastDiv = $("#uploadTutorialBtn").prev();
+   var lastTitle = $("#loadTutorialMenu").prev().prev();
+   var lastDiv = $("#loadTutorialMenu").prev();
    var deleteButton = $("<span>");
    deleteButton.addClass("close-icon ui-icon ui-icon-close");
    lastTitle.prepend(deleteButton);

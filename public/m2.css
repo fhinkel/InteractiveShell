@@ -37,6 +37,13 @@ body {
 	
 }
 
+.close-icon {
+    position:absolute;
+    margin-top:-8px;
+    top:50%;
+    right:0.5em;
+}
+
 .left {
 	float: left;
 }

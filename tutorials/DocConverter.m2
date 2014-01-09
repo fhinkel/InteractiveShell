@@ -46,11 +46,9 @@ newPackage(
 
 export {
      convert,
-     convertSimpledocToHtml,
-     convertContents,
-     tutorialToSimpleDoc,
-     simpledocExample,
-     tutorialExample
+     simpledocExample
+     --tutorialToSimpleDoc,
+     --tutorialExample
      }
 
 keywordRE = ///^\s*Key|^\s*Headline|^\s*Description///
@@ -226,11 +224,10 @@ convertContents String := (docstring) -> (
      )
 
 convert = method()
-convert String := (filename) -> convertContents get filename
-
-
-convertSimpledocToHtml = method()
-convertSimpledocToHtml String := (docstring) -> convertContents docstring
+convert String := (filename) -> (
+    result := convertContents get (filename|".simpledoc");
+    (filename|".html") << result << close
+    )
 
 mat := (pat,line) -> class line === String and match(pat,line)
 
@@ -324,88 +321,36 @@ Description
   Text
     Tutorials for use with the web based Macaulay2, at
     web.macaulay2.com, are required to be in a special html format.
-    This package is able to translate simpledoc and then Macaulay2
-    tutorial format, to the required html format, suitable for
-    uploading to web.macaulay2.com/submit.
+    This package is able to translate simpledoc
+    format, to the required html format, suitable for use on web.macaulay2.com.
     
-    For example, here is an example/template simpledoc file that you
-    may base your own examples from:
-
-  Example
-    print simpledocExample;
-  Text
-    The command @TO "convert"@ will create an html file named:
-    filename.html, which may be uploaded to web.macaulay2.com.
-  Example
-    --convert "filename.simpledoc"
-  Text
-    The workhorse for the convert routine is @TO "convertContents"@,
-    which takes a string which is in simpledoc and returns a string,
-    which is html.
-  Example
-    convertContents simpledocExample
-  Text
-    You may then write this to a file "eg.html" in the usual way.
-  Pre
-    "eg.html" << convertContents simpledocExample << close
-  Text
-    There are a number of tutorials written for Macaulay2 in an older,
-    not well documented format.  For example:
-  Example
-     print tutorialExample;
-  Text
-    Use @TO "tutorialToSimpleDoc"@ to translate to simpledoc, and then
-    @TO "convertContents"@ to convert it to the html format required
-    at web.macaulay2.com
-Caveat
-  Not all features of the simpledoc format are available, see 
-  @TO"convertContents"@.
+    For an example, suitable for basing your own tutorials on, see @TO "convert"@.
 SeeAlso
   SimpleDoc
 ///
 
 doc ///
 Key
-    convertSimpledocToHtml
+    convert
 Headline
     Convert simpledoc format to html for tutorials
 Usage
-    convertSimpledocToHtml filename
+    convert basename
 Inputs
-    filename:String
+    basename:String
+      the file to be converted should be named {\tt basename.simpledoc}
 Outputs
     :String
-      The html of the tutorial, suitable for use as a tutorial at web.macaulay2.com
+      the filename, {\tt basename.html}, suitable for use as a 
+      tutorial at @HREF "http://web.macaulay2.com"@.
+Consequences
+  Item
+    The file {\tt basename.html} is created.
 Description
   Text
     The input file is expected to be in @TO "SimpleDoc"@ format.
     However, not all such files are accepted.  Here is a template of
     what is allowed and expected:
-  Pre
-    Keyword
-        "unused"
-    Headline
-        Name of the tutorial (by F. Bar)
-    Description
-        Code
-            SUBSECTION "Name of the first lesson in the tutorial"
-        Text
-            Some text, allowing TeX, and things like {\tt ring}.
-            
-            A blank line in a Text section places the parts in separate paragraphs.
-        Example
-            R = ZZ/32003
-            f = i -> i^3
-            g = (x) -> (
-                 x^2-x-1
-                 )  -- these 3 lines will be placed in one clickable button.
-        Code
-            SUBSECTION "Name of the second lesson in the tutorial"
-        Text
-            ...
-        Example
-            ...
-        ...
   Text
     Here is an example input string, useful as an example or template.
 
@@ -413,13 +358,17 @@ Description
     print simpledocExample;
   Text
 
-    The output format is html, which may be used as a tutorial at web.macaulay2.com.
+    The output format is html, which may be used as a tutorial at @HREF"http://web.macaulay2.com"@.
     Here is an example output.
 
   Example
-    print convertSimpledocToHtml simpledocExample;
+    "mytutorial.simpledoc" << simpledocExample << close;
+    convert "mytutorial"
+    get "mytutorial.html"
   Text
-
+    The resulting html file can be uploaded at @HREF"http://web.macaulay2.com"@, by clicking the
+    "Load Tutorial" link at that site.
+    
     The following keywords, allowed in simpledoc documentation, are ignored:
     {\bf Key,Usage, Inputs, Outputs, Consequences, SeeAlso, Subnodes, Caveat} 
     are all ignored.
@@ -474,33 +423,6 @@ X = get "tu_elementary.m2"
 "../public/tutorials/elementary.html" << convert "tu_elementary.simpledoc" << close;
 netList oo
 beginDocumentation()
-
-doc ///
-Key
-  DocConverter
-Headline
-Description
-  Text
-  Example
-Caveat
-SeeAlso
-///
-
-doc ///
-Key
-Headline
-Usage
-Inputs
-Outputs
-Consequences
-Description
-  Text
-  Example
-  Code
-  Pre
-Caveat
-SeeAlso
-///
 
 TEST ///
 -- test code and assertions here

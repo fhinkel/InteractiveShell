@@ -63,7 +63,7 @@ var M2Server = function(overrideOptions) {
 
         // An array of Client objects.  Each has an M2 process, and a response
         // object It is possible that this.m2 is not defined, and/or that
-        // this.eventStream is not defined.
+        // this.eventStreams is not defined.
         clients = {};
 
     // preamble every log with the client ID
@@ -139,12 +139,7 @@ var M2Server = function(overrideOptions) {
     };
 
     var Client = function() {
-        this.m2 = null;
-        this.eventStream = [];
-        this.clientID = null;
-        this.schrootType = null;
-        this.schrootName = null;
-        this.systemUserName = null;
+        this.eventStreams = [];
         // generated randomly in startUser(), used for cookie and as user name
         // on the system
         this.recentlyRestarted = false;
@@ -316,31 +311,31 @@ var M2Server = function(overrideOptions) {
       return function(data){
          client.lastActiveTime = Date.now();
          message = formatServerSentEventMessage(data);
-         if (!client.eventStream || client.eventStream.length == 0) { // fatal error, should not happen
-             logClient(clientID, "Error: No event stream in m2ConnectStream");
+         if (!client.eventStreams || client.eventStreams.length == 0) { // fatal error, should not happen
+             logClient(clientID, "Error: No event stream for sending data to client.");
              return;
-             //throw "Error: No client.eventStream in Start M2";
+             //throw "Error: No client.eventStreams in Start M2";
          }
          
-         for (var stream in client.eventStream) {
+         for (var stream in client.eventStreams) {
              //logClient(clientID, "write: " + message);
-             client.eventStream[stream].write(message);
+             client.eventStreams[stream].write(message);
          }
       };
     };
 
-    var connectNewPipe = function(client){
+    var attachListenersToOutputPipes = function(client){
          client.m2.stdout.removeAllListeners('data');
          client.m2.stderr.removeAllListeners('data');
          client.m2.stdout.on('data', sendDataToClient(client));
          client.m2.stderr.on('data', sendDataToClient(client));
     };
     
-    var m2ConnectStream = function(clientID) {
+    var attachListenersToOutput = function(clientID) {
         var client = clients[clientID];
         if (!client) return;
         if (client.m2) {
-           connectNewPipe(client);
+           attachListenersToOutputPipes(client);
         }
     };
 
@@ -380,34 +375,35 @@ var M2Server = function(overrideOptions) {
 
     var keepEventStreamsAlive = function() {
         for (var prop in clients) {
-            if (clients.hasOwnProperty(prop) && clients[prop] && clients[prop].eventStream) {
-                for(var stream in clients[prop].eventStream ) {
-                    clients[prop].eventStream[stream].write(":ping\n");
+            if (clients.hasOwnProperty(prop) && clients[prop] && clients[prop].eventStreams) {
+                for(var stream in clients[prop].eventStreams ) {
+                    clients[prop].eventStreams[stream].write(":ping\n");
                 }
             }
         }
     };
 
-    // Client starts eventStream to obtain M2 output and start M2
-    var startSource = function(request, response) {
+    var setEventStreamForClientID = function(clientID, stream){ 
+            logClient(clientID, "pushing a response");
+            clients[clientID].eventStreams.push(stream);
+    };
+
+    // Client starts eventStreams to obtain M2 output and start M2
+    var connectEventStreamToM2Output = function(request, response) {
         assureClient(request, response, function(clientID) {
             response.writeHead(200, {
                 'Content-Type': "text/event-stream"
             });
-            logClient(clientID, "pushing a response");
-            clients[clientID].eventStream.push(response);
+            setEventStreamForClientID(clientID, response);
 
             if (!clients[clientID].m2) {
                 clients[clientID].m2 = m2Start(clientID);
             }
-            m2ConnectStream(clientID);
+            attachListenersToOutput(clientID);
             
             // If the client closes the connection, remove client from the list of active clients
             request.connection.on("end", function() {
                 logClient(clientID, "event stream closed");
-                if (clients[clientID]) {
-                    //clients[clientID].eventStream = [];
-                }
                 response.end();
             });
         });
@@ -491,7 +487,7 @@ var M2Server = function(overrideOptions) {
                     .m2.pid);
             }
             client.m2 = m2Start(clientID);
-            m2ConnectStream(clientID);
+            attachListenersToOutput(clientID);
             response.writeHead(200);
             response.end();
         });
@@ -546,7 +542,7 @@ var M2Server = function(overrideOptions) {
             if (clients.hasOwnProperty(prop) && clients[prop] && clients[prop].m2) {
                 if (pid == clients[prop].m2.pid) {
                     //console.log("We found the client! It is " + prop);
-                    if (clients[prop].eventStream.length != 0) {
+                    if (clients[prop].eventStreams.length != 0) {
                         //console.log("findClientID picked user with clientID " + prop);
                         return prop;
                     } else {
@@ -600,7 +596,7 @@ var M2Server = function(overrideOptions) {
 
     // we get a /image from our open script
     // imageAction finds the matching client by parsing the url, then sends the
-    // address of the image to the client's eventStream
+    // address of the image to the client's eventStreams
     var imageAction = function(request, response, next) {
         var url = require('url').parse(request.url).pathname;
         response.writeHead(200);
@@ -622,12 +618,12 @@ var M2Server = function(overrideOptions) {
             }
 
             message = 'event: image\r\ndata: ' + path + "\r\n\r\n";
-            if (!client.eventStream || client.eventStream.length == 0) { // fatal error, should not happen
+            if (!client.eventStreams || client.eventStreams.length == 0) { // fatal error, should not happen
                 logClient(clientID, "Error: No event stream");
             } else {
                 //logClient(clientID, "Sent image message: " + message);
-                for (var stream in client.eventStream ) {
-                    client.eventStream[stream].write(message);
+                for (var stream in client.eventStreams ) {
+                    client.eventStreams[stream].write(message);
                 }
             }
         } catch (err) {
@@ -659,12 +655,12 @@ var M2Server = function(overrideOptions) {
             }
 
             message = 'event: viewHelp\r\ndata: ' + path + "\r\n\r\n";
-            if (!client.eventStream || client.eventStream.length == 0 ) { // fatal error, should not happen
+            if (!client.eventStreams || client.eventStreams.length == 0 ) { // fatal error, should not happen
                 logClient(clientID, "Error: No event stream");
             } else {
                 //logClient(clientID, "Sent image message: " + message);
-                for (var stream in client.eventStream) {
-                    client.eventStream[stream].write(message);
+                for (var stream in client.eventStreams) {
+                    client.eventStreams[stream].write(message);
                 }
             }
         } catch (err) {
@@ -672,7 +668,7 @@ var M2Server = function(overrideOptions) {
         }
     }
     var checkForEventStream = function(clientID, response) {
-        if (!clients[clientID].eventStream || clients[clientID].eventStream.length == 0 ) {
+        if (!clients[clientID].eventStreams || clients[clientID].eventStreams.length == 0 ) {
             logClient(clientID, "Send notEventSourceError back to user.");
             response.writeHead(200, {
                 'notEventSourceError': 'No socket for client...'
@@ -820,7 +816,7 @@ var M2Server = function(overrideOptions) {
         .use('/admin', stats)
         .use('/viewHelp', viewHelpAction)
         .use('/image', imageAction)
-        .use('/startSourceEvent', startSource)
+        .use('/startSourceEvent', connectEventStreamToM2Output)
         .use('/chat', m2InputAction)
         .use('/interrupt', interruptAction)
         .use('/restart', restartAction)

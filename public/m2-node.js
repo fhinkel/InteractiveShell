@@ -220,64 +220,81 @@ trym2.navBar = function () {
 
 trym2.tutorials = [];
 
+trym2.appendTutorialToAccordion = function(title, lessons, index) {
+    title.wrapInner("<a href='#' class='menuTitle' tutorialid=" + index + "/>")
+        .addClass(
+        "ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons")
+        .prepend(
+        '<span class="ui-icon ui-accordion-header-icon ui-icon-triangle-1-e"></span>')
+        .hover(function() {
+        $(this).toggleClass("ui-state-hover");
+    })
+        .click(function() {
+        $(this)
+            .toggleClass(
+            "ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top")
+            .find("> .ui-icon").toggleClass(
+            "ui-icon-triangle-1-e ui-icon-triangle-1-s").end()
+            .next().slideToggle(function() {
+            // Needs improvement! Possibly do this synchronously with the slide toggle,
+            // i.e. not as a callback.
+            var y = $(this).position().top;
+            var height = parseInt($("#home").css('height'), 10);
+            var total_height = parseInt($(this).css('height'), 10) + 50;
+            if (height - y < total_height) {
+                var scroll = total_height - height + y;
+                $("#home").animate({
+                    scrollTop: ($("#home").scrollTop() + scroll)
+                }, 400);
+            }
+        });
+        return false;
+    })
+        .next();
+    var div = $("<div>");
+    var content = '<ul>';
+    for (var j = 0; j < lessons.length; j++) {
+        content = content +
+            '<li><a href="#" class="submenuItem" tutorialid=' + index +
+            ' lessonid=' + j + '>  ' + lessons[j].title + '</a></li>';
+    };
+    content = content + '</ul>';
+    if (index > 0) {
+        div.append(content).addClass(
+            "ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom")
+            .hide();
+    } else {
+        // Expand the first tutorial:
+        title.toggleClass(
+            "ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top")
+            .find("> .ui-icon").toggleClass(
+            "ui-icon-triangle-1-e ui-icon-triangle-1-s");
+        div.append(content).addClass(
+            "ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom");
+    }
+    $("#uploadTutorialBtn").before(title);
+    $("#uploadTutorialBtn").before(div);
+}
+
+trym2.appendUploadTutorialButtonToAccordion = function(){
+   var h3 = $("<h3>");
+   h3.prop("id", "uploadTutorialBtn");
+   h3.html("Upload Tutorial");
+   h3.click(trym2.doUptutorialClick);
+   h3.addClass(
+        "ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons");
+   $("#accordion").append(h3);
+}
 
 trym2.makeAccordion = function(tutorials) {
+    $("#home").append("<div id=\"accordion\"></div>");
+    trym2.appendUploadTutorialButtonToAccordion();
     for (var i = 0; i < tutorials.length; i++) {
         var title = tutorials[i].title; //this is an <h3>
-        title.wrapInner("<a href='#' class='menuTitle' tutorialid=" + i + "/>")
-            .addClass(
-            "ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons")
-            .prepend(
-            '<span class="ui-icon ui-accordion-header-icon ui-icon-triangle-1-e"></span>')
-            .hover(function() {
-            $(this).toggleClass("ui-state-hover");
-        })
-            .click(function() {
-            $(this)
-                .toggleClass(
-                "ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top")
-                .find("> .ui-icon").toggleClass(
-                "ui-icon-triangle-1-e ui-icon-triangle-1-s").end()
-                .next().slideToggle(function() {
-                // Needs improvement! Possibly do this synchronously with the slide toggle,
-                // i.e. not as a callback.
-                var y = $(this).position().top;
-                var height = parseInt($("#home").css('height'), 10);
-                var total_height = parseInt($(this).css('height'), 10) + 50;
-                if (height - y < total_height) {
-                    var scroll = total_height - height + y;
-                    $("#home").animate({
-                        scrollTop: ($("#home").scrollTop() + scroll)
-                    }, 400);
-                }
-            });
-            return false;
-        })
-            .next();
-        var div = $("<div>");
-        var content = '<ul>';
         var lessons = tutorials[i].lessons;
-        for (var j = 0; j < lessons.length; j++) {
-            content = content +
-                '<li><a href="#" class="submenuItem" tutorialid=' + i +
-                ' lessonid=' + j + '>  ' + lessons[j].title + '</a></li>';
-        };
-        content = content + '</ul>';
-        if (i > 0) {
-            div.append(content).addClass(
-                "ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom")
-                .hide();
-        } else {
-            // Expand the first tutorial:
-            title.toggleClass(
-                "ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top")
-                .find("> .ui-icon").toggleClass(
-                "ui-icon-triangle-1-e ui-icon-triangle-1-s");
-            div.append(content).addClass(
-                "ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom");
-        }
-        $("#accordion").append(title).append(div);
+        trym2.appendTutorialToAccordion(title, lessons, i);
     };
+
     $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset");
     $(".menuTitle").on("click", {lessonIdNr: "0"}, trym2.showLesson);
 };
@@ -332,8 +349,7 @@ trym2.switchLesson = function(incr) {
 trym2.makeTutorialsList = function(i, tutorialNames, callback) {
     if (i < tutorialNames.length) {
         $.get(tutorialNames[i], function(resultHtml) {
-            trym2.tutorials[i] = trym2.populateTutorialElement(tutorialNames[i],
-                resultHtml);
+            trym2.tutorials[i] = trym2.populateTutorialElement(resultHtml);
             console.log(trym2.tutorials[i].title);
             trym2.makeTutorialsList(i + 1, tutorialNames, callback);
         });
@@ -342,7 +358,7 @@ trym2.makeTutorialsList = function(i, tutorialNames, callback) {
     };
 };
 
-trym2.populateTutorialElement = function(theUrl, theHtml) {
+trym2.populateTutorialElement = function(theHtml) {
     // populate a Tutorial element, and return it
     var theLessons = [];
     var tutorial = $("<div>").html(theHtml);
@@ -353,7 +369,6 @@ trym2.populateTutorialElement = function(theUrl, theHtml) {
         });
     });
     return { // class Tutorial
-        url: theUrl,
         title: $("<h3>").append($("title", tutorial).text()),
         current: 0,
         lessons: theLessons
@@ -485,10 +500,15 @@ trym2.saveFiles = function(filenames) {
     });
 };
 
+trym2.doUptutorialClick = function() {
+    $("#uptutorial").val("");
+    console.log("Click tutorial: " + typeof($("#uptutorial")));
+    $("#uptutorial").click();
+};
+
 trym2.doUpfileClick = function() {
     $("#upfile").val("");
     console.log("Click file: " + typeof($("#upfile")));
-
     $("#upfile").click();
 };
 
@@ -515,6 +535,36 @@ trym2.saveInteractions = function() {
     xhr.send(JSON.stringify(msg));
     return true;
 };
+
+trym2.uploadTutorial = function() {
+    var obj = this;
+    var files = this.files;
+    console.log("number of files in upload tutorial: " + files.length);
+    file = files[0];
+    var fileName = file.name;
+    console.log("Process file for tutorial upload:" + fileName);    
+
+    var reader = new FileReader();
+    reader.readAsText(file);
+
+    // Closure to capture the file information.
+    reader.onload = function(event) {
+        var resultHtml = event.target.result;
+        console.log(resultHtml);
+        trym2.tutorials.push(trym2.populateTutorialElement(resultHtml));
+        var lastIndex = trym2.tutorials.length - 1;
+        var newTutorial = trym2.tutorials[lastIndex];
+        var title = newTutorial.title; //this is an <h3>
+        console.log("new title: " + title.html());
+    
+        var lessons = newTutorial.lessons;
+        trym2.appendTutorialToAccordion(title, lessons, lastIndex);
+    };
+    
+
+    return false;
+}
+
 
 trym2.doUpload = function() {
     var obj = this;
@@ -609,6 +659,28 @@ trym2.startEventSource = function() {
     }
 };
 
+trym2.importTutorials = function() {
+    console.log("Import tutorials.");
+
+    $.ajax({
+          url: '/getListOfTutorials',
+          type: 'GET',
+          statusCode: {
+              500: function(error) {
+                  console.log("There was an error obtaining the list of tutorial files: " + error);
+              }
+          },
+          success: function(tutorialData) {
+              console.log("Obtaining list of tutorials successful: " + tutorialData);
+              var tutorialPaths =  JSON.parse(tutorialData);
+              trym2.makeTutorialsList(0, tutorialPaths, function() {
+                  trym2.makeAccordion(trym2.tutorials);
+              });
+          }
+      });
+      return false;
+};
+
 
 $(document).ready(function() {
     // Init procedures for right hand side.
@@ -687,6 +759,7 @@ $(document).ready(function() {
     $("#saveBtn").click(trym2.saveInteractions);
     $("#uploadBtn").click(trym2.doUpfileClick);
     $("#upfile").on('change', trym2.doUpload);
+    $("#uptutorial").on('change', trym2.uploadTutorial);
 
     $("#tutorialBtn").click(function() {
         trym2.loadLesson( trym2.tutorialNr, trym2.lessonNr);
@@ -710,15 +783,7 @@ $(document).ready(function() {
         trym2.postMessage('/chat', code)();
     });
 
-    var tutorialNames = ["tutorials/welcome2.html",
-            "tutorials/getting-started.html",
-            "tutorials/Beginning.html",
-            "tutorials/elementary-groebner.html"
-    ];
-    $("#home").append("<div id=\"accordion\"></div>");
+    trym2.importTutorials();
 
-    trym2.makeTutorialsList(0, tutorialNames, function() {
-        trym2.makeAccordion(trym2.tutorials);
-    });
     trym2.navBar.activate("home"); 
 });

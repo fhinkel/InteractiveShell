@@ -9,7 +9,7 @@ You can load your own tutorials to use them on this website. Tutorials are only 
 <body>
 <div>
     <h4>Section 1</h4>
-          Some text. Text within <code> tags can be executed by clicking on it.<br> 
+          Some text. Text within &ltcode&gt tags can be executed by clicking on it.<br> 
         <code>2+2</code><br>
        More Text.<br>
 </div>
@@ -19,3 +19,6 @@ You can load your own tutorials to use them on this website. Tutorials are only 
     </div>
   </body>
 </html>
+
+Alternatively, you can write tutorials in simpledoc format, and convert them.
+<code>viewHelp simpleDocConverter</code>

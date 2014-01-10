@@ -332,7 +332,7 @@ trym2.appendInstructionsToAccordion = function(){
    console.log("Adding Instructions.");
    var instructions = $("<div>");
    $.get("uploadTutorialHelp.txt", function(content){
-      instructions.append(document.createTextNode(content));
+      instructions.append(content);
    });
    instructions.prop("id", "loadTutorialInstructions");
    instructions.addClass(

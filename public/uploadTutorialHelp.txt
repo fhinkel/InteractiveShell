@@ -1,24 +1,25 @@
-You can load your own tutorials to use them on this website. Tutorials are only available to you and are not sent to the server. Tutorials should have the following format:
-
-<html>
-  <head>
-    <title>
-     Tutorial Title
-    </title>
-  </head>
-<body>
-<div>
-    <h4>Section 1</h4>
-          Some text. Text within &ltcode&gt tags can be executed by clicking on it.<br> 
-        <code>2+2</code><br>
-       More Text.<br>
-</div>
-<div>
-    <h4>Section 2</h4>
-          And even more Text.<br>
-    </div>
-  </body>
-</html>
-
-Alternatively, you can write tutorials in simpledoc format, and convert them.
+You can load your own tutorials to use them on this website. Tutorials are only available to you and are not sent to the server. Tutorials should have the following format:<br>
+<br>
+&lt;html&gt;<br>
+&nbsp;&nbsp;&lt;head&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; Tutorial Title<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/title&gt;<br>
+&nbsp;&nbsp;&lt;/head&gt;<br>
+&lt;body&gt;<br>
+&lt;div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;h4&gt;Section 1&lt;/h4&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Some text.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Text within &ltcode&gt tags can be executed by clicking on it.&lt;br&gt; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;code&gt;2+2&lt;/code&gt;&lt;br&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; More Text.&lt;br&gt;<br>
+&lt;/div&gt;<br>
+&lt;div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;h4&gt;Section 2&lt;/h4&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;And even more Text.&lt;br&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&lt;/body&gt;<br>
+&lt;/html&gt;<br>
+<br>
+Alternatively, you can write tutorials in simpledoc format, and convert them.<br>
 <code>viewHelp simpleDocConverter</code>

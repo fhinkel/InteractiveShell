@@ -344,7 +344,7 @@ var M2Server = function(overrideOptions) {
     var assureClient = function(request, response, callbackFcn) {
         var cookies = new Cookies(request, response);
         var clientID = cookies.get("tryM2");
-        //console.log("Client has cookie value: " + clientID);
+        console.log("Client has cookie value: " + clientID);
 
         // Start new user for users coming with invalid, i.e., old, cookie
         if (!clients[clientID]) {
@@ -392,7 +392,8 @@ var M2Server = function(overrideOptions) {
 
     // Client starts eventStreams to obtain M2 output and start M2
     var connectEventStreamToM2Output = function(request, response) {
-        assureClient(request, response, function(clientID) {
+        return function(clientID){
+            logClient(clientID, "connectEventStreamToM2Output");
             response.writeHead(200, {
                 'Content-Type': "text/event-stream"
             });
@@ -408,11 +409,12 @@ var M2Server = function(overrideOptions) {
                 logClient(clientID, "event stream closed");
                 response.end();
             });
-        });
+         };
     };
 
     var m2InputAction = function(request, response) {
-        assureClient(request, response, function(clientID) {
+        return function(clientID){
+            logClient(clientID, "m2InputAction");
             if (!checkForEventStream(clientID, response)) {
                 return;
             };
@@ -427,7 +429,7 @@ var M2Server = function(overrideOptions) {
             request.on("end", function() {
                 handCommandsToM2(clientID, m2commands, response);
             });
-        });
+         };
     };
 
     var updateLastActiveTime = function(clientID){
@@ -461,7 +463,7 @@ var M2Server = function(overrideOptions) {
 
     // kill signal is sent to schroot, which results in killing M2
     var restartAction = function(request, response) {
-        assureClient(request, response, function(clientID) {
+        return function(clientID){
             logClient(clientID, "received: /restart");
             if (!checkForEventStream(clientID, response)) {
                 return;
@@ -496,13 +498,13 @@ var M2Server = function(overrideOptions) {
             attachListenersToOutput(clientID);
             response.writeHead(200);
             response.end();
-        });
+        };
     };
 
     // SCHROOT: when using child.kill('SIGINT'), the signal is sent to schroot,
     // where it is useless, instead, find actual PID of M2. 
     var interruptAction = function(request, response) {
-        assureClient(request, response, function(clientID) {
+        return function(clientID){
             logClient(clientID, "received: /interrupt");
             if (!checkForEventStream(clientID, response)) {
                 return;
@@ -536,7 +538,7 @@ var M2Server = function(overrideOptions) {
             }
             response.writeHead(200);
             response.end();
-        });
+        };
     };
 
     // returning clientID for a given M2 pid
@@ -661,69 +663,76 @@ var M2Server = function(overrideOptions) {
         runShellCommand("chown " + clients[clientID].systemUserName + ":" + clients[clientID].systemUserName + " " 
             + filename, function(e)          {console.log("Chown: " + e);});
     };
+   
+    var runFunctionIfClientExists = function( next ){
+        return function(request, response){
+            assureClient(request, response, next(request, response));
+        };
+    };
 
-    var uploadFile = function(request, response, next) {
-        assureClient(request, response, function(clientID) {
-            logClient(clientID, "received: /uploadTutorial");
-            var formidable = require('formidable');
-            var form = new formidable.IncomingForm;            
-            var schrootPath;
-            if (options.SCHROOT) {
-                schrootPath = "/usr/local/var/lib/schroot/mount/" + clients[clientID].schrootName +
-                    "/home/m2user/";
-                form.uploadDir = schrootPath;
-            }
-            
-            var filename;
-            var temporaryFilename;
-            
-            form.on('file', function(name, file) {
-               var path;
-                if (options.SCHROOT) {
-                    path = schrootPath;
-                } else {
-                    path = "/tmp/";
-                }
-                filename = path + file.name;
-                temporaryFilename = file.path;
-            });
 
-            form.on('end', function() {
-	    	    console.log("end received from formidable form");
-                fs.rename(temporaryFilename, filename, function(error) {
-                    if (error) {
-                        logClient(clientID, "Error in renaming file: " + error);
-                        response.writeHead(500, {
-                            "Content-Type": "text/html"
-                        });
-                        response.end('rename failed: ' + error);
-                        return;
-                    } else {
-                          if (options.SCHROOT){
-                            setOwnershipToUser(clientID, filename);
-                          }
-                         response.writeHead(200, {
-                             "Content-Type": "text/html"
-                         });
-                         response.end('upload complete!');
-                    }
-                });
-            });
+    var uploadFile = function(request, response, clientID) {
+        return function(clientID){
+         logClient(clientID, "received: /uploadTutorial");
+         var formidable = require('formidable');
+         var form = new formidable.IncomingForm;            
+         var schrootPath;
+         if (options.SCHROOT) {
+             schrootPath = "/usr/local/var/lib/schroot/mount/" + clients[clientID].schrootName +
+                 "/home/m2user/";
+             form.uploadDir = schrootPath;
+         }
+         
+         var filename;
+         var temporaryFilename;
+         
+         form.on('file', function(name, file) {
+            var path;
+             if (options.SCHROOT) {
+                 path = schrootPath;
+             } else {
+                 path = "/tmp/";
+             }
+             filename = path + file.name;
+             temporaryFilename = file.path;
+         });
 
-            form.on('error', function() {
-                logClient(clientID, 'received error in upload: ' );
-                response.writeHead(500, {
-                    "Content-Type": "text/html"
-                });
-                response.end('upload not complete!');
-            });
+         form.on('end', function() {
+             console.log("end received from formidable form");
+             fs.rename(temporaryFilename, filename, function(error) {
+                 if (error) {
+                     logClient(clientID, "Error in renaming file: " + error);
+                     response.writeHead(500, {
+                         "Content-Type": "text/html"
+                     });
+                     response.end('rename failed: ' + error);
+                     return;
+                 } else {
+                       if (options.SCHROOT){
+                         setOwnershipToUser(clientID, filename);
+                       }
+                      response.writeHead(200, {
+                          "Content-Type": "text/html"
+                      });
+                      response.end('upload complete!');
+                 }
+             });
+         });
 
-            form.parse(request);
-        });
+         form.on('error', function() {
+             logClient(clientID, 'received error in upload: ' );
+             response.writeHead(500, {
+                 "Content-Type": "text/html"
+             });
+             response.end('upload not complete!');
+         });
+
+         form.parse(request);
+         };
     };
 
     var saveAction = function(request, response) {
-        assureClient(request, response, function(clientID) {
+        return function(clientID){
             request.setEncoding("utf8");
             logClient(clientID, "received: /save");
             // Set the directory where we will write the resulting 2 files
@@ -754,7 +763,7 @@ var M2Server = function(overrideOptions) {
                 response.write(JSON.stringify(msg));
                 response.end();
             });
-        });
+        };
     };
     
     var moveWelcomeTutorialToBeginning = function(tutorials, firstTutorial) {
@@ -795,11 +804,11 @@ var M2Server = function(overrideOptions) {
         .use('/admin', stats)
         .use('/viewHelp', forwardRequestForSpecialEventToClient("viewHelp"))
         .use('/image', forwardRequestForSpecialEventToClient("image"))
-        .use('/startSourceEvent', connectEventStreamToM2Output)
-        .use('/chat', m2InputAction)
-        .use('/interrupt', interruptAction)
-        .use('/restart', restartAction)
-        .use('/save', saveAction)
+        .use('/startSourceEvent', runFunctionIfClientExists(connectEventStreamToM2Output))
+        .use('/chat', runFunctionIfClientExists(m2InputAction))
+        .use('/interrupt', runFunctionIfClientExists(interruptAction))
+        .use('/restart', runFunctionIfClientExists(restartAction))
+        .use('/save', runFunctionIfClientExists(saveAction))
         .use('/getListOfTutorials', getListOfTutorials)
         .use(unhandled);
     //.use(connect.errorHandler());

@@ -1,24 +1,24 @@
 You can load your own tutorials to use them on this website. Tutorials are only available to you and are not sent to the server. Tutorials should have the following format:<br>
 <br>
 &lt;html&gt;<br>
-&nbsp;&nbsp;&lt;head&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp; Tutorial Title<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;/title&gt;<br>
-&nbsp;&nbsp;&lt;/head&gt;<br>
-&lt;body&gt;<br>
-&lt;div&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;h4&gt;Section 1&lt;/h4&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Some text.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Text within &ltcode&gt tags can be executed by clicking on it.&lt;br&gt; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;code&gt;2+2&lt;/code&gt;&lt;br&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; More Text.&lt;br&gt;<br>
-&lt;/div&gt;<br>
-&lt;div&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;h4&gt;Section 2&lt;/h4&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;And even more Text.&lt;br&gt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
-&nbsp;&nbsp;&lt;/body&gt;<br>
+&emsp; &lt;head&gt;<br>
+&emsp;&emsp; &lt;title&gt;<br>
+&emsp;&emsp;&emsp; Tutorial Title<br>
+&emsp;&emsp; &lt;/title&gt;<br>
+&emsp; &lt;/head&gt;<br>
+&emsp; &lt;body&gt;<br>
+&emsp;&emsp; &lt;div&gt;<br>
+&emsp;&emsp;&emsp; &lt;h4&gt;Section 1&lt;/h4&gt;<br>
+&emsp;&emsp;&emsp; Some text. Text within &ltcode&gt tags can <br>
+&emsp;&emsp;&emsp; be executed by clicking on it.&lt;br&gt; <br>
+&emsp;&emsp;&emsp; &lt;code&gt;2+2&lt;/code&gt;&lt;br&gt;<br>
+&emsp;&emsp;&emsp; More Text.&lt;br&gt;<br>
+&emsp;&emsp; &lt;/div&gt;<br>
+&emsp;&emsp; &lt;div&gt;<br>
+&emsp;&emsp;&emsp; &lt;h4&gt;Section 2&lt;/h4&gt;<br>
+&emsp;&emsp;&emsp; And even more Text.&lt;br&gt;<br>
+&emsp;&emsp; &lt;/div&gt;<br>
+&emsp; &lt;/body&gt;<br>
 &lt;/html&gt;<br>
 <br>
 Alternatively, you can write tutorials in simpledoc format, and convert them.<br>

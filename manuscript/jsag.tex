@@ -57,7 +57,7 @@
 %\title{Macaulay2 Web Version}
 \title{\tryM2: A web version of \M2}
 \author{Lars Kastner\\ Freie Universit\"at Berlin \\{\small kastner\char`\@math.fu-berlin.de} \and 
-Franziska Hinkelmann\\Mathematical Biosciences Institute\\ Ohio State University \\{\small franziska.hinkelmann\char`\@gmail.com} \and 
+Franziska Hinkelmann\\TNG Technology Consulting GmbH \\{\small franziska.hinkelmann\char`\@tngtech.com} \and 
 Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \thanks{Stillman has been supported by NSF grants DMS 08-10909 and 10-02210. Hinkelmann has been supported by NSF award 0635561.} }
 
 
@@ -114,11 +114,11 @@ Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \th
 
 
 \tryM2 is an on-line version of \M2 \cite{M2} which
-doesn't require users to download or install the program, and also
-doesn't require users to set up an account and log in.  \tryM2
+does not require users to download or install the program, and also
+does not require users to set up an account and log in.  \tryM2
 has the same functionality as the desktop version,
-albeit the user might have access to less resources
-than on their own machine.  Users can upload files and
+albeit users might have access to less resources
+than on their own machine. Users can upload files and
 load packages, generate files such as images, and also have
 access to other shell commands, such as gfan, 4ti2, and code for
 generating images of graphs.
@@ -127,13 +127,12 @@ Our primary motivation for creating this web application was to
 provide an easy to use experience for classroom and student use.
 Having students download and install software such as \M2 is time
 consuming and inevitably there are some situations for which this
-process fails or takes significant effort to get runnning, e.g. on
+process fails or takes significant effort to get runnning, e.g., on
 some versions of Windows.  The \tryM2 web application is designed to
 be able to handle many students at once, and without having the users
 need to create accounts or log in.  \tryM2 was used at the Syzygyies
-meeting in Berlin in May 2013, with about 70 users.  We note that the
-site is not only for beginners, it is useful for seasoned experts as
-well.
+meeting in Berlin in May 2013, with about 70 users.  We would like to point out that the
+site is suited not only for beginners, but also for seasoned experts.
 
 We considered off the shelf solutions, such as the Sage
 notebook~\cite{sagenotebook}, but decided that we wished for a
@@ -234,30 +233,23 @@ have not closed their browser, or set the browser to remember their
 windows.
 
 \section{Tutorials}
-Instructors and other users can create their own tutorials for use with \tryM2.
-A \M2 package, {\tt TryMacaulay2} is provided to help with this process.  
+Instructors and other users can create their own tutorials for use with \tryM2. Instructors can email or otherwise distribute an html file with their tutorial to their students or seminar participants. They then can load it into \tryM2 and use it. 
+
+Since it it cumbersome to write the tutorial in the required html format, we provide the \M2 package {\it DocConverter}. It converts a file i  
 First, you write your tutorial in \M2's {\it SimpleDoc} format, which includes example \M2 code.
-Then, run the \M2 command script {\tt makeTutorial} to create an html document, and finally 
-load this into your {\tt running web.macaulay2.com} session using the {\tt uploadTutorial} button at the bottom of the tutorial list.
-You will be prompted for the  html document which the {\tt makeTutorial} script created.
-Iterate this process
-to improve your tutorial.
+Then, run the \M2 command script {\tt convert} to create an html document. This document has the format required by \tryM2 to be displayed nicely as a tutorial. To load this tutorial into your running {\tt web.macaulay2.com} session use the {\tt Load Tutorial} button at the end of the tutorial list.
+Your tutorial will remain locally on your computer and is not uploaded to any server. You can easily delete it from the list by clicking on the close button next to its title. It will also be removed from the list the next time you start your browser. 
 
-Once satisfied with the tutorial, make it available to your students either as a file on the web,
-or have them download the file.  They then load this tutorial into their {\tt running web.macaulay2.com} session using the {\tt uploadTutorial} button as well.
+Email the html file to your students or provide it on your own website for download. Your students then load this tutorial into their {\tt= web.macaulay2.com} session using the {\tt Load Tutorial} button as well.
 
-The following steps to create a tutorial are also documented in the package {\tt TryMacaulay2}.
+The following steps to create a tutorial are also documented in the package {\tt DocConverter}.
 \begin{enumerate}
-\item Create a tutorial in simpledoc format, say {\tt foo.simpledoc}.  For an example, type into \M2, {\tt viewHelp "TryMacaulay2"}.
-\item Use {\tt makeTutorial "foo.simpledoc"} to create a file "foo.trym2".
+\item Create a tutorial in simpledoc format, say {\tt foo.simpledoc}.  For an example, type into \M2, {\tt viewHelp "DocConverter"}.
+\item Use {\tt convert "foo"} to create a file "foo.html".
 \item In the {\it Home} screen in \tryM2, click on the {\it Load Tutorial} button, and select this file.
 \end{enumerate}
 
-In the case that you don't have access to \M2 on your local machine, you can upload the  {\it SimpleDoc} file to the server, convert it there and then download it using the \M2 {\tt open} function.
-
-Once your students have a copy of the file {\tt "foo.trym2"}, then can also load the tutorial into their \tryM2
-session, as in the third step.
-
+In the case that you do not have access to \M2 on your local machine, you can upload the {\it SimpleDoc} file to the server, convert it there and then download it using the \M2 {\tt open} function.
 
 
 \section{Internal structure, schroots}
@@ -283,7 +275,6 @@ several questions:
 \item How do we distinguish the users on the system?
 \item How can we limit resources to prevent one user from breaking the system? e.g. via fork bombs.
 \item How do we clean up after a user has left?
-%\item blablabla?
 \end{enumerate}
 
 The answer to the second question was to create and delete users on
@@ -334,6 +325,8 @@ The system we have written was designed with \M2 in mind, but
 the entire structure will work for other command line programs such as Singular \cite{singular},
 and GAP \cite{GAP4}.  We are currently working on creating a similar server for Singular.
 Tutorials for other systems may be created in the same way as \M2 tutorials.
+
+We are excited to receive tutorials that you have developed and would be happy to include them on the website, so that others can profit from your work as well. We plan to develop the feature to upload your tutorials for others as well as a more sophisticated tutorial review process. 
 
 \bibliographystyle{plain}
 \bibliography{references}

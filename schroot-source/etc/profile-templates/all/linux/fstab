@@ -1,2 +1,0 @@
-/proc           /proc           none    rw,bind         0       0
-/sys            /sys            none    rw,bind         0       0

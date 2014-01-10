@@ -1,4 +1,0 @@
-#!/bin/sh
-#echo "10test1 $1" >&2
-
-exit 0

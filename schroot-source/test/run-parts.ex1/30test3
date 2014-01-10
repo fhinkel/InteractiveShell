@@ -1,8 +1,0 @@
-#!/bin/sh
-#echo "30test3 $1" >&2
-
-if [ "$1" = "ok" ]; then
-  exit 0
-fi
-
-exit 1

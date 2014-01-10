@@ -1,5 +1,0 @@
-dev             /dev            devfs   rw,bind         0       0
-dev             /dev/fd         fdescfs rw,bind         0       0
-# Mount a large scratch space for the build, so we don't use up
-# space on an LVM snapshot of the chroot itself.
-/var/lib/sbuild/build   /build  nullfs  rw              0       0

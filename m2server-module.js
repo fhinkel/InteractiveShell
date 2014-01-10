@@ -63,7 +63,7 @@ var M2Server = function(overrideOptions) {
 
         // An array of Client objects.  Each has an M2 process, and a response
         // object It is possible that this.m2 is not defined, and/or that
-        // this.eventStream is not defined.
+        // this.eventStreams is not defined.
         clients = {};
 
     // preamble every log with the client ID
@@ -71,15 +71,47 @@ var M2Server = function(overrideOptions) {
         console.log(clientID + ": " + str);
     };
 
-    // delete a user both from the system and the clients[]
-    var deleteClient = function(clientID) {
+    var removeSystemUser = function(clientID) {
         runShellCommand('perl-scripts/remove_user.pl ' + clients[clientID].systemUserName + ' ' 
         + clients[clientID].schrootName + ' ' + clients[clientID].schrootType, function(ret) {
-            console.log("We removed client " + clientID + " with result: " +
-                ret);
+            console.log(
+                "We removed client " + clientID + " with result: " + ret);
         });
+     };
+
+
+    var deleteClient = function(clientID) {
+        removeSystemUser(clientID);
         delete clients[clientID];
     };
+
+   var timeBeforeInterval = function(timeInterval) {
+        var now = Date.now();
+        console.log("It is currently " + now + " milliseconds.");
+        var minAge = now - timeInterval;
+        return minAge;
+     };
+        
+
+   var removeOldClients = function(minimalLastActiveTimeForClient) {
+        for (var clientID in clients) {
+            if (clients.hasOwnProperty(clientID)) {
+                console.log("*** lastActivetime for user : " + clientID + " " +
+                    clients[clientID].lastActiveTime)
+                if (clients[clientID].lastActiveTime < minimalLastActiveTimeForClient) {
+                    deleteClient(clientID);
+                }
+            }
+        }
+     };
+
+     var logCurrentlyActiveClients = function() {
+        for (clientID in clients) {
+            if (clients.hasOwnProperty(clientID)) {
+                console.log(clientID);
+            }
+        }
+        };
 
     // deciding that a user is obsolete: 
     // set clients[clientID].timestamp (set by M2 output or the client's input)
@@ -91,30 +123,15 @@ var M2Server = function(overrideOptions) {
         // checks their resource usage with a perl script. Remove old or bad
         // clients
         console.log("Pruning clients...");
-        var clientID = null;
-        var now = Date.now();
-        console.log("It is currently " + now + " milliseconds.");
-        var minAge = now - options.MAXAGE;
-        for (clientID in clients) {
-            if (clients.hasOwnProperty(clientID)) {
-                console.log("*** lastActivetime for user : " + clientID + " " +
-                    clients[clientID].lastActiveTime)
-                if (clients[clientID].lastActiveTime < minAge) {
-                    deleteClient(clientID);
-                }
-            }
-        }
+       var minimalLastActiveTimeForClient = timeBeforeInterval(options.MAXAGE);
+      removeOldClients(minimalLastActiveTimeForClient);
         console.log("Done pruning clients...  Continuing clients:");
-        for (clientID in clients) {
-            if (clients.hasOwnProperty(clientID)) {
-                console.log(clientID);
-            }
-        }
+      logCurrentlyActiveClients();
     };
 
+     // runs a command, and calls the callbackFnc with the output from stdout
     var runShellCommand = function(cmd, callbackFcn) {
-        // runs a command, and calls the callbackFnc with the output from stdout
-
+      console.log("Run shell command: " + cmd);
         require('child_process').exec(cmd, function(error, stdout, stderr) {
             //console.log("runShellCommand result:" + stdout);
             callbackFcn(stdout);
@@ -122,12 +139,7 @@ var M2Server = function(overrideOptions) {
     };
 
     var Client = function() {
-        this.m2 = null;
-        this.eventStream = [];
-        this.clientID = null;
-        this.schrootType = null;
-        this.schrootName = null;
-        this.systemUserName = null;
+        this.eventStreams = [];
         // generated randomly in startUser(), used for cookie and as user name
         // on the system
         this.recentlyRestarted = false;
@@ -147,77 +159,92 @@ var M2Server = function(overrideOptions) {
         return true;
     };
     
-    
-    var startUser = function(cookies, request, callbackFcn) {
-        totalUsers = totalUsers + 1;
-        var clientID;
-	var otherRandomNumber;
-        while(clientID == null || clientIDExists(clientID) ) {
-            clientID = Math.random() * 1000000;
+    var getNewClientID = function() {
+        do {    
+            var clientID = Math.random() * 1000000;
             clientID = Math.floor(clientID);
-	    otherRandomNumber = userNumber;
-	    userNumber++;
-
-            clientID = "user" + clientID.toString(10);
-        }
-        cookies.set("tryM2", clientID, {
+         } while (clientIDExists(clientID) );
+         clientID = "user" + clientID.toString(10);
+         return clientID;
+    };
+        
+    var setCookie = function(cookies, clientID) {  
+            cookies.set("tryM2", clientID, {
             httpOnly: false
         });
-        clients[clientID] = new Client();
-        clients[clientID].clientID = clientID;
-
-        // Setting the schroot and system related variables.
-	clients[clientID].schrootType = 'system' + otherRandomNumber;// + 'st';
-        clients[clientID].schrootName = 'system' + otherRandomNumber;// + 'sn';
-        clients[clientID].systemUserName = 'system' + otherRandomNumber;// + 'sun';
+     };
+       
+     var setSchrootParameters = function(clientID) {  
+        clients[clientID].schrootType = 'system' + userNumber;
+        clients[clientID].schrootName = 'system' + userNumber;
+        clients[clientID].systemUserName = 'system' + userNumber;
         clients[clientID].prepend = "";
         // For now we choose all these to be equal.
         // getClientIDFromURL does not work if we choose these to be different
         // from each other.
         // There are several locations where we will have to adapt the path.
-        
-        logClient(clientID, "New user: " + " UserAgent=" + request.headers[
-            'user-agent'] + ".");
-        if (options.SCHROOT) {
-            runShellCommand('perl-scripts/create_user.pl ' + clients[clientID].systemUserName 
-                + ' ' + clients[clientID].schrootType + ' ' +
-                options.userMemoryLimit + ' ' + options.userCpuLimit, function(
-                ret) {
-                //console.log( "***" + ret );
-                logClient(clientID, "Spawning new schroot process named " +
-                    clientID + " " + clients[clientID].systemUserName+".");
-                /*
-                  The following command creates a schroot environment for the user.
-                  -c specifies the schroot type. This tells schroot to use the config file
-                     created by create_user.pl. The -c below at entering schroot is not the same.
-                  -n Sets the name of the schroot. This name will be used for the -c option
-                     below upon entering the schroot.
-                  -b is the begin flag.
-                */
-                require('child_process').exec('sudo -u ' + clients[clientID].systemUserName +
-                    ' schroot -c ' + clients[clientID].schrootType + ' -n ' + clients[clientID].schrootName + ' -b', function() { 
-                        // write cookie to /etc/clientID, it is needed for curl in open calls
-                        var filename = "/usr/local/var/lib/schroot/mount/" + clients[clientID].systemUserName + "/etc/clientID";
-                        fs.writeFile(filename, clientID, function(err) {
-                            if(err) {
-                                logClient(clientID, err);
-                            } else {
-                                logClient(clientID, "File with clientID ie., the user cookie, was written successfully.");
-                            }
-                        });
-                        callbackFcn(clientID);
-                });
-                
+	     userNumber++;
+     };
+
+     var createSystemUser = function(clientID, callbackFcn) {
+       setSchrootParameters(clientID);
+       runShellCommand(
+           'perl-scripts/create_user.pl ' + clients[clientID].systemUserName 
+            + ' ' + clients[clientID].schrootType + ' ' 
+            + options.userMemoryLimit + ' ' + options.userCpuLimit, 
+            function() {
+               initializeSchrootEnvironment(clientID,callbackFcn);
+            }
+        );
+     };
+    
+    var initializeSchrootEnvironment = function(clientID, callbackFcn) {
+       logClient(clientID, "Spawning new schroot process named " +
+           clientID + " " + clients[clientID].systemUserName+".");
+       /*
+         The following command creates a schroot environment for the user.
+         -c specifies the schroot type. This tells schroot to use the config file
+            created by create_user.pl. The -c below at entering schroot is not the same.
+         -n Sets the name of the schroot. This name will be used for the -c option
+            below upon entering the schroot.
+         -b is the begin flag.
+       */
+       require('child_process').exec(
+         'sudo -u ' + clients[clientID].systemUserName + ' schroot -c ' 
+         + clients[clientID].schrootType + ' -n ' + clients[clientID].schrootName + ' -b', 
+         function() { 
+            // write cookie to /etc/clientID, it is needed for curl in open calls
+            var filename = "/usr/local/var/lib/schroot/mount/" + clients[clientID].systemUserName + "/etc/clientID";
+            fs.writeFile(filename, clientID, function(err) {
+                if(err) {
+                    logClient(clientID, err);
+                } else {
+                    logClient(clientID, "File with clientID ie., the user cookie, was written successfully.");
+                }
             });
+            callbackFcn(clientID);
+         });
+    };
+
+    var startUser = function(cookies, request, callbackFcn) {
+        totalUsers = totalUsers + 1;
+        var clientID = getNewClientID();
+        setCookie(cookies, clientID);
+        clients[clientID] = new Client();
+        clients[clientID].clientID = clientID;
+        
+        logClient(clientID, 
+            "New user: " + " UserAgent=" + request.headers['user-agent'] + ".");
+        if (options.SCHROOT) {
+           createSystemUser(clientID, callbackFcn);
         } else {
             callbackFcn(clientID);
         }
         return clientID;
     };
 
-    var m2Start = function(clientID) {
+    var spawnSchroot = function(clientID, cmd){
         var spawn = require('child_process').spawn;
-        if (options.SCHROOT) {
             /*
                Starting M2 in a secure way requires several steps:
                1. cgexec adds our process to two cgroups that create_user.pl created.
@@ -230,54 +257,85 @@ var M2Server = function(overrideOptions) {
                   -d specifies the directory inside the schroot we want to enter
                   -r specifies the command to be run upon entering.
             */
-            var m2 = spawn('sudo', ['cgexec', '-g', 'cpu,memory:' + clients[clientID].systemUserName,
-                    'sudo', '-u', clients[clientID].systemUserName, 'nice', 'schroot', '-c', clients[clientID].schrootName,
-                                    '-u', clients[clientID].systemUserName, '-d', '/home/m2user/', '-r', 'M2'
-            ]);
-        } else {
-            m2 = spawn('M2');
-            logClient(clientID, "Spawning new M2 process...");
-        }
-      
-        m2.on('exit', function(returnCode, signal) {
-            // the schroot might still be valid or unmounted
+            var setEnvironmentCommand = 'export\ PATH=$PATH:/M2/bin\;\ export\ WWWBROWSER=open-www\;\ ';
+            return m2 = spawn('cgexec', [
+                     '-g', 'cpu,memory:' + clients[clientID].systemUserName,
+                     'sudo', '-u', clients[clientID].systemUserName, 
+                     'schroot', '-c', clients[clientID].schrootName,
+                                '-u', clients[clientID].systemUserName, 
+                                '-d', '/home/m2user/', 
+                                '-r', 
+                                '--', 'bash' ,'-c', setEnvironmentCommand + cmd
+               ]
+            );
+    };
+
+    var removeListenersFromPipe = function(clientID){
+         // the schroot might still be valid or unmounted
+         return function(returnCode, signal){
             logClient(clientID, "M2 exited.");
             logClient(clientID, "returnCode: " + returnCode);
             logClient(clientID, "signal: " + signal);
-            m2.stdout.removeAllListeners('data');
-            m2.stderr.removeAllListeners('data');
-        });
+            this.stdout.removeAllListeners('data');
+            this.stderr.removeAllListeners('data');
+         };
+    }
 
-        m2.stdout.setEncoding("utf8");
-        m2.stderr.setEncoding("utf8");
+    var setPipeEncoding = function(process, encoding){
+        process.stdout.setEncoding(encoding);
+        process.stderr.setEncoding(encoding);
+    }
+
+    var m2Start = function(clientID) {
+        var spawn = require('child_process').spawn;
+        if (options.SCHROOT) {
+            m2 = spawnSchroot(clientID, 'M2');
+        } else {
+            m2 = spawn('M2');
+        }
+        logClient(clientID, "Spawning new M2 process...");
+      
+        m2.on('exit', removeListenersFromPipe(clientID));
+        setPipeEncoding(m2, "utf8");
+
         return m2;
     };
 
-    var m2ConnectStream = function(clientID) {
+    var formatServerSentEventMessage = function(data){
+         data.replace(/\n$/, "");
+         return 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
+
+    };
+
+    var sendDataToClient = function(client) {
+      return function(data){
+         client.lastActiveTime = Date.now();
+         message = formatServerSentEventMessage(data);
+         if (!client.eventStreams || client.eventStreams.length == 0) { // fatal error, should not happen
+             logClient(clientID, "Error: No event stream for sending data to client.");
+             return;
+             //throw "Error: No client.eventStreams in Start M2";
+         }
+         
+         for (var stream in client.eventStreams) {
+             //logClient(clientID, "write: " + message);
+             client.eventStreams[stream].write(message);
+         }
+      };
+    };
+
+    var attachListenersToOutputPipes = function(client){
+         client.m2.stdout.removeAllListeners('data');
+         client.m2.stderr.removeAllListeners('data');
+         client.m2.stdout.on('data', sendDataToClient(client));
+         client.m2.stderr.on('data', sendDataToClient(client));
+    };
+    
+    var attachListenersToOutput = function(clientID) {
         var client = clients[clientID];
         if (!client) return;
-
-        var ondata = function(data) {
-            client.lastActiveTime = Date.now();
-            var data1 = data.replace(/\n$/, "");
-            //logClient(clientID, "data: " + data1.replace(/\n+/g, "\n" + clientID + ": data: "));
-            message = 'data: ' + data.replace(/\n/g, '\ndata: ') + "\r\n\r\n";
-            if (!client.eventStream || client.eventStream.length == 0) { // fatal error, should not happen
-                logClient(clientID, "Error: No event stream in m2ConnectStream");
-                return;
-                //throw "Error: No client.eventStream in Start M2";
-            }
-            
-            for (var stream in client.eventStream) {
-                //logClient(clientID, "write: " + message);
-                client.eventStream[stream].write(message);
-            }
-        };
         if (client.m2) {
-            client.m2.stdout.removeAllListeners('data');
-            client.m2.stderr.removeAllListeners('data');
-            client.m2.stdout.on('data', ondata);
-            client.m2.stderr.on('data', ondata);
+           attachListenersToOutputPipes(client);
         }
     };
 
@@ -317,34 +375,35 @@ var M2Server = function(overrideOptions) {
 
     var keepEventStreamsAlive = function() {
         for (var prop in clients) {
-            if (clients.hasOwnProperty(prop) && clients[prop] && clients[prop].eventStream) {
-                for(var stream in clients[prop].eventStream ) {
-                    clients[prop].eventStream[stream].write(":ping\n");
+            if (clients.hasOwnProperty(prop) && clients[prop] && clients[prop].eventStreams) {
+                for(var stream in clients[prop].eventStreams ) {
+                    clients[prop].eventStreams[stream].write(":ping\n");
                 }
             }
         }
     };
 
-    // Client starts eventStream to obtain M2 output and start M2
-    var startSource = function(request, response) {
+    var setEventStreamForClientID = function(clientID, stream){ 
+            logClient(clientID, "pushing a response");
+            clients[clientID].eventStreams.push(stream);
+    };
+
+    // Client starts eventStreams to obtain M2 output and start M2
+    var connectEventStreamToM2Output = function(request, response) {
         assureClient(request, response, function(clientID) {
             response.writeHead(200, {
                 'Content-Type': "text/event-stream"
             });
-            logClient(clientID, "pushing a response");
-            clients[clientID].eventStream.push(response);
+            setEventStreamForClientID(clientID, response);
 
             if (!clients[clientID].m2) {
                 clients[clientID].m2 = m2Start(clientID);
             }
-            m2ConnectStream(clientID);
+            attachListenersToOutput(clientID);
             
             // If the client closes the connection, remove client from the list of active clients
             request.connection.on("end", function() {
                 logClient(clientID, "event stream closed");
-                if (clients[clientID]) {
-                    //clients[clientID].eventStream = [];
-                }
                 response.end();
             });
         });
@@ -428,7 +487,7 @@ var M2Server = function(overrideOptions) {
                     .m2.pid);
             }
             client.m2 = m2Start(clientID);
-            m2ConnectStream(clientID);
+            attachListenersToOutput(clientID);
             response.writeHead(200);
             response.end();
         });
@@ -483,7 +542,7 @@ var M2Server = function(overrideOptions) {
             if (clients.hasOwnProperty(prop) && clients[prop] && clients[prop].m2) {
                 if (pid == clients[prop].m2.pid) {
                     //console.log("We found the client! It is " + prop);
-                    if (clients[prop].eventStream.length != 0) {
+                    if (clients[prop].eventStreams.length != 0) {
                         //console.log("findClientID picked user with clientID " + prop);
                         return prop;
                     } else {
@@ -537,7 +596,7 @@ var M2Server = function(overrideOptions) {
 
     // we get a /image from our open script
     // imageAction finds the matching client by parsing the url, then sends the
-    // address of the image to the client's eventStream
+    // address of the image to the client's eventStreams
     var imageAction = function(request, response, next) {
         var url = require('url').parse(request.url).pathname;
         response.writeHead(200);
@@ -559,12 +618,12 @@ var M2Server = function(overrideOptions) {
             }
 
             message = 'event: image\r\ndata: ' + path + "\r\n\r\n";
-            if (!client.eventStream || client.eventStream.length == 0) { // fatal error, should not happen
+            if (!client.eventStreams || client.eventStreams.length == 0) { // fatal error, should not happen
                 logClient(clientID, "Error: No event stream");
             } else {
                 //logClient(clientID, "Sent image message: " + message);
-                for (var stream in client.eventStream ) {
-                    client.eventStream[stream].write(message);
+                for (var stream in client.eventStreams ) {
+                    client.eventStreams[stream].write(message);
                 }
             }
         } catch (err) {
@@ -596,12 +655,12 @@ var M2Server = function(overrideOptions) {
             }
 
             message = 'event: viewHelp\r\ndata: ' + path + "\r\n\r\n";
-            if (!client.eventStream || client.eventStream.length == 0 ) { // fatal error, should not happen
+            if (!client.eventStreams || client.eventStreams.length == 0 ) { // fatal error, should not happen
                 logClient(clientID, "Error: No event stream");
             } else {
                 //logClient(clientID, "Sent image message: " + message);
-                for (var stream in client.eventStream) {
-                    client.eventStream[stream].write(message);
+                for (var stream in client.eventStreams) {
+                    client.eventStreams[stream].write(message);
                 }
             }
         } catch (err) {
@@ -609,7 +668,7 @@ var M2Server = function(overrideOptions) {
         }
     }
     var checkForEventStream = function(clientID, response) {
-        if (!clients[clientID].eventStream || clients[clientID].eventStream.length == 0 ) {
+        if (!clients[clientID].eventStreams || clients[clientID].eventStreams.length == 0 ) {
             logClient(clientID, "Send notEventSourceError back to user.");
             response.writeHead(200, {
                 'notEventSourceError': 'No socket for client...'
@@ -627,10 +686,15 @@ var M2Server = function(overrideOptions) {
     	response.write("404");
     	response.end();
     };
+    
+    var setOwnershipToUser = function(clientID, filename){
+        runShellCommand("chown " + clients[clientID].systemUserName + ":" + clients[clientID].systemUserName + " " 
+            + filename, function(e)          {console.log("Chown: " + e);});
+    };
 
-    var uploadM2Package = function(request, response, next) {
+    var uploadFile = function(request, response, next) {
         assureClient(request, response, function(clientID) {
-            logClient(clientID, "received: /upload");
+            logClient(clientID, "received: /uploadTutorial");
             var formidable = require('formidable');
             var form = new formidable.IncomingForm;            
             var schrootPath;
@@ -639,15 +703,24 @@ var M2Server = function(overrideOptions) {
                     "/home/m2user/";
                 form.uploadDir = schrootPath;
             }
- 
+            
+            var filename;
+            var temporaryFilename;
+            
             form.on('file', function(name, file) {
+               var path;
                 if (options.SCHROOT) {
-                    var newpath = schrootPath;
+                    path = schrootPath;
                 } else {
-                    newpath = "/tmp/";
+                    path = "/tmp/";
                 }
-                // I think it is only renamed when the full file arrived
-                fs.rename(file.path, newpath + file.name, function(error) {
+                filename = path + file.name;
+                temporaryFilename = file.path;
+            });
+
+            form.on('end', function() {
+	    	    console.log("end received from formidable form");
+                fs.rename(temporaryFilename, filename, function(error) {
                     if (error) {
                         logClient(clientID, "Error in renaming file: " + error);
                         response.writeHead(500, {
@@ -655,20 +728,18 @@ var M2Server = function(overrideOptions) {
                         });
                         response.end('rename failed: ' + error);
                         return;
-                    }
-                    if (options.SCHROOT){
-                        runShellCommand("chown " + clients[clientID].systemUserName + ":" + clients[clientID].systemUserName + " " + newpath + file.name, function(e) {console.log("Chown: " + e);});
+                    } else {
+                          if (options.SCHROOT){
+                            setOwnershipToUser(clientID, filename);
+                          }
+                         response.writeHead(200, {
+                             "Content-Type": "text/html"
+                         });
+                         response.end('upload complete!');
                     }
                 });
             });
 
-            form.on('end', function() {
-	    	    console.log("end received from formidable form");
-                response.writeHead(200, {
-                    "Content-Type": "text/html"
-                });
-                response.end('upload complete!');
-            });
             form.on('error', function() {
                 logClient(clientID, 'received error in upload: ' );
                 response.writeHead(500, {
@@ -715,12 +786,36 @@ var M2Server = function(overrideOptions) {
             });
         });
     };
+    
+    var moveWelcomeTutorialToBeginning = function(tutorials, firstTutorial) {
+        var index = tutorials.indexOf(firstTutorial);
+        if (index >- 1) {
+            tutorials.splice(index,1);
+            tutorials.unshift(firstTutorial);
+        }
+        return tutorials;
+    };
 
+    var getListOfTutorials = function(request, response) {
+        fs.readdir("public/tutorials/", function(err, files){
+           var tutorials = files.map(function(filename){
+               return "tutorials/" + filename;
+           });
+           console.log("Files: " + tutorials);
+           response.writeHead(200, {
+               "Content-Type": "text/html"
+           });
+           
+           tutorials = moveWelcomeTutorialToBeginning(tutorials, "tutorials/welcome2.html");
+           response.end(JSON.stringify(tutorials));
+        });      
+    };
+    
     var app = connect()
         .use(connect.logger('dev'))
         .use(connect.favicon())
         .use(connect.static('public'))
-        .use('/upload', uploadM2Package)
+        .use('/upload', uploadFile)
         .use('/var/folders', connect.static('/var/folders'))
         .use('/usr/local/var/lib/schroot/mount', connect.static('/usr/local/var/lib/schroot/mount'))
         .use('/M2', connect.static('/M2'))
@@ -730,11 +825,12 @@ var M2Server = function(overrideOptions) {
         .use('/admin', stats)
         .use('/viewHelp', viewHelpAction)
         .use('/image', imageAction)
-        .use('/startSourceEvent', startSource)
+        .use('/startSourceEvent', connectEventStreamToM2Output)
         .use('/chat', m2InputAction)
         .use('/interrupt', interruptAction)
         .use('/restart', restartAction)
         .use('/save', saveAction)
+        .use('/getListOfTutorials', getListOfTutorials)
         .use(unhandled);
     //.use(connect.errorHandler());
 

@@ -1,0 +1,21 @@
+You can load your own tutorials to use them on this website. Tutorials are only available to you and are not sent to the server. Tutorials should have the following format:
+
+<html>
+  <head>
+    <title>
+     Tutorial Title
+    </title>
+  </head>
+<body>
+<div>
+    <h4>Section 1</h4>
+          Some text. Text within <code> tags can be executed by clicking on it.<br> 
+        <code>2+2</code><br>
+       More Text.<br>
+</div>
+<div>
+    <h4>Section 2</h4>
+          And even more Text.<br>
+    </div>
+  </body>
+</html>

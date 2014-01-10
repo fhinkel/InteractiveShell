@@ -1,9 +1,0 @@
-Document: libsbuild-doxygen-doc
-Title: sbuild API reference
-Author: Roger Leigh
-Abstract: A Doxygen-generated API reference for sbuild.
-Section: Programming/C++
-
-Format: HTML
-Index: /usr/share/doc/libsbuild-doc/html/index.html
-Files: /usr/share/doc/libsbuild-doc/html/*

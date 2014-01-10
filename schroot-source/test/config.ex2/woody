@@ -1,6 +1,0 @@
-[woody]
-description=Debian woody (oldstable)
-directory=/home/woody-chroot
-groups=sbuild
-aliases=oldstable
-

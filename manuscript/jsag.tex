@@ -50,14 +50,22 @@
 \else
 \usepackage{graphicx}
 \fi
-\title{Macaulay2 Web Version}
-\author{Lars Kastner\\ Freie Universit\"at Berlin \and 
-Franziska Hinkelmann\\Mathematical Biosciences Institute\\ Ohio State University \and 
-Michael Stillman\\Cornell University  }
+
+\def\tryM2{{\it Try Macaulay2}}
+\def\M2{{\it Macaulay2}}
+
+%\title{Macaulay2 Web Version}
+\title{\tryM2: A web version of \M2}
+\author{Lars Kastner\\ Freie Universit\"at Berlin \\{\small kastner\char`\@math.fu-berlin.de} \and 
+Franziska Hinkelmann\\Mathematical Biosciences Institute\\ Ohio State University \\{\small franziska.hinkelmann\char`\@gmail.com} \and 
+Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \thanks{Stillman has been supported by NSF grants DMS 08-10909 and 10-02210. Hinkelmann has been supported by NSF award 0635561.} }
+
 
 \date{}
 
 \begin{document}
+
+
 
 \ifpdf
 \DeclareGraphicsExtensions{.pdf, .jpg, .tif}
@@ -65,70 +73,233 @@ Michael Stillman\\Cornell University  }
 \DeclareGraphicsExtensions{.eps, .jpg}
 \fi
 
+
+
 \maketitle
 
 
+
 \begin{abstract}
-    A webversion of Macaulay2, a computer algebra system funded by the National Sciences Foundation since 1992. The webversion gives easy access to this sophisticated software without the hurdles that usually come with installing it. This is particularly useful for first time users and students as it is easy to try out. The webversion has all features that a desktop version has and can be used to its full potential. The webversion contains tutorials, that explain different concepts such as an introduction to Gr\"obner bases. Users can develop their own tutorials and provide them to their students, making it a great tool for education. 
+
+    A webversion of Macaulay2, a computer algebra system funded by the
+    National Sciences Foundation since 1992. The webversion gives easy
+    access to this sophisticated software without the hurdles that
+    usually come with installing it. This is particularly useful for
+    first time users and students as it is easy to try out. The
+    webversion has all features that a desktop version has and can be
+    used to its full potential. The webversion contains tutorials,
+    that explain different concepts such as an introduction to
+    Gr\"obner bases. Users can develop their own tutorials and provide
+    them to their students, making it a great tool for education.
+
 \end{abstract}
+
 
 \section{Introduction}
 \begin{figure}[htb]
     \includegraphics[width=.95\textwidth]{homeWebsite.jpg}
-    \caption{Welcome screen of web version of Macaulay2. The left hand side shows a tutorial giving an introduction to Gr\"obner bases. Text in yellow can be clicked and is then executed by Macaulay2 on the server. The complete output of the calculations is show on the right hand side. {\it Home, Tutorial, Input} let the user change the left hand view, {\it Reset, Interrupt} allow to reset and interrupt the Macaulay2 session on the server, {\it Save}  provides both the input and the output of the current session to the user as a text file, and with {\it Upload} one can upload files that can then be accessed by Macaulay2.}
+    \caption{A typical view in \tryM2. The left hand
+      side shows a tutorial giving an introduction to Gr\"obner
+      bases. Text in yellow can be clicked and is then executed by
+      Macaulay2 on the server. The complete output of the calculations
+      is show on the right hand side. {\it Home, Tutorial, Input} let
+      the user change the left hand view, {\it Reset, Interrupt} allow
+      to reset and interrupt the Macaulay2 session on the server, {\it
+        Save} provides both the input and the output of the current
+      session to the user as a text file, and with {\it Upload} one
+      can upload files that can then be accessed by \M2.}
     \label{fig:home}
 \end{figure}
 
-The online version of Macaulay2 has the same functionality as regular Macaulay2, albeit the user has access to less resources than on his own machine. The user can upload files and load packages, generate files such as images, and has access to shell commands. 
 
 
-Motivation (simple for students, simple interface, no time for installation in class, also usable for advanced users (no limitations), other sites (Sage) had heavier interface)
+\tryM2 is an on-line version of \M2 \cite{M2} which
+doesn't require users to download or install the program, and also
+doesn't require users to set up an account and log in.  \tryM2
+has the same functionality as the desktop version,
+albeit the user might have access to less resources
+than on their own machine.  Users can upload files and
+load packages, generate files such as images, and also have
+access to other shell commands, such as gfan, 4ti2, and code for
+generating images of graphs.
 
+Our primary motivation for creating this web application was to
+provide an easy to use experience for classroom and student use.
+Having students download and install software such as \M2 is time
+consuming and inevitably there are some situations for which this
+process fails or takes significant effort to get runnning, e.g. on
+some versions of Windows.  The \tryM2 web application is designed to
+be able to handle many students at once, and without having the users
+need to create accounts or log in.  \tryM2 was used at the Syzygyies
+meeting in Berlin in May 2013, with about 70 users.  We note that the
+site is not only for beginners, it is useful for seasoned experts as
+well.
+
+We considered off the shelf solutions, such as the Sage
+notebook~\cite{sagenotebook}, but decided that we wished for a
+lighter-weight solution, and one that did not require users to create
+new accounts at a web site.  Nothing available seemed to meet our
+needs, hence the current system.
+
+\tryM2 runs under the Chrome, Firefox and Safari web browsers, but not
+under Internet Explorer.  On the iPad, it runs under Chrome and
+Safari, although it seems that Chrome offers a nicer user experience.
+It runs under recent versions of Android ($4.0$ and higher).
+
+In addition to presenting an interface to an instance of \M2
+running on a distant server, a number of tutorials to
+learn \M2 are provided.  Instructors can create their own
+tutorials, and can make them available to their students, as well as
+to other \M2 users.  
+
+In Section 2, we describe the basics of using the web application.
+Section 3 details how to create and make available your own tutorials.
+Providing a program such as \M2 which allows users to
+access system resources presents a number of challenges to keep users
+from naively or mischievously misusing the system.  In Section 4, we
+provide details as to how we structure the application on the server.
+In the last section, we describe some of our wish-list items for
+improving and extending the system.
+
+The system is open source, and available on github (see \cite{github}).
+If you would like more information on using this in your own courses,
+or if you have suggestions, please contact one of us.
+
+We would like to thank Charles Boyd, Dan Grayson, Greg Smith, and Benjamin Lorenz for
+fruitful discussions on system security and on user interface design.
 
 \section{How to use the website}
-The right hand side provides a shell like environment running Macaulay2. You can type into it, as well as use the arrow keys for navigating through your command history.
+The right hand side provides a shell like environment running
+Macaulay2. You can type into it, as well as use the arrow keys for
+navigating through your command history.
 
-On the left hand side, the user can navigate between {\it Home}, {\it Tutorial}, and {\it Input}. {\it Home} shows the table of contents of tutorials. {\it Tutorial} shows the currently selected tutorial. Tutorials are interactive and contain executable pieces of Macaulay2 code that are run by clicking on them. {\it Input} shows a terminal window in which the user can type commands and execute them.  
+On the left hand side, the user can navigate between {\it Home}, {\it
+  Tutorial}, and {\it Input}. {\it Home} shows the table of contents
+of tutorials. {\it Tutorial} shows the currently selected
+tutorial. Tutorials are interactive and contain executable pieces of
+Macaulay2 code that are run by clicking on them. {\it Input} shows a
+terminal window in which the user can type {\it Macaulay2} commands and execute them.
 
-All code executed either by clicking on interactive parts in a tutorial or by entering code in the {\it Input} window, appears on the right hand side together with the output from Macaulay2 to those results. 
+All code executed, either by clicking on interactive parts in a
+tutorial or by entering code in the {\it Input} window, appears on the
+right hand side together with the output from Macaulay2 to those
+results.
 
-The {\it Reset} button resets a Macaulay2 session, i.e., stopping a running calculation, deleting all variables, unloading all packages, and loading the standard packages. 
+The {\it Reset} button resets a Macaulay2 session, i.e., restarts 
+the \M2 process: it stops any running calculation, deletes all variables, 
+unloads all packages, and then reloads the standard packages.
 
-The {\it Interrupt} button stops a running calculation, without resetting the Macaulay2 session. 
+The {\it Interrupt} button stops a running calculation, without
+resetting the Macaulay2 session.
 
 \subsection{Features}
-The user can run all Macaulay2 commands that are available in the running version. To obtain the current version running on the server, type {\tt version}. Loading packages is possible, too, with commands such as {\tt loadPackage}. If packages are not available, they can be uploaded to the users session, by clicking the {\it Upload file} button. Similarly, any other file, such as text files, that one might want to manipulate or read data from with Macaulay2 can be uploaded to the user's session. 
+
+The user is free to run all \M2 commands that are available in the
+running version. To find the version of \M2 running on the server,
+enter and evaluate: {\tt version\#"VERSION"}.  Loading packages is
+done using {\tt loadPackage} or {\tt needsPackage}, e.g. {\tt needsPackage "BoijSoederberg"}.  
+New packages can be
+uploaded to the user's session, by clicking the {\it Upload file}
+button. Similarly, any other file, such as text files, that one might
+want to manipulate or read data from with \M2, can be uploaded to
+the user's session.
+
+%Loading packages is possible, too, with commands
+%such as {\tt loadPackage}. If packages are not available, they can be
+%uploaded to the users session, by clicking the {\it Upload file}
+%%nbutton. Similarly, any other file, such as text files, that one might
+%want to manipulate or read data from with Macaulay2 can be uploaded to
+%the user's session.
 
 \begin{figure}[htb]
     \includegraphics[width=.95\textwidth]{withGraph.jpg}
-    \caption{Screenshot of webversion of Macaulay2 after the user generated an image. Some Macaulay2 packages can generate graphs. By invoking the command {\tt displayGraph}, the image is generated on the server and displayed to the user.}
+    \caption{Screenshot of \tryM2 after the user
+      generated an image. Some Macaulay2 packages can generate
+      graphs. By invoking the command {\tt displayGraph}, the image is
+      generated on the server and displayed to the user.}
     \label{fig:graph}
 \end{figure}
 
-Results from a session can be retrieved by using the {\it Save} button. If the user needs to retrieve files, that are stored in his session, those can be retrieved by executing {\tt open} in the user's session. If Macaulay2 generates graphs, those are shown to the user, see Figure \ref{fig:graph}.
+Results from a session can be retrieved by using the {\it Save}
+button, or by using copy and paste. If Macaulay2 generates
+images such as graphs, those are presented to the user, see Figure \ref{fig:graph}.
 
-Session are usually being kept alive for several days, which allows users to continue their work next time they access server. 
+%If the user needs to retrieve
+%files that are stored in his session, those can be retrieved by
+%executing {\tt open} in the user's session. 
+
+Session are usually kept alive for several days, which allows users to
+continue their work next time they access the server, if either they
+have not closed their browser, or set the browser to remember their
+windows.
 
 \section{Tutorials}
-writing new tutorials,
-\section{Internal structure, schroots}
-One of the first questions that occurred to us in this context was whether to offer a sandboxed version of M2 or M2 with full functionality.
-We settled for the second alternative, since it seemed easier to realize and more likely to attract new users.
-This lead to several new questions:
+Instructors and other users can create their own tutorials for use with \tryM2.
+A \M2 package, {\tt TryMacaulay2} is provided to help with this process.  
+First, you write your tutorial in \M2's {\it SimpleDoc} format, which includes example \M2 code.
+Then, run the \M2 command script {\tt makeTutorial} to create an html document, and finally 
+load this into your {\tt running web.macaulay2.com} session using the {\tt uploadTutorial} button at the bottom of the tutorial list.
+You will be prompted for the  html document which the {\tt makeTutorial} script created.
+Iterate this process
+to improve your tutorial.
+
+Once satisfied with the tutorial, make it available to your students either as a file on the web,
+or have them download the file.  They then load this tutorial into their {\tt running web.macaulay2.com} session using the {\tt uploadTutorial} button as well.
+
+The following steps to create a tutorial are also documented in the package {\tt TryMacaulay2}.
 \begin{enumerate}
-\item A fully functional M2 also gives the user system access. How does that impact security and how to deal with it?
+\item Create a tutorial in simpledoc format, say {\tt foo.simpledoc}.  For an example, type into \M2, {\tt viewHelp "TryMacaulay2"}.
+\item Use {\tt makeTutorial "foo.simpledoc"} to create a file "foo.trym2".
+\item In the {\it Home} screen in \tryM2, click on the {\it Load Tutorial} button, and select this file.
+\end{enumerate}
+
+In the case that you don't have access to \M2 on your local machine, you can upload the  {\it SimpleDoc} file to the server, convert it there and then download it using the \M2 {\tt open} function.
+
+Once your students have a copy of the file {\tt "foo.trym2"}, then can also load the tutorial into their \tryM2
+session, as in the third step.
+
+
+
+\section{Internal structure, schroots}
+
+The \tryM2 web server runs on a virtual machine on a linux computer on the web.
+The server is implemented using {\tt node.js}, and the client
+communicates with the server via asynchronous AJAX calls, which often
+provides very responsive interaction with the server \cite{nodejs}.
+
+Any user with moderate knowledge of linux can set up their own {\it try Macaulay2}
+server.  Detailed directions for doing so are in the github repository \cite{github}.
+
+A major concern is security.
+One of the first questions that occurred to us in this context was
+whether to offer a sandboxed version of \M2 or \M2 with full
+functionality.
+We decided on the second alternative, since it seemed
+easier to realize and more likely to attract new users.  This lead to
+several questions:
+
+\begin{enumerate}
+\item A fully functional \M2 also gives the user system access. How does that impact security and how to deal with it?
 \item How do we distinguish the users on the system?
 \item How can we limit resources to prevent one user from breaking the system? e.g. via fork bombs.
 \item How do we clean up after a user has left?
 %\item blablabla?
 \end{enumerate}
 
-The answer to the second question was to create and delete users on the fly. Since this implies that the server must be run as root, we decided to run it inside a virtual machine in order not to compromise the security of the host system.
+The answer to the second question was to create and delete users on
+the fly. Since this implies that the server must be run as root, we
+decided to run it inside a virtual machine in order not to compromise
+the security of the host system.
 
+Since any system command can be run from inside \M2, we
+decided to run M2 inside a `secure chroot' (schroot) \cite{schroot}. To provide full
+functionality we mount a full file system inside the schroot. The mounting
+happens read only, except that the few folders that \M2 needs write access to are provided with a writable layer.
+In the definition of a user specific
+schroot there is no root user, so it should not be possible to become
+root or execute any command via sudo.
 
-Since any system command can be run from inside M2 which is why we decided to run M2 inside a `secure chroot' (schroot). To provide full funtionality we mount a full system inside the schroot. The mounting happens read only, a few folders are provided with a writable layer, if M2 needs write access to them. In the definition of a user specific schroot there is not root user, so it should not be possible to become root or execute any command via sudo.
-
-When a user connects to the server the following things happen:
+When a user connects to the server the following happens:
 \begin{enumerate}
 \item A user account on the system is created.
 \item A schroot configuration file is created with the above user as only user.
@@ -136,12 +307,56 @@ When a user connects to the server the following things happen:
 \item The schroot is started.
 \end{enumerate}
 
-Control groups (cgroups) allow you to restrict the number of CPU shares and the memory for a process and all its children. When M2 is executed inside a schroot it is called via {\tt cgexec} with the cgroups specifically created for this user. Using this technique it is possible to limit the total consumption of CPU and memory by each user. Additionally we ensure that the administrator of the virtual machine always is able to execute any command required for maintenance, i.e. if the node server is down or has been compromised.
+Control groups (cgroups) allow you to restrict the number of CPU
+shares and the memory for a process and all its children \cite{cgroups}. When M2 is
+executed inside a schroot it is called via {\tt cgexec} with the
+cgroups specifically created for this user. Using this technique it is
+possible to limit the total consumption of CPU and memory by each
+user. Additionally we ensure that the administrator of the virtual
+machine always is able to execute any command required for
+maintenance, i.e. if the node server is down or has been compromised.
 
-Now any Macaulay2 command can be run in this schroot inside the corresponding cgroups.
+At this point, any Macaulay2 command can be run in this schroot inside the
+corresponding cgroups.
 
-You can find a detailed description how to set up this environment on \cite{trym2-github} in the file {\tt configuring\_linux.tex}.
+User cleanup is done with a combination of shell scripts and the web server itself.
+
+You can find a detailed description how to set up this environment on
+\cite{trym2-github} in the file {\tt configuring\_linux.tex}.
+
+\section{The future}
+
+Some important small enhancements that we envision include command
+line completion and colorization of \M2 code.  However, an important
+design decision is to keep the interface as simple as possible.
+
+The system we have written was designed with \M2 in mind, but 
+the entire structure will work for other command line programs such as Singular \cite{singular},
+and GAP \cite{GAP4}.  We are currently working on creating a similar server for Singular.
+Tutorials for other systems may be created in the same way as \M2 tutorials.
 
 \bibliographystyle{plain}
 \bibliography{references}
 \end{document}
+
+. What we do?
+  . Provide a web-based M2
+  . Full featured
+  . No creation of accounts needed.
+  . No setup time to use in a class setting.  Students can work immediately, with no setup fuss.
+  . Tutorials to learn M2 provided.
+  . Instructors can create their own tutorials for their students to learn.
+  . Also suitable for advanced users.
+  . The source is open and on github: any user can create a web-based server
+      for others.  Todo: can lock it down to your own self.
+  . This runs acceptably on ipad and android, although having a separate 
+    keyboard is good.  Future: improve experience on tablets.
+
+  section 2: how to use web Macaulay2, an overview of the features.
+  section 3: writing tutorials, making them available.
+  section 4: some details about how the server was written and structured.
+  section 5: wishlist for additional features.
+
+. Why not other solutions, such as the Sage notebook?
+  . need accounts
+  . this solution seems more ``lightweight''

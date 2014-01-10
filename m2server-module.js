@@ -307,35 +307,37 @@ var M2Server = function(overrideOptions) {
 
     };
 
-    var sendDataToClient = function(client) {
+    var sendDataToClient = function(clientID) {
       return function(data){
-         client.lastActiveTime = Date.now();
+         var streams = clients[clientID].eventStreams;
+         updateLastActiveTime(clientID);
          message = formatServerSentEventMessage(data);
-         if (!client.eventStreams || client.eventStreams.length == 0) { // fatal error, should not happen
+         if (!streams || streams.length == 0) { // fatal error, should not happen
              logClient(clientID, "Error: No event stream for sending data to client.");
              return;
-             //throw "Error: No client.eventStreams in Start M2";
+             //throw "Error: No streams in Start M2";
          }
          
-         for (var stream in client.eventStreams) {
+         for (var stream in streams) {
              //logClient(clientID, "write: " + message);
-             client.eventStreams[stream].write(message);
+             streams[stream].write(message);
          }
       };
     };
 
-    var attachListenersToOutputPipes = function(client){
-         client.m2.stdout.removeAllListeners('data');
-         client.m2.stderr.removeAllListeners('data');
-         client.m2.stdout.on('data', sendDataToClient(client));
-         client.m2.stderr.on('data', sendDataToClient(client));
+    var attachListenersToOutputPipes = function(clientID){
+         var m2process = clients[clientID].m2;
+         m2process.stdout.removeAllListeners('data');
+         m2process.stderr.removeAllListeners('data');
+         m2process.stdout.on('data', sendDataToClient(clientID));
+         m2process.stderr.on('data', sendDataToClient(clientID));
     };
     
     var attachListenersToOutput = function(clientID) {
         var client = clients[clientID];
         if (!client) return;
         if (client.m2) {
-           attachListenersToOutputPipes(client);
+           attachListenersToOutputPipes(clientID);
         }
     };
 
@@ -415,31 +417,35 @@ var M2Server = function(overrideOptions) {
                 return;
             };
             request.setEncoding("utf8");
-            var body = "";
-            // When we get a chunk of data, add it to the body
+            var m2commands = "";
+            // When we get a chunk of data, add it to the m2commands
             request.on("data", function(chunk) {
-                body += chunk;
+                m2commands += chunk;
             });
 
-            // Send input to M2 when we have received the complete body
+            // Send input to M2 when we have received the complete m2commands
             request.on("end", function() {
-                m2ProcessInput(clientID, body, response);
+                handCommandsToM2(clientID, m2commands, response);
             });
         });
     };
 
-    var m2ProcessInput = function(clientID, body, response) {
+    var updateLastActiveTime = function(clientID){
+         clients[clientID].lastActiveTime = Date.now();
+    }
+
+    var handCommandsToM2 = function(clientID, m2commands, response) {
+         logClient(clientID, "M2 input: " + m2commands);
+         if (!clients[clientID] || !clients[clientID].m2 || !clients[
+             clientID].m2.stdin.writable) {
+             // this user has been pruned out!  Simply return.
+             response.writeHead(200);
+             response.end();
+             return;
+         }
+         updateLastActiveTime(clientID);
         try {
-            logClient(clientID, "M2 input: " + body);
-            if (!clients[clientID] || !clients[clientID].m2 || !clients[
-                clientID].m2.stdin.writable) {
-                // this user has been pruned out!  Simply return.
-                response.writeHead(200);
-                response.end();
-                return;
-            }
-            clients[clientID].lastActiveTime = Date.now();
-            clients[clientID].m2.stdin.write(body, function(err) {
+            clients[clientID].m2.stdin.write(m2commands, function(err) {
                 if (err) {
                     logClient("write failed: " + err);
                 }
@@ -555,7 +561,7 @@ var M2Server = function(overrideOptions) {
         throw ("Did not find a client for PID " + pid);
     };
 
-    var getClientIDFromUrl = function(url) {
+   var regexMatchingForClientID = function(url){
         // The URL's in question look like:
         //  (schroot version): /user45345/var/a.jpg
         //  (non-schroot): /dfdff/dsdsffff/fdfdsd/M2-12345-1/a.jpg
@@ -579,94 +585,58 @@ var M2Server = function(overrideOptions) {
             clientID = findClientID(matchobject[1]);
         }
         return clientID;
+   };
+
+    var getValidClientIDFromUrl = function(url) {
+        var clientID = regexMatchingForClientID(url);
+        // Sanity check:
+         client = clients[clientID];
+         if (!client) {
+            throw ("No client for ID: " + clientID);
+         }
+        return clientID;
     };
 
-    // return path to image
-    var parseUrlForPath = function(url) {
-        var imagePath = url.match(/^\/(user)?\d+\/(.*)/);
-        //console.log(imagePath);
-
-        if (!imagePath) {
-            throw ("Did not get imagePath in image url");
+    var parseUrlForPath = function(clientID, url) {
+        var path = url.replace(/^\/(user)?\d+\//,"");
+        if (!path) {
+            throw ("Could not extract path from " + url);
         }
-        //console.log("imagePath = " + imagePath[2]);
-        return imagePath[2];
+         if (options.SCHROOT) {
+             path = "/usr/local/var/lib/schroot/mount/" + clients[clientID].schrootName + path
+         }
+        return path;
     };
 
-
-    // we get a /image from our open script
-    // imageAction finds the matching client by parsing the url, then sends the
-    // address of the image to the client's eventStreams
-    var imageAction = function(request, response, next) {
+    var forwardRequestForSpecialEventToClient = function(eventType) {
+      return function(request, response){
         var url = require('url').parse(request.url).pathname;
         response.writeHead(200);
         response.end();
-
         try {
-            var clientID = getClientIDFromUrl(url);
-            logClient(clientID, "image " + url + " received");
-
-            client = clients[clientID];
-            if (!client) {
-                logClient(clientID, "image request for invalid clientID");
-                return;
-            }
-
-            var path = parseUrlForPath(url); // a string
-            if (options.SCHROOT) {
-                path = "/usr/local/var/lib/schroot/mount/" + clients[clientID].schrootName + path
-            }
-
-            message = 'event: image\r\ndata: ' + path + "\r\n\r\n";
-            if (!client.eventStreams || client.eventStreams.length == 0) { // fatal error, should not happen
-                logClient(clientID, "Error: No event stream");
-            } else {
-                //logClient(clientID, "Sent image message: " + message);
-                for (var stream in client.eventStreams ) {
-                    client.eventStreams[stream].write(message);
-                }
-            }
+            var clientID = getValidClientIDFromUrl(url);
+            logClient(clientID, "Request for " + eventType + " received: " + url);
+            var path = parseUrlForPath(clientID, url); // a string
+            message = 'event: ' + eventType + '\r\ndata: ' + path + "\r\n\r\n";
+            sendMessageToClient(clientID, message);
         } catch (err) {
-            logClient(clientID,"Received invalid /image request: " + err);
+            logClient(clientID,"Received invalid request: " + err);
         }
+      };
     };
 
-    var viewHelpAction = function(request, response, next) {
-        var url = require('url').parse(request.url).pathname;
-        response.writeHead(200);
-        response.end();
-        console.log("We received a viewHelp request.");
-        try {
-            var clientID = getClientIDFromUrl(url);
-            logClient(clientID, "viewHelp " + url + " received");
 
-            client = clients[clientID];
-            if (!client) {
-                logClient(clientID, "viewHelp request for invalid clientID");
-                return;
-            }
+    var sendMessageToClient = function(clientID, message){
+      var streams = clients[clientID].eventStreams;
+      if (!streams || streams.length == 0 ) { // fatal error, should not happen
+          logClient(clientID, "Error: No event stream");
+      } else {
+          for (var stream in streams) {
+              streams[stream].write(message);
+          }
+      }
+    };
 
-            var path = parseUrlForPath(url); // a string
-                        
-            if (options.SCHROOT) {
-                // path is of the form file:///M2/share/....html
-                // This will fail if we split the clientID.
-                path = path.match(/^file:\/\/(.*)/)[1];
-            }
-
-            message = 'event: viewHelp\r\ndata: ' + path + "\r\n\r\n";
-            if (!client.eventStreams || client.eventStreams.length == 0 ) { // fatal error, should not happen
-                logClient(clientID, "Error: No event stream");
-            } else {
-                //logClient(clientID, "Sent image message: " + message);
-                for (var stream in client.eventStreams) {
-                    client.eventStreams[stream].write(message);
-                }
-            }
-        } catch (err) {
-            logClient(clientID,"Received invalid /viewHelp request: " + err);
-        }
-    }
     var checkForEventStream = function(clientID, response) {
         if (!clients[clientID].eventStreams || clients[clientID].eventStreams.length == 0 ) {
             logClient(clientID, "Send notEventSourceError back to user.");
@@ -823,8 +793,8 @@ var M2Server = function(overrideOptions) {
         .use('/tmp', connect.static('/tmp'))
         // and here on Ubuntu
         .use('/admin', stats)
-        .use('/viewHelp', viewHelpAction)
-        .use('/image', imageAction)
+        .use('/viewHelp', forwardRequestForSpecialEventToClient("viewHelp"))
+        .use('/image', forwardRequestForSpecialEventToClient("image"))
         .use('/startSourceEvent', connectEventStreamToM2Output)
         .use('/chat', m2InputAction)
         .use('/interrupt', interruptAction)

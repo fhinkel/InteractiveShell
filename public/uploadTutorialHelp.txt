@@ -2,9 +2,7 @@ You can load your own tutorials to use them on this website. Tutorials are only 
 <br>
 &lt;html&gt;<br>
 &emsp; &lt;head&gt;<br>
-&emsp;&emsp; &lt;title&gt;<br>
-&emsp;&emsp;&emsp; Tutorial Title<br>
-&emsp;&emsp; &lt;/title&gt;<br>
+&emsp;&emsp; &lt;title&gt; Tutorial Title &lt;/title&gt;<br>
 &emsp; &lt;/head&gt;<br>
 &emsp; &lt;body&gt;<br>
 &emsp;&emsp; &lt;div&gt;<br>

@@ -1,4 +1,4 @@
-You can load your own tutorials to use them on this website. Tutorials are only available to you and are not sent to the server. Tutorials should have the following format:<br>
+You can load your own tutorial to use it on this website. Your tutorial is only available to you and is not sent to the server. In order to be displayed correctly, the tutorial should have the following format:<br>
 <br>
 &lt;html&gt;<br>
 &emsp; &lt;head&gt;<br>
@@ -19,5 +19,13 @@ You can load your own tutorials to use them on this website. Tutorials are only 
 &emsp; &lt;/body&gt;<br>
 &lt;/html&gt;<br>
 <br>
-Alternatively, you can write tutorials in simpledoc format, and convert them.<br>
-<code>viewHelp simpleDocConverter</code>
+Alternatively, you can write your tutorial in simpledoc format, and convert it using the DocConverter package.
+Upload a file "mytutorial.simpledoc" in simpleDoc format by using the "upload File" button. Then run <br>
+<code>installPackage "DocConverter"</code><br>
+<code>convert "mytutorial"</code><br>
+Download the resulting html file with<br>
+<code>get "!open mytutorial.html"</code>. <br>
+You can use the html file now by loading it with "Load Tutorial." <br>
+For more details see<br>
+<code>viewHelp DocConverter</code><br>
+<code>viewHelp SimpleDoc</code><br>

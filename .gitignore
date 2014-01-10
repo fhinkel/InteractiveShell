@@ -6,4 +6,5 @@
 *.ps
 *.pdf
 *.dvi
+.DS_Store
 node_modules

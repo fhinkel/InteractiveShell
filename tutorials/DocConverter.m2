@@ -31,12 +31,12 @@ newPackage(
                 },
             {
                 Name => "Franziska Hinkelmann", 
-                Email => "fhinkel@gmail.com"
+                Email => "franziska.hinkelmann@tngtech.com"
                 },
             {
                 Name => "Lars Kastner", 
-                Email => "", 
-                HomePage=>""
+                Email => "k.l@fu-berlin.de", 
+                HomePage=>"http://page.mi.fu-berlin.de/lkastner/"
                 }
             },
         Headline => "Convert tutorial and simpleDOC formats to HTML for TryM2 tutorials",

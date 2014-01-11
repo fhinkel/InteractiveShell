@@ -59,12 +59,13 @@ var M2Server = function(overrideOptions) {
     },
 
         totalUsers = 0, //only used for stats: total # users since server started
-	userNumber = 0, //number in the system
+	    userNumber = 0, //number in the system
 
         // An array of Client objects.  Each has an M2 process, and a response
         // object It is possible that this.m2 is not defined, and/or that
         // this.eventStreams is not defined.
-        clients = {};
+        clients = {},
+        server;
 
     // preamble every log with the client ID
     var logClient = function(clientID, str) {
@@ -187,6 +188,7 @@ var M2Server = function(overrideOptions) {
      };
 
      var createSystemUser = function(clientID, callbackFcn) {
+        console.log("Beginning schroot user.");
        setSchrootParameters(clientID);
        runShellCommand(
            'perl-scripts/create_user.pl ' + clients[clientID].systemUserName 
@@ -235,8 +237,9 @@ var M2Server = function(overrideOptions) {
         
         logClient(clientID, 
             "New user: " + " UserAgent=" + request.headers['user-agent'] + ".");
+        logClient(clientID, "schroot: " + options.SCHROOT);
         if (options.SCHROOT) {
-           createSystemUser(clientID, callbackFcn);
+            createSystemUser(clientID, callbackFcn);
         } else {
             callbackFcn(clientID);
         }
@@ -856,20 +859,25 @@ var M2Server = function(overrideOptions) {
         console.log("M2 server listening on port " + options.port + "...");
         return server.listen(options.port);
     };
-    var server;
 
-    // Start of M2Server creation code
-    for (opt in overrideOptions) {
-        if (options.hasOwnProperty(opt)) {
-            options[opt] = overrideOptions[opt];
-            console.log("m2server option: " + opt + " set to " + options[opt]);
-        }
-    }
-    initializeServer();
+    var overrideDefaultOptions = function(overrideOptions){
+       // Start of M2Server creation code
+       for (opt in overrideOptions) {
+           if (options.hasOwnProperty(opt)) {
+               options[opt] = overrideOptions[opt];
+               console.log("m2server option: " + opt + " set to " + options[opt]);
+           }
+       }
+    };
     
     process.on('uncaughtException', function(err) {
       console.log('Caught exception in global process object: ' + err);
     });
+    
+
+    overrideDefaultOptions(overrideOptions);
+    initializeServer();
+    
 
     // These are the methods available from the outside:
     return {

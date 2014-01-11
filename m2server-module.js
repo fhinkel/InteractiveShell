@@ -340,18 +340,18 @@ var M2Server = function(overrideOptions) {
            attachListenersToOutputPipes(clientID);
         }
     };
-
-    var assureClient = function(request, response, callbackFcn) {
-        var cookies = new Cookies(request, response);
-        var clientID = cookies.get("tryM2");
-        console.log("Client has cookie value: " + clientID);
-
-        // Start new user for users coming with invalid, i.e., old, cookie
-        if (!clients[clientID]) {
-            clientID = startUser(cookies, request, callbackFcn);
-        } else {
-            callbackFcn(clientID);
-        }
+    
+    var runFunctionIfClientExists = function(next) {
+        return function(request, response){
+           var cookies = new Cookies(request, response);
+           var clientID = cookies.get("tryM2");
+           console.log("Client has cookie value: " + clientID);
+           if (!clients[clientID]) {
+               clientID = startUser(cookies, request, next(request, response));
+           } else {
+               next(request, response)(clientID);
+           }
+        };
     };
 
     var stats = function(request, response, next) {
@@ -664,11 +664,6 @@ var M2Server = function(overrideOptions) {
             + filename, function(e)          {console.log("Chown: " + e);});
     };
    
-    var runFunctionIfClientExists = function( next ){
-        return function(request, response){
-            assureClient(request, response, next(request, response));
-        };
-    };
 
 
     var uploadFile = function(request, response, clientID) {

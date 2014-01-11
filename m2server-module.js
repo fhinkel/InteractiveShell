@@ -681,35 +681,9 @@ var M2Server = function(overrideOptions) {
             + filename, function(e)          {console.log("Chown: " + e);});
     };
    
-
-
-    var uploadFile = function(request, response, clientID) {
-        return function(clientID){
-         logClient(clientID, "received: /uploadTutorial");
-         var formidable = require('formidable');
-         var form = new formidable.IncomingForm;            
-         var schrootPath;
-         if (options.SCHROOT) {
-             schrootPath = "/usr/local/var/lib/schroot/mount/" + clients[clientID].schrootName +
-                 "/home/m2user/";
-             form.uploadDir = schrootPath;
-         }
          
-         var filename;
-         var temporaryFilename;
-         
-         form.on('file', function(name, file) {
-            var path;
-             if (options.SCHROOT) {
-                 path = schrootPath;
-             } else {
-                 path = "/tmp/";
-             }
-             filename = path + file.name;
-             temporaryFilename = file.path;
-         });
-
-         form.on('end', function() {
+     var saveUploadedFile = function(temporaryFilename, filename, clientID, response) {
+         return function() {
              console.log("end received from formidable form");
              fs.rename(temporaryFilename, filename, function(error) {
                  if (error) {
@@ -728,18 +702,53 @@ var M2Server = function(overrideOptions) {
                       });
                       response.end('upload complete!');
                  }
-             });
-         });
-
-         form.on('error', function() {
+             });      
+         };
+     };
+     
+     var sendUploadError = function(clientID) {
+         return function() {
              logClient(clientID, 'received error in upload: ' );
              response.writeHead(500, {
                  "Content-Type": "text/html"
              });
              response.end('upload not complete!');
-         });
+         };
+     };
 
-         form.parse(request);
+
+    var uploadFile = function(request, response, clientID) {
+        return function(clientID){
+             logClient(clientID, "received: /uploadTutorial");
+             var formidable = require('formidable');
+             var form = new formidable.IncomingForm;            
+             var schrootPath;
+             if (options.SCHROOT) {
+                 schrootPath = "/usr/local/var/lib/schroot/mount/" + clients[clientID].schrootName +
+                     "/home/m2user/";
+                 form.uploadDir = schrootPath;
+             }
+         
+             var filename;
+             var temporaryFilename;
+         
+             form.on('file', function(name, file) {
+                var path;
+                 if (options.SCHROOT) {
+                     path = schrootPath;
+                 } else {
+                     path = "/tmp/";
+                 }
+                 filename = path + file.name;
+                 temporaryFilename = file.path;
+                 form.on('end', saveUploadedFile(temporaryFilename, filename, clientID, response));     
+                 
+             });
+
+
+             form.on('error', sendUploadError(clientID));
+
+             form.parse(request);
          };
     };
 
@@ -806,7 +815,6 @@ var M2Server = function(overrideOptions) {
         .use(connect.logger('dev'))
         .use(connect.favicon())
         .use(connect.static('public'))
-        .use('/upload', uploadFile)
         .use('/var/folders', connect.static('/var/folders'))
         .use('/usr/local/var/lib/schroot/mount', connect.static('/usr/local/var/lib/schroot/mount'))
         .use('/M2', connect.static('/M2'))
@@ -814,6 +822,7 @@ var M2Server = function(overrideOptions) {
         .use('/tmp', connect.static('/tmp'))
         // and here on Ubuntu
         .use('/admin', stats)
+        .use('/upload', runFunctionIfClientExists(uploadFile))
         .use('/viewHelp', forwardRequestForSpecialEventToClient("viewHelp"))
         .use('/image', forwardRequestForSpecialEventToClient("image"))
         .use('/startSourceEvent', runFunctionIfClientExists(connectEventStreamToM2Output))

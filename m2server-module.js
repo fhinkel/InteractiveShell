@@ -475,34 +475,38 @@ var M2Server = function(overrideOptions) {
                 response.end();
                 return;
             }
+
+            if (client.m2) {
+                killM2Client(client.m2, clientID);
+            }
+            
             client.recentlyRestarted = true;
             setTimeout(function() {
                 client.recentlyRestarted = false;
             }, 1000);
-            if (client.m2) {
-                client.m2.kill();
-                client.m2.stdin.end(); // This line is needed to remove commands stuck in
-                                       // the stdin pipe. Else we get 
-                                       // Error: read ECONNRESET
-                                       //    at errnoException (net.js:884:11)
-                                       //    at Pipe.onread (net.js:539:19)
-                runShellCommand("killall -u " + clients[clientID].systemUserName, function(ret) {
-                    console.log("We removed processes associates to " +
-                        clientID + " with result: " + ret);
-                });
-                logClient(clientID,
-                    "In restartAction, killed child process with PID " + client
-                    .m2.pid);
-            }
+            
             client.m2 = m2Start(clientID);
             attachListenersToOutput(clientID);
             response.writeHead(200);
             response.end();
         };
     };
+    
+    killM2Client = function(m2Process, clientID) {
+        m2Process.kill();
+        m2Process.stdin.end(); // This line is needed to remove commands stuck in
+                               // the stdin pipe. Else we get 
+                               // Error: read ECONNRESET
+                               //    at errnoException (net.js:884:11)
+                               //    at Pipe.onread (net.js:539:19)
+        runShellCommand("killall -u " + clients[clientID].systemUserName, function(ret) {
+            console.log(
+                "We removed processes associates to " + clientID + " with result: " + ret);
+        });
+        logClient(clientID,
+            "Killed child process with PID " + m2Process.pid);
+    };
 
-    // SCHROOT: when using child.kill('SIGINT'), the signal is sent to schroot,
-    // where it is useless, instead, find actual PID of M2. 
     var interruptAction = function(request, response) {
         return function(clientID){
             logClient(clientID, "received: /interrupt");
@@ -518,20 +522,7 @@ var M2Server = function(overrideOptions) {
             if (clients[clientID] && clients[clientID].m2) {
                 var m2 = clients[clientID].m2;
                 if (options.SCHROOT) {
-                    /* To find the actual M2 we have to dig a little deeper:
-                     The m2.pid is the PID of the cgexec command.
-                     Using pgrep we gets the child process(es).
-                     In this case there is only one, namely the schroot.
-                     The child of the schroot then is M2 which we want to interrupt.
-                  */
-                    runShellCommand('n=`pgrep -P ' + m2.pid +
-                        '`; n=`pgrep -P $n`; pgrep -P $n', function(m2Pid) {
-                        //runShellCommand('pgrep -P `pgrep -P ' + m2.pid +'`', function(m2Pid) {
-                        logClient(clientID, "PID of M2 inside schroot: " +
-                            m2Pid);
-                        var cmd = 'kill -s INT ' + m2Pid;
-                        runShellCommand(cmd, function(res) {});
-                    });
+                   sendInterruptToM2Process(m2.pid);
                 } else {
                     m2.kill('SIGINT');
                 }
@@ -539,6 +530,20 @@ var M2Server = function(overrideOptions) {
             response.writeHead(200);
             response.end();
         };
+    };
+    
+      /* To find the actual M2 we have to dig a little deeper:
+       The m2.pid is the PID of the cgexec command.
+       Using pgrep we gets the child process(es).
+       In this case there is only one, namely the schroot.
+       The child of the schroot then is M2 which we want to interrupt.
+    */
+    var sendInterruptToM2Process = function(schrootPid) {
+        runShellCommand('n=`pgrep -P ' + schrootPid + '`; n=`pgrep -P $n`; pgrep -P $n', function(m2Pid) {
+            logClient(clientID, "PID of M2 inside schroot: " + m2Pid);
+            var cmd = 'kill -s INT ' + m2Pid;
+            runShellCommand(cmd, function(res) {});
+        });
     };
 
     // returning clientID for a given M2 pid

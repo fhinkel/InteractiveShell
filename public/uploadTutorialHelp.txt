@@ -1,25 +1,4 @@
-You can load your own tutorial to use it on this website. Your tutorial is only available to you and is not sent to the server. In order to be displayed correctly, the tutorial should have the following format:<br>
-<br>
-&lt;html&gt;<br>
-&emsp; &lt;head&gt;<br>
-&emsp;&emsp; &lt;title&gt; Tutorial Title &lt;/title&gt;<br>
-&emsp; &lt;/head&gt;<br>
-&emsp; &lt;body&gt;<br>
-&emsp;&emsp; &lt;div&gt;<br>
-&emsp;&emsp;&emsp; &lt;h4&gt;Section 1&lt;/h4&gt;<br>
-&emsp;&emsp;&emsp; Some text. Text within &ltcode&gt tags can <br>
-&emsp;&emsp;&emsp; be executed by clicking on it.&lt;br&gt; <br>
-&emsp;&emsp;&emsp; &lt;code&gt;2+2&lt;/code&gt;&lt;br&gt;<br>
-&emsp;&emsp;&emsp; More Text.&lt;br&gt;<br>
-&emsp;&emsp; &lt;/div&gt;<br>
-&emsp;&emsp; &lt;div&gt;<br>
-&emsp;&emsp;&emsp; &lt;h4&gt;Section 2&lt;/h4&gt;<br>
-&emsp;&emsp;&emsp; And even more Text.&lt;br&gt;<br>
-&emsp;&emsp; &lt;/div&gt;<br>
-&emsp; &lt;/body&gt;<br>
-&lt;/html&gt;<br>
-<br>
-Alternatively, you can write your tutorial in simpledoc format, and convert it using the DocConverter package.
+<p>You can load your own tutorial to use it on this website. Your tutorial is only available to you and is not sent to the server. Write your tutorial in simpledoc format, and convert it using the DocConverter package.
 Upload a file "mytutorial.simpledoc" in simpleDoc format by using the "upload File" button. Then run <br>
 <code>installPackage "DocConverter"</code><br>
 <code>convert "mytutorial"</code><br>
@@ -28,4 +7,4 @@ Download the resulting html file with<br>
 You can use the html file now by loading it with "Load Tutorial." <br>
 For more details see<br>
 <code>viewHelp DocConverter</code><br>
-<code>viewHelp SimpleDoc</code><br>
+<code>viewHelp SimpleDoc</code><br></p>

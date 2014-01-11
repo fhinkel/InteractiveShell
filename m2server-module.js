@@ -460,39 +460,15 @@ var M2Server = function(overrideOptions) {
         response.writeHead(200);
         response.end();
     };
-
-    // kill signal is sent to schroot, which results in killing M2
-    var restartAction = function(request, response) {
-        return function(clientID){
-            logClient(clientID, "received: /restart");
-            if (!checkForEventStream(clientID, response)) {
-                return;
-            }
-            var client = clients[clientID];
-            if (client.recentlyRestarted) {
-                logClient(clientID, "Ignore repeated restart request");
-                response.writeHead(200);
-                response.end();
-                return;
-            }
-
-            if (client.m2) {
-                killM2Client(client.m2, clientID);
-            }
-            
-            client.recentlyRestarted = true;
-            setTimeout(function() {
-                client.recentlyRestarted = false;
-            }, 1000);
-            
-            client.m2 = m2Start(clientID);
-            attachListenersToOutput(clientID);
-            response.writeHead(200);
-            response.end();
-        };
-    };
     
-    killM2Client = function(m2Process, clientID) {
+    var ignoreRepeatedRestart = function(client) {
+        logClient(clientID, "Ignore repeated restart request");
+        response.writeHead(200);
+        response.end();
+    }
+    
+    
+    var killM2Client = function(m2Process, clientID) {
         m2Process.kill();
         m2Process.stdin.end(); // This line is needed to remove commands stuck in
                                // the stdin pipe. Else we get 
@@ -507,20 +483,56 @@ var M2Server = function(overrideOptions) {
             "Killed child process with PID " + m2Process.pid);
     };
 
+    var resetRecentlyRestarted = function(client) {
+        client.recentlyRestarted = true;
+        setTimeout(function() {
+            client.recentlyRestarted = false;
+        }, 1000);
+    };
+
+    // kill signal is sent to schroot, which results in killing M2
+    var restartAction = function(request, response) {
+        return function(clientID){
+            logClient(clientID, "received: /restart");
+            if (!checkForEventStream(clientID, response)) {
+                return;
+            }
+            
+            var client = clients[clientID];
+            
+            if (client.recentlyRestarted) {
+                ignoreRepeatedRestart(client);
+                return;
+            }
+
+            if (client.m2) {
+                killM2Client(client.m2, clientID);
+            }
+            
+            resetRecentlyRestarted(client);
+            
+            client.m2 = m2Start(clientID);
+            attachListenersToOutput(clientID);
+            response.writeHead(200);
+            response.end();
+        };
+    };
+
     var interruptAction = function(request, response) {
         return function(clientID){
             logClient(clientID, "received: /interrupt");
             if (!checkForEventStream(clientID, response)) {
                 return;
             };
-            if (clients[clientID] && clients[clientID].recentlyRestarted) {
-                logClient(clientID, "Ignore interrupt directly after restart");
-                response.writeHead(200);
-                response.end();
+            
+            var client = clients[clientID];
+            
+            if (client && client.recentlyRestarted) {
+                ignoreRepeatedRestart(client);
                 return;
             }
-            if (clients[clientID] && clients[clientID].m2) {
-                var m2 = clients[clientID].m2;
+            if (client && client.m2) {
+                var m2 = client.m2;
                 if (options.SCHROOT) {
                    sendInterruptToM2Process(m2.pid);
                 } else {

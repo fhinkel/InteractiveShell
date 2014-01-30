@@ -24,7 +24,7 @@ var shellObject = function(shellArea, historyArea) {
             input = msg.split("\n");
             for (var line in input) {
                 if (input[line].length > 0) {
-                    console.log("Line: " + input[line]);
+                    console.log("add command to cmdHistory: " + input[line]);
                     cmdHistory.index = cmdHistory.push(input[line]);
                 }
             }
@@ -34,7 +34,7 @@ var shellObject = function(shellArea, historyArea) {
     
     // On pressing return send last part of M2Out to M2 and remove it.
     shell.keypress(function(e) {
-        var l, msg, input;
+        var l, msg;
         if (e.keyCode == 13) { // Return
             trym2.setCaretPosition(shell, shell.val().length);
             if (shell.val().length > outIndex) {
@@ -45,6 +45,7 @@ var shellObject = function(shellArea, historyArea) {
                    trym2.scrollDown(history);
                 }
                 dataSentIndex += msg.length + 1;
+                outIndex += msg.length + 1;
                 trym2.postMessage('/chat', msg + "\n")();
             } else {
                 // We don't want empty lines send to M2 at pressing return twice.
@@ -118,6 +119,7 @@ var shellObject = function(shellArea, historyArea) {
     });
 
     shell.on("onmessage", function(e, msg) {
+        console.log("New Message: *" + msg + "*");
         var before = shell.val().substring(0, outIndex),
             after = shell.val().substring(outIndex, shell.val().length);
         var currIndex = -1;

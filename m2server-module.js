@@ -44,6 +44,8 @@ var http = require('http'),
     connect = require('connect'),
     Cookies = require('cookies');
 
+const cookieName = "tryM2";
+
 var M2Server = function (overrideOptions) {
     var options = {
             port: 8002, // default port number to use
@@ -171,21 +173,10 @@ var M2Server = function (overrideOptions) {
     };
 
     var setCookie = function (cookies, clientID) {
-        cookies.set("trySingular", clientID, {
+        cookies.set(cookieName, clientID, {
             httpOnly: false
         });
-    };
-
-    var setSchrootParameters = function (clientID) {
-        clients[clientID].schrootType = 'system' + userNumber;
-        clients[clientID].schrootName = 'system' + userNumber;
-        clients[clientID].systemUserName = 'system' + userNumber;
-        clients[clientID].prepend = "";
-        // For now we choose all these to be equal.
-        // getClientIDFromURL does not work if we choose these to be different
-        // from each other.
-        // There are several locations where we will have to adapt the path.
-        userNumber++;
+        logClient(clientID, "Cookie set to " + cookies.get(cookieName));
     };
 
     var startUser = function (cookies, request, callbackFcn) {
@@ -199,7 +190,6 @@ var M2Server = function (overrideOptions) {
             "New user: " + " UserAgent=" + request.headers['user-agent'] + ".");
         logClient(clientID, "schroot: " + options.SCHROOT);
         if (options.SCHROOT) {
-            //createSystemUser(clientID, callbackFcn);
         } else {
             callbackFcn(clientID);
         }
@@ -213,12 +203,10 @@ var M2Server = function (overrideOptions) {
     var spawnSchroot = function (clientID, cmd) {
         var linuxContainer = getLinuxContainer(clientID);
         var spawn = require('child_process').spawn;
+        var args = [ "-i", "~/.ssh/singular_key", linuxContainer ];
+        logClient(clientID, args.join(" "));
         var setEnvironmentCommand = 'export\ PATH=$PATH:/M2/bin\;\ export\ WWWBROWSER=open-www\;\ ';
-        return m2 = spawn('ssh', [
-            "-i", "~/.ssh/singular_key",
-            linuxContainer
-        ]
-        );
+        return m2 = spawn('ssh', args);
     };
 
     var removeListenersFromPipe = function (clientID) {
@@ -297,7 +285,7 @@ var M2Server = function (overrideOptions) {
     var runFunctionIfClientExists = function (next) {
         return function (request, response) {
             var cookies = new Cookies(request, response);
-            var clientID = cookies.get("trySingular");
+            var clientID = cookies.get(cookieName);
             console.log("Client has cookie value: " + clientID);
             if (!clients[clientID]) {
                 clientID = startUser(cookies, request, next(request, response));

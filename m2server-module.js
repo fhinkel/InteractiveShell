@@ -170,6 +170,7 @@ var M2Server = function (overrideOptions) {
         } while (clientIDExists(clientID));
         clientID = "user" + clientID.toString(10);
         console.log("New Client ID " + clientID);
+        linuxContainerCollection[clientID] =  "shrimp";
         return clientID;
     };
 
@@ -189,11 +190,7 @@ var M2Server = function (overrideOptions) {
         logClient(clientID,
             "New user: " + " UserAgent=" + request.headers['user-agent'] + ".");
         logClient(clientID, "schroot: " + options.SCHROOT);
-        if (options.SCHROOT) {
-        } else {
-            callbackFcn(clientID);
-        }
-        return clientID;
+        callbackFcn(clientID);
     };
 
     var getLinuxContainer = function (clientID) {
@@ -287,7 +284,7 @@ var M2Server = function (overrideOptions) {
             var clientID = cookies.get(cookieName);
             console.log("Client has cookie value: " + clientID);
             if (!clients[clientID]) {
-                clientID = startUser(cookies, request, next(request, response));
+                startUser(cookies, request, next(request, response));
             } else {
                 next(request, response)(clientID);
             }

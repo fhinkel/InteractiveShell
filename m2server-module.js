@@ -67,7 +67,6 @@ var M2Server = function (overrideOptions) {
         clients = {},
         server,
         linuxContainerCollection = {};
-    linuxContainerCollection.push("LXC");
 
     // preamble every log with the client ID
     var logClient = function (clientID, str) {
@@ -249,8 +248,7 @@ var M2Server = function (overrideOptions) {
     };
 
     var getLinuxContainer = function (clientID) {
-        container = linuxContainerCollection.pop();
-        return container;
+        return "shrimp";
     };
 
     var spawnSchroot = function (clientID, cmd) {
@@ -259,7 +257,7 @@ var M2Server = function (overrideOptions) {
         var setEnvironmentCommand = 'export\ PATH=$PATH:/M2/bin\;\ export\ WWWBROWSER=open-www\;\ ';
         return m2 = spawn('ssh', [
             "-i", "~/.ssh/singular_key",
-            "shrimp"
+            getLinuxContainer(clientID);
         ]
         );
     };

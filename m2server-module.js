@@ -44,7 +44,7 @@ var http = require('http'),
     connect = require('connect'),
     Cookies = require('cookies');
 
-const cookieName = "tryM2";
+const cookieName = "trySingular";
 
 var M2Server = function (overrideOptions) {
     var options = {
@@ -169,6 +169,7 @@ var M2Server = function (overrideOptions) {
             clientID = Math.floor(clientID);
         } while (clientIDExists(clientID));
         clientID = "user" + clientID.toString(10);
+        console.log("New Client ID " + clientID);
         return clientID;
     };
 
@@ -176,7 +177,6 @@ var M2Server = function (overrideOptions) {
         cookies.set(cookieName, clientID, {
             httpOnly: false
         });
-        logClient(clientID, "Cookie set to " + cookies.get(cookieName));
     };
 
     var startUser = function (cookies, request, callbackFcn) {
@@ -210,7 +210,6 @@ var M2Server = function (overrideOptions) {
     };
 
     var removeListenersFromPipe = function (clientID) {
-        // the schroot might still be valid or unmounted
         return function (returnCode, signal) {
             logClient(clientID, "M2 exited.");
             logClient(clientID, "returnCode: " + returnCode);
@@ -433,7 +432,6 @@ var M2Server = function (overrideOptions) {
         }, 1000);
     };
 
-    // kill signal is sent to schroot, which results in killing M2
     var restartAction = function (request, response) {
         return function (clientID) {
             logClient(clientID, "received: /restart");

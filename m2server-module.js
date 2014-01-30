@@ -472,9 +472,8 @@ var M2Server = function(overrideOptions) {
     
     
     var killM2Client = function(m2Process, clientID) {
-        logClient(clientID, "killM2Client: " + m2Process.pid );
+        logClient(clientID, "killSingularClient: " + m2Process.pid );
         m2Process.kill();
-        logClient(clientID, "Killed child process with PID " + m2Process.pid);
         m2Process.stdin.end(); // This line is needed to remove commands stuck in
                                // the stdin pipe. Else we get 
                                // Error: read ECONNRESET
@@ -837,7 +836,6 @@ var M2Server = function(overrideOptions) {
         .use('/save', runFunctionIfClientExists(saveAction))
         .use('/getListOfTutorials', getListOfTutorials)
         .use(unhandled);
-    //.use(connect.errorHandler());
 
     var initializeServer = function() {
         // when run in production, work with schroots, see startM2Process()

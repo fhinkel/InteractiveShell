@@ -23,9 +23,13 @@ a {
     color: #0000EE;
 }
 
+#title {
+    color: #c3dfed;
+}
+
 body {
     color:#000;
-    background-color: #DCDCDC; /*#D8FFFF;*/
+    background-color: #0072AD; /*#D8FFFF;*/
     font-family: Helvetica; /*Trebuche, Lucida Grande, Palatino Georgia,Helvetica;*/
 	height: 96%;	
 }

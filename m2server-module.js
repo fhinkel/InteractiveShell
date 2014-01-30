@@ -338,7 +338,7 @@ var M2Server = function (overrideOptions) {
     var runFunctionIfClientExists = function (next) {
         return function (request, response) {
             var cookies = new Cookies(request, response);
-            var clientID = cookies.get("tryM2");
+            var clientID = cookies.get("trySingular");
             console.log("Client has cookie value: " + clientID);
             if (!clients[clientID]) {
                 clientID = startUser(cookies, request, next(request, response));

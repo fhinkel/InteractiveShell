@@ -188,47 +188,6 @@ var M2Server = function (overrideOptions) {
         userNumber++;
     };
 
-    var createSystemUser = function (clientID, callbackFcn) {
-        console.log("Beginning schroot user.");
-        setSchrootParameters(clientID);
-        runShellCommand(
-            'perl-scripts/create_user.pl ' + clients[clientID].systemUserName
-                + ' ' + clients[clientID].schrootType + ' '
-                + options.userMemoryLimit + ' ' + options.userCpuLimit,
-            function () {
-                initializeSchrootEnvironment(clientID, callbackFcn);
-            }
-        );
-    };
-
-    var initializeSchrootEnvironment = function (clientID, callback) {
-        logClient(clientID, "Spawning new schroot process named " +
-            clientID + " " + clients[clientID].systemUserName + ".");
-        /*
-         The following command creates a schroot environment for the user.
-         -c specifies the schroot type. This tells schroot to use the config file
-         created by create_user.pl. The -c below at entering schroot is not the same.
-         -n Sets the name of the schroot. This name will be used for the -c option
-         below upon entering the schroot.
-         -b is the begin flag.
-         */
-        require('child_process').exec(
-            'sudo -u ' + clients[clientID].systemUserName + ' schroot -c '
-                + clients[clientID].schrootType + ' -n ' + clients[clientID].schrootName + ' -b',
-            function () {
-                // write clientID to /etc/clientID, it is needed for curl in open calls
-                var filename = "/usr/local/var/lib/schroot/mount/" + clients[clientID].systemUserName + "/etc/clientID";
-                fs.writeFile(filename, clientID, function (err) {
-                    if (err) {
-                        logClient(clientID, err);
-                    } else {
-                        logClient(clientID, "File with clientID ie., the user cookie, was written successfully.");
-                    }
-                });
-                callback(clientID);
-            });
-    };
-
     var startUser = function (cookies, request, callbackFcn) {
         totalUsers = totalUsers + 1;
         var clientID = getNewClientID();
@@ -257,7 +216,7 @@ var M2Server = function (overrideOptions) {
         var setEnvironmentCommand = 'export\ PATH=$PATH:/M2/bin\;\ export\ WWWBROWSER=open-www\;\ ';
         return m2 = spawn('ssh', [
             "-i", "~/.ssh/singular_key",
-            getLinuxContainer(clientID)
+            linuxContainer
         ]
         );
     };

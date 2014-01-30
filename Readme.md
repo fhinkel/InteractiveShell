@@ -1,4 +1,4 @@
-# TryM2
+# TrySingular 
 
 ## Purpose
 

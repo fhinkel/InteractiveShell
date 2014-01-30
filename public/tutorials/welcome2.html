@@ -1,4 +1,4 @@
-<html>
+Singular<html>
   <head>
     <title>Welcome Tutorial
     </title>
@@ -6,22 +6,21 @@
 <body>
 
 <div>
-  <h4>Getting started<!-- on web.macaulay2.com--></h4>
+  <h4>Getting started</h4>
 
   <p>In this tutorial, we will show how to use this web site effectively.</p>
 
-  <p>Every tutorial usually consists of a number of pages, with highlighted Macaulay2
+  <p>Every tutorial usually consists of a number of pages, with highlighted Singular
   code.</p>
   
-  <p>If you click or tap on the highlighted Macaulay2 code, the code will
+  <p>If you click or tap on the highlighted Singular code, the code will
   be sent to the server, and evaluated.  The result will be displayed in the right hand window.
   For example</p>
 
-  <code>R = QQ[x,y,z]</code><br>
-  <code>F = (x-1)^3 - (y-1)^3</code><br>
-  <code>factor F</code><br>
+  <code>2+2;</code><br>
 
-  <p>If you are already familiar with Macaulay2 and know some commands, you 
+
+  <p>If you are already familiar with Singular and know some commands, you 
     can type them directly in the right hand window. </p>
     
     
@@ -32,24 +31,23 @@
 </div>
 
 <div>
-  <h4>Getting Macaulay2 help on a topic</h4>
+  <h4>Getting Singular help on a topic</h4>
 
-  <p>There are two main ways of getting help on a topic in Macaulay2.  The first method gives you
-  text help in the Macaulay2 output window.  For example,</p>
-  <code>help determinant</code><br>
-  <p>This displays in the Macaulay2 output window how to use the function "determinant".
+  <p>There are two main ways of getting help on a topic in Singular.  The first method gives you
+  text help in the Singular output window.  For example,</p>
+
+  <p>This displays in the Singular output window how to use the function "determinant".
   <b>Note!</b> In many browsers, you will have scroll bars to go back, but in some, notably most versions
   of Safari, the scrollbars are there but hidden!
   </p>
 
   <p>Alternatively, and more usefully, you may obtain the web version by using:</p>
-  <code>viewHelp determinant</code><br>
 
   <p>This opens the documentation page in another browser window or tab.  You can surf through the links
-  there to see other Macaulay2 documentation.</p>
+  there to see other Singular documentation.</p>
 
   <p>Depending on your browser settings, you may be navigated to this new page,
-  or not.  Your Macaulay2 web session is still active in any case! You might
+  or not.  Your Singular web session is still active in any case! You might
   need to disable popup window blocking in your browser in order to get the
   help page.</p>
 
@@ -59,13 +57,12 @@
     <h4>Using the <b>Input</b> Window</h4>
 
 
-  <p>When you write M2 functions or long loops, it is often more convenient to write your code
+  <p>When you write Singular functions or long loops, it is often more convenient to write your code
     in a separate window and execute the code after you wrote it. This allows you to easily modify previous code and 
-    move the cursor around freely. When installing Macaulay2, you can best achieve this behavior by using emacs, see</p>
-    <code>viewHelp setupEmacs</code><br>
+    move the cursor around freely. </p>
     
     <p>Clicking or tapping the <b>Input</b> button at the top of the page, navigates you to the Input Window.
-  This is where you may type in Macaulay2 code and have it evaluated.</p>
+  This is where you may type in Singular code and have it evaluated.</p>
  
    <p>In that window, place your cursor on a line that you wish to evaluate, and either click the
   <b>Evaluate</b> button, or press Shift-Return (both keys at the same time).</p>
@@ -73,36 +70,36 @@
   <p>Alternatively, you may select several lines, or a part of a line, and clicking
   <b>Evaluate</b> (or press Shift-Return) will evaluate the selection.</p>
 
-  <p>You try it!  Click <b>Input</b>, type in some Macaulay2 input, or try out some of the example
+  <p>You try it!  Click <b>Input</b>, type in some Singular input, or try out some of the example
   lines already there.  When you are ready to come back to the tutorial, click or tap on the
   <b>Tutorial</b> button at the top of the page.  You will end up right here!
 
    <p><b>To save your work:</b>
   Click on the <b>Save</b> button at the top right of the window.  A dialog will appear
-  where you can save the text in the <b>Input</b> window, or the text in the Macaulay2 output (or both).
+  where you can save the text in the <b>Input</b> window, or the text in the Singular output (or both).
   Alternatively, you can just select the text you wish, and copy it.
   </p>
   
 </div>
 
 <div>
-  <h4>Macaulay2 sessions and the Reset button</h4>
+  <h4>Singular sessions and the Reset button</h4>
   
-  <p> When your browser starts, it starts a Macaulay2 process on our server.
+  <p> When your browser starts, it starts a Singular process on our server.
   All of your input, either typed and evaluated, or run by pressing buttons,
   goes to this process.  If you open a second window or tab in the same
   browser, you will get the same session.
   </p>
 
   <p>
-  You might wish to start fresh, or restart Macaulay2, if a computation is
+  You might wish to start fresh, or restart Singular, if a computation is
   going on too long.  In this case, press the <b>Reset</b> button at the top of
   the page.
   </p>
 
   <p>
   When you first connect to this web site, a cookie is generated, and that is used to connect to
-  your Macaulay2 process on the server.  If you quit your browser, and it is set to remember windows, then
+  your Singular process on the server.  If you quit your browser, and it is set to remember windows, then
   it remembers the cookie, and you can reconnect back to the same session.  If not, then a new session
   is created.  The server will remove the session after some length of time, currently several days or a week.
   </p>
@@ -117,53 +114,48 @@
   <h4>Advanced topics</h4>
   <h4>Uploading files</h4>
 
-  <p>Use the <b>Upload File</b> button to upload files to the Macaulay2 server that can then be loaded into your Macaulay2 session. Suppose that you have uploaded a file named <tt>foo.m2</tt> which contains Macaulay2 code.
-  You may then load this file into Macaulay2 using either:
+  <p>Use the <b>Upload File</b> button to upload files to the Singular server that can then be loaded into your Singular session. Suppose that you have uploaded a file named <tt>foo.lib</tt> which contains Singular code.
+  You may then load this file into Singular using either:
   </p>
   
-  <code>load "foo.m2"</code><br>
+  <code>load "foo.lib"</code><br>
 
   <p>
   or, if you wish to see all of the lines executed one by one:
   </p>
   
-  <code>input "foo.m2"</code><br>
+  <code>input "foo.lib"</code><br>
 
   
   <p><b>Note</b>: these lines will likely give errors now, as the file
-    <tt>foo.m2</tt> probably doesn't exist on the server!</p>
+    <tt>foo.lib</tt> probably doesn't exist on the server!</p>
 
-  <h4>Running shell commands in your Macaulay2 session</h4>
+  <h4>Running shell commands in your Singular session</h4>
 
-  <p>It is possible to run shell commands from within Macaulay2, although many operations are restricted.
+  <p>It is possible to run shell commands from within Singular, although many operations are restricted.
   For example, to see what files you have in your home directory on the server, try:</p>
-  <code>get "!ls -a"</code><br>
 
-  <h4>Macaulay2 and image files</h4>
+  <h4>Singular and image files</h4>
 
-  <p>Sometimes Macaulay2 or one of its packages generates image files.
+  <p>Sometimes Singular or one of its packages generates image files.
   For example, the displayGraph function below creates a jpeg file.
   </p>
-    <code> needsPackage "Graphs"</code><br>
-    <code>A = graph({{v_1,v_3},{v_2,v_4},{v_1,v_4}})</code><br>
-    <code>displayGraph A</code><br>
+
 
   <h4>Getting files back to your machine</h4>
 
   <p>
-  Sometimes your Macaulay2 code will create a file as output.  How to download
+  Sometimes your Singular code will create a file as output.  How to download
   this onto your machine?  Here is one way.  This first line creates a file for
   the purpose of this example.
   </p>
   
-  <code>"important-results.txt" << "very important results" << close</code>
 
   <p>The next line will present a download dialog for you to obtain the file on your machine.
   </p>
   
-  <code>get "!open important-results.txt"</code><br>
 
-  <h4>Restrictions in place for the Macaulay2 server</h4>
+  <h4>Restrictions in place for the Singular server</h4>
 
   <p>The server is being shared with other users, therefore memory and CPU time
   are limited (generous, but limited).  Other restrictions include: upload file size, number of processes that
@@ -176,7 +168,7 @@
   <p>
   If you would like to help develop this site, or if you have tutorials that
   you would like to upload please contact us.  The code for this server is at
-  <a href="http://github.com/fhinkel/tryM2" target="_blank">tryM2 on github</a>.
+  <a href="http://github.com/YueRen/tryM2" target="_blank">trySingular on github</a>.
   </p>
 
 </div>

@@ -45,7 +45,6 @@ var shellObject = function(shellArea, historyArea) {
                    trym2.scrollDown(history);
                 }
                 dataSentIndex += msg.length + 1;
-                outIndex += msg.length + 1;
                 trym2.postMessage('/chat', msg + "\n")();
             } else {
                 // We don't want empty lines send to M2 at pressing return twice.

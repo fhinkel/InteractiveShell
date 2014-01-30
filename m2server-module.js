@@ -257,7 +257,7 @@ var M2Server = function (overrideOptions) {
         var setEnvironmentCommand = 'export\ PATH=$PATH:/M2/bin\;\ export\ WWWBROWSER=open-www\;\ ';
         return m2 = spawn('ssh', [
             "-i", "~/.ssh/singular_key",
-            getLinuxContainer(clientID);
+            getLinuxContainer(clientID)
         ]
         );
     };

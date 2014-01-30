@@ -295,7 +295,7 @@ var M2Server = function(overrideOptions) {
             m2 = spawnSchroot(clientID, 'Singular');
         } else {
 
-            m2 = spawn('Singular');
+            m2 = spawn('Singular', ['-t']);
         }
         logClient(clientID, "Spawning new Singular process...");
       
@@ -313,6 +313,7 @@ var M2Server = function(overrideOptions) {
 
     var sendDataToClient = function(clientID) {
       return function(data){
+          logClient(clientID, "!!!");
          var streams = clients[clientID].eventStreams;
          updateLastActiveTime(clientID);
          message = formatServerSentEventMessage(data);
@@ -323,7 +324,7 @@ var M2Server = function(overrideOptions) {
          }
          
          for (var stream in streams) {
-             //logClient(clientID, "write: " + message);
+             logClient(clientID, "write data from stdout and stderr: " + message);
              streams[stream].write(message);
          }
       };

@@ -292,11 +292,11 @@ var M2Server = function(overrideOptions) {
     var m2Start = function(clientID) {
         var spawn = require('child_process').spawn;
         if (options.SCHROOT) {
-            m2 = spawnSchroot(clientID, 'M2');
+            m2 = spawnSchroot(clientID, 'Singular');
         } else {
-            m2 = spawn('M2');
+            m2 = spawn('Singular');
         }
-        logClient(clientID, "Spawning new M2 process...");
+        logClient(clientID, "Spawning new Singular process...");
       
         m2.on('exit', removeListenersFromPipe(clientID));
         setPipeEncoding(m2, "utf8");

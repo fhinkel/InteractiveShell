@@ -294,7 +294,7 @@ var M2Server = function(overrideOptions) {
         if (options.SCHROOT) {
             m2 = spawnSchroot(clientID, 'Singular');
         } else {
-            m2 = spawn('Singular');
+            m2 = spawn('Singular', ['-t']);
         }
         logClient(clientID, "Spawning new Singular process...");
       
@@ -440,7 +440,7 @@ var M2Server = function(overrideOptions) {
     }
 
     var handCommandsToM2 = function(clientID, m2commands, response) {
-         logClient(clientID, "M2 input: " + m2commands);
+         logClient(clientID, "Singular input: " + m2commands);
          if (!clients[clientID] || !clients[clientID].m2 || !clients[
              clientID].m2.stdin.writable) {
              // this user has been pruned out!  Simply return.
@@ -465,25 +465,27 @@ var M2Server = function(overrideOptions) {
     };
     
     var ignoreRepeatedRestart = function(client) {
-        logClient(clientID, "Ignore repeated restart request");
+        console.log("Ignore repeated restart request");
         response.writeHead(200);
         response.end();
     }
     
     
     var killM2Client = function(m2Process, clientID) {
+        logClient(clientID, "killM2Client: " + m2Process.pid );
         m2Process.kill();
+        logClient(clientID, "Killed child process with PID " + m2Process.pid);
         m2Process.stdin.end(); // This line is needed to remove commands stuck in
                                // the stdin pipe. Else we get 
                                // Error: read ECONNRESET
                                //    at errnoException (net.js:884:11)
                                //    at Pipe.onread (net.js:539:19)
-        runShellCommand("killall -u " + clients[clientID].systemUserName, function(ret) {
-            console.log(
-                "We removed processes associates to " + clientID + " with result: " + ret);
-        });
-        logClient(clientID,
-            "Killed child process with PID " + m2Process.pid);
+        if (options.SCHROOT) {                       
+            runShellCommand("killall -u " + clients[clientID].systemUserName, function(ret) {
+                console.log(
+                    "We removed processes associates to " + clientID + " with result: " + ret);
+            });
+        }
     };
 
     var resetRecentlyRestarted = function(client) {
@@ -495,7 +497,7 @@ var M2Server = function(overrideOptions) {
 
     // kill signal is sent to schroot, which results in killing M2
     var restartAction = function(request, response) {
-        return function(clientID){
+        return function(clientID) {
             logClient(clientID, "received: /restart");
             if (!checkForEventStream(clientID, response)) {
                 return;

@@ -60,26 +60,31 @@ var shellObject = function(shellArea, historyArea) {
         return e.keyCode == 13;
     }
 
-    function sendNewInputToServer(totalLength, notYetSentMessage, e) {
-        totalLength = shell.val().length;
-        trym2.setCaretPosition(shell, totalLength);
-        if (hasNewInput(totalLength)) {
-            notYetSentMessage = getNewInput(totalLength);
+    function sendNewInputToServer(totalLength) {
+            var notYetSentMessage = getNewInput(totalLength);
             updateHistoryArea(notYetSentMessage);
             dataSentIndex += notYetSentMessage.length + 1;
             outIndex += notYetSentMessage.length + 1;
             sendMsgToServer(notYetSentMessage);
-        } else {
-            // We don't want empty lines send to M2 at pressing return twice.
-            e.preventDefault();
-        }
     }
 
     shell.keypress(function(e) {
-        var totalLength, notYetSentMessage;
         if (keyPressIsReturn(e)) {
-            sendNewInputToServer(totalLength, notYetSentMessage, e);
+		var totalLength = shell.val().length;
+		trym2.setCaretPosition(shell, totalLength);
+		if (hasNewInput(totalLength)) {
+			sendNewInputToServer(totalLength);
+		} else {
+		    // We don't want empty lines send to M2 at pressing return twice.
+		    e.preventDefault();
+		}
+	    
         }
+    });
+
+    shell.on("appendNonTypedInput", function(e, cmd){
+	shell.val(shell.val() + cmd + "\n");
+	sendNewInputToServer(shell.val().length);
     });
 
     function containsM2Preamble(msg) {
@@ -889,10 +894,9 @@ $(document).ready(function() {
             color: 'red'
         }, 300);
         var code = $(this).text();
-        code = code + "\n";
         $("#M2In").val($("#M2In").val() + code);
         trym2.scrollDown($("#M2In"));
-        trym2.postMessage('/chat', code)();
+	$("#M2Out").trigger("appendNonTypedInput",code);
     });
 
     trym2.importTutorials();

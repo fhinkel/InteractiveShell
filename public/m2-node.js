@@ -86,20 +86,30 @@ var shellObject = function(shellArea, historyArea) {
         return /^Macaulay2, version \d\.\d/.test(msg);
     }
 
+    function hasSentButUnprocessedInput(userInputNotProcessedYetAsArray) {
+        return (userInputNotProcessedYetAsArray.length > 1);
+    }
+
+    function indexOfLineInMsg(msg, line) {
+        return msg.indexOf(line);
+    }
+
     shell.on("onMessage", function(e, msg) {
         console.log("New Message: *" + msg + "*");
-        var before = shell.val().substring(0, outIndex),
-            after = shell.val().substring(outIndex, shell.val().length);
-        var currIndex = -1;
-        var afterSplit = after.split("\n");
-        while ((after.length > 0) && (afterSplit.length > 1)) {
-            var nextIndex = msg.indexOf(afterSplit[0]);
-            if (afterSplit[0].length == 0) {
+        var outputFromServerSoFar = shell.val().substring(0, outIndex);
+        var userInputNotProcessedYet = shell.val().substring(outIndex, shell.val().length);
+        const NOT_FOUND = -1;
+        var currIndex = NOT_FOUND;
+        var userInputNotProcessedYetAsArray = userInputNotProcessedYet.split("\n");
+        while (hasSentButUnprocessedInput(userInputNotProcessedYetAsArray)) {
+            var line = userInputNotProcessedYetAsArray[0];
+            var nextIndex = indexOfLineInMsg(msg, line);
+            if (line.length == 0) {
                 nextIndex = currIndex + 1;
             }
             if (nextIndex > currIndex) {
-                dataSentIndex -= afterSplit[0].length + 1;
-                afterSplit.shift();
+                dataSentIndex -= line.length + 1;
+                userInputNotProcessedYetAsArray.shift();
                 currIndex = nextIndex;
             } else {
                 break;
@@ -107,10 +117,10 @@ var shellObject = function(shellArea, historyArea) {
         }
 
         if (containsM2Preamble(msg)) {
-            shell.val(before + msg);
+            shell.val(outputFromServerSoFar + msg);
             dataSentIndex = outIndex;
         } else {
-            shell.val(before + msg + afterSplit.join("\n"));
+            shell.val(outputFromServerSoFar + msg + userInputNotProcessedYetAsArray.join("\n"));
         }
         trym2.scrollDown(shell);
         outIndex += msg.length;

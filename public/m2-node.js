@@ -67,7 +67,7 @@ var shellObject = function(shellArea, historyArea) {
             notYetSentMessage = getNewInput(totalLength);
             updateHistoryArea(notYetSentMessage);
             dataSentIndex += notYetSentMessage.length + 1;
-            //outIndex += notYetSentMessage.length + 1;
+            outIndex += notYetSentMessage.length + 1;
             sendMsgToServer(notYetSentMessage);
         } else {
             // We don't want empty lines send to M2 at pressing return twice.

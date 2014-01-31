@@ -42,18 +42,19 @@ var shellObject = function(shellArea, historyArea) {
     }
 
     function getNewInput(totalLength) {
-        return shell.val().substring(dataSentIndex, totalLength);
+    	shell.val(shell.val() + "\n");
+        return shell.val().substring(dataSentIndex, totalLength + 1);
     }
 
     function updateHistoryArea(notYetSentMessage) {
         if (history != undefined) {
-            history.val(history.val() + notYetSentMessage + "\n");
+            history.val(history.val() + notYetSentMessage);
             trym2.scrollDown(history);
         }
     }
 
     function sendMsgToServer(notYetSentMessage) {
-        trym2.postMessage('/chat', notYetSentMessage + "\n")();
+        trym2.postMessage('/chat', notYetSentMessage)();
     }
 
     function keyPressIsReturn(e) {
@@ -63,27 +64,26 @@ var shellObject = function(shellArea, historyArea) {
     function sendNewInputToServer(totalLength) {
             var notYetSentMessage = getNewInput(totalLength);
             updateHistoryArea(notYetSentMessage);
-            dataSentIndex += notYetSentMessage.length + 1;
-            outIndex += notYetSentMessage.length + 1;
+            dataSentIndex += notYetSentMessage.length;
+            outIndex += notYetSentMessage.length;
             sendMsgToServer(notYetSentMessage);
     }
 
+
     shell.keypress(function(e) {
-        if (keyPressIsReturn(e)) {
-		var totalLength = shell.val().length;
-		trym2.setCaretPosition(shell, totalLength);
-		if (hasNewInput(totalLength)) {
-			sendNewInputToServer(totalLength);
-		} else {
+	    if (keyPressIsReturn(e)) {
+		    var totalLength = shell.val().length;
+		    trym2.setCaretPosition(shell, totalLength);
+		    if (hasNewInput(totalLength)) {
+			    sendNewInputToServer(totalLength);
+		    }
 		    // We don't want empty lines send to M2 at pressing return twice.
 		    e.preventDefault();
-		}
-	    
-        }
+	    }
     });
 
     shell.on("appendNonTypedInput", function(e, cmd){
-	shell.val(shell.val() + cmd + "\n");
+	shell.val(shell.val() + cmd);
 	sendNewInputToServer(shell.val().length);
     });
 

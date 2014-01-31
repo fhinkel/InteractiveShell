@@ -34,18 +34,19 @@ var shellObject = function(shellArea, historyArea) {
     
     // On pressing return send last part of M2Out to M2 and remove it.
     shell.keypress(function(e) {
-        var l, msg;
+        var totalLength, notYetSentMessage;
         if (e.keyCode == 13) { // Return
-            trym2.setCaretPosition(shell, shell.val().length);
-            if (shell.val().length > outIndex) {
-                l = shell.val().length;
-                msg = shell.val().substring(dataSentIndex, l);
+            totalLength = shell.val().length;
+            trym2.setCaretPosition(shell, totalLength);
+            if (totalLength > outIndex) {
+                notYetSentMessage = shell.val().substring(dataSentIndex, totalLength);
                 if(history != undefined){
-                   history.val(history.val() + msg + "\n");
+                   history.val(history.val() + notYetSentMessage + "\n");
                    trym2.scrollDown(history);
                 }
-                dataSentIndex += msg.length + 1;
-                trym2.postMessage('/chat', msg + "\n")();
+                dataSentIndex += notYetSentMessage.length + 1;
+                outIndex += notYetSentMessage.length + 1;
+                trym2.postMessage('/chat', notYetSentMessage + "\n")();
             } else {
                 // We don't want empty lines send to M2 at pressing return twice.
                 e.preventDefault(); 

@@ -231,7 +231,7 @@ var M2Server = function (overrideOptions) {
         if (options.SCHROOT) {
             m2 = spawnSchroot(clientID, 'Singular');
         } else {
-            m2 = spawn('script', ['/dev/null', 'Singular', '-t']);
+            m2 = spawn('script', ['/dev/null', 'Singular']);
             //m2 = spawn('Singular', ['-t']);
         }
         logClient(clientID, "Spawning new Singular process...");

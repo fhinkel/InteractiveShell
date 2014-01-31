@@ -19,39 +19,102 @@ var shellObject = function(shellArea, historyArea) {
     cmdHistory.index = 0;
     var outIndex = 0; // End of real M2 output in M2Out textarea, without user's typing.   
     var dataSentIndex = 0;
+
+    function appendCommandToCmdHistory(line) {
+        if (input[line].length > 0) {
+            console.log("add command to cmdHistory: " + input[line]);
+            cmdHistory.index = cmdHistory.push(input[line]);
+        }
+    }
+
     shell.on("track", function(e, msg) { // add command to history
         if (typeof msg != 'undefined') {
             input = msg.split("\n");
             for (var line in input) {
-                if (input[line].length > 0) {
-                    console.log("add command to cmdHistory: " + input[line]);
-                    cmdHistory.index = cmdHistory.push(input[line]);
-                }
+                appendCommandToCmdHistory(line);
+            }
+        }
+    });
+    
+    // On pressing return send last part shell to server for evaluation
+    function hasNewInput(totalLength) {
+        return totalLength > outIndex;
+    }
+
+    function getNewInput(totalLength) {
+        return shell.val().substring(dataSentIndex, totalLength);
+    }
+
+    function updateHistoryArea(notYetSentMessage) {
+        if (history != undefined) {
+            history.val(history.val() + notYetSentMessage + "\n");
+            trym2.scrollDown(history);
+        }
+    }
+
+    function sendMsgToServer(notYetSentMessage) {
+        trym2.postMessage('/chat', notYetSentMessage + "\n")();
+    }
+
+    function keyPressIsReturn(e) {
+        return e.keyCode == 13;
+    }
+
+    function sendNewInputToServer(totalLength, notYetSentMessage, e) {
+        totalLength = shell.val().length;
+        trym2.setCaretPosition(shell, totalLength);
+        if (hasNewInput(totalLength)) {
+            notYetSentMessage = getNewInput(totalLength);
+            updateHistoryArea(notYetSentMessage);
+            dataSentIndex += notYetSentMessage.length + 1;
+            //outIndex += notYetSentMessage.length + 1;
+            sendMsgToServer(notYetSentMessage);
+        } else {
+            // We don't want empty lines send to M2 at pressing return twice.
+            e.preventDefault();
+        }
+    }
+
+    shell.keypress(function(e) {
+        var totalLength, notYetSentMessage;
+        if (keyPressIsReturn(e)) {
+            sendNewInputToServer(totalLength, notYetSentMessage, e);
+        }
+    });
+
+    function containsM2Preamble(msg) {
+        return /^Macaulay2, version \d\.\d/.test(msg);
+    }
+
+    shell.on("onMessage", function(e, msg) {
+        console.log("New Message: *" + msg + "*");
+        var before = shell.val().substring(0, outIndex),
+            after = shell.val().substring(outIndex, shell.val().length);
+        var currIndex = -1;
+        var afterSplit = after.split("\n");
+        while ((after.length > 0) && (afterSplit.length > 1)) {
+            var nextIndex = msg.indexOf(afterSplit[0]);
+            if (afterSplit[0].length == 0) {
+                nextIndex = currIndex + 1;
+            }
+            if (nextIndex > currIndex) {
+                dataSentIndex -= afterSplit[0].length + 1;
+                afterSplit.shift();
+                currIndex = nextIndex;
+            } else {
+                break;
             }
         }
 
-    });
-    
-    // On pressing return send last part of M2Out to M2 and remove it.
-    shell.keypress(function(e) {
-        var totalLength, notYetSentMessage;
-        if (e.keyCode == 13) { // Return
-            totalLength = shell.val().length;
-            trym2.setCaretPosition(shell, totalLength);
-            if (totalLength > outIndex) {
-                notYetSentMessage = shell.val().substring(dataSentIndex, totalLength);
-                if(history != undefined){
-                   history.val(history.val() + notYetSentMessage + "\n");
-                   trym2.scrollDown(history);
-                }
-                dataSentIndex += notYetSentMessage.length + 1;
-                outIndex += notYetSentMessage.length + 1;
-                trym2.postMessage('/chat', notYetSentMessage + "\n")();
-            } else {
-                // We don't want empty lines send to M2 at pressing return twice.
-                e.preventDefault(); 
-            }
+        if (containsM2Preamble(msg)) {
+            shell.val(before + msg);
+            dataSentIndex = outIndex;
+        } else {
+            shell.val(before + msg + afterSplit.join("\n"));
         }
+        trym2.scrollDown(shell);
+        outIndex += msg.length;
+        dataSentIndex += msg.length;
     });
 
     // If something is entered, change to end of textarea, if at wrong position.
@@ -116,37 +179,6 @@ var shellObject = function(shellArea, historyArea) {
             e.preventDefault();
             // Do something for tab-completion.
         }
-    });
-
-    shell.on("onmessage", function(e, msg) {
-        console.log("New Message: *" + msg + "*");
-        var before = shell.val().substring(0, outIndex),
-            after = shell.val().substring(outIndex, shell.val().length);
-        var currIndex = -1;
-        var afterSplit = after.split("\n");
-        while ((after.length > 0) && (afterSplit.length > 1)) {
-            var nextIndex = msg.indexOf(afterSplit[0]);
-            if (afterSplit[0].length == 0) {
-                nextIndex = currIndex + 1;
-            }
-            if (nextIndex > currIndex) {
-                dataSentIndex -= afterSplit[0].length + 1;
-                afterSplit.shift();
-                currIndex = nextIndex;
-            } else {
-                break;
-            }
-        }
-
-        if (/^Macaulay2, version \d\.\d/.test(msg)) {
-            shell.val(before + msg);
-            dataSentIndex = outIndex;
-        } else {
-            shell.val(before + msg + afterSplit.join("\n"));
-        }
-        trym2.scrollDown(shell);
-        outIndex += msg.length;
-        dataSentIndex += msg.length;
     });
 };
 
@@ -724,7 +756,7 @@ trym2.startEventSource = function() {
             //console.log(event);
             if (msg !== "") {
                 console.log("The message " + msg);
-                $("#M2Out").trigger("onmessage", msg);
+                $("#M2Out").trigger("onMessage", msg);
             }
         }
     }

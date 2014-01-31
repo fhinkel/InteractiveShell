@@ -197,13 +197,18 @@ var M2Server = function (overrideOptions) {
         return "shrimp";
     };
 
+    var escapeSpacesForSpawnCommand = function (cmd) {
+	return cmd.replace(/ /g,"\ ");
+    }
+
     var spawnSchroot = function (clientID, cmd) {
         var linuxContainer = getLinuxContainer(clientID);
         var spawn = require('child_process').spawn;
-        var args = [ "-i", "~/.ssh/singular_key", linuxContainer ];
+	var sshCommand = "ssh -i /home/admin/.ssh/singular_key " + linuxContainer;
+        var args = [ "-c", escapeSpacesForSpawnCommand(sshCommand)];
         logClient(clientID, args.join(" "));
         var setEnvironmentCommand = 'export\ PATH=$PATH:/M2/bin\;\ export\ WWWBROWSER=open-www\;\ ';
-        return m2 = spawn('ssh', args);
+        return m2 = spawn('script', args);
     };
 
     var removeListenersFromPipe = function (clientID) {

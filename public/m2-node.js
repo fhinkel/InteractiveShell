@@ -46,7 +46,8 @@ var shellObject = function(shellArea, historyArea) {
         return shell.val().substring(dataSentIndex, totalLength + 1);
     }
 
-    function updateHistoryArea(notYetSentMessage) {
+    function updateHistoryArea(totalLength) {
+        var notYetSentMessage = getNewInput(totalLength);
         if (history != undefined) {
             history.val(history.val() + notYetSentMessage);
             trym2.scrollDown(history);
@@ -62,19 +63,18 @@ var shellObject = function(shellArea, historyArea) {
     }
 
     function sendNewInputToServer(totalLength) {
-            var notYetSentMessage = getNewInput(totalLength);
-            updateHistoryArea(notYetSentMessage);
-            dataSentIndex += notYetSentMessage.length;
-            outIndex += notYetSentMessage.length;
-            sendMsgToServer(notYetSentMessage);
+        var notYetSentMessage = getNewInput(totalLength);
+        dataSentIndex += notYetSentMessage.length;
+        outIndex += notYetSentMessage.length;
+        sendMsgToServer(notYetSentMessage);
     }
-
 
     shell.keypress(function(e) {
 	    if (keyPressIsReturn(e)) {
 		    var totalLength = shell.val().length;
 		    trym2.setCaretPosition(shell, totalLength);
 		    if (hasNewInput(totalLength)) {
+                updateHistoryArea(totalLength);
 			    sendNewInputToServer(totalLength);
 		    }
 		    // We don't want empty lines send to M2 at pressing return twice.
@@ -82,9 +82,16 @@ var shellObject = function(shellArea, historyArea) {
 	    }
     });
 
+    shell.on("commandFromInputArea", function(e, cmd){
+        shell.val(shell.val() + cmd);
+        sendNewInputToServer(shell.val().length);
+    });
+
     shell.on("appendNonTypedInput", function(e, cmd){
-	shell.val(shell.val() + cmd);
-	sendNewInputToServer(shell.val().length);
+        shell.val(shell.val() + cmd);
+        var totalLength = shell.val().length;
+        updateHistoryArea(totalLength);
+        sendNewInputToServer(totalLength);
     });
 
     function containsM2Preamble(msg) {
@@ -516,7 +523,7 @@ trym2.getSelected = function(inputField) {
         // move cursor to beginning of line below 
         this.setCaretPosition($(inputField), end + 1);
     }
-    return str.slice(start, end) + "\n";
+    return str.slice(start, end);
 };
 
 
@@ -581,7 +588,8 @@ trym2.sendOnEnterCallback = function(inputfield) {
         if (e.which === 13 && e.shiftKey) {
             e.preventDefault();
             // do not make a line break or remove selected text when sending
-            trym2.postMessage('/chat', trym2.getSelected(inputfield))();
+            var code = trym2.getSelected(inputfield);
+            $("#M2Out").trigger("commandFromInputArea", code);
         }
     };
 };
@@ -894,9 +902,8 @@ $(document).ready(function() {
             color: 'red'
         }, 300);
         var code = $(this).text();
-        $("#M2In").val($("#M2In").val() + code);
         trym2.scrollDown($("#M2In"));
-	$("#M2Out").trigger("appendNonTypedInput",code);
+        $("#M2Out").trigger("appendNonTypedInput",code);
     });
 
     trym2.importTutorials();

@@ -134,7 +134,7 @@ var M2Server = function (overrideOptions) {
     // runs a command, and calls the callbackFnc with the output from stdout
     var runShellCommand = function (cmd, callback) {
         console.log("Run shell command: " + cmd);
-        require('child_process').exec(cmd, function (error, stdout, stderr) {
+        require('child_process').exec(cmd, function (error, stdout) {
             callback(stdout);
         });
     };
@@ -289,7 +289,7 @@ var M2Server = function (overrideOptions) {
         };
     };
 
-    var stats = function (request, response, next) {
+    var stats = function (request, response) {
         // to do: authorization
         response.writeHead(200, {
             "Content-Type": "text/html"
@@ -312,9 +312,14 @@ var M2Server = function (overrideOptions) {
 
     var keepEventStreamsAlive = function () {
         for (var prop in clients) {
-            if (clients.hasOwnProperty(prop) && clients[prop] && clients[prop].eventStreams) {
-                for (var stream in clients[prop].eventStreams) {
-                    clients[prop].eventStreams[stream].write(":ping\n");
+            if (clients.hasOwnProperty(prop)) {
+                var client = clients[prop];
+                if (client && client.eventStreams) {
+                    for (var stream in client.eventStreams) {
+                        if (client.eventStreams.hasOwnProperty(stream)) {
+                            client.eventStreams[stream].write(":ping\n");
+                        }
+                    }
                 }
             }
         }
@@ -352,7 +357,7 @@ var M2Server = function (overrideOptions) {
             logClient(clientID, "m2InputAction");
             if (!checkForEventStream(clientID, response)) {
                 return;
-            };
+            }
             request.setEncoding("utf8");
             var m2commands = "";
             // When we get a chunk of data, add it to the m2commands
@@ -396,7 +401,7 @@ var M2Server = function (overrideOptions) {
         response.end();
     };
 
-    var ignoreRepeatedRestart = function (client) {
+    var ignoreRepeatedRestart = function () {
         console.log("Ignore repeated restart request");
         response.writeHead(200);
         response.end();
@@ -600,7 +605,7 @@ var M2Server = function (overrideOptions) {
         return true;
     };
 
-    var unhandled = function (request, response, next) {
+    var unhandled = function (request, response) {
         var url = require('url').parse(request.url).pathname;
         console.log("Request for something we don't serve: " + request.url);
         response.writeHead(404, "Request for something we don't serve.");
@@ -650,7 +655,7 @@ var M2Server = function (overrideOptions) {
     };
 
 
-    var uploadFile = function (request, response, clientID) {
+    var uploadFile = function (request, response) {
         return function (clientID) {
             logClient(clientID, "received: /uploadTutorial");
             var formidable = require('formidable');

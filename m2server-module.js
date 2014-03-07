@@ -18,15 +18,6 @@
 // Install via:
 //   npm install
 // Required on path: Singular
-// We are using our own open script to make Graphs.m2 work (generate jpegs for
-// users), please include the current directory in your path: 
-// export PATH=.:$PATH
-//
-//
-// Schroot version:
-//
-// Intended to run on server environment not localhost, where every user starts Singular in a
-// separate secure container. For setup instructions please see configuring_ubuntu.tex.
 //
 //
 // A message on / : possibly creates a cookie, and serves back index.html and
@@ -146,7 +137,6 @@ var M2Server = function (overrideOptions) {
         this.recentlyRestarted = false;
         // we use this to keep from handling a bullet stream of restarts
         this.lastActiveTime = Date.now(); // milliseconds when client was last active
-        console.log("function Client()");
     };
 
 
@@ -167,7 +157,7 @@ var M2Server = function (overrideOptions) {
         } while (clientIDExists(clientID));
         clientID = "user" + clientID.toString(10);
         console.log("New Client ID " + clientID);
-        linuxContainerCollection[clientID] = "shrimp";
+        linuxContainerCollection[clientID] = "10.0.1.3";
         return clientID;
     };
 
@@ -191,14 +181,14 @@ var M2Server = function (overrideOptions) {
     };
 
     var getLinuxContainer = function (clientID) {
-        return "10.0.1.3";
+        return linuxContainerCollection[clientID];
     };
 
     var escapeSpacesForSpawnCommand = function (cmd) {
         return cmd.replace(/ /g, "\ ");
     };
 
-    var spawnSchroot = function (clientID) {
+    var spawnMathProgramInSecureContainer = function (clientID) {
         var linuxContainer = getLinuxContainer(clientID);
         var spawn = require('child_process').spawn;
         var sshCommand = "ssh -i /home/admin/.ssh/singular_key -l singular_user " + linuxContainer;
@@ -222,10 +212,10 @@ var M2Server = function (overrideOptions) {
         process.stderr.setEncoding(encoding);
     };
 
-    var m2Start = function (clientID) {
+    var mathProgramStart = function (clientID) {
         var spawn = require('child_process').spawn;
         if (options.SCHROOT) {
-            m2 = spawnSchroot(clientID, 'Singular');
+            m2 = spawnMathProgramInSecureContainer(clientID, 'Singular');
         } else {
             m2 = spawn('script', ['/dev/null', 'Singular']);
         }
@@ -261,11 +251,11 @@ var M2Server = function (overrideOptions) {
     };
 
     var attachListenersToOutputPipes = function (clientID) {
-        var m2process = clients[clientID].m2;
-        m2process.stdout.removeAllListeners('data');
-        m2process.stderr.removeAllListeners('data');
-        m2process.stdout.on('data', sendDataToClient(clientID));
-        m2process.stderr.on('data', sendDataToClient(clientID));
+        var mathProgramProcess = clients[clientID].m2;
+        mathProgramProcess.stdout.removeAllListeners('data');
+        mathProgramProcess.stderr.removeAllListeners('data');
+        mathProgramProcess.stdout.on('data', sendDataToClient(clientID));
+        mathProgramProcess.stderr.on('data', sendDataToClient(clientID));
     };
 
     var attachListenersToOutput = function (clientID) {
@@ -301,12 +291,12 @@ var M2Server = function (overrideOptions) {
         }
         response.write(
             '<head><link rel="stylesheet" href="m2.css" type="text/css" media="screen"></head>');
-        response.write('<h1>Macaulay2 User Statistics</h1>');
+        response.write('<h1>Singular User Statistics</h1>');
         response.write("There are currently " + currentUsers +
-            " users using M2.<br>");
+            " users using Singular.<br>");
         response.write("In total, there were " + totalUsers +
             " users since the server started.<br>");
-        response.write("Enjoy M2!");
+        response.write("Enjoy Singular!");
         response.end();
     };
 
@@ -331,7 +321,7 @@ var M2Server = function (overrideOptions) {
     };
 
     // Client starts eventStreams to obtain M2 output and start M2
-    var connectEventStreamToM2Output = function (request, response) {
+    var connectEventStreamToMathProgramOutput = function (request, response) {
         return function (clientID) {
             logClient(clientID, "connectEventStreamToM2Output");
             response.writeHead(200, {
@@ -340,7 +330,7 @@ var M2Server = function (overrideOptions) {
             setEventStreamForClientID(clientID, response);
 
             if (!clients[clientID].m2) {
-                clients[clientID].m2 = m2Start(clientID);
+                clients[clientID].m2 = mathProgramStart(clientID);
             }
             attachListenersToOutput(clientID);
 
@@ -352,7 +342,7 @@ var M2Server = function (overrideOptions) {
         };
     };
 
-    var m2InputAction = function (request, response) {
+    var mathProgramInputAction = function (request, response) {
         return function (clientID) {
             logClient(clientID, "m2InputAction");
             if (!checkForEventStream(clientID, response)) {
@@ -367,7 +357,7 @@ var M2Server = function (overrideOptions) {
 
             // Send input to M2 when we have received the complete m2commands
             request.on("end", function () {
-                handCommandsToM2(clientID, m2commands, response);
+                handCommandsToMathProgram(clientID, m2commands, response);
             });
         };
     };
@@ -376,7 +366,7 @@ var M2Server = function (overrideOptions) {
         clients[clientID].lastActiveTime = Date.now();
     };
 
-    var handCommandsToM2 = function (clientID, m2commands, response) {
+    var handCommandsToMathProgram = function (clientID, m2commands, response) {
         logClient(clientID, "Singular input: " + m2commands);
         if (!clients[clientID] || !clients[clientID].m2 || !clients[
             clientID].m2.stdin.writable) {
@@ -408,7 +398,7 @@ var M2Server = function (overrideOptions) {
     };
 
 
-    var killM2Client = function (m2Process, clientID) {
+    var killMathProgram = function (m2Process, clientID) {
         logClient(clientID, "killSingularClient: " + m2Process.pid);
         m2Process.kill();
         m2Process.stdin.end();
@@ -442,12 +432,12 @@ var M2Server = function (overrideOptions) {
             }
 
             if (client.m2) {
-                killM2Client(client.m2, clientID);
+                killMathProgram(client.m2, clientID);
             }
 
             resetRecentlyRestarted(client);
 
-            client.m2 = m2Start(clientID);
+            client.m2 = mathProgramStart(clientID);
             attachListenersToOutput(clientID);
             response.writeHead(200);
             response.end();
@@ -763,8 +753,8 @@ var M2Server = function (overrideOptions) {
         .use('/upload', runFunctionIfClientExists(uploadFile))
         .use('/viewHelp', forwardRequestForSpecialEventToClient("viewHelp"))
         .use('/image', forwardRequestForSpecialEventToClient("image"))
-        .use('/startSourceEvent', runFunctionIfClientExists(connectEventStreamToM2Output))
-        .use('/chat', runFunctionIfClientExists(m2InputAction))
+        .use('/startSourceEvent', runFunctionIfClientExists(connectEventStreamToMathProgramOutput))
+        .use('/chat', runFunctionIfClientExists(mathProgramInputAction))
         .use('/interrupt', runFunctionIfClientExists(interruptAction))
         .use('/restart', runFunctionIfClientExists(restartAction))
         .use('/save', runFunctionIfClientExists(saveAction))

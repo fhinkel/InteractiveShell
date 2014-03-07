@@ -61,7 +61,6 @@ var M2Server = function (overrideOptions) {
         },
 
         totalUsers = 0, //only used for stats: total # users since server started
-        userNumber = 0, //number in the system
 
     // An array of Client objects.  Each has an M2 process, and a response
     // object It is possible that this.m2 is not defined, and/or that
@@ -92,16 +91,15 @@ var M2Server = function (overrideOptions) {
     var timeBeforeInterval = function (timeInterval) {
         var now = Date.now();
         console.log("It is currently " + now + " milliseconds.");
-        var minAge = now - timeInterval;
-        return minAge;
+        return now - timeInterval;
     };
 
 
     var removeOldClients = function (minimalLastActiveTimeForClient) {
         for (var clientID in clients) {
             if (clients.hasOwnProperty(clientID)) {
-                console.log("lastActivetime for user : " + clientID + " " +
-                    clients[clientID].lastActiveTime)
+                console.log("lastActiveTime for user : " + clientID + " " +
+                    clients[clientID].lastActiveTime);
                 if (clients[clientID].lastActiveTime < minimalLastActiveTimeForClient) {
                     deleteClient(clientID);
                 }
@@ -110,7 +108,7 @@ var M2Server = function (overrideOptions) {
     };
 
     var logCurrentlyActiveClients = function () {
-        for (clientID in clients) {
+        for (var clientID in clients) {
             if (clients.hasOwnProperty(clientID)) {
                 console.log(clientID);
             }
@@ -137,7 +135,6 @@ var M2Server = function (overrideOptions) {
     var runShellCommand = function (cmd, callback) {
         console.log("Run shell command: " + cmd);
         require('child_process').exec(cmd, function (error, stdout, stderr) {
-            //console.log("runShellCommand result:" + stdout);
             callback(stdout);
         });
     };
@@ -170,7 +167,7 @@ var M2Server = function (overrideOptions) {
         } while (clientIDExists(clientID));
         clientID = "user" + clientID.toString(10);
         console.log("New Client ID " + clientID);
-        linuxContainerCollection[clientID] =  "shrimp";
+        linuxContainerCollection[clientID] = "shrimp";
         return clientID;
     };
 
@@ -194,21 +191,20 @@ var M2Server = function (overrideOptions) {
     };
 
     var getLinuxContainer = function (clientID) {
-        return "shrimp";
+        return "10.0.1.3";
     };
 
     var escapeSpacesForSpawnCommand = function (cmd) {
-	return cmd.replace(/ /g,"\ ");
-    }
+        return cmd.replace(/ /g, "\ ");
+    };
 
-    var spawnSchroot = function (clientID, cmd) {
+    var spawnSchroot = function (clientID) {
         var linuxContainer = getLinuxContainer(clientID);
         var spawn = require('child_process').spawn;
-	var sshCommand = "ssh -i /home/admin/.ssh/singular_key " + linuxContainer;
+        var sshCommand = "ssh -i /home/admin/.ssh/singular_key -l singular_user " + linuxContainer;
         var args = [ "-c", escapeSpacesForSpawnCommand(sshCommand)];
         logClient(clientID, args.join(" "));
-        var setEnvironmentCommand = 'export\ PATH=$PATH:/M2/bin\;\ export\ WWWBROWSER=open-www\;\ ';
-        return m2 = spawn('script', args);
+        return spawn('script', args);
     };
 
     var removeListenersFromPipe = function (clientID) {
@@ -219,12 +215,12 @@ var M2Server = function (overrideOptions) {
             this.stdout.removeAllListeners('data');
             this.stderr.removeAllListeners('data');
         };
-    }
+    };
 
     var setPipeEncoding = function (process, encoding) {
         process.stdout.setEncoding(encoding);
         process.stderr.setEncoding(encoding);
-    }
+    };
 
     var m2Start = function (clientID) {
         var spawn = require('child_process').spawn;
@@ -232,7 +228,6 @@ var M2Server = function (overrideOptions) {
             m2 = spawnSchroot(clientID, 'Singular');
         } else {
             m2 = spawn('script', ['/dev/null', 'Singular']);
-            //m2 = spawn('Singular', ['-t']);
         }
         logClient(clientID, "Spawning new Singular process...");
 
@@ -256,7 +251,6 @@ var M2Server = function (overrideOptions) {
             if (!streams || streams.length == 0) { // fatal error, should not happen
                 logClient(clientID, "Error: No event stream for sending data to client.");
                 return;
-                //throw "Error: No streams in Start M2";
             }
 
             for (var stream in streams) {
@@ -358,8 +352,7 @@ var M2Server = function (overrideOptions) {
             logClient(clientID, "m2InputAction");
             if (!checkForEventStream(clientID, response)) {
                 return;
-            }
-            ;
+            };
             request.setEncoding("utf8");
             var m2commands = "";
             // When we get a chunk of data, add it to the m2commands
@@ -376,7 +369,7 @@ var M2Server = function (overrideOptions) {
 
     var updateLastActiveTime = function (clientID) {
         clients[clientID].lastActiveTime = Date.now();
-    }
+    };
 
     var handCommandsToM2 = function (clientID, m2commands, response) {
         logClient(clientID, "Singular input: " + m2commands);
@@ -391,7 +384,7 @@ var M2Server = function (overrideOptions) {
         try {
             clients[clientID].m2.stdin.write(m2commands, function (err) {
                 if (err) {
-                    logClient("write failed: " + err);
+                    logClient(clientID, "write failed: " + err);
                 }
             });
         } catch (err) {
@@ -407,17 +400,13 @@ var M2Server = function (overrideOptions) {
         console.log("Ignore repeated restart request");
         response.writeHead(200);
         response.end();
-    }
+    };
 
 
     var killM2Client = function (m2Process, clientID) {
         logClient(clientID, "killSingularClient: " + m2Process.pid);
         m2Process.kill();
-        m2Process.stdin.end(); // This line is needed to remove commands stuck in
-        // the stdin pipe. Else we get
-        // Error: read ECONNRESET
-        //    at errnoException (net.js:884:11)
-        //    at Pipe.onread (net.js:539:19)
+        m2Process.stdin.end();
         if (options.SCHROOT) {
             runShellCommand("killall -u " + clients[clientID].systemUserName, function (ret) {
                 console.log(
@@ -466,7 +455,6 @@ var M2Server = function (overrideOptions) {
             if (!checkForEventStream(clientID, response)) {
                 return;
             }
-            ;
 
             var client = clients[clientID];
 
@@ -530,22 +518,22 @@ var M2Server = function (overrideOptions) {
         //  (non-schroot): /dfdff/dsdsffff/fdfdsd/M2-12345-1/a.jpg
         //     where 12345 is the pid of the M2 process.
         var clientID;
-        var matchobject;
+        var matchObject;
         if (options.SCHROOT) {
             // This needs to be changed. What we might get here is only
             // the username. We need to match the clientID from this.
-            matchobject = url.match(/^\/(user\d+)\//);
+            matchObject = url.match(/^\/(user\d+)\//);
         } else {
-            matchobject = url.match(/\/M2-(\d+)-/);
+            matchObject = url.match(/\/M2-(\d+)-/);
         }
-        if (!matchobject) {
+        if (!matchObject) {
             console.log("error, could not find clientID from url");
             throw ("could not find clientID from url");
         }
         if (options.SCHROOT) {
-            clientID = matchobject[1];
+            clientID = matchObject[1];
         } else {
-            clientID = findClientID(matchobject[1]);
+            clientID = findClientID(matchObject[1]);
         }
         return clientID;
     };
@@ -553,7 +541,7 @@ var M2Server = function (overrideOptions) {
     var getValidClientIDFromUrl = function (url) {
         var clientID = regexMatchingForClientID(url);
         // Sanity check:
-        client = clients[clientID];
+        var client = clients[clientID];
         if (!client) {
             throw ("No client for ID: " + clientID);
         }
@@ -638,7 +626,6 @@ var M2Server = function (overrideOptions) {
                         "Content-Type": "text/html"
                     });
                     response.end('rename failed: ' + error);
-                    return;
                 } else {
                     if (options.SCHROOT) {
                         setOwnershipToUser(clientID, filename);
@@ -708,7 +695,6 @@ var M2Server = function (overrideOptions) {
                 path = "/usr/local/var/lib/schroot/mount/"
                     + clients[clientID].schrootName + "/home/m2user/";
             }
-            ;
             var body = "";
 
             // When we get a chunk of data, add it to the body
@@ -805,7 +791,7 @@ var M2Server = function (overrideOptions) {
 
     var overrideDefaultOptions = function (overrideOptions) {
         // Start of M2Server creation code
-        for (opt in overrideOptions) {
+        for (var opt in overrideOptions) {
             if (options.hasOwnProperty(opt)) {
                 options[opt] = overrideOptions[opt];
                 console.log("m2server option: " + opt + " set to " + options[opt]);
@@ -832,11 +818,4 @@ var M2Server = function (overrideOptions) {
     };
 }; // end of def of M2Server
 
-//var m2server = M2Server();
-//m2server.listen(8002);
 exports.M2Server = M2Server;
-
-// Local Variables:
-// indent-tabs-mode: nil
-// tab-width: 4
-// End:

@@ -48,7 +48,9 @@ var M2Server = function (overrideOptions) {
             // there is only one user, he gets 100% CPU.
             PRUNECLIENTINTERVAL: 1000 * 60 * 10, // 10 minutes
             MAXAGE: 1000 * 60 * 60 * 24 * 7, // 1 week
-            SECURE_CONTAINERS: false // if true: start with 'sudo make start' on server.
+            SECURE_CONTAINERS: false, // if true: start with 'sudo make start' on server.
+            SSH_KEY_PATH: "/home/admin/.ssh/singular_key",
+            SFTP_KEY_PATH: "/home/admin/.ssh/sftp_key"
         },
 
         totalUsers = 0, //only used for stats: total # users since server started
@@ -192,7 +194,7 @@ var M2Server = function (overrideOptions) {
         getIp(clientID, function(ip) {
             logClient(clientID, "In spawn, have ip: " + ip);
             var spawn = require('child_process').spawn;
-            var sshCommand = "ssh -oStrictHostKeyChecking=no -i /home/admin/.ssh/singular_key -l singular_user " + ip;
+            var sshCommand = "ssh -oStrictHostKeyChecking=no -i " + options.SSH_KEY_PATH + " " + ip;
             var args = [ "-c", escapeSpacesForSpawnCommand(sshCommand)];
             logClient(clientID, args.join(" "));
             var process = spawn('script', args);

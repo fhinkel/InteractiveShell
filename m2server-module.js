@@ -80,7 +80,7 @@ var M2Server = function (overrideOptions) {
         var fs = require('fs');
         fs.readFile(options.fileWithMacAddressesOfUnusedContainers, function (error, containerList) {
             // TODO: Catch error
-
+            console.log("Reading container list.");
 
             var fs = require('fs');
             var ipAddressTableFile = "/var/lib/libvirt/dnsmasq/isolated.leases";
@@ -92,6 +92,7 @@ var M2Server = function (overrideOptions) {
                     var macAddress = words[1];
                     var ip = words[2];
                     ipAddressTable[macAddress] = ip;
+                    console.log("Pushing ip: " + ip);
                     ipCollection.push(ip);
                 }
                 next(ipCollection.pop());
@@ -248,14 +249,17 @@ var M2Server = function (overrideOptions) {
 
     var getIp = function (clientID, next) {
         var ip = clients[clientID].ip;
+        logClient(clientID, "Want to get ip. " + ip);
         if(ip == 0){
             if(ipCollection.length > 1){
                 ip = ipCollection.pop();
+                next(ip);
             } else {
                 readContainerList(next);
             }
+        } else {
+            next(ip);
         }
-        next(ip);
     };
 
     var escapeSpacesForSpawnCommand = function (cmd) {
@@ -264,6 +268,7 @@ var M2Server = function (overrideOptions) {
 
     var spawnMathProgramInSecureContainer = function (clientID) {
         getIp(clientID, function(ip) {
+            logClient(clientID, "In spawn, have ip: " + ip);
             var spawn = require('child_process').spawn;
             var sshCommand = "ssh -i /home/admin/.ssh/singular_key -l singular_user " + ip;
             var args = [ "-c", escapeSpacesForSpawnCommand(sshCommand)];

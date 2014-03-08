@@ -73,6 +73,26 @@ var M2Server = function (overrideOptions) {
         });
     };
 
+    var readContainerList = function() {
+        var fs = require('fs');
+        fs.readFile("new_containers", function(err, data) {
+            addNewContainers(data);
+        });
+    };
+
+    var addNewContainers = function(data) {
+        console.log(data);
+        for(var rawContainer : data.split("\n")) {
+            containerData = rawContainer.split(" *** ");
+            var uuid = containerData[0];
+            var macAddress = containerData[1];
+            var ip = getIPFromMacAddress(macAddress);
+        }
+    };
+
+    var getIPFromMacAddress = function(macAddress) {
+
+    };
 
     var deleteClient = function (clientID) {
         removeSystemUser(clientID);

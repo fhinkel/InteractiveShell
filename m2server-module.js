@@ -40,15 +40,9 @@ const cookieName = "trySingular";
 var M2Server = function (overrideOptions) {
     var options = {
             port: 8002, // default port number to use
-            userMemoryLimit: 500000000, // Corresponds to 500M memory
-            userCpuLimit: 256, // Corresponds to 256 shares of the CPU.
-            // As stated wrongly on the internet this does NOT
-            // correspond to 25% CPU.  The total number of shares is
-            // determined as the sum of all these limits, i.e. if
-            // there is only one user, he gets 100% CPU.
-            PRUNECLIENTINTERVAL: 1000 * 60 * 10, // 10 minutes
-            MAXAGE: 1000 * 60 * 60 * 24 * 7, // 1 week
-            SECURE_CONTAINERS: false, // if true: start with 'sudo make start' on server.
+            PRUNE_CLIENT_INTERVAL: 1000 * 60 * 10, // 10 minutes
+            MAX_AGE: 1000 * 60 * 60 * 24 * 7, // 1 week
+            SECURE_CONTAINERS: false,
             SSH_KEY_PATH: "/home/admin/.ssh/singular_key",
             SFTP_KEY_PATH: "/home/admin/.ssh/sftp_key"
         },
@@ -112,7 +106,7 @@ var M2Server = function (overrideOptions) {
         // checks their resource usage with a perl script. Remove old or bad
         // clients
         console.log("Pruning clients...");
-        var minimalLastActiveTimeForClient = timeBeforeInterval(options.MAXAGE);
+        var minimalLastActiveTimeForClient = timeBeforeInterval(options.MAX_AGE);
         removeOldClients(minimalLastActiveTimeForClient);
         console.log("Done pruning clients...  Continuing clients:");
         logCurrentlyActiveClients();
@@ -772,7 +766,7 @@ var M2Server = function (overrideOptions) {
         // when run in production, work with schroots, see startM2Process()
         if (options.SECURE_CONTAINERS) {
             console.log('Running with secure containers.');
-            setInterval(pruneClients, options.PRUNECLIENTINTERVAL);
+            setInterval(pruneClients, options.PRUNE_CLIENT_INTERVAL);
         }
 
         // Send a comment to the clients every 20 seconds so they don't 

@@ -1,13 +1,12 @@
 // March 2014, Franziska Hinkelmann, Mike Stillman, and Lars Kastner
 //
-// This file defines a Node.js server for serving 'trySingular'.
+// This file defines a Node.js server for serving 'try Math Program'.
 //   run 
 //       node m2server.js 
 //   or
 //       node m2server-schroot.js
 // in a terminal in this directory. Alternatively you can use the Makefile 
 // provided alongside this repository.
-//
 //
 // Local version:
 //
@@ -17,14 +16,14 @@
 //   Node.js libraries: cookies, connect, fs, http.  
 // Install via:
 //   npm install
-// Required on path: Singular
+// Required on path: math program, such as Singular or Macaulay2
 //
 //
 // A message on / : possibly creates a cookie, and serves back index.html and
 // related js/css/png files
 // A POST message on /chat: input should be Singular commands to perform.  A
 // message on /chat: start an event emitter, which will return the output of
-// the M2 process.
+// the math program process.
 // Image is being called by the open script to tell the server where to find a
 // jpg that the user created
 //
@@ -35,7 +34,6 @@ var http = require('http'),
     connect = require('connect'),
     Cookies = require('cookies');
 
-const cookieName = "trySingular";
 
 var M2Server = function (overrideOptions) {
     var options = {
@@ -45,24 +43,24 @@ var M2Server = function (overrideOptions) {
             SECURE_CONTAINERS: false,
             SSH_KEY_PATH: "/home/admin/.ssh/singular_key",
             MATH_PROGRAM: "Singular"
-        },
+        };
 
-        totalUsers = 0, //only used for stats: total # users since server started
+    var cookieName = "try" + options.MATH_PROGRAM;
+
+    var totalUsers = 0; //only used for stats: total # users since server started
 
     // An array of Client objects.  Each has a math program process, and a response
     // object It is possible that this.m2 is not defined, and/or that
     // this.eventStreams is not defined.
-        clients = {},
-        server;
+    var clients = {};
+    var server;
 
-    var lxc = require('./lxc_manager.js');
-    var ipCollection = lxc.lxc_manager();
+    var ipCollection = require('./lxc_manager.js').lxc_manager();
 
     // preamble every log with the client ID
     var logClient = function (clientID, str) {
         console.log(clientID + ": " + str);
     };
-
 
     var deleteClient = function (clientID) {
         ipCollection.removeIp(clients[clientID].ip);
@@ -74,7 +72,6 @@ var M2Server = function (overrideOptions) {
         console.log("It is currently " + now + " milliseconds.");
         return now - timeInterval;
     };
-
 
     var removeOldClients = function (minimalLastActiveTimeForClient) {
         for (var clientID in clients) {
@@ -616,9 +613,10 @@ var M2Server = function (overrideOptions) {
             var sftpModule = require('./sftp.js');
             var sftp = sftpModule.sftp();
             sftp.connect(ip);
-            sftp.upload(temporaryFilename, filename, function(err) {
-                if (err) {
-                    sendUploadError(clientID);
+            sftp.upload(temporaryFilename, filename, function(error) {
+                if (error) {
+                    logClient(clientID, 'received error in upload: ' + error);
+                    sendUploadError(clientID)(response);
                 } else {
                     response.writeHead(200, {
                         "Content-Type": "text/html"
@@ -630,15 +628,13 @@ var M2Server = function (overrideOptions) {
     };
 
     var sendUploadError = function (clientID) {
-        return function () {
-            logClient(clientID, 'received error in upload: ');
+        return function (response) {
             response.writeHead(500, {
                 "Content-Type": "text/html"
             });
             response.end('upload not complete!');
         };
     };
-
 
     var uploadFile = function (request, response) {
         return function (clientID) {
@@ -651,12 +647,13 @@ var M2Server = function (overrideOptions) {
                 temporaryFilename = file.path;
                 form.on('end', saveUploadedFile(temporaryFilename, file.name, clientID, response));
             });
-            form.on('error', sendUploadError(clientID));
+            form.on('error', function(error){
+                logClient(clientID, 'received error in upload: ' + error);
+                sendUploadError(clientID)(response);
+            });
             form.parse(request);
         };
     };
-
-
 
     var saveAction = function (request, response) {
         return function (clientID) {

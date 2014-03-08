@@ -616,11 +616,15 @@ var M2Server = function (overrideOptions) {
             var sftpModule = require('./sftp.js');
             var sftp = sftpModule.sftp();
             sftp.connect(ip);
-            sftp.upload(temporaryFilename, filename, function() {
-                response.writeHead(200, {
-                    "Content-Type": "text/html"
-                });
-                response.end('upload complete!');
+            sftp.upload(temporaryFilename, filename, function(err) {
+                if (err) {
+                    sendUploadError(clientID);
+                } else {
+                    response.writeHead(200, {
+                        "Content-Type": "text/html"
+                    });
+                    response.end('upload complete!');
+                }
             });
         };
     };

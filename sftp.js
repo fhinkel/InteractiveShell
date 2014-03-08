@@ -18,16 +18,19 @@ var sftp = function() {
 
                 sftp.fastPut(tempFilename, filename, function(err) {
                     if (err) {
-                        console.log("upload of file failed." + ip);
+                        console.log("upload of file failed. " + ip);
+                        next(err);
                     } else {
-                        console.log("upload of file succeeded:" + ip);
+                        console.log("upload of file succeeded: " + ip);
+                        next();
                     }
                 });
 
                 sftp.on('end', function() {
                     console.log('SFTP :: SFTP session closed');
-                    next();
                 });
+
+                sftp.close();
             });
         });
 
@@ -39,7 +42,7 @@ var sftp = function() {
             console.log('Connection :: end');
         });
 
-        c.on('close', function(had_error) {
+        c.on('close', function() {
             console.log('Connection :: close');
         });
 

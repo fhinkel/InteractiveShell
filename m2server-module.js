@@ -188,6 +188,7 @@ var M2Server = function (overrideOptions) {
         getIp(clientID, function(ip) {
             logClient(clientID, "In spawn, have ip: " + ip);
             var spawn = require('child_process').spawn;
+            clients[clientID].ip = ip;
             var sshCommand = "ssh -oStrictHostKeyChecking=no -i " + options.SSH_KEY_PATH + " singular_user@" + ip;
             var args = [ "-c", escapeSpacesForSpawnCommand(sshCommand)];
             logClient(clientID, args.join(" "));
@@ -606,20 +607,14 @@ var M2Server = function (overrideOptions) {
         response.end();
     };
 
-    var setOwnershipToUser = function (clientID, filename) {
-        runShellCommand("chown " + clients[clientID].systemUserName + ":" + clients[clientID].systemUserName + " "
-            + filename, function (e) {
-            console.log("Chown: " + e);
-        });
-    };
-
 
     var saveUploadedFile = function (temporaryFilename, filename, clientID, response) {
         return function () {
             console.log("end received from formidable form");
 
             var ip = clients[clientID].ip;
-            var sftp = require('./sftp.js');
+            var sftpModule = require('./sftp.js');
+            var sftp = sftpModule.sftp();
             sftp.connect(ip);
             sftp.upload(temporaryFilename, filename, function() {
                 response.writeHead(200, {
@@ -646,32 +641,13 @@ var M2Server = function (overrideOptions) {
             logClient(clientID, "received: /uploadTutorial");
             var formidable = require('formidable');
             var form = new formidable.IncomingForm;
-            var schrootPath;
-            if (options.SECURE_CONTAINERS) {
-                schrootPath = "/usr/local/var/lib/schroot/mount/" + clients[clientID].schrootName +
-                    "/home/m2user/";
-                form.uploadDir = schrootPath;
-            }
-
-            var filename;
             var temporaryFilename;
 
             form.on('file', function (name, file) {
-                var path;
-                if (options.SECURE_CONTAINERS) {
-                    path = schrootPath;
-                } else {
-                    path = "/tmp/";
-                }
-                filename = path + file.name;
                 temporaryFilename = file.path;
-                form.on('end', saveUploadedFile(temporaryFilename, filename, clientID, response));
-
+                form.on('end', saveUploadedFile(temporaryFilename, file.name, clientID, response));
             });
-
-
             form.on('error', sendUploadError(clientID));
-
             form.parse(request);
         };
     };

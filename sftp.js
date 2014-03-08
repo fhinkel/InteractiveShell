@@ -5,8 +5,8 @@ var sftp = function() {
     var sftp_key = "/home/admin/.ssh/sftp_key";
     var ip;
 
-    var connect = function(ipAdress) {
-        ip = ipAdress;
+    var connect = function(ipAddress) {
+        ip = ipAddress;
     };
 
     var upload = function(tempFilename, filename, next) {

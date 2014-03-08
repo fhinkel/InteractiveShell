@@ -1,25 +1,26 @@
 var lxc_manager = function () {
     var options = {
         fileWithMacAddressesOfUnusedContainers: "new_containers",
-        CONTAINER_SPLIT_SYMBOL: " *** "
+        CONTAINER_SPLIT_SYMBOL: " *** ",
+        ISOLATED_LEASES_FILE: "/var/lib/libvirt/dnsmasq/isolated.leases"
     },
     linuxContainerCollection = [],
     ipCollection = [];
 
     var removeIp = function(ip){
         console.log("I should be deleting " + ip + ", but I won't.");
-    }
+    };
    
     var getNewIp = function (next) {
         if(ipCollection.length > 5){
             var ip = ipCollection.pop();
             next(ip);
         } else if (ipCollection.length > 1){
-            var ip = ipCollection.pop();
+            ip = ipCollection.pop();
             next(ip);
             readContainerList();
         } else {
-            var ip = ipCollection[0];
+            ip = ipCollection[0];
             readContainerList();
         }
     };
@@ -74,14 +75,14 @@ var lxc_manager = function () {
         } else {
             var fs = require('fs');
             setTimeout(function () {
-                var ipAddressTableFile = "/var/lib/libvirt/dnsmasq/isolated.leases";
+                var ipAddressTableFile = options.ISOLATED_LEASES_FILE;
                 fs.readFile(ipAddressTableFile, function (err, rawIpAddressTable) {
                     var ipAddressTable = {};
                     var lines = rawIpAddressTable.split("\n");
                     for (var line in lines) {
                         var words = line.split(" ");
                         var macAddress = words[1];
-                        var ip = words[2];
+                        ip = words[2];
                         ipAddressTable[macAddress] = ip;
                     }
                     getIPFromMacAddress(macAddress, ipAddressTable, next);

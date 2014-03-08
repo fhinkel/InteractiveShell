@@ -44,12 +44,12 @@ var M2Server = function (overrideOptions) {
             MAX_AGE: 1000 * 60 * 60 * 24 * 7, // 1 week
             SECURE_CONTAINERS: false,
             SSH_KEY_PATH: "/home/admin/.ssh/singular_key",
-            SFTP_KEY_PATH: "/home/admin/.ssh/sftp_key"
+            MATH_PROGRAM: "Singular"
         },
 
         totalUsers = 0, //only used for stats: total # users since server started
 
-    // An array of Client objects.  Each has an M2 process, and a response
+    // An array of Client objects.  Each has a math program process, and a response
     // object It is possible that this.m2 is not defined, and/or that
     // this.eventStreams is not defined.
         clients = {},
@@ -617,22 +617,15 @@ var M2Server = function (overrideOptions) {
     var saveUploadedFile = function (temporaryFilename, filename, clientID, response) {
         return function () {
             console.log("end received from formidable form");
-            fs.rename(temporaryFilename, filename, function (error) {
-                if (error) {
-                    logClient(clientID, "Error in renaming file: " + error);
-                    response.writeHead(500, {
-                        "Content-Type": "text/html"
-                    });
-                    response.end('rename failed: ' + error);
-                } else {
-                    if (options.SECURE_CONTAINERS) {
-                        setOwnershipToUser(clientID, filename);
-                    }
-                    response.writeHead(200, {
-                        "Content-Type": "text/html"
-                    });
-                    response.end('upload complete!');
-                }
+
+            var ip = clients[clientID].ip;
+            var sftp = require('./sftp.js');
+            sftp.connect(ip);
+            sftp.upload(temporaryFilename, filename, function() {
+                response.writeHead(200, {
+                    "Content-Type": "text/html"
+                });
+                response.end('upload complete!');
             });
         };
     };

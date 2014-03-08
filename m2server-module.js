@@ -60,7 +60,8 @@ var M2Server = function (overrideOptions) {
     // this.eventStreams is not defined.
         clients = {},
         server,
-        linuxContainerCollection = {};
+        linuxContainerCollection = {},
+        ipCollection = {};
 
     // preamble every log with the client ID
     var logClient = function (clientID, str) {
@@ -75,7 +76,7 @@ var M2Server = function (overrideOptions) {
         });
     };
 
-    var readContainerList = function () {
+    var readContainerList = function (next) {
         var fs = require('fs');
         fs.readFile(options.fileWithMacAddressesOfUnusedContainers, function (error, containerList) {
             // TODO: Catch error
@@ -91,7 +92,9 @@ var M2Server = function (overrideOptions) {
                     var macAddress = words[1];
                     var ip = words[2];
                     ipAddressTable[macAddress] = ip;
+                    ipCollection.push(ip);
                 }
+                next(ipCollection.pop());
                 addNewContainersToContainerCollection(containerList, ipAddressTable);
             });
         });
@@ -200,6 +203,7 @@ var M2Server = function (overrideOptions) {
         this.recentlyRestarted = false;
         // we use this to keep from handling a bullet stream of restarts
         this.lastActiveTime = Date.now(); // milliseconds when client was last active
+        this.ip = 0;
     };
 
 
@@ -220,7 +224,6 @@ var M2Server = function (overrideOptions) {
         } while (clientIDExists(clientID));
         clientID = "user" + clientID.toString(10);
         console.log("New Client ID " + clientID);
-        linuxContainerCollection[clientID] = "10.0.1.3";
         return clientID;
     };
 
@@ -243,8 +246,16 @@ var M2Server = function (overrideOptions) {
         callbackFcn(clientID);
     };
 
-    var getLinuxContainer = function (clientID) {
-        return linuxContainerCollection[clientID];
+    var getIp = function (clientID, next) {
+        var ip = clients[clientID].ip;
+        if(ip == 0){
+            if(ipCollection.length > 1){
+                ip = ipCollection.pop();
+            } else {
+                readContainerList(next);
+            }
+        }
+        next(ip);
     };
 
     var escapeSpacesForSpawnCommand = function (cmd) {
@@ -252,12 +263,14 @@ var M2Server = function (overrideOptions) {
     };
 
     var spawnMathProgramInSecureContainer = function (clientID) {
-        var linuxContainer = getLinuxContainer(clientID);
-        var spawn = require('child_process').spawn;
-        var sshCommand = "ssh -i /home/admin/.ssh/singular_key -l singular_user " + linuxContainer;
-        var args = [ "-c", escapeSpacesForSpawnCommand(sshCommand)];
-        logClient(clientID, args.join(" "));
-        return spawn('script', args);
+        getIp(clientID, function(ip) {
+            var spawn = require('child_process').spawn;
+            var sshCommand = "ssh -i /home/admin/.ssh/singular_key -l singular_user " + ip;
+            var args = [ "-c", escapeSpacesForSpawnCommand(sshCommand)];
+            logClient(clientID, args.join(" "));
+            return spawn('script', args);
+
+        });
     };
 
     var removeListenersFromPipe = function (clientID) {

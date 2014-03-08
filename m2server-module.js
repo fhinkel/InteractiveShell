@@ -60,8 +60,8 @@ var M2Server = function (overrideOptions) {
     // this.eventStreams is not defined.
         clients = {},
         server,
-        linuxContainerCollection = {},
-        ipCollection = {};
+        linuxContainerCollection = [],
+        ipCollection = [];
 
     // preamble every log with the client ID
     var logClient = function (clientID, str) {
@@ -86,14 +86,18 @@ var M2Server = function (overrideOptions) {
             var ipAddressTableFile = "/var/lib/libvirt/dnsmasq/isolated.leases";
             fs.readFile(ipAddressTableFile, function (err, rawIpAddressTable) {
                 var ipAddressTable = {};
-                var lines = rawIpAddressTable.split("\n");
+                var lines = rawIpAddressTable.toString().split("\n");
+                console.log("Lines: " + lines.length);
                 for (var line in lines) {
-                    var words = line.split(" ");
+                    console.log("Line: " + line);
+                    var words = lines[line].split(" ");
                     var macAddress = words[1];
                     var ip = words[2];
                     ipAddressTable[macAddress] = ip;
                     console.log("Pushing ip: " + ip);
-                    ipCollection.push(ip);
+                    if(ip){
+                        ipCollection.push(ip);
+                    }
                 }
                 next(ipCollection.pop());
                 addNewContainersToContainerCollection(containerList, ipAddressTable);
@@ -103,9 +107,9 @@ var M2Server = function (overrideOptions) {
 
     var addNewContainersToContainerCollection = function (containerList, ipAddressTable) {
         console.log(containerList);
-        var lines = containerList.split("\n");
+        var lines = containerList.toString().split("\n");
         for (var rawContainer in lines) {
-            var containerData = rawContainer.split(options.CONTAINER_SPLIT_SYMBOL);
+            var containerData = lines[rawContainer].split(options.CONTAINER_SPLIT_SYMBOL);
             var uuid = containerData[0];
             var macAddress = containerData[1];
             var addingFunction = function (uuid, macAddress) {
@@ -270,7 +274,7 @@ var M2Server = function (overrideOptions) {
         getIp(clientID, function(ip) {
             logClient(clientID, "In spawn, have ip: " + ip);
             var spawn = require('child_process').spawn;
-            var sshCommand = "ssh -i /home/admin/.ssh/singular_key -l singular_user " + ip;
+            var sshCommand = "\"ssh -oStrictHostKeyChecking=no -i /home/admin/.ssh/singular_key -l singular_user " + ip + "\"";
             var args = [ "-c", escapeSpacesForSpawnCommand(sshCommand)];
             logClient(clientID, args.join(" "));
             return spawn('script', args);

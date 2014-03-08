@@ -21,7 +21,7 @@
 //
 // A message on / : possibly creates a cookie, and serves back index.html and
 // related js/css/png files
-// A POST message on /chat: input should be Singular commands to perform.  A
+// A POST message on /chat: input should be MathProgram commands to perform.  A
 // message on /chat: start an event emitter, which will return the output of
 // the math program process.
 // Image is being called by the open script to tell the server where to find a
@@ -212,7 +212,7 @@ var M2Server = function (overrideOptions) {
 
     var mathProgramStart = function (clientID) {
         var spawn = require('child_process').spawn;
-        logClient(clientID, "Spawning new Singular process...");
+        logClient(clientID, "Spawning new MathProgram process...");
         if (options.SECURE_CONTAINERS) {
             spawnMathProgramInSecureContainer(clientID, function(process){
                 process.on('exit', removeListenersFromPipe(clientID));
@@ -221,7 +221,7 @@ var M2Server = function (overrideOptions) {
                 attachListenersToOutput(clientID);
             });
         } else {
-            process = spawn('script', ['/dev/null', 'Singular']);
+            process = spawn('script', ['/dev/null', options.MATH_PROGRAM]);
             process.on('exit', removeListenersFromPipe(clientID));
             setPipeEncoding(process, "utf8");
             clients[clientID].m2 = process;
@@ -293,12 +293,12 @@ var M2Server = function (overrideOptions) {
         }
         response.write(
             '<head><link rel="stylesheet" href="m2.css" type="text/css" media="screen"></head>');
-        response.write('<h1>Singular User Statistics</h1>');
-        response.write("There are currently " + currentUsers +
-            " users using Singular.<br>");
-        response.write("In total, there were " + totalUsers +
-            " users since the server started.<br>");
-        response.write("Enjoy Singular!");
+        response.write('<h1>' + options.MATH_PROGRAM + ' User Statistics</h1>');
+        response.write('There are currently ' + currentUsers +
+            ' users using ' + options.MATH_PROGRAM + '.<br>');
+        response.write('In total, there were ' + totalUsers +
+            ' users since the server started.<br>');
+        response.write('Enjoy ' + options.MATH_PROGRAM + '!');
         response.end();
     };
 
@@ -369,7 +369,7 @@ var M2Server = function (overrideOptions) {
     };
 
     var handCommandsToMathProgram = function (clientID, m2commands, response) {
-        logClient(clientID, "Singular input: " + m2commands);
+        logClient(clientID, "MathProgram input: " + m2commands);
         if (!clients[clientID] || !clients[clientID].m2 || !clients[
             clientID].m2.stdin.writable) {
             // this user has been pruned out!  Simply return.
@@ -401,7 +401,7 @@ var M2Server = function (overrideOptions) {
 
 
     var killMathProgram = function (m2Process, clientID) {
-        logClient(clientID, "killSingularClient: " + m2Process.pid);
+        logClient(clientID, "killMathProgramClient: " + m2Process.pid);
         m2Process.kill();
         m2Process.stdin.end();
         if (options.SECURE_CONTAINERS) {
@@ -707,7 +707,7 @@ var M2Server = function (overrideOptions) {
         // close the connection and then reconnect
         setInterval(keepEventStreamsAlive, 20000);
 
-        console.log("Starting Singular server.");
+        console.log("Starting " + options.MATH_PROGRAM + " server.");
         server = http.createServer(app);
     };
 
@@ -715,7 +715,7 @@ var M2Server = function (overrideOptions) {
         if (server === undefined) {
             initializeServer();
         }
-        console.log("Singular server listening on port " + options.port + "...");
+        console.log(options.MATH_PROGRAM + " server listening on port " + options.port + "...");
         return server.listen(options.port);
     };
 

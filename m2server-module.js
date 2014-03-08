@@ -40,22 +40,16 @@ const cookieName = "trySingular";
 var M2Server = function (overrideOptions) {
     var options = {
             port: 8002, // default port number to use
-            userMemoryLimit: 500000000, // Corresponds to 500M memory
-            userCpuLimit: 256, // Corresponds to 256 shares of the CPU.
-            // As stated wrongly on the internet this does NOT
-            // correspond to 25% CPU.  The total number of shares is
-            // determined as the sum of all these limits, i.e. if
-            // there is only one user, he gets 100% CPU.
-            PRUNECLIENTINTERVAL: 1000 * 60 * 10, // 10 minutes
-            MAXAGE: 1000 * 60 * 60 * 24 * 7, // 1 week
-            SECURE_CONTAINERS: false, // if true: start with 'sudo make start' on server.
+            PRUNE_CLIENT_INTERVAL: 1000 * 60 * 10, // 10 minutes
+            MAX_AGE: 1000 * 60 * 60 * 24 * 7, // 1 week
+            SECURE_CONTAINERS: false,
             SSH_KEY_PATH: "/home/admin/.ssh/singular_key",
-            SFTP_KEY_PATH: "/home/admin/.ssh/sftp_key"
+            MATH_PROGRAM: "Singular"
         },
 
         totalUsers = 0, //only used for stats: total # users since server started
 
-    // An array of Client objects.  Each has an M2 process, and a response
+    // An array of Client objects.  Each has a math program process, and a response
     // object It is possible that this.m2 is not defined, and/or that
     // this.eventStreams is not defined.
         clients = {},
@@ -112,7 +106,7 @@ var M2Server = function (overrideOptions) {
         // checks their resource usage with a perl script. Remove old or bad
         // clients
         console.log("Pruning clients...");
-        var minimalLastActiveTimeForClient = timeBeforeInterval(options.MAXAGE);
+        var minimalLastActiveTimeForClient = timeBeforeInterval(options.MAX_AGE);
         removeOldClients(minimalLastActiveTimeForClient);
         console.log("Done pruning clients...  Continuing clients:");
         logCurrentlyActiveClients();
@@ -623,22 +617,15 @@ var M2Server = function (overrideOptions) {
     var saveUploadedFile = function (temporaryFilename, filename, clientID, response) {
         return function () {
             console.log("end received from formidable form");
-            fs.rename(temporaryFilename, filename, function (error) {
-                if (error) {
-                    logClient(clientID, "Error in renaming file: " + error);
-                    response.writeHead(500, {
-                        "Content-Type": "text/html"
-                    });
-                    response.end('rename failed: ' + error);
-                } else {
-                    if (options.SECURE_CONTAINERS) {
-                        setOwnershipToUser(clientID, filename);
-                    }
-                    response.writeHead(200, {
-                        "Content-Type": "text/html"
-                    });
-                    response.end('upload complete!');
-                }
+
+            var ip = clients[clientID].ip;
+            var sftp = require('./sftp.js');
+            sftp.connect(ip);
+            sftp.upload(temporaryFilename, filename, function() {
+                response.writeHead(200, {
+                    "Content-Type": "text/html"
+                });
+                response.end('upload complete!');
             });
         };
     };
@@ -772,7 +759,7 @@ var M2Server = function (overrideOptions) {
         // when run in production, work with schroots, see startM2Process()
         if (options.SECURE_CONTAINERS) {
             console.log('Running with secure containers.');
-            setInterval(pruneClients, options.PRUNECLIENTINTERVAL);
+            setInterval(pruneClients, options.PRUNE_CLIENT_INTERVAL);
         }
 
         // Send a comment to the clients every 20 seconds so they don't 

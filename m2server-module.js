@@ -48,9 +48,7 @@ var M2Server = function (overrideOptions) {
             // there is only one user, he gets 100% CPU.
             PRUNECLIENTINTERVAL: 1000 * 60 * 10, // 10 minutes
             MAXAGE: 1000 * 60 * 60 * 24 * 7, // 1 week
-            SCHROOT: false, // if true: start with 'sudo make start' on server.
-            fileWithMacAddressesOfUnusedContainers: "new_containers",
-            CONTAINER_SPLIT_SYMBOL: " *** "
+            SCHROOT: false // if true: start with 'sudo make start' on server.
         },
 
         totalUsers = 0, //only used for stats: total # users since server started
@@ -59,9 +57,10 @@ var M2Server = function (overrideOptions) {
     // object It is possible that this.m2 is not defined, and/or that
     // this.eventStreams is not defined.
         clients = {},
-        server,
-        linuxContainerCollection = [],
-        ipCollection = [];
+        server;
+
+    var lxc = require('./lxc_manager.js');
+    var ipCollection = lxc.lxc_manager();
 
     // preamble every log with the client ID
     var logClient = function (clientID, str) {
@@ -74,75 +73,6 @@ var M2Server = function (overrideOptions) {
             console.log(
                 "We removed client " + clientID + " with result: " + ret);
         });
-    };
-
-    var readContainerList = function (next) {
-        var fs = require('fs');
-        fs.readFile(options.fileWithMacAddressesOfUnusedContainers, function (error, containerList) {
-            // TODO: Catch error
-            console.log("Reading container list.");
-
-            var fs = require('fs');
-            var ipAddressTableFile = "/var/lib/libvirt/dnsmasq/isolated.leases";
-            fs.readFile(ipAddressTableFile, function (err, rawIpAddressTable) {
-                var ipAddressTable = {};
-                var lines = rawIpAddressTable.toString().split("\n");
-                console.log("Lines: " + lines.length);
-                for (var line in lines) {
-                    console.log("Line: " + line);
-                    var words = lines[line].split(" ");
-                    var macAddress = words[1];
-                    var ip = words[2];
-                    ipAddressTable[macAddress] = ip;
-                    console.log("Pushing ip: " + ip);
-                    if(ip){
-                        ipCollection.push(ip);
-                    }
-                }
-                next(ipCollection.pop());
-                addNewContainersToContainerCollection(containerList, ipAddressTable);
-            });
-        });
-    };
-
-    var addNewContainersToContainerCollection = function (containerList, ipAddressTable) {
-        console.log(containerList);
-        var lines = containerList.toString().split("\n");
-        for (var rawContainer in lines) {
-            var containerData = lines[rawContainer].split(options.CONTAINER_SPLIT_SYMBOL);
-            var uuid = containerData[0];
-            var macAddress = containerData[1];
-            var addingFunction = function (uuid, macAddress) {
-                return function (ip) {
-                    linuxContainerCollection.push([uuid, macAddress, ip]);
-                };
-            };
-            getIPFromMacAddress(macAddress, ipAddressTable, addingFunction(uuid, macAddress));
-        }
-    };
-
-
-    var getIPFromMacAddress = function (macAddress, ipAddressTable, next) {
-        if (macAddress in ipAddressTable) {
-            var ip = ipAddressTable[macAddress];
-            next(ip);
-        } else {
-            var fs = require('fs');
-            setTimeout(function () {
-                var ipAddressTableFile = "/var/lib/libvirt/dnsmasq/isolated.leases";
-                fs.readFile(ipAddressTableFile, function (err, rawIpAddressTable) {
-                    var ipAddressTable = {};
-                    var lines = rawIpAddressTable.split("\n");
-                    for (var line in lines) {
-                        var words = line.split(" ");
-                        var macAddress = words[1];
-                        var ip = words[2];
-                        ipAddressTable[macAddress] = ip;
-                    }
-                    getIPFromMacAddress(macAddress, ipAddressTable, next);
-                });
-            }, 10000);
-        }
     };
 
     var deleteClient = function (clientID) {
@@ -255,12 +185,7 @@ var M2Server = function (overrideOptions) {
         var ip = clients[clientID].ip;
         logClient(clientID, "Want to get ip. " + ip);
         if(ip == 0){
-            if(ipCollection.length > 1){
-                ip = ipCollection.pop();
-                next(ip);
-            } else {
-                readContainerList(next);
-            }
+            ipCollection.getNewIp(next)
         } else {
             next(ip);
         }

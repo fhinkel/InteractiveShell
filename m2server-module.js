@@ -655,41 +655,6 @@ var M2Server = function (overrideOptions) {
         };
     };
 
-    var saveAction = function (request, response) {
-        return function (clientID) {
-            request.setEncoding("utf8");
-            logClient(clientID, "received: /save");
-            // Set the directory where we will write the resulting 2 files
-            var path = "/tmp/";
-            if (options.SECURE_CONTAINERS) {
-                path = "/usr/local/var/lib/schroot/mount/"
-                    + clients[clientID].schrootName + "/home/m2user/";
-            }
-            var body = "";
-
-            // When we get a chunk of data, add it to the body
-            request.on("data", function (chunk) {
-                body += chunk;
-            });
-
-            // grab input and output windows, place them in files where we can serve them
-            request.on("end", function () {
-                console.log("/save, received: " + body);
-                var json = JSON.parse(body);
-                console.log(json.input);
-
-                fs.writeFile(path + "Singular-input", json.input);
-                fs.writeFile(path + "Singular-output", json.output);
-                response.writeHead(200, {
-                    "Content-Type": "text/html"
-                });
-                var msg = {input: path + "Singular-input", output: path + "Singular-output"};
-                response.write(JSON.stringify(msg));
-                response.end();
-            });
-        };
-    };
-
     var moveWelcomeTutorialToBeginning = function (tutorials, firstTutorial) {
         var index = tutorials.indexOf(firstTutorial);
         if (index > -1) {
@@ -728,7 +693,6 @@ var M2Server = function (overrideOptions) {
         .use('/chat', runFunctionIfClientExists(mathProgramInputAction))
         .use('/interrupt', runFunctionIfClientExists(interruptAction))
         .use('/restart', runFunctionIfClientExists(restartAction))
-        .use('/save', runFunctionIfClientExists(saveAction))
         .use('/getListOfTutorials', getListOfTutorials)
         .use(unhandled);
 

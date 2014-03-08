@@ -50,7 +50,7 @@ var M2Server = function (overrideOptions) {
     var totalUsers = 0; //only used for stats: total # users since server started
 
     // An array of Client objects.  Each has a math program process, and a response
-    // object It is possible that this.m2 is not defined, and/or that
+    // object It is possible that this.mathProgramInstance is not defined, and/or that
     // this.eventStreams is not defined.
     var clients = {};
     var server;
@@ -217,14 +217,14 @@ var M2Server = function (overrideOptions) {
             spawnMathProgramInSecureContainer(clientID, function(process){
                 process.on('exit', removeListenersFromPipe(clientID));
                 setPipeEncoding(process, "utf8");
-                clients[clientID].m2 = process;
+                clients[clientID].mathProgramInstance = process;
                 attachListenersToOutput(clientID);
             });
         } else {
             process = spawn('script', ['/dev/null', options.MATH_PROGRAM]);
             process.on('exit', removeListenersFromPipe(clientID));
             setPipeEncoding(process, "utf8");
-            clients[clientID].m2 = process;
+            clients[clientID].mathProgramInstance = process;
             attachListenersToOutput(clientID);
         }
     };
@@ -253,7 +253,7 @@ var M2Server = function (overrideOptions) {
     };
 
     var attachListenersToOutputPipes = function (clientID) {
-        var mathProgramProcess = clients[clientID].m2;
+        var mathProgramProcess = clients[clientID].mathProgramInstance;
         mathProgramProcess.stdout.removeAllListeners('data');
         mathProgramProcess.stderr.removeAllListeners('data');
         mathProgramProcess.stdout.on('data', sendDataToClient(clientID));
@@ -263,7 +263,7 @@ var M2Server = function (overrideOptions) {
     var attachListenersToOutput = function (clientID) {
         var client = clients[clientID];
         if (!client) return;
-        if (client.m2) {
+        if (client.mathProgramInstance) {
             attachListenersToOutputPipes(clientID);
         }
     };
@@ -331,7 +331,7 @@ var M2Server = function (overrideOptions) {
             });
             setEventStreamForClientID(clientID, response);
 
-            if (!clients[clientID].m2) {
+            if (!clients[clientID].mathProgramInstance) {
                 mathProgramStart(clientID);
             }
             attachListenersToOutput(clientID);
@@ -370,8 +370,8 @@ var M2Server = function (overrideOptions) {
 
     var handCommandsToMathProgram = function (clientID, m2commands, response) {
         logClient(clientID, "MathProgram input: " + m2commands);
-        if (!clients[clientID] || !clients[clientID].m2 || !clients[
-            clientID].m2.stdin.writable) {
+        if (!clients[clientID] || !clients[clientID].mathProgramInstance || !clients[
+            clientID].mathProgramInstance.stdin.writable) {
             // this user has been pruned out!  Simply return.
             response.writeHead(200);
             response.end();
@@ -379,7 +379,7 @@ var M2Server = function (overrideOptions) {
         }
         updateLastActiveTime(clientID);
         try {
-            clients[clientID].m2.stdin.write(m2commands, function (err) {
+            clients[clientID].mathProgramInstance.stdin.write(m2commands, function (err) {
                 if (err) {
                     logClient(clientID, "write failed: " + err);
                 }
@@ -433,8 +433,8 @@ var M2Server = function (overrideOptions) {
                 return;
             }
 
-            if (client.m2) {
-                killMathProgram(client.m2, clientID);
+            if (client.mathProgramInstance) {
+                killMathProgram(client.mathProgramInstance, clientID);
             }
 
             resetRecentlyRestarted(client);
@@ -458,8 +458,8 @@ var M2Server = function (overrideOptions) {
                 ignoreRepeatedRestart(client);
                 return;
             }
-            if (client && client.m2) {
-                var mathProgram = client.m2;
+            if (client && client.mathProgramInstance) {
+                var mathProgram = client.mathProgramInstance;
                 if (options.SECURE_CONTAINERS) {
                     sendInterruptToM2Process(mathProgram.pid);
                 } else {
@@ -492,8 +492,8 @@ var M2Server = function (overrideOptions) {
     var findClientID = function (pid) {
         //console.log("Searching for clientID whose M2 has PID " + pid);
         for (var prop in clients) {
-            if (clients.hasOwnProperty(prop) && clients[prop] && clients[prop].m2) {
-                if (pid == clients[prop].m2.pid) {
+            if (clients.hasOwnProperty(prop) && clients[prop] && clients[prop].mathProgramInstance) {
+                if (pid == clients[prop].mathProgramInstance.pid) {
                     //console.log("We found the client! It is " + prop);
                     if (clients[prop].eventStreams.length != 0) {
                         //console.log("findClientID picked user with clientID " + prop);
@@ -697,7 +697,7 @@ var M2Server = function (overrideOptions) {
         .use(unhandled);
 
     var initializeServer = function () {
-        // when run in production, work with schroots, see startM2Process()
+        // when run in production, work with secure containers.
         if (options.SECURE_CONTAINERS) {
             console.log('Running with secure containers.');
             setInterval(pruneClients, options.PRUNE_CLIENT_INTERVAL);

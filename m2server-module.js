@@ -37,7 +37,7 @@ var http = require('http'),
 var M2Server = function (overrideOptions) {
     var options = {
             port: 8002, // default port number to use
-            PRUNECLIENTINTERVAL: 1000 * 60 * 10, // 10 minutes
+            PRUNE_CLIENT_INTERVAL: 1000 * 60 * 10, // 10 minutes
             MAXAGE: 1000 * 60 * 60 * 24 * 7, // 1 week
             SECURE_CONTAINERS: false, // if true: start with 'sudo make start' on server.
             SSH_KEY_PATH: "/home/admin/.ssh/singular_key",
@@ -747,8 +747,6 @@ var M2Server = function (overrideOptions) {
         .use(connect.logger('dev'))
         .use(connect.favicon())
         .use(connect.static('public'))
-        .use('/var/folders', connect.static('/var/folders'))
-        .use('/usr/local/var/lib/schroot/mount', connect.static('/usr/local/var/lib/schroot/mount'))
         .use('/admin', stats)
         .use('/upload', runFunctionIfClientExists(uploadFile))
         .use('/viewHelp', forwardRequestForSpecialEventToClient("viewHelp"))
@@ -762,10 +760,10 @@ var M2Server = function (overrideOptions) {
         .use(unhandled);
 
     var initializeServer = function () {
-        // when run in production, work with schroots, see startM2Process()
+        // when run in production, work with secure containers such as LXCs
         if (options.SECURE_CONTAINERS) {
             console.log('Running with secure containers.');
-            setInterval(pruneClients, options.PRUNECLIENTINTERVAL);
+            setInterval(pruneClients, options.PRUNE_CLIENT_INTERVAL);
         }
 
         // Send a comment to the clients every 20 seconds so they don't 

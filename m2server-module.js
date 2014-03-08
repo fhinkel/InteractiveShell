@@ -1,6 +1,6 @@
 // March 2014, Franziska Hinkelmann, Mike Stillman, and Lars Kastner
 //
-// This file defines a Node.js server for serving 'trySingular'.
+// This file defines a Node.js server for serving 'tryMathProgram', where Math Program is set in options.
 //   run 
 //       node m2server.js 
 //   or
@@ -13,18 +13,16 @@
 //
 // In a browser, use: 
 //      http://localhost:8002/
-// Requirements:
-//   Node.js libraries: cookies, connect, fs, http.  
-// Install via:
+// Install node requirements via:
 //   npm install
-// Required on path: Singular
+// Required on path: math program such as Singular or Macaulay2
 //
 //
 // A message on / : possibly creates a cookie, and serves back index.html and
 // related js/css/png files
-// A POST message on /chat: input should be Singular commands to perform.  A
+// A POST message on /chat: input should be a math program commands to perform.  A
 // message on /chat: start an event emitter, which will return the output of
-// the M2 process.
+// the math program process.
 // Image is being called by the open script to tell the server where to find a
 // jpg that the user created
 //
@@ -35,31 +33,27 @@ var http = require('http'),
     connect = require('connect'),
     Cookies = require('cookies');
 
-const cookieName = "trySingular";
 
 var M2Server = function (overrideOptions) {
     var options = {
             port: 8002, // default port number to use
-            userMemoryLimit: 500000000, // Corresponds to 500M memory
-            userCpuLimit: 256, // Corresponds to 256 shares of the CPU.
-            // As stated wrongly on the internet this does NOT
-            // correspond to 25% CPU.  The total number of shares is
-            // determined as the sum of all these limits, i.e. if
-            // there is only one user, he gets 100% CPU.
             PRUNECLIENTINTERVAL: 1000 * 60 * 10, // 10 minutes
             MAXAGE: 1000 * 60 * 60 * 24 * 7, // 1 week
             SECURE_CONTAINERS: false, // if true: start with 'sudo make start' on server.
             SSH_KEY_PATH: "/home/admin/.ssh/singular_key",
-            SFTP_KEY_PATH: "/home/admin/.ssh/sftp_key"
-        },
+            SFTP_KEY_PATH: "/home/admin/.ssh/sftp_key",
+            MATH_PROGRAM: "Singular"
+        };
 
-        totalUsers = 0, //only used for stats: total # users since server started
+    var cookieName = "try" + options.MATH_PROGRAM;
+
+    var totalUsers = 0; //only used for stats: total # users since server started
 
     // An array of Client objects.  Each has an M2 process, and a response
     // object It is possible that this.m2 is not defined, and/or that
     // this.eventStreams is not defined.
-        clients = {},
-        server;
+    var    clients = {};
+    var   server;
 
     var lxc = require('./lxc_manager.js');
     var ipCollection = lxc.lxc_manager();
@@ -172,7 +166,7 @@ var M2Server = function (overrideOptions) {
 
         logClient(clientID,
             "New user: " + " UserAgent=" + request.headers['user-agent'] + ".");
-        logClient(clientID, "schroot: " + options.SECURE_CONTAINERS);
+        logClient(clientID, "secure_containers option: " + options.SECURE_CONTAINERS);
         callbackFcn(clientID);
     };
 
@@ -218,22 +212,23 @@ var M2Server = function (overrideOptions) {
         process.stderr.setEncoding(encoding);
     };
 
+    var setMathProgramProcess = function (process, clientID) {
+        process.on('exit', removeListenersFromPipe(clientID));
+        setPipeEncoding(process, "utf8");
+        clients[clientID].m2 = process;
+        attachListenersToOutput(clientID);
+    };
+
     var mathProgramStart = function (clientID) {
         var spawn = require('child_process').spawn;
-        logClient(clientID, "Spawning new Singular process...");
+        logClient(clientID, "Spawning new " + options.MATH_PROGRAM+ " process...");
         if (options.SECURE_CONTAINERS) {
             spawnMathProgramInSecureContainer(clientID, function(process){
-                process.on('exit', removeListenersFromPipe(clientID));
-                setPipeEncoding(process, "utf8");
-                clients[clientID].m2 = process;
-                attachListenersToOutput(clientID);
+                setMathProgramProcess(process, clientID);
             });
         } else {
-            process = spawn('script', ['/dev/null', 'Singular']);
-            process.on('exit', removeListenersFromPipe(clientID));
-            setPipeEncoding(process, "utf8");
-            clients[clientID].m2 = process;
-            attachListenersToOutput(clientID);
+            var process = spawn('script', ['/dev/null', options.MATH_PROGRAM]);
+            setMathProgramProcess(process, clientID);
         }
     };
 
@@ -247,7 +242,7 @@ var M2Server = function (overrideOptions) {
         return function (data) {
             var streams = clients[clientID].eventStreams;
             updateLastActiveTime(clientID);
-            message = formatServerSentEventMessage(data);
+            var message = formatServerSentEventMessage(data);
             if (!streams || streams.length == 0) { // fatal error, should not happen
                 logClient(clientID, "Error: No event stream for sending data to client.");
                 return;
@@ -290,7 +285,7 @@ var M2Server = function (overrideOptions) {
     };
 
     var stats = function (request, response) {
-        // to do: authorization
+        // todo: authorization
         response.writeHead(200, {
             "Content-Type": "text/html"
         });
@@ -330,10 +325,10 @@ var M2Server = function (overrideOptions) {
         clients[clientID].eventStreams.push(stream);
     };
 
-    // Client starts eventStreams to obtain M2 output and start M2
+    // Client starts eventStreams to obtain math program output and start math program
     var connectEventStreamToMathProgramOutput = function (request, response) {
         return function (clientID) {
-            logClient(clientID, "connectEventStreamToM2Output");
+            logClient(clientID, "connectEventStreamToMathProgramOutput");
             response.writeHead(200, {
                 'Content-Type': "text/event-stream"
             });
@@ -354,20 +349,20 @@ var M2Server = function (overrideOptions) {
 
     var mathProgramInputAction = function (request, response) {
         return function (clientID) {
-            logClient(clientID, "m2InputAction");
+            logClient(clientID, "mathProgramInputAction");
             if (!checkForEventStream(clientID, response)) {
                 return;
             }
             request.setEncoding("utf8");
-            var m2commands = "";
-            // When we get a chunk of data, add it to the m2commands
+            var mathProgramCommands = "";
+            // When we get a chunk of data, add it to the command
             request.on("data", function (chunk) {
-                m2commands += chunk;
+                mathProgramCommands += chunk;
             });
 
-            // Send input to M2 when we have received the complete m2commands
+            // Send input to math program when we have received the complete command
             request.on("end", function () {
-                handCommandsToMathProgram(clientID, m2commands, response);
+                handCommandsToMathProgram(clientID, mathProgramCommands, response);
             });
         };
     };
@@ -376,10 +371,9 @@ var M2Server = function (overrideOptions) {
         clients[clientID].lastActiveTime = Date.now();
     };
 
-    var handCommandsToMathProgram = function (clientID, m2commands, response) {
-        logClient(clientID, "Singular input: " + m2commands);
-        if (!clients[clientID] || !clients[clientID].m2 || !clients[
-            clientID].m2.stdin.writable) {
+    var handCommandsToMathProgram = function (clientID, mathProgramCommands, response) {
+        logClient(clientID, options.MATH_PROGRAM + " input: " + mathProgramCommands);
+        if (!clients[clientID] || !clients[clientID].m2 || !clients[clientID].m2.stdin.writable) {
             // this user has been pruned out!  Simply return.
             response.writeHead(200);
             response.end();
@@ -387,14 +381,14 @@ var M2Server = function (overrideOptions) {
         }
         updateLastActiveTime(clientID);
         try {
-            clients[clientID].m2.stdin.write(m2commands, function (err) {
+            clients[clientID].m2.stdin.write(mathProgramCommands, function (err) {
                 if (err) {
                     logClient(clientID, "write failed: " + err);
                 }
             });
         } catch (err) {
             logClient(clientID, err);
-            // At this point, there was some problem writing to the m2 process
+            // At this point, there was some problem writing to the math program process
             // we just return.
         }
         response.writeHead(200);
@@ -408,10 +402,10 @@ var M2Server = function (overrideOptions) {
     };
 
 
-    var killMathProgram = function (m2Process, clientID) {
-        logClient(clientID, "killSingularClient: " + m2Process.pid);
-        m2Process.kill();
-        m2Process.stdin.end();
+    var killMathProgram = function (mathProgramProcess, clientID) {
+        logClient(clientID, "killMathProgramClient: " + mathProgramProcess.pid);
+        mathProgramProcess.kill();
+        mathProgramProcess.stdin.end();
         if (options.SECURE_CONTAINERS) {
             runShellCommand("killall -u " + clients[clientID].systemUserName, function (ret) {
                 console.log(
@@ -469,7 +463,7 @@ var M2Server = function (overrideOptions) {
             if (client && client.m2) {
                 var mathProgram = client.m2;
                 if (options.SECURE_CONTAINERS) {
-                    sendInterruptToM2Process(mathProgram.pid);
+                    sendInterruptToMathProgramProcess(mathProgram.pid);
                 } else {
                     mathProgram.kill('SIGINT');
                 }
@@ -479,22 +473,22 @@ var M2Server = function (overrideOptions) {
         };
     };
 
-    /* To find the actual M2 we have to dig a little deeper:
+    /* To find the actual MathProgram we have to dig a little deeper:
      The m2.pid is the PID of the cgexec command.
      Using pgrep we gets the child process(es).
      In this case there is only one, namely the schroot.
      The child of the schroot then is M2 which we want to interrupt.
      */
-    var sendInterruptToM2Process = function (schrootPid) {
-        runShellCommand('n=`pgrep -P ' + schrootPid + '`; n=`pgrep -P $n`; pgrep -P $n', function (m2Pid) {
-            logClient(clientID, "PID of M2 inside schroot: " + m2Pid);
-            var cmd = 'kill -s INT ' + m2Pid;
+    var sendInterruptToMathProgramProcess = function (schrootPid) {
+        runShellCommand('n=`pgrep -P ' + schrootPid + '`; n=`pgrep -P $n`; pgrep -P $n', function (mathProgramPid) {
+            logClient(clientID, "PID of " + options.MATH_PROGRAM + " inside schroot: " + mathProgramPid);
+            var cmd = 'kill -s INT ' + mathProgramPid;
             runShellCommand(cmd, function (res) {
             });
         });
     };
 
-    // returning clientID for a given M2 pid
+    // returning clientID for a given math program pid
     // This currently does not work when working inside a schroot, because pid
     // is not the schroot's pid
     var findClientID = function (pid) {
@@ -507,8 +501,7 @@ var M2Server = function (overrideOptions) {
                         //console.log("findClientID picked user with clientID " + prop);
                         return prop;
                     } else {
-                        throw ("Client " + clientID +
-                            " does not have an eventStream.");
+                        throw ("Client " + clientID + " does not have an eventStream.");
                     }
                 }
             }
@@ -714,12 +707,12 @@ var M2Server = function (overrideOptions) {
                 var json = JSON.parse(body);
                 console.log(json.input);
 
-                fs.writeFile(path + "Singular-input", json.input);
-                fs.writeFile(path + "Singular-output", json.output);
+                fs.writeFile(path + options.MATH_PROGRAM + "-input", json.input);
+                fs.writeFile(path + options.MATH_PROGRAM + "-output", json.output);
                 response.writeHead(200, {
                     "Content-Type": "text/html"
                 });
-                var msg = {input: path + "Singular-input", output: path + "Singular-output"};
+                var msg = {input: path + options.MATH_PROGRAM + "-input", output: path + options.MATH_PROGRAM + "-output"};
                 response.write(JSON.stringify(msg));
                 response.end();
             });
@@ -779,7 +772,7 @@ var M2Server = function (overrideOptions) {
         // close the connection and then reconnect
         setInterval(keepEventStreamsAlive, 20000);
 
-        console.log("Starting Singular server.");
+        console.log("Starting " + options.MATH_PROGRAM + " server.");
         server = http.createServer(app);
     };
 
@@ -787,7 +780,7 @@ var M2Server = function (overrideOptions) {
         if (server === undefined) {
             initializeServer();
         }
-        console.log("Singular server listening on port " + options.port + "...");
+        console.log(options.MATH_PROGRAM + " server listening on port " + options.port + "...");
         return server.listen(options.port);
     };
 

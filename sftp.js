@@ -26,6 +26,11 @@ var sftp = function() {
                     }
                 });
 
+                sftp.on('error', function (error) {
+                    console.log('error in SFTP. ' + error);
+                    next(error);
+                });
+
                 sftp.on('end', function() {
                     console.log('SFTP :: SFTP session closed');
                 });

@@ -270,15 +270,16 @@ var M2Server = function (overrideOptions) {
         return cmd.replace(/ /g, "\ ");
     };
 
-    var spawnMathProgramInSecureContainer = function (clientID) {
+    var spawnMathProgramInSecureContainer = function (clientID, next) {
         getIp(clientID, function(ip) {
             logClient(clientID, "In spawn, have ip: " + ip);
             var spawn = require('child_process').spawn;
-            var sshCommand = "\"ssh -oStrictHostKeyChecking=no -i /home/admin/.ssh/singular_key -l singular_user " + ip + "\"";
+            var sshCommand = "ssh -oStrictHostKeyChecking=no -i /home/admin/.ssh/singular_key -l singular_user " + ip;
             var args = [ "-c", escapeSpacesForSpawnCommand(sshCommand)];
             logClient(clientID, args.join(" "));
-            return spawn('script', args);
+            var process = spawn('script', args);
 
+            next(process);
         });
     };
 
@@ -299,17 +300,21 @@ var M2Server = function (overrideOptions) {
 
     var mathProgramStart = function (clientID) {
         var spawn = require('child_process').spawn;
-        if (options.SCHROOT) {
-            m2 = spawnMathProgramInSecureContainer(clientID, 'Singular');
-        } else {
-            m2 = spawn('script', ['/dev/null', 'Singular']);
-        }
         logClient(clientID, "Spawning new Singular process...");
-
-        m2.on('exit', removeListenersFromPipe(clientID));
-        setPipeEncoding(m2, "utf8");
-
-        return m2;
+        if (options.SCHROOT) {
+            spawnMathProgramInSecureContainer(clientID, function(process){
+                process.on('exit', removeListenersFromPipe(clientID));
+                setPipeEncoding(process, "utf8");
+                clients[clientID].m2 = process;
+                attachListenersToOutput(clientID);
+            });
+        } else {
+            process = spawn('script', ['/dev/null', 'Singular']);
+            process.on('exit', removeListenersFromPipe(clientID));
+            setPipeEncoding(process, "utf8");
+            clients[clientID].m2 = process;
+            attachListenersToOutput(clientID);
+        }
     };
 
     var formatServerSentEventMessage = function (data) {
@@ -415,7 +420,7 @@ var M2Server = function (overrideOptions) {
             setEventStreamForClientID(clientID, response);
 
             if (!clients[clientID].m2) {
-                clients[clientID].m2 = mathProgramStart(clientID);
+                mathProgramStart(clientID);
             }
             attachListenersToOutput(clientID);
 
@@ -522,8 +527,7 @@ var M2Server = function (overrideOptions) {
 
             resetRecentlyRestarted(client);
 
-            client.m2 = mathProgramStart(clientID);
-            attachListenersToOutput(clientID);
+            mathProgramStart(clientID);
             response.writeHead(200);
             response.end();
         };

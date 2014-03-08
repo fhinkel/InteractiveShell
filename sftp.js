@@ -29,8 +29,6 @@ var sftp = function() {
                 sftp.on('end', function() {
                     console.log('SFTP :: SFTP session closed');
                 });
-
-                sftp.close();
             });
         });
 

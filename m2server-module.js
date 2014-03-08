@@ -48,7 +48,7 @@ var M2Server = function (overrideOptions) {
             // there is only one user, he gets 100% CPU.
             PRUNECLIENTINTERVAL: 1000 * 60 * 10, // 10 minutes
             MAXAGE: 1000 * 60 * 60 * 24 * 7, // 1 week
-            SCHROOT: false // if true: start with 'sudo make start' on server.
+            SECURE_CONTAINERS: false // if true: start with 'sudo make start' on server.
         },
 
         totalUsers = 0, //only used for stats: total # users since server started
@@ -67,16 +67,9 @@ var M2Server = function (overrideOptions) {
         console.log(clientID + ": " + str);
     };
 
-    var removeSystemUser = function (clientID) {
-        runShellCommand('perl-scripts/remove_user.pl ' + clients[clientID].systemUserName + ' '
-            + clients[clientID].schrootName + ' ' + clients[clientID].schrootType, function (ret) {
-            console.log(
-                "We removed client " + clientID + " with result: " + ret);
-        });
-    };
 
     var deleteClient = function (clientID) {
-        removeSystemUser(clientID);
+        ipCollection.removeIp(clients[clientID].ip);
         delete clients[clientID];
     };
 
@@ -177,7 +170,7 @@ var M2Server = function (overrideOptions) {
 
         logClient(clientID,
             "New user: " + " UserAgent=" + request.headers['user-agent'] + ".");
-        logClient(clientID, "schroot: " + options.SCHROOT);
+        logClient(clientID, "schroot: " + options.SECURE_CONTAINERS);
         callbackFcn(clientID);
     };
 
@@ -226,7 +219,7 @@ var M2Server = function (overrideOptions) {
     var mathProgramStart = function (clientID) {
         var spawn = require('child_process').spawn;
         logClient(clientID, "Spawning new Singular process...");
-        if (options.SCHROOT) {
+        if (options.SECURE_CONTAINERS) {
             spawnMathProgramInSecureContainer(clientID, function(process){
                 process.on('exit', removeListenersFromPipe(clientID));
                 setPipeEncoding(process, "utf8");
@@ -417,7 +410,7 @@ var M2Server = function (overrideOptions) {
         logClient(clientID, "killSingularClient: " + m2Process.pid);
         m2Process.kill();
         m2Process.stdin.end();
-        if (options.SCHROOT) {
+        if (options.SECURE_CONTAINERS) {
             runShellCommand("killall -u " + clients[clientID].systemUserName, function (ret) {
                 console.log(
                     "We removed processes associates to " + clientID + " with result: " + ret);
@@ -473,7 +466,7 @@ var M2Server = function (overrideOptions) {
             }
             if (client && client.m2) {
                 var mathProgram = client.m2;
-                if (options.SCHROOT) {
+                if (options.SECURE_CONTAINERS) {
                     sendInterruptToM2Process(mathProgram.pid);
                 } else {
                     mathProgram.kill('SIGINT');
@@ -528,7 +521,7 @@ var M2Server = function (overrideOptions) {
         //     where 12345 is the pid of the M2 process.
         var clientID;
         var matchObject;
-        if (options.SCHROOT) {
+        if (options.SECURE_CONTAINERS) {
             // This needs to be changed. What we might get here is only
             // the username. We need to match the clientID from this.
             matchObject = url.match(/^\/(user\d+)\//);
@@ -539,7 +532,7 @@ var M2Server = function (overrideOptions) {
             console.log("error, could not find clientID from url");
             throw ("could not find clientID from url");
         }
-        if (options.SCHROOT) {
+        if (options.SECURE_CONTAINERS) {
             clientID = matchObject[1];
         } else {
             clientID = findClientID(matchObject[1]);
@@ -562,7 +555,7 @@ var M2Server = function (overrideOptions) {
         if (!path) {
             throw ("Could not extract path from " + url);
         }
-        if (options.SCHROOT) {
+        if (options.SECURE_CONTAINERS) {
             path = "/usr/local/var/lib/schroot/mount/" + clients[clientID].schrootName + path
         }
         return path;
@@ -636,7 +629,7 @@ var M2Server = function (overrideOptions) {
                     });
                     response.end('rename failed: ' + error);
                 } else {
-                    if (options.SCHROOT) {
+                    if (options.SECURE_CONTAINERS) {
                         setOwnershipToUser(clientID, filename);
                     }
                     response.writeHead(200, {
@@ -665,7 +658,7 @@ var M2Server = function (overrideOptions) {
             var formidable = require('formidable');
             var form = new formidable.IncomingForm;
             var schrootPath;
-            if (options.SCHROOT) {
+            if (options.SECURE_CONTAINERS) {
                 schrootPath = "/usr/local/var/lib/schroot/mount/" + clients[clientID].schrootName +
                     "/home/m2user/";
                 form.uploadDir = schrootPath;
@@ -676,7 +669,7 @@ var M2Server = function (overrideOptions) {
 
             form.on('file', function (name, file) {
                 var path;
-                if (options.SCHROOT) {
+                if (options.SECURE_CONTAINERS) {
                     path = schrootPath;
                 } else {
                     path = "/tmp/";
@@ -694,13 +687,15 @@ var M2Server = function (overrideOptions) {
         };
     };
 
+
+
     var saveAction = function (request, response) {
         return function (clientID) {
             request.setEncoding("utf8");
             logClient(clientID, "received: /save");
             // Set the directory where we will write the resulting 2 files
             var path = "/tmp/";
-            if (options.SCHROOT) {
+            if (options.SECURE_CONTAINERS) {
                 path = "/usr/local/var/lib/schroot/mount/"
                     + clients[clientID].schrootName + "/home/m2user/";
             }
@@ -773,7 +768,7 @@ var M2Server = function (overrideOptions) {
 
     var initializeServer = function () {
         // when run in production, work with schroots, see startM2Process()
-        if (options.SCHROOT) {
+        if (options.SECURE_CONTAINERS) {
             console.log('Running with secure containers.');
             setInterval(pruneClients, options.PRUNECLIENTINTERVAL);
         }

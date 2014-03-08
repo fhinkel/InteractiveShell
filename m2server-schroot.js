@@ -1,6 +1,6 @@
 var m2 = require('./m2server-module.js');
 var m2server = m2.M2Server({
-    SCHROOT: true
+    SECURE_CONTAINERS: true
 });
 m2server.listen();
 

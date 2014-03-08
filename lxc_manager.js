@@ -11,15 +11,20 @@ var lxc_manager = function () {
     }
    
     var getNewIp = function (next) {
-        if(ipCollection.length > 0){
+        if(ipCollection.length > 5){
             var ip = ipCollection.pop();
             next(ip);
+        } else if (ipCollection.length > 1){
+            var ip = ipCollection.pop();
+            next(ip);
+            readContainerList();
         } else {
-            readContainerList(next);
+            var ip = ipCollection[0];
+            readContainerList();
         }
     };
 
-    var readContainerList = function (next) {
+    var readContainerList = function () {
         var fs = require('fs');
         fs.readFile(options.fileWithMacAddressesOfUnusedContainers, function (error, containerList) {
             if(error){
@@ -40,7 +45,6 @@ var lxc_manager = function () {
                         ipCollection.push(ip);
                     }
                 }
-                next(ipCollection.pop());
                 addNewContainersToContainerCollection(containerList, ipAddressTable);
             });
         });

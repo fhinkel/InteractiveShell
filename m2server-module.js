@@ -48,7 +48,9 @@ var M2Server = function (overrideOptions) {
             // there is only one user, he gets 100% CPU.
             PRUNECLIENTINTERVAL: 1000 * 60 * 10, // 10 minutes
             MAXAGE: 1000 * 60 * 60 * 24 * 7, // 1 week
-            SCHROOT: false // if true: start with 'sudo make start' on server.
+            SCHROOT: false, // if true: start with 'sudo make start' on server.
+            fileWithMacAddressesOfUnusedContainers: "new_containers",
+            CONTAINER_SPLIT_SYMBOL: " *** "
         },
 
         totalUsers = 0, //only used for stats: total # users since server started
@@ -73,25 +75,66 @@ var M2Server = function (overrideOptions) {
         });
     };
 
-    var readContainerList = function() {
+    var readContainerList = function () {
         var fs = require('fs');
-        fs.readFile("new_containers", function(err, data) {
-            addNewContainers(data);
+        fs.readFile(options.fileWithMacAddressesOfUnusedContainers, function (error, containerList) {
+            // TODO: Catch error
+
+
+            var fs = require('fs');
+            var ipAddressTableFile = "/var/lib/libvirt/dnsmasq/isolated.leases";
+            fs.readFile(ipAddressTableFile, function (err, rawIpAddressTable) {
+                var ipAddressTable = {};
+                var lines = rawIpAddressTable.split("\n");
+                for (var line in lines) {
+                    var words = line.split(" ");
+                    var macAddress = words[1];
+                    var ip = words[2];
+                    ipAddressTable[macAddress] = ip;
+                }
+                addNewContainersToContainerCollection(containerList, ipAddressTable);
+            });
         });
     };
 
-    var addNewContainers = function(data) {
-        console.log(data);
-        for(var rawContainer : data.split("\n")) {
-            containerData = rawContainer.split(" *** ");
+    var addNewContainersToContainerCollection = function (containerList, ipAddressTable) {
+        console.log(containerList);
+        var lines = containerList.split("\n");
+        for (var rawContainer in lines) {
+            var containerData = rawContainer.split(options.CONTAINER_SPLIT_SYMBOL);
             var uuid = containerData[0];
             var macAddress = containerData[1];
-            var ip = getIPFromMacAddress(macAddress);
+            var addingFunction = function (uuid, macAddress) {
+                return function (ip) {
+                    linuxContainerCollection.push([uuid, macAddress, ip]);
+                };
+            };
+            getIPFromMacAddress(macAddress, ipAddressTable, addingFunction(uuid, macAddress));
         }
     };
 
-    var getIPFromMacAddress = function(macAddress) {
 
+    var getIPFromMacAddress = function (macAddress, ipAddressTable, next) {
+        if (macAddress in ipAddressTable) {
+            var ip = ipAddressTable[macAddress];
+            next(ip);
+        } else {
+            var fs = require('fs');
+            setTimeout(function () {
+                var ipAddressTableFile = "/var/lib/libvirt/dnsmasq/isolated.leases";
+                fs.readFile(ipAddressTableFile, function (err, rawIpAddressTable) {
+                    var ipAddressTable = {};
+                    var lines = rawIpAddressTable.split("\n");
+                    for (var line in lines) {
+                        var words = line.split(" ");
+                        var macAddress = words[1];
+                        var ip = words[2];
+                        ipAddressTable[macAddress] = ip;
+                    }
+                    getIPFromMacAddress(macAddress, ipAddressTable, next);
+                });
+            }, 10000);
+        }
     };
 
     var deleteClient = function (clientID) {
@@ -478,11 +521,11 @@ var M2Server = function (overrideOptions) {
                 return;
             }
             if (client && client.m2) {
-                var m2 = client.m2;
+                var mathProgram = client.m2;
                 if (options.SCHROOT) {
-                    sendInterruptToM2Process(m2.pid);
+                    sendInterruptToM2Process(mathProgram.pid);
                 } else {
-                    m2.kill('SIGINT');
+                    mathProgram.kill('SIGINT');
                 }
             }
             response.writeHead(200);
@@ -519,7 +562,7 @@ var M2Server = function (overrideOptions) {
                         return prop;
                     } else {
                         throw ("Client " + clientID +
-                            " does not have an eventstream.");
+                            " does not have an eventStream.");
                     }
                 }
             }
@@ -723,12 +766,12 @@ var M2Server = function (overrideOptions) {
                 var json = JSON.parse(body);
                 console.log(json.input);
 
-                fs.writeFile(path + "Macaulay2-input", json.input);
-                fs.writeFile(path + "Macaulay2-output", json.output);
+                fs.writeFile(path + "Singular-input", json.input);
+                fs.writeFile(path + "Singular-output", json.output);
                 response.writeHead(200, {
                     "Content-Type": "text/html"
                 });
-                var msg = {input: path + "Macaulay2-input", output: path + "Macaulay2-output"};
+                var msg = {input: path + "Singular-input", output: path + "Singular-output"};
                 response.write(JSON.stringify(msg));
                 response.end();
             });
@@ -765,10 +808,6 @@ var M2Server = function (overrideOptions) {
         .use(connect.static('public'))
         .use('/var/folders', connect.static('/var/folders'))
         .use('/usr/local/var/lib/schroot/mount', connect.static('/usr/local/var/lib/schroot/mount'))
-        .use('/M2', connect.static('/M2'))
-        // M2 creates temporary files (like created by Graphs.m2) here on MacOS
-        .use('/tmp', connect.static('/tmp'))
-        // and here on Ubuntu
         .use('/admin', stats)
         .use('/upload', runFunctionIfClientExists(uploadFile))
         .use('/viewHelp', forwardRequestForSpecialEventToClient("viewHelp"))
@@ -784,7 +823,7 @@ var M2Server = function (overrideOptions) {
     var initializeServer = function () {
         // when run in production, work with schroots, see startM2Process()
         if (options.SCHROOT) {
-            console.log('Running with schroots.');
+            console.log('Running with secure containers.');
             setInterval(pruneClients, options.PRUNECLIENTINTERVAL);
         }
 
@@ -792,7 +831,7 @@ var M2Server = function (overrideOptions) {
         // close the connection and then reconnect
         setInterval(keepEventStreamsAlive, 20000);
 
-        console.log("Starting M2 server.");
+        console.log("Starting Singular server.");
         server = http.createServer(app);
     };
 
@@ -800,16 +839,16 @@ var M2Server = function (overrideOptions) {
         if (server === undefined) {
             initializeServer();
         }
-        console.log("M2 server listening on port " + options.port + "...");
+        console.log("Singular server listening on port " + options.port + "...");
         return server.listen(options.port);
     };
 
     var overrideDefaultOptions = function (overrideOptions) {
-        // Start of M2Server creation code
+        // Start of Server creation code
         for (var opt in overrideOptions) {
             if (options.hasOwnProperty(opt)) {
                 options[opt] = overrideOptions[opt];
-                console.log("m2server option: " + opt + " set to " + options[opt]);
+                console.log("server option: " + opt + " set to " + options[opt]);
             }
         }
     };

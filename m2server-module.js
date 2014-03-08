@@ -189,7 +189,7 @@ var M2Server = function (overrideOptions) {
         getIp(clientID, function(ip) {
             logClient(clientID, "In spawn, have ip: " + ip);
             var spawn = require('child_process').spawn;
-            var sshCommand = "ssh -oStrictHostKeyChecking=no -i " + options.SSH_KEY_PATH + " " + ip;
+            var sshCommand = "ssh -oStrictHostKeyChecking=no -i " + options.SSH_KEY_PATH + " singular_user@" + ip;
             var args = [ "-c", escapeSpacesForSpawnCommand(sshCommand)];
             logClient(clientID, args.join(" "));
             var process = spawn('script', args);

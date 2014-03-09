@@ -1,0 +1,98 @@
+\documentclass[a4paper]{book}
+
+\usepackage[DIV=13]{typearea} % Benjamins proposal, higher div saves more paper.
+% Eliminating empty pages
+\let\cleardoublepage\par % Alternatively: \let\cleardoublepage\clearpage
+
+% Improving line layout, f.ex. eliminating overfull boxes, etc.
+\usepackage[tracking, kerning, spacing]{microtype}
+\microtypecontext{spacing=nonfrench}
+
+\usepackage{verbatim}
+\usepackage[hidelinks]{hyperref}
+
+
+
+
+\begin{document}
+
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%%  Installing the necessary software
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Installing the necessary software}
+We will be using lxc with zfs. Install the following
+\begin{verbatim}
+emerge zfs libvirtd lxc
+\end{verbatim}
+The kernel needs a lot of configuration. Enable the following flags in the kernel using the menuconfig:
+\begin{verbatim}
+cd /usr/src/linux
+make menuconfig
+flags to come
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%%  ZFS
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{ZFS}
+More detailed instructions can be found at
+\begin{verbatim}
+http://wiki.gentoo.org/wiki/ZFS#One_Hard_Drive
+\end{verbatim}
+After installing zfs you will want it to start at boot. Do
+\begin{verbatim}
+rc-update add zfs default
+\end{verbatim}
+Using zfs is very easy. First add a new harddrive to your machine. Initialize it as a new zpool:
+\begin{verbatim}
+zpool create pool_name /dev/foo
+\end{verbatim}
+After that you can create volumes. Probably you will want one volume to be your master container from which all other containers are cloned:
+\begin{verbatim}
+zfs create pool_name/master
+\end{verbatim}
+Now do everything you need in order to create the master as described in \autoref{creating_master}. When you are done, take a snapshot of your master:
+\begin{verbatim}
+zfs snapshot pool_name/master@snapshot_name
+\end{verbatim}
+Creating clones is super easy:
+\begin{verbatim}
+zfs clone pool_name/master@snapshot_name pool_name/clone1
+zfs clone pool_name/master@snapshot_name pool_name/clone2
+zfs clone pool_name/master@snapshot_name pool_name/clone3
+zfs clone pool_name/master@snapshot_name pool_name/clone4
+zfs clone pool_name/master@snapshot_name pool_name/clone5
+...
+\end{verbatim}
+The rest is done in virsh.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%%  Creating master
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Creating master}\label{creating_master}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%%  Using virsh
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Using virsh}
+
+
+\end{document}

@@ -1,6 +1,6 @@
 var assert = require("assert");
 var http = require('http');
-var m2 = require('../mathServer.js');
+var m2 = require('../lib/mathServer.js');
 
 describe('Array', function(){
   describe('#indexOf()', function(){

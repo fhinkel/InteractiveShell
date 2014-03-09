@@ -1,4 +1,8 @@
 
+* upload tutorials
+* linux containers instead of schroots
+* Singular support
+
 0.1.0 3/31/2013
 
 Stable version running since March 2013

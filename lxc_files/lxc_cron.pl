@@ -6,7 +6,8 @@ $cpus = 1;
 $ram = 512;
 $zfs_original = "zfs_jails\/gentoo_master\@singular";
 $zfs_prefix = "zfs_jails\/linux_containers\/";
-$new_containers_file = "\/home\/admin\/trySingular\/new_containers";
+$new_containers_file = "\/home\/admin\/trySingular\/lib\/new_containers";
+$old_containers_file = "\/home\/admin\/trySingular\/lib\/old_containers";
 $dead_lxc_path = "\/home\/admin\/trySingular\/dead_lxcs\/";
 $sample_xml_file = "\/home\/admin\/tryM2\/lxc_files\/sample_clone.xml";
 $uri = "lxc://";
@@ -17,6 +18,9 @@ if(need_new_containers()){
    @new_containers = generate_3_new_containers();
 }
 
+if(exist_old_containers()){
+    delete_old_containers();
+}
 # destroy_all();
 
 
@@ -25,6 +29,14 @@ if(need_new_containers()){
 #  Helper functions
 #
 #######################################
+
+sub delete_old_containers{
+    open my $info, $old_containers_file or die "Could not open $old_containers_file: $!";
+    while( my $rawContainer = <$info>)  {   
+        print $rawContainer;    
+
+    }
+}
 
 sub destroy_all{
    my @domains = $virsh_controller->list_all_domains();
@@ -97,6 +109,9 @@ sub need_new_containers{
    return !(-e $new_containers_file);
 }
 
+sub exist_old_containers{
+   return !(-e $old_containers_file);
+}
 
 sub get_random_string{
    my($length) = @_;

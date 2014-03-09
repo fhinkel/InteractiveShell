@@ -1,0 +1,12 @@
+#!/bin/bash
+myIP=`ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p'`
+case "$1" in
+/*)
+   curl -s "http://localhost:8002/image/IP-$myIP-$1"
+   ;;
+*)
+   path=`pwd`
+   # echo $schrootID$path/$1
+   curl -s "http://localhost:8002/image/IP-$myIP-$path/$1"
+   ;;
+esac

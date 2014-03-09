@@ -680,11 +680,9 @@ var M2Server = function (overrideOptions) {
     };
 
     var app = connect()
-        .use(connect.logger('dev'))
+    .use(connect.logger('dev'))
         .use(connect.favicon())
-        .use(connect.static('public'))
-        .use('/var/folders', connect.static('/var/folders'))
-        .use('/usr/local/var/lib/schroot/mount', connect.static('/usr/local/var/lib/schroot/mount'))
+        .use(connect.static('public-' + options.MATH_PROGRAM))
         .use('/admin', stats)
         .use('/upload', runFunctionIfClientExists(uploadFile))
         .use('/viewHelp', forwardRequestForSpecialEventToClient("viewHelp"))

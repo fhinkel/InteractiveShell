@@ -19,7 +19,7 @@ check:
 
 pretty:
 	js-beautify -w 80 lib/mathServer.js -o m2server-module.pretty.js
-	js-beautify -w 80 public/m2-node.js -o public/m2-node.pretty.js
+	js-beautify -w 80 public/mathProgram.js -o public/m2-node.pretty.js
 
 help:
 	@echo "Possible make targets:"

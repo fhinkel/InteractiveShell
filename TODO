@@ -100,7 +100,7 @@ Franzi's thoughts:
     SSE does not, but our SSE implementation is very hard to understand and maintain, websockets has
     fallback mechanism for older browsers
 * automated testing, Selenium?
-* refactor m2-node.js, it is really long and hard to navigate
+* refactor mathProgram.js, it is really long and hard to navigate
 * automatic deployment? Push to the server without being on the server? What tools can do that? 
 
 

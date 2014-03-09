@@ -1,9 +1,8 @@
-var m2 = require('./m2server-module.js');
-var m2server = m2.M2Server({
+var SingularServer = require('./mathServer.js').MathServer({
     SECURE_CONTAINERS: true,
     MATH_PROGRAM: 'Singular'
 });
-m2server.listen();
+SingularServer.listen();
 
 // Local Variables:
 // indent-tabs-mode: nil

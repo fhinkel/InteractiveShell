@@ -42,9 +42,9 @@ var lxc_manager = function () {
                     var macAddress = words[1];
                     var ip = words[2];
                     ipAddressTable[macAddress] = ip;
-                    if(ip){
-                        ipCollection.push(ip);
-                    }
+//                    if(ip){
+//                        ipCollection.push(ip);
+//                    }
                 }
                 addNewContainersToContainerCollection(containerList, ipAddressTable);
             });
@@ -60,7 +60,10 @@ var lxc_manager = function () {
             var macAddress = containerData[1];
             var addingFunction = function (uuid, macAddress) {
                 return function (ip) {
-                    linuxContainerCollection.push([uuid, macAddress, ip]);
+                    if(ip){
+                       ipCollection.push(ip);
+                       linuxContainerCollection.push([uuid, macAddress, ip]);
+                    }
                 };
             };
             getIPFromMacAddress(macAddress, ipAddressTable, addingFunction(uuid, macAddress));

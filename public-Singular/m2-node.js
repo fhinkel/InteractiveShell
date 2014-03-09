@@ -15,7 +15,7 @@ var trym2 = {
 var shellObject = function(shellArea, historyArea) {
     var shell = shellArea;
     var history = historyArea;
-    var cmdHistory = []; // History of M2 commands for shell-like arrow navigation
+    var cmdHistory = []; // History of commands for shell-like arrow navigation
     cmdHistory.index = 0;
     var outIndex = 0; // End of real M2 output in M2Out textarea, without user's typing.   
     var dataSentIndex = 0;
@@ -836,31 +836,20 @@ $(document).ready(function() {
 
 
     var M2InDefaultText = "" +
-        "-- Welcome to Macaulay2 !\n" +
-        "-- In this window you may type in Macaulay2 commands \n" +
+        "-- Welcome to Singular!\n" +
+        "-- In this window you may type in Singular commands \n" +
         "-- and have them evaluated by the server.\n" +
         "\n" +
         "-- Evaluate a line or selection by typing Shift+Enter \n" +
         "-- or by clicking on Evaluate.\n" +
         "\n" +
-        "-- To open the Macaulay2 documentation for a \n" +
-        "-- topic in another browser tab or window do e.g.:\n" +
-        "\n" +
-        "viewHelp \"determinant\"\n" +
-        "\n" +
-        "-- If nothing shows up, you may need to set your browser \n" +
-        "-- to allow pop up windows.\n" +
-        "\n" +
         "-- Here are some sample commands:\n" +
-        "  R = ZZ/101[a,b,c,d]\n" +
-        "  I = ideal(a^2-b*c, a^3-b^3, a^4-b*d^3, a^5-c^2*d^3)\n" +
-        "  J = ideal groebnerBasis I;\n" +
-        "  netList J_*\n" +
-        "\n" +
-        "  -- Some examples of rings\n" +
-        "  A = ZZ/32003[a..g]\n" +
-        "  B = QQ[x_1..x_6]\n" +
-        "  C = ZZ/101[vars(0..12)]\n" +
+        "2+2;\n" +
+        "LIB \"poly.lib\";\n" +
+        "ring r=32003,(a,b,c,d,e,f),lp;\n" +
+        "ideal I=cyclic(6);\n" +
+        "ideal sI=std(I);\n" +
+        "sI;\n" +
         "---------------\n";
 
     $('#M2In').val(M2InDefaultText);

@@ -37,23 +37,8 @@ Singular<html>
 <div>
   <h4>Getting Singular help on a topic</h4>
 
-  <p>There are two main ways of getting help on a topic in Singular.  The first method gives you
-  text help in the Singular output window.  For example,</p>
-
-  <p>This displays in the Singular output window how to use the function "determinant".
-  <b>Note!</b> In many browsers, you will have scroll bars to go back, but in some, notably most versions
-  of Safari, the scrollbars are there but hidden!
+  <p> You can get help on the <a href="http://www.singular.uni-kl.de/index.php/singular-get-help.html" target="_blank">Singular website.</a>
   </p>
-
-  <p>Alternatively, and more usefully, you may obtain the web version by using:</p>
-
-  <p>This opens the documentation page in another browser window or tab.  You can surf through the links
-  there to see other Singular documentation.</p>
-
-  <p>Depending on your browser settings, you may be navigated to this new page,
-  or not.  Your Singular web session is still active in any case! You might
-  need to disable popup window blocking in your browser in order to get the
-  help page.</p>
 
 </div>
 
@@ -80,7 +65,7 @@ Singular<html>
 
    <p><b>To save your work:</b>
   Click on the <b>Save</b> button at the top right of the window.  A dialog will appear
-  where you can save the text in the <b>Input</b> window, or the text in the Singular output (or both).
+  where you can save the text in the <b>Input</b> window, or the text in the Singular <b>Output</b> (or both).
   Alternatively, you can just select the text you wish, and copy it.
   </p>
   
@@ -122,15 +107,9 @@ Singular<html>
   You may then load this file into Singular using either:
   </p>
   
-  <code>load "foo.lib"</code><br>
+  <code>LIB "foo.lib";</code><br>
 
-  <p>
-  or, if you wish to see all of the lines executed one by one:
-  </p>
-  
-  <code>input "foo.lib"</code><br>
 
-  
   <p><b>Note</b>: these lines will likely give errors now, as the file
     <tt>foo.lib</tt> probably doesn't exist on the server!</p>
 
@@ -139,11 +118,7 @@ Singular<html>
   <p>It is possible to run shell commands from within Singular, although many operations are restricted.
   For example, to see what files you have in your home directory on the server, try:</p>
 
-  <h4>Singular and image files</h4>
-
-  <p>Sometimes Singular or one of its packages generates image files.
-  For example, the displayGraph function below creates a jpeg file.
-  </p>
+  <code>system("sh", "ls -la");</code>
 
 
   <h4>Getting files back to your machine</h4>

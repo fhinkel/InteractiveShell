@@ -19,124 +19,38 @@ var shellObject = function(shellArea, historyArea) {
     cmdHistory.index = 0;
     var outIndex = 0; // End of real M2 output in M2Out textarea, without user's typing.   
     var dataSentIndex = 0;
-
-    function appendCommandToCmdHistory(line) {
-        if (input[line].length > 0) {
-            console.log("add command to cmdHistory: " + input[line]);
-            cmdHistory.index = cmdHistory.push(input[line]);
-        }
-    }
-
     shell.on("track", function(e, msg) { // add command to history
         if (typeof msg != 'undefined') {
             input = msg.split("\n");
             for (var line in input) {
-                appendCommandToCmdHistory(line);
+                if (input[line].length > 0) {
+                    console.log("Line: " + input[line]);
+                    cmdHistory.index = cmdHistory.push(input[line]);
+                }
             }
         }
+
     });
     
-    // On pressing return send last part shell to server for evaluation
-    function hasNewInput(totalLength) {
-        return totalLength > outIndex;
-    }
-
-    function getNewInput(totalLength) {
-    	shell.val(shell.val() + "\n");
-        return shell.val().substring(dataSentIndex, totalLength + 1);
-    }
-
-    function updateHistoryArea(totalLength) {
-        var notYetSentMessage = getNewInput(totalLength);
-        if (history != undefined) {
-            history.val(history.val() + notYetSentMessage);
-            trym2.scrollDown(history);
-        }
-    }
-
-    function sendMsgToServer(notYetSentMessage) {
-        trym2.postMessage('/chat', notYetSentMessage)();
-    }
-
-    function keyPressIsReturn(e) {
-        return e.keyCode == 13;
-    }
-
-    function sendNewInputToServer(totalLength) {
-        var notYetSentMessage = getNewInput(totalLength);
-        dataSentIndex += notYetSentMessage.length;
-        outIndex += notYetSentMessage.length;
-        sendMsgToServer(notYetSentMessage);
-    }
-
+    // On pressing return send last part of M2Out to M2 and remove it.
     shell.keypress(function(e) {
-	    if (keyPressIsReturn(e)) {
-		    var totalLength = shell.val().length;
-		    trym2.setCaretPosition(shell, totalLength);
-		    if (hasNewInput(totalLength)) {
-                updateHistoryArea(totalLength);
-			    sendNewInputToServer(totalLength);
-		    }
-		    // We don't want empty lines send to M2 at pressing return twice.
-		    e.preventDefault();
-	    }
-    });
-
-    shell.on("commandFromInputArea", function(e, cmd){
-        shell.val(shell.val() + cmd);
-        sendNewInputToServer(shell.val().length);
-    });
-
-    shell.on("appendNonTypedInput", function(e, cmd){
-        shell.val(shell.val() + cmd);
-        var totalLength = shell.val().length;
-        updateHistoryArea(totalLength);
-        sendNewInputToServer(totalLength);
-    });
-
-    function containsM2Preamble(msg) {
-        return /^Macaulay2, version \d\.\d/.test(msg);
-    }
-
-    function hasSentButUnprocessedInput(userInputNotProcessedYetAsArray) {
-        return (userInputNotProcessedYetAsArray.length > 1);
-    }
-
-    function indexOfLineInMsg(msg, line) {
-        return msg.indexOf(line);
-    }
-
-    shell.on("onMessage", function(e, msg) {
-        console.log("New Message: *" + msg + "*");
-        var outputFromServerSoFar = shell.val().substring(0, outIndex);
-        var userInputNotProcessedYet = shell.val().substring(outIndex, shell.val().length);
-        const NOT_FOUND = -1;
-        var currIndex = NOT_FOUND;
-        var userInputNotProcessedYetAsArray = userInputNotProcessedYet.split("\n");
-        while (hasSentButUnprocessedInput(userInputNotProcessedYetAsArray)) {
-            var line = userInputNotProcessedYetAsArray[0];
-            var nextIndex = indexOfLineInMsg(msg, line);
-            if (line.length == 0) {
-                nextIndex = currIndex + 1;
-            }
-            if (nextIndex > currIndex) {
-                dataSentIndex -= line.length + 1;
-                userInputNotProcessedYetAsArray.shift();
-                currIndex = nextIndex;
+        var l, msg, input;
+        if (e.keyCode == 13) { // Return
+            trym2.setCaretPosition(shell, shell.val().length);
+            if (shell.val().length > outIndex) {
+                l = shell.val().length;
+                msg = shell.val().substring(dataSentIndex, l);
+                if(history != undefined){
+                   history.val(history.val() + msg + "\n");
+                   trym2.scrollDown(history);
+                }
+                dataSentIndex += msg.length + 1;
+                trym2.postMessage('/chat', msg + "\n")();
             } else {
-                break;
+                // We don't want empty lines send to M2 at pressing return twice.
+                e.preventDefault(); 
             }
         }
-
-        if (containsM2Preamble(msg)) {
-            shell.val(outputFromServerSoFar + msg);
-            dataSentIndex = outIndex;
-        } else {
-            shell.val(outputFromServerSoFar + msg + userInputNotProcessedYetAsArray.join("\n"));
-        }
-        trym2.scrollDown(shell);
-        outIndex += msg.length;
-        dataSentIndex += msg.length;
     });
 
     // If something is entered, change to end of textarea, if at wrong position.
@@ -201,6 +115,36 @@ var shellObject = function(shellArea, historyArea) {
             e.preventDefault();
             // Do something for tab-completion.
         }
+    });
+
+    shell.on("onmessage", function(e, msg) {
+        var before = shell.val().substring(0, outIndex),
+            after = shell.val().substring(outIndex, shell.val().length);
+        var currIndex = -1;
+        var afterSplit = after.split("\n");
+        while ((after.length > 0) && (afterSplit.length > 1)) {
+            var nextIndex = msg.indexOf(afterSplit[0]);
+            if (afterSplit[0].length == 0) {
+                nextIndex = currIndex + 1;
+            }
+            if (nextIndex > currIndex) {
+                dataSentIndex -= afterSplit[0].length + 1;
+                afterSplit.shift();
+                currIndex = nextIndex;
+            } else {
+                break;
+            }
+        }
+
+        if (/^Macaulay2, version \d\.\d/.test(msg)) {
+            shell.val(before + msg);
+            dataSentIndex = outIndex;
+        } else {
+            shell.val(before + msg + afterSplit.join("\n"));
+        }
+        trym2.scrollDown(shell);
+        outIndex += msg.length;
+        dataSentIndex += msg.length;
     });
 };
 
@@ -523,7 +467,7 @@ trym2.getSelected = function(inputField) {
         // move cursor to beginning of line below 
         this.setCaretPosition($(inputField), end + 1);
     }
-    return str.slice(start, end);
+    return str.slice(start, end) + "\n";
 };
 
 
@@ -588,10 +532,26 @@ trym2.sendOnEnterCallback = function(inputfield) {
         if (e.which === 13 && e.shiftKey) {
             e.preventDefault();
             // do not make a line break or remove selected text when sending
-            var code = trym2.getSelected(inputfield);
-            $("#M2Out").trigger("commandFromInputArea", code);
+            trym2.postMessage('/chat', trym2.getSelected(inputfield))();
         }
     };
+};
+
+
+trym2.saveFiles = function(filenames) {
+    $("<div></div>").html('<p><a href="' + filenames.input +
+        '" target="_blank">Input</a>')
+        .append('<p><a href="' + filenames.output +
+        '" target="_blank">Output</a>')
+        .append("<span autofocus='autofocus'></span>")
+        .dialog({
+        title: "Download"
+    }).attr('id', 'save-dialog');
+    $("#save-dialog a").button({
+        icons: {
+            primary: "ui-icon-document"
+        }
+    });
 };
 
 trym2.doUptutorialClick = function() {
@@ -606,35 +566,28 @@ trym2.doUpfileClick = function() {
     $("#upfile").click();
 };
 
-trym2.downloadTextArea = function(textarea){
-    var msg = textarea.val();
-    console.log("Download textarea: " + msg);
-    var msgAsHref = 'data:application/octet-stream,' + encodeURIComponent(msg);
-    var tmpAnchor = $("<a>");
-    tmpAnchor.attr('href', msgAsHref);
-    tmpAnchor.attr('download', textarea.attr("id") + ".txt");
-    tmpAnchor.text(textarea.attr("id"));
-    return tmpAnchor;
-}
-
 trym2.saveInteractions = function() {
-    var input = $("#M2In");
-    var output = $("#M2Out");
-    var inputParagraph = $("<p>");
-    inputParagraph.append(trym2.downloadTextArea(input));
-    var outputParagraph = $("<p>");
-    outputParagraph.append(trym2.downloadTextArea(output));
-    $("<div></div>").append(inputParagraph)
-        .append(outputParagraph)
-        .append("<span autofocus='autofocus'></span>")
-        .dialog({
-        title: "Download"
-    }).attr('id', 'save-dialog');
-    $("#save-dialog a").button({
-        icons: {
-            primary: "ui-icon-document"
+    var xhr = new XMLHttpRequest(); // Create a new XHR
+    //console.log( "URL: " + url);
+    var msg = {
+        input: $("#M2In").val(),
+        output: $("#M2Out").val()
+    };
+    xhr.open("POST", '/save'); // to POST to url.
+    xhr.setRequestHeader("Content-Type", // Specify plain UTF-8 text 
+    "application/json;charset=UTF-8");
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            console.log("saveInteractions post finished");
+            var filenames = JSON.parse(xhr.responseText);
+            console.log(filenames);
+            trym2.saveFiles(filenames);
+            //window.open(filenames.input, 'Download');
         }
-    });
+    };
+
+    xhr.send(JSON.stringify(msg));
+    return true;
 };
 
 trym2.uploadTutorial = function() {
@@ -769,7 +722,7 @@ trym2.startEventSource = function() {
             //console.log(event);
             if (msg !== "") {
                 console.log("The message " + msg);
-                $("#M2Out").trigger("onMessage", msg);
+                $("#M2Out").trigger("onmessage", msg);
             }
         }
     }
@@ -892,8 +845,10 @@ $(document).ready(function() {
             color: 'red'
         }, 300);
         var code = $(this).text();
+        code = code + "\n";
+        $("#M2In").val($("#M2In").val() + code);
         trym2.scrollDown($("#M2In"));
-        $("#M2Out").trigger("appendNonTypedInput",code);
+        trym2.postMessage('/chat', code)();
     });
 
     trym2.importTutorials();

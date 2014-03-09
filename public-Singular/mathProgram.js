@@ -95,7 +95,7 @@ var shellObject = function(shellArea, historyArea) {
     });
 
     function containsM2Preamble(msg) {
-        return /^Macaulay2, version \d\.\d/.test(msg);
+        return false
     }
 
     function hasSentButUnprocessedInput(userInputNotProcessedYetAsArray) {
@@ -719,7 +719,7 @@ trym2.doUpload = function() {
         success: function(data) {
             console.log("File uploaded successfully!" + data);
             $("<div class='smallFont'>" + fileName +
-                " has been uploaded and you can use it by loading it into your Macaulay2 session (use the input terminal).</div>")
+                " has been uploaded and you can use it by loading it into your Singular session (use the input terminal).</div>")
                 .dialog({
                 dialogClass: ' alert',
                 title: 'File uploaded'
@@ -756,14 +756,7 @@ trym2.startEventSource = function() {
                 }).addClass('graph-dialog');
             }
         }, false);
-        chat.addEventListener('viewHelp', function(event) {
-            var helpUrl = event.origin + event.data;
-            console.log("viewHelp coming from: " + event.origin);
-            if (helpUrl) {
-                console.log("We got a viewHelp! " + helpUrl);
-                window.open(helpUrl, "M2 Help");
-            }
-        }, false);
+
         chat.onmessage = function(event) { // When a new message arrives
             var msg = event.data; // Get text from event object
             //console.log(event);

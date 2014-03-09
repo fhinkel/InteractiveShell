@@ -23,21 +23,21 @@ Still a little hacked, but we think it's working.
 
 
 ## Usage
-    node m2server.js --schroot
+    node SingularLocalServer.js --schroot
     
-By default, listening on port 8002. You can change this in m2server.js.
+By default, listening on port 8002. You can change this in SingularLocalServer.js.
 
 ## Installation
 You can run
 
-    node m2server.js 
+    node SingularLocalServer.js
     
 on your own machine visit the server on http://localhost:8002. If you have Macaulay2 installed, this gives you an (unsecured!) Macaulay2 shell. That means, through the browser you have access to your entire machine with the same permissions as the user that started m2server, i.e., you. 
 
 ### Secure server using schroots
 You probably want to run 
 
-    node m2server.js --schroot
+    node SingularLocalServer.js --schroot
     
 which will place every new user into its own (secure) chroot, thus not giving access to your system. Warning: Know what you are doing when you offer this service, we are not responsible if somebody finds a security hole! Follow the notes in schroot.tex
 

@@ -2,9 +2,9 @@
 //
 // This file defines a Node.js server for serving 'try Math Program'.
 //   run 
-//       node m2server.js 
+//       node SingularLocalServer.js
 //   or
-//       node m2server-schroot.js
+//       node SingularServer.js
 // in a terminal in this directory. Alternatively you can use the Makefile 
 // provided alongside this repository.
 //
@@ -35,7 +35,7 @@ var http = require('http'),
     Cookies = require('cookies');
 
 
-var M2Server = function (overrideOptions) {
+var MathServer = function (overrideOptions) {
     var options = {
             port: 8002, // default port number to use
             PRUNE_CLIENT_INTERVAL: 1000 * 60 * 10, // 10 minutes
@@ -738,12 +738,11 @@ var M2Server = function (overrideOptions) {
 
     // These are the methods available from the outside:
     return {
-        server: server,
         listen: listen,
         close: function () {
             server.close();
         }
     };
-}; // end of def of M2Server
+}; // end of def of MathServer
 
-exports.M2Server = M2Server;
+exports.MathServer = MathServer;

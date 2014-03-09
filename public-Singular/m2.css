@@ -1,0 +1,180 @@
+/*CSS Sheet for TryM2*/
+
+html {
+	height: 100%;	
+	
+}
+#tutorial, #menuTutorial {
+    height: 2px;
+    overflow:scroll;
+}
+
+#save-dialog .ui-button {
+    width: 150px;
+    text-align: left;
+}
+
+#save-dialog {
+    height: 200px;
+    width: 200px;
+}
+
+a {
+    color: #0000EE;
+}
+
+#title {
+    color: #c3dfed;
+}
+
+body {
+    color:#000;
+    background-color: #0072AD; /*#D8FFFF;*/
+    font-family: Helvetica; /*Trebuche, Lucida Grande, Palatino Georgia,Helvetica;*/
+	height: 96%;	
+}
+
+.halfWidth {
+	width: 49%;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	
+}
+
+.close-icon {
+    position:absolute;
+    margin-top:-8px;
+    top:50%;
+    right:0.5em;
+}
+
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
+.clear {
+    clear: both;
+}
+
+div-border
+{
+    border-style:solid;
+    border-width:2px;
+}
+
+.rel { 
+	position: relative;
+}
+
+
+.red {
+	border: 1px red solid;
+}
+
+.parent {
+	border: 4px green solid;
+}
+
+.padded {
+    padding: 0px 4px;
+}
+
+#title {
+	font-size: 20pt;
+	position: relative;
+    top: 6px;
+	font-weight: bold;
+	margin-left: auto;
+	margin-right: auto;
+	overflow: hidden;   
+}
+
+.terminal {
+	background-color: #cccccc; /*#C2DFFF*/;
+}
+
+.tall {
+	height: 90%;
+}
+
+#inputarea, #lesson, #home, #outputarea {
+	width: 49.6%;
+	height: 100%;
+	border-style:solid;
+    border-width:1px;
+}
+
+#lesson, #home {
+	overflow-y: auto;
+	font-family: Lucida Grande;
+	padding: 20px 50px;
+	box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+    
+}
+
+#M2In, #M2Out {
+	width: 100%;
+	font-family: monospace;
+	height: 100%;
+	box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+}
+
+#M2Out {
+    color: black;
+}
+
+#about {
+    padding-top: 5px;
+    text-align: center;
+}
+
+code {
+	background-color: lightyellow;
+	padding: 1px 3px;
+	line-height: 1.5;
+	cursor:pointer;
+	/*font-size: 140%;*/
+	margin-left: 20px;
+	font-family: courier new;
+	border-radius: 5px;
+    box-shadow: 1px 1px 2px #000;
+}
+
+.submenuItem {
+    text-decoration: none;
+}
+
+ul {
+    list-style-type: none;
+    padding:0; 
+    margin:0;
+}
+
+.ui-button,  .ui-button-text .ui-button{  
+    font-size: 16px !important; 
+}
+
+/* do not display title bars in dialogs when they alert and error*/
+.alert .ui-dialog-titlebar {
+    /*display:none;*/
+}
+
+.smallFont {
+    font-size: 12px;
+}
+
+.image-text-wrap {
+    float: right;
+    margin: 10px;
+}
+
+
+

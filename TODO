@@ -1,4 +1,26 @@
-
+2014-03-10
+Refactor client side, eliminate duplication
+    common 
+        shell
+        accordion
+        upload
+        save
+    M2
+    Singular
+Finish article
+Application for ICMS
+Need Singular 
+    url + text + tutorials
+    viewHelp, viewImage?
+Design
+max number of users
+    user cleanup
+    recycle ips
+    remove users in cron
+Cleanup broken sessions
+Offer virtual machine for download
+Install script for lxc
+Cleanup documentation TeX files
 
 
 M2: install dot (Graphviz) (DONE)
@@ -11,9 +33,9 @@ open for text, open not found
 
 
 
-2014-03-10
-One repo for different math programs
-Linux Containers instead of schroots
+2014-03-09
+One repo for different math programs (DONE)
+Linux Containers instead of schroots (DONE)
 
 
 2013-07-24

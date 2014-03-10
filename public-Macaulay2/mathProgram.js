@@ -537,23 +537,6 @@ trym2.sendOnEnterCallback = function(inputfield) {
     };
 };
 
-
-trym2.saveFiles = function(filenames) {
-    $("<div></div>").html('<p><a href="' + filenames.input +
-        '" target="_blank">Input</a>')
-        .append('<p><a href="' + filenames.output +
-        '" target="_blank">Output</a>')
-        .append("<span autofocus='autofocus'></span>")
-        .dialog({
-        title: "Download"
-    }).attr('id', 'save-dialog');
-    $("#save-dialog a").button({
-        icons: {
-            primary: "ui-icon-document"
-        }
-    });
-};
-
 trym2.doUptutorialClick = function() {
     $("#uptutorial").val("");
     console.log("Click tutorial: " + typeof($("#uptutorial")));
@@ -566,28 +549,35 @@ trym2.doUpfileClick = function() {
     $("#upfile").click();
 };
 
-trym2.saveInteractions = function() {
-    var xhr = new XMLHttpRequest(); // Create a new XHR
-    //console.log( "URL: " + url);
-    var msg = {
-        input: $("#M2In").val(),
-        output: $("#M2Out").val()
-    };
-    xhr.open("POST", '/save'); // to POST to url.
-    xhr.setRequestHeader("Content-Type", // Specify plain UTF-8 text 
-    "application/json;charset=UTF-8");
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            console.log("saveInteractions post finished");
-            var filenames = JSON.parse(xhr.responseText);
-            console.log(filenames);
-            trym2.saveFiles(filenames);
-            //window.open(filenames.input, 'Download');
-        }
-    };
+trym2.downloadTextArea = function(textarea){
+    var msg = textarea.val();
+    console.log("Download textarea: " + msg);
+    var msgAsHref = 'data:application/octet-stream,' + encodeURIComponent(msg);
+    var tmpAnchor = $("<a>");
+    tmpAnchor.attr('href', msgAsHref);
+    tmpAnchor.attr('download', textarea.attr("id") + ".txt");
+    tmpAnchor.text(textarea.attr("id"));
+    return tmpAnchor;
+}
 
-    xhr.send(JSON.stringify(msg));
-    return true;
+trym2.saveInteractions = function() {
+    var input = $("#M2In");
+    var output = $("#M2Out");
+    var inputParagraph = $("<p>");
+    inputParagraph.append(trym2.downloadTextArea(input));
+    var outputParagraph = $("<p>");
+    outputParagraph.append(trym2.downloadTextArea(output));
+    $("<div></div>").append(inputParagraph)
+        .append(outputParagraph)
+        .append("<span autofocus='autofocus'></span>")
+        .dialog({
+        title: "Download"
+    }).attr('id', 'save-dialog');
+    $("#save-dialog a").button({
+        icons: {
+            primary: "ui-icon-document"
+        }
+    });
 };
 
 trym2.uploadTutorial = function() {

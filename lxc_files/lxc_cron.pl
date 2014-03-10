@@ -19,8 +19,9 @@ if(need_new_containers()){
 }
 
 if(exist_old_containers()){
-    delete_old_containers();
+#    delete_old_containers();
 }
+
 # destroy_all();
 
 

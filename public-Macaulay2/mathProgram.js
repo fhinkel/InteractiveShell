@@ -494,28 +494,6 @@ trym2.setCaretPosition = function(inputField, caretPos) {
 trym2.postMessage = function(url, msg) {
     return function() {
         trym2.socket.emit('input', msg);
-        var xhr = new XMLHttpRequest(); // Create a new XHR
-        //console.log( "URL: " + url);
-        xhr.open("POST", url); // to POST to url.
-        xhr.setRequestHeader("Content-Type", // Specify plain UTF-8 text 
-        "text/plain;charset=UTF-8");
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4) {
-                //console.log( "All ResponseHeaders: " + xhr.getAllResponseHeaders());
-                var resHead = xhr.getResponseHeader('notEventSourceError');
-                //console.log( "ResponseHeader: " + resHead);
-                if (resHead) {
-                    console.log(
-                        "We must have lost the EventSource Stream, redoing it...");
-                    //ask for new EventSource and send msg again
-                    trym2.startEventSource();
-                    setTimeout(function() {
-                        trym2.postMessage("/chat", msg)();
-                    }, 1000);
-                }
-            }
-        };
-        xhr.send(msg); // Send the message
         $("#M2Out").trigger("track", msg);
         return true;
     }
@@ -709,14 +687,6 @@ trym2.startEventSource = function() {
                 window.open(helpUrl, "M2 Help");
             }
         }, false);
-        chat.onmessage = function(event) { // When a new message arrives
-            var msg = event.data; // Get text from event object
-            //console.log(event);
-            if (msg !== "") {
-                console.log("The message " + msg);
-                $("#M2Out").trigger("onmessage", msg);
-            }
-        }
     }
 };
 

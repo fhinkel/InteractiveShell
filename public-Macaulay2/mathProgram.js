@@ -650,45 +650,8 @@ trym2.doUpload = function() {
         }
     });
     return false;
-}
-
-// Register for notification of new messages using EventSource
-trym2.startEventSource = function() {
-    if ( !! window.EventSource) {
-        var chat = new EventSource("/startSourceEvent");
-        chat.addEventListener('image', function(event) {
-            var imageUrl = event.origin + event.data;
-            console.log("Image coming from: " + event.origin);
-            //console.log("We got an image! " + imageUrl);
-            if (imageUrl) {
-                console.log("We got an image! " + imageUrl);
-                var graphBtn = $('<a href="#">').html(imageUrl.split('/').pop())
-                    .button({
-                    icons: {
-                        primary: "ui-icon-document"
-                    }
-                }).on('click', function() {
-                    window.open(imageUrl, '_blank',
-                        'height=200,width=200,toolbar=0,location=0,menubar=0');
-                    $(".graph-dialog").dialog("close");
-                    return false;
-                });
-                $("<div></div>").html(graphBtn).dialog({
-                    title: 'Image',
-                    dialogClass: 'alert'
-                }).addClass('graph-dialog');
-            }
-        }, false);
-        chat.addEventListener('viewHelp', function(event) {
-            var helpUrl = event.origin + event.data;
-            console.log("viewHelp coming from: " + event.origin);
-            if (helpUrl) {
-                console.log("We got a viewHelp! " + helpUrl);
-                window.open(helpUrl, "M2 Help");
-            }
-        }, false);
-    }
 };
+
 
 trym2.importTutorials = function() {
     console.log("Import tutorials.");
@@ -725,12 +688,41 @@ $(document).ready(function() {
         }
     });
 
+    trym2.socket.on('image', function(event) {
+        var imageUrl = event.origin + event.data;
+        console.log("Image coming from: " + event.origin);
+        if (imageUrl) {
+            console.log("We got an image! " + imageUrl);
+            var graphBtn = $('<a href="#">').html(imageUrl.split('/').pop())
+                .button({
+                    icons: {
+                        primary: "ui-icon-document"
+                    }
+                }).on('click', function() {
+                    window.open(imageUrl, '_blank',
+                        'height=200,width=200,toolbar=0,location=0,menubar=0');
+                    $(".graph-dialog").dialog("close");
+                    return false;
+                });
+            $("<div></div>").html(graphBtn).dialog({
+                title: 'Image',
+                dialogClass: 'alert'
+            }).addClass('graph-dialog');
+        }
+    });
+
+    trym2.socket.on('viewHelp', function(event){
+        var helpUrl = event.origin + event.data;
+        console.log("viewHelp coming from: " + event.origin);
+        if (helpUrl) {
+            console.log("We got a viewHelp! " + helpUrl);
+            window.open(helpUrl, "M2 Help");
+        }
+    });
+
     // Init procedures for right hand side.
     $("#M2Out").val("");
     shellObject($("#M2Out"), $("#M2In"));
-
-    // send server our client.eventStream
-    trym2.startEventSource();
 
     // Restarting the EventSource after pressing 'esc':
     $(document).keyup(function(e) {

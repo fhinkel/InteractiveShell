@@ -1,5 +1,25 @@
-{    "name": "m2server",
-    "version": "1.0.0",
-    "description": "TryM2, allows to use Macaulay2 in a browser",    
-    "dependencies": { "cookies": "0.3.6", "connect": "2.7.3", "formidable": ">=1.0.13", "ssh2": ">=0.2.19" }
+{
+  "name": "InteractiveShell",
+  "version": "1.0.0",
+  "description": "Interactive shell, allows to use Macaulay2 or Singular in a browser",
+  "dependencies": {
+    "cookies": "0.3.6",
+    "formidable": ">=1.0.13",
+    "socket.io": "~1.2.1",
+    "express": "~4.10.2",
+    "serve-favicon": "~2.1.7",
+    "serve-static": "~1.7.1",
+    "express-winston": "~0.2.9",
+    "winston": "~0.8.3"
+  },
+  "scripts": {
+    "start": "node lib/Macaulay2LocalServer.js",
+    "test": "mocha tests/mocha.js --reporter spec",
+    "stop": "kill `ps ax | grep Server | grep -v monitor | grep node | awk '{print $1}'`",
+    "forever": "forever start -l /home/webm2.logs/forever.log -o /home/webm2.logs/out.log -e /home/webm2.logs/err.log --append lib/Macaula2Server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:fhinkel/tryM2.git"
+  }
 }

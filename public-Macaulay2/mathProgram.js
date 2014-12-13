@@ -679,8 +679,6 @@ $(document).ready(function() {
 
     trym2.socket = io();
 
-    trym2.socket.emit('chat message', 'I am a new user');
-
     trym2.socket.on('result', function(msg) {
         if (msg !== "") {
             console.log("The result from the server is " + msg);
@@ -689,9 +687,8 @@ $(document).ready(function() {
     });
 
     trym2.socket.on('image', function(imageUrl) {
-        console.log("Image coming from: ");
         if (imageUrl) {
-            console.log("We got an image! " + imageUrl);
+            console.log("We received an image: " + imageUrl);
             var graphBtn = $('<a href="#">').html(imageUrl.split('/').pop())
                 .button({
                     icons: {
@@ -722,14 +719,6 @@ $(document).ready(function() {
     // Init procedures for right hand side.
     $("#M2Out").val("");
     shellObject($("#M2Out"), $("#M2In"));
-
-    // Restarting the EventSource after pressing 'esc':
-    $(document).keyup(function(e) {
-        //console.log("Got a key:"+e.keyCode);
-        if (e.keyCode == 27) {
-            trym2.startEventSource();
-        } // esc
-    });
 
     $("#navigation").children("input").attr("name", "navbutton");
     $("#navigation").buttonset();

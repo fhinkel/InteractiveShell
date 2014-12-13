@@ -21,5 +21,8 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:fhinkel/tryM2.git"
+  },
+  "devDependencies": {
+    "jsdom": "~1.4.1"
   }
 }

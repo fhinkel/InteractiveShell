@@ -43,7 +43,7 @@ describe('m2server', function(){
     describe('basic behavior', function() {
         
         it('should be available as a variable', function(done){
-            var server = m2.M2Server();
+            var server = m2.MathServer();
             assert.notEqual(server, null);
             //server.close();
             done();
@@ -61,7 +61,7 @@ describe('m2server', function(){
         });
         it('should be able to create server and get title from html body', function(done){
             //var server = http.createServer(m2server.app);
-            var server = m2.M2Server();
+            var server = m2.MathServer();
             server.listen(8002);
             http.get("http://localhost:8002/", function(res) {
                 //console.log(res.statusCode);
@@ -77,7 +77,7 @@ describe('m2server', function(){
             });
         });
         it('should close the server', function(done) {
-            var server = m2.M2Server();
+            var server = m2.MathServer();
             server.listen(8002);
             server.close();
             var http = require('http');
@@ -121,84 +121,7 @@ describe('m2server', function(){
             //assert(false);
         });
     });
-})
-
-describe('jsdom', function(){
-    it('should work with code from jsdom documentation', function(done){
-        var jsdom = require('jsdom');
-
-        jsdom.env({
-          html: "<html><body></body></html>",
-          scripts: [
-            'http://code.jquery.com/jquery-1.5.min.js'
-          ]
-        }, function (err, window) {
-          var $ = window.jQuery;
-
-          $('body').append("<div class='testing'>Hello World</div>");
-          //console.log($(".testing").text()); // outputs Hello World
-          assert.equal($(".testing").text(), 'Hello World');
-          done();
-        });
-    });
-    it('should work with fs', function(done) {
-        var fs = require('fs');
-        var jsdom = require('jsdom');
-        var doc   = jsdom.jsdom(fs.readFileSync("tests/test2.html"), null, {
-                  features: {
-                    FetchExternalResources   : ['script'],
-                    ProcessExternalResources : ['script'],
-                    MutationEvents           : '2.0',
-                }
-            });
-
-        var window = doc.createWindow();
-        jsdom.jQueryify(window, "http://code.jquery.com/jquery-1.5.min.js", function() {
-            var $ = window.jQuery;
-            var s = $("h1").text();
-            //console.log(s);
-            assert.equal(s, 'Before');
-            done();
-        });
-    });
-    it('should work with fs and javascript', function(done) {
-          var fs = require('fs');
-          var jsdom = require('jsdom');
-          var doc   = jsdom.jsdom(fs.readFileSync("tests/test.html"), null, {
-                    features: {
-                      FetchExternalResources   : ['script'],
-                      ProcessExternalResources : ['script'],
-                      MutationEvents           : '2.0',
-                  }
-              });
-
-          var window = doc.createWindow();
-          jsdom.jQueryify(window, "http://code.jquery.com/jquery-1.5.min.js", function() {
-              //console.log(window.$().jquery); //jquery version
-              var $ = window.jQuery;
-              assert.equal($("h1").text(), 'BeforeExternalAfter');
-              done();
-          });
-    });
-    it('should work on Lars code', function(done){
-        var fs = require('fs');
-        var jsdom = require('jsdom');
-        var doc   = jsdom.jsdom(fs.readFileSync("./tests/test.html"), null, {
-                  features: {
-                    FetchExternalResources   : ['script'],
-                    ProcessExternalResources : ['script'],
-                    MutationEvents           : '2.0',
-                }
-            });
-        var window = doc.createWindow();
-        jsdom.jQueryify(window, function() {
-            console.log(window.document.innerHTML);
-            var $ = window.jQuery;
-            assert.equal($("h1").text(), 'BeforeExternalAfter');
-            done();
-        });
-    });
-})
+});
 
 describe('regexsearch', function(){
     it('should find text between title tags', function() {

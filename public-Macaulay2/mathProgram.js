@@ -793,7 +793,7 @@ $(document).ready(function() {
     $('#M2In').val(M2InDefaultText);
     $("#sendBtn").click(trym2.sendCallback('#M2In'));
     $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
-    $("#resetBtn").click(trym2.postMessage('/restart'));
+    $("#resetBtn").click(function(){trym2.socket.emit('reset')});
     $("#interruptBtn").click(trym2.postMessage('/interrupt'));
     $("#inputBtn").click(function() {
         trym2.navBar.activate("input");

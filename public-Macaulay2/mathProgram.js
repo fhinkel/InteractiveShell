@@ -3,7 +3,7 @@
 var trym2 = {
     lessonNr: 0,
     tutorialNr: 0,
-    tutorials: [], 
+    tutorials: [],
     firstLoadFlag: true, // true until we show tutorial for the first time. Needed because we need to load lesson 0
     MAXFILESIZE: 500000, // max size in bytes for file uploads
     socket: null
@@ -32,7 +32,7 @@ var shellObject = function(shellArea, historyArea) {
         }
 
     });
-    
+
     // On pressing return send last part of M2Out to M2 and remove it.
     shell.keypress(function(e) {
         var l, msg, input;
@@ -49,7 +49,7 @@ var shellObject = function(shellArea, historyArea) {
                 trym2.postMessage('/chat', msg + "\n")();
             } else {
                 // We don't want empty lines send to M2 at pressing return twice.
-                e.preventDefault(); 
+                e.preventDefault();
             }
         }
     });
@@ -155,7 +155,7 @@ var shellObject = function(shellArea, historyArea) {
 // tabs are hard coded as home, tutorial, and input
 // the controller assures that always exactly one tab from the tabs list is active. 
 // usage: trym2.navBar.activate("home")
-trym2.navBar = function () {  
+trym2.navBar = function () {
     this.activate = function( s ) { // string with name of tab
         console.log("activate tab: " + s);
         var tab = this.tabs[s];
@@ -167,23 +167,23 @@ trym2.navBar = function () {
             if ( otherTab != tab) {
                 for (i in otherTab.elements) {
                     console.log( otherTab.elements[i] );
-                    $(otherTab.elements[i]).hide(); 
+                    $(otherTab.elements[i]).hide();
                 }
             }
-        } 
+        }
         for (i in tab.elements) { // show this tab's elements
             $(tab.elements[i]).show();
         }
     };
-   
+
     var Tab = function(elements, btn, showFunction) {
         this.elements = elements;
-        this.btn = btn, 
+        this.btn = btn,
         this.show = showFunction;
     };
 
-    var homeTab = new Tab( ["#home"], 
-                              "#homeBtn", 
+    var homeTab = new Tab( ["#home"],
+                              "#homeBtn",
                               function() {
                                     console.log( "home.show()" );
                               }
@@ -192,7 +192,7 @@ trym2.navBar = function () {
     var tutorialTab = new Tab(  ["#lesson", "#previousBtn", "#nextBtn", "#pageIndex"],
                                    "#tutorialBtn",
                                    function() {
-                                        console.log("tutorial.show()"); 
+                                        console.log("tutorial.show()");
                                         var maxLesson = trym2.tutorials[trym2.tutorialNr].lessons.length;
                                         $("#pageIndex").button("option", "label", (trym2.lessonNr + 1) + "/" +
                                               maxLesson).show().unbind().css('cursor', 'default');
@@ -206,7 +206,7 @@ trym2.navBar = function () {
                             }
                         );
     this.tabs =  {
-       "home" : homeTab, 
+       "home" : homeTab,
        "tutorial": tutorialTab,
        "input": inputTab
    };
@@ -588,7 +588,7 @@ trym2.uploadTutorial = function() {
     console.log("number of files in upload tutorial: " + files.length);
     file = files[0];
     var fileName = file.name;
-    console.log("Process file for tutorial upload:" + fileName);    
+    console.log("Process file for tutorial upload:" + fileName);
 
     var reader = new FileReader();
     reader.readAsText(file);
@@ -602,7 +602,7 @@ trym2.uploadTutorial = function() {
         var newTutorial = trym2.tutorials[lastIndex];
         var title = newTutorial.title; //this is an <h3>
         console.log("new title: " + title.html());
-    
+
         var lessons = newTutorial.lessons;
         trym2.appendTutorialToAccordion(title, lessons, lastIndex);
         trym2.insertDeleteButtonAtLastTutorial();
@@ -748,6 +748,13 @@ $(document).ready(function() {
 
     trym2.socket.emit('chat message', 'I am a new user');
 
+    trym2.socket.on('result', function(msg) {
+        if (msg !== "") {
+            console.log("The result from the server is " + msg);
+            $("#M2Out").trigger("onmessage", msg);
+        }
+    });
+
     // Init procedures for right hand side.
     $("#M2Out").val("");
     shellObject($("#M2Out"), $("#M2In"));
@@ -832,7 +839,7 @@ $(document).ready(function() {
     });
 
     $("#homeBtn").click( function() {
-        trym2.navBar.activate("home"); 
+        trym2.navBar.activate("home");
     });
 
     $(document).on("click", ".submenuItem", trym2.showLesson);
@@ -850,5 +857,5 @@ $(document).ready(function() {
 
     trym2.importTutorials();
 
-    trym2.navBar.activate("home"); 
+    trym2.navBar.activate("home");
 });

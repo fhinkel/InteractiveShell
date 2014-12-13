@@ -741,6 +741,11 @@ trym2.importTutorials = function() {
 };
 
 $(document).ready(function() {
+
+    var socket = io();
+
+    socket.emit('chat message', 'I am a new user');
+
     // Init procedures for right hand side.
     $("#M2Out").val("");
     shellObject($("#M2Out"), $("#M2In"));

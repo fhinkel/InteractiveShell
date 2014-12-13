@@ -46,7 +46,7 @@ var shellObject = function(shellArea, historyArea) {
                    trym2.scrollDown(history);
                 }
                 dataSentIndex += msg.length + 1;
-                trym2.postMessage('/chat', msg + "\n")();
+                trym2.postMessage(msg + "\n")();
             } else {
                 // We don't want empty lines send to M2 at pressing return twice.
                 e.preventDefault();
@@ -491,7 +491,7 @@ trym2.setCaretPosition = function(inputField, caretPos) {
 }
 
 
-trym2.postMessage = function(url, msg) {
+trym2.postMessage = function(msg) {
     return function() {
         trym2.socket.emit('input', msg);
         $("#M2Out").trigger("track", msg);
@@ -502,7 +502,7 @@ trym2.postMessage = function(url, msg) {
 trym2.sendCallback = function(inputField) {
     return function() {
         var str = trym2.getSelected(inputField);
-        trym2.postMessage('/chat', str)();
+        trym2.postMessage(str)();
         return false;
     };
 };
@@ -512,7 +512,7 @@ trym2.sendOnEnterCallback = function(inputfield) {
         if (e.which === 13 && e.shiftKey) {
             e.preventDefault();
             // do not make a line break or remove selected text when sending
-            trym2.postMessage('/chat', trym2.getSelected(inputfield))();
+            trym2.postMessage(trym2.getSelected(inputfield))();
         }
     };
 };
@@ -786,7 +786,7 @@ $(document).ready(function() {
     $("#sendBtn").click(trym2.sendCallback('#M2In'));
     $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
     $("#resetBtn").click(function(){trym2.socket.emit('reset')});
-    $("#interruptBtn").click(trym2.postMessage('/interrupt'));
+    $("#interruptBtn").click(function(){trym2.socket.emit('interrupt')});
     $("#inputBtn").click(function() {
         trym2.navBar.activate("input");
     });
@@ -814,7 +814,7 @@ $(document).ready(function() {
         code = code + "\n";
         $("#M2In").val($("#M2In").val() + code);
         trym2.scrollDown($("#M2In"));
-        trym2.postMessage('/chat', code)();
+        trym2.postMessage(code)();
     });
 
     trym2.importTutorials();

@@ -688,9 +688,8 @@ $(document).ready(function() {
         }
     });
 
-    trym2.socket.on('image', function(event) {
-        var imageUrl = event.origin + event.data;
-        console.log("Image coming from: " + event.origin);
+    trym2.socket.on('image', function(imageUrl) {
+        console.log("Image coming from: ");
         if (imageUrl) {
             console.log("We got an image! " + imageUrl);
             var graphBtn = $('<a href="#">').html(imageUrl.split('/').pop())

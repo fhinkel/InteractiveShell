@@ -5,7 +5,8 @@ var trym2 = {
     tutorialNr: 0,
     tutorials: [], 
     firstLoadFlag: true, // true until we show tutorial for the first time. Needed because we need to load lesson 0
-    MAXFILESIZE: 500000 // max size in bytes for file uploads
+    MAXFILESIZE: 500000, // max size in bytes for file uploads
+    socket: null
 };
 
 
@@ -492,6 +493,7 @@ trym2.setCaretPosition = function(inputField, caretPos) {
 
 trym2.postMessage = function(url, msg) {
     return function() {
+        trym2.socket.emit('input', msg);
         var xhr = new XMLHttpRequest(); // Create a new XHR
         //console.log( "URL: " + url);
         xhr.open("POST", url); // to POST to url.
@@ -742,9 +744,9 @@ trym2.importTutorials = function() {
 
 $(document).ready(function() {
 
-    var socket = io();
+    trym2.socket = io();
 
-    socket.emit('chat message', 'I am a new user');
+    trym2.socket.emit('chat message', 'I am a new user');
 
     // Init procedures for right hand side.
     $("#M2Out").val("");

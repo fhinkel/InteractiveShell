@@ -1,3 +1,31 @@
+2014-12-13  9pm
+Make the containers run
+   * Connect to localhost via ssh
+   * Make the sftp stuff work
+   * Decide how the curls should work
+      ** image + viewHelp
+
+
+2014-12-13  11am
+Goal: Attract more users!
+1. Improve stability
+   * Use socket.io instead of ServerSentEvents. Benefit:  DONE
+      ** Outsource complicated connection process.
+      ** Basis for account management
+      ** Basis for tutorial upload
+      ** Basis for frontend re-design
+   * Separate node server and containers
+      ** Several machines able to run containers -> Redundancy
+         (Amazon AWS? Ask institutions to run container machines?)
+      ** Node server checks machine for load and sanity
+2. Better look + feel
+   * Re-desing frontend
+      ** Bootstrap?
+3. Better tutorials
+   * Make tutorial upload available
+4. Easier install for institutions
+
+
 2014-03-10
 Refactor client side, eliminate duplication
     common 

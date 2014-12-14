@@ -2,6 +2,20 @@
   "name": "InteractiveShell",
   "version": "1.0.0",
   "description": "Interactive shell, allows to use Macaulay2 or Singular in a browser",
+  "contributors": [
+    {
+      "name": "Franziska Hinkelmann",
+      "email": "franziska.hinkelmann@gmail.com"
+    },
+    {
+      "name": "Lars Kastner",
+      "email": "kastner@math.fu-berlin.de"
+    },
+    {
+      "name": "Mike Stillman",
+      "email": "mikestillman1@gmail.com"
+    }
+  ],
   "dependencies": {
     "cookies": "~0.5.0",
     "formidable": "*",

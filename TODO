@@ -1,3 +1,14 @@
+2014-12-14
+* remove duplications from mathProgram.js in 3 public folders
+* graph generated with M2 should not be save on server, stream directly to browser
+* interrupt
+* write lxc/docker_containers.js
+* automatically mkdir public/images so images can be emitted to client
+
+
+
+
+
 2014-12-13  9pm
 Make the containers run
    * Connect to localhost via ssh

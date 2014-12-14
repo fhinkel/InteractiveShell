@@ -653,9 +653,7 @@ $(document).ready(function() {
         }
     });
 
-    trym2.socket.on('viewHelp', function(event){
-        var helpUrl = event.origin + event.data;
-        console.log("viewHelp coming from: " + event.origin);
+    trym2.socket.on('viewHelp', function(helpUrl){
         if (helpUrl) {
             console.log("We got a viewHelp! " + helpUrl);
             window.open(helpUrl, "M2 Help");

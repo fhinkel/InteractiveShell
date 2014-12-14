@@ -30,7 +30,7 @@ describe('Array', function(){
       var a = [1,2,3];
       console.log(a);
   })
-})
+});
 
 describe('assert.notEqual', function() {
     it('should make 1 not equal to null', function() {

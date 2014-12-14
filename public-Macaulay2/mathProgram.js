@@ -779,8 +779,22 @@ $(document).ready(function() {
         trym2.navBar.activate("input");
     });
     $("#saveBtn").click(trym2.saveInteractions);
-    $("#uploadBtn").click(trym2.doUpfileClick);
-    $("#upfile").on('change', trym2.doUpload);
+
+    //$("#uploadBtn").click(trym2.doUpfileClick);
+    //$("#upfile").on('change', trym2.doUpload);
+
+    var siofu = new SocketIOFileUpload(trym2.socket);
+
+    // Configure the three ways that SocketIOFileUpload can read files:
+    $("#uploadBtn").click(siofu.prompt, false);
+    siofu.listenOnInput($("#upfile"));
+
+    // Do something when a file is uploaded:
+    siofu.addEventListener("complete", function(event){
+        console.log('we uploaded the file: ' + event.success);
+        console.log(event.file);
+    });
+
     $("#uptutorial").on('change', trym2.uploadTutorial);
 
     $("#tutorialBtn").click(function() {

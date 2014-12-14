@@ -600,7 +600,7 @@ trym2.doUptutorialClick = function() {
     $("#uptutorial").click();
 };
 
-trym2.doUpfileClick = function() {
+trym2.doUpfileClickFoo = function() {
     $("#upfile").val("");
     console.log("Click file: " + typeof($("#upfile")));
     $("#upfile").click();
@@ -672,7 +672,7 @@ trym2.insertDeleteButtonAtLastTutorial = function() {
    deleteButton.addClass("close-icon ui-icon ui-icon-close");
    lastTitle.prepend(deleteButton);
    deleteButton.click(trym2.removeTutorial(lastTitle, lastDiv, deleteButton));
-}
+};
 
 trym2.removeTutorial = function(title, div, button){
    return function(){
@@ -680,9 +680,9 @@ trym2.removeTutorial = function(title, div, button){
       div.remove();
       title.remove();
    }
-}
+};
 
-trym2.doUpload = function() {
+trym2.doUploadFoo = function() {
     var obj = this;
     var file = obj.files[0];
     var fileName = obj.value.split("\\"); // this is an array
@@ -727,7 +727,7 @@ trym2.doUpload = function() {
         }
     });
     return false;
-}
+};
 
 // Register for notification of new messages using EventSource
 trym2.startEventSource = function() {
@@ -854,8 +854,21 @@ $(document).ready(function() {
         trym2.navBar.activate("input");
     });
     $("#saveBtn").click(trym2.saveInteractions);
-    $("#uploadBtn").click(trym2.doUpfileClick);
-    $("#upfile").on('change', trym2.doUpload);
+
+    var siofu = new SocketIOFileUpload(socket);
+
+    // Configure the three ways that SocketIOFileUpload can read files:
+    document.getElementById("uploadBtn").addEventListener("click", siofu.prompt, false);
+    siofu.listenOnInput(document.getElementById("upfile"));
+    siofu.listenOnDrop(document.getElementById("file_drop"));
+
+    // Do something when a file is uploaded:
+    siofu.addEventListener("complete", function(event){
+        console.log('we uploaded the file: ' + event.success);
+        console.log(event.file);
+    });
+
+    //$("#upfile").on('change', trym2.doUpload);
     $("#uptutorial").on('change', trym2.uploadTutorial);
 
     $("#tutorialBtn").click(function() {

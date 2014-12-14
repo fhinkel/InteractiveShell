@@ -23,34 +23,27 @@ Still a little hacked, but we think it's working.
 * Unrestricted [Macaulay2](http://www.macaulay2.com) shell
 * Uploading Packages and other files is possible
 * Rendering JPGs with e.g., Graphs.m2
-* Running inside schroots
-
-
-## Usage
-    node lib/SingularLocalServer.js --schroot
-    
-By default, listening on port 8002. You can change this in SingularLocalServer.js.
+* Running inside LXCs
 
 ## Installation
-You can run
-
-    node lib/SingularLocalServer.js
+    npm install
     
-on your own machine visit the server on http://localhost:8002. If you have Macaulay2 installed, this gives you an (unsecured!) Macaulay2 shell. That means, through the browser you have access to your entire machine with the same permissions as the user that started m2server, i.e., you. 
+## Usage
+    npm start
 
-### Secure server using schroots
-You probably want to run 
+By default, listening on port 8002. You can change this in SingularLocalServer.js.
+On your own machine visit the server on http://localhost:8002. If you have Macaulay2 installed, this gives you an (unsecured!) Macaulay2 shell.
+That means, through the browser you have access to your entire machine with the same permissions as the user that started m2server, i.e., you.
 
-    node SingularLocalServer.js --schroot
-    
-which will place every new user into its own (secure) chroot, thus not giving access to your system. Warning: Know what you are doing when you offer this service, we are not responsible if somebody finds a security hole! Follow the notes in schroot.tex
+
+
 
 You need 
 * node.js
 * [Macaulay2](http://www.macaulay2.com)
-* patched formidable: [https://github.com/fhinkel/node-formidable](https://github.com/fhinkel/node-formidable)
-* different node packages, use npm install to get them (connect, cookies, )
+* different node packages, use npm install to get them (express, socket.io,... )
 * [forever](https://github.com/nodejitsu/forever) to run server as a daemon, use npm install forever -g.
+
 
 
 

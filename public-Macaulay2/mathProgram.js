@@ -275,14 +275,14 @@ trym2.appendTutorialToAccordion = function(title, lessons, index) {
     }
     $("#loadTutorialMenu").before(title);
     $("#loadTutorialMenu").before(div);
-}
+};
 
 trym2.appendLoadTutorialMenuToAccordion = function(){
    trym2.appendLoadTutorialTitleToAccordion();
    trym2.appendInstructionsToAccordion();
    trym2.addExpandLoadTutorialInstructionsButton();
    trym2.addLoadTutorialButton();
-}
+};
 
 trym2.addLoadTutorialButton = function(){
    console.log("Adding buttons.");
@@ -291,7 +291,7 @@ trym2.addLoadTutorialButton = function(){
    loadTutorialButton.html("Load Tutorial");
    $("#loadTutorialMenu").append(loadTutorialButton);
    $("#loadTutorialButton").click(trym2.doUptutorialClick);
-}
+};
 
 trym2.addExpandLoadTutorialInstructionsButton = function(){
    var expandButton = $("<span>");
@@ -318,7 +318,7 @@ trym2.addExpandLoadTutorialInstructionsButton = function(){
    });
    $("#loadTutorialMenu").append(expandButton);
 
-}
+};
 
 trym2.appendLoadTutorialTitleToAccordion = function(){
    console.log("Adding Title.");
@@ -327,7 +327,7 @@ trym2.appendLoadTutorialTitleToAccordion = function(){
    title.addClass(
         "ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons");
    $("#accordion").append(title);
-}
+};
 
 trym2.appendInstructionsToAccordion = function(){
    console.log("Adding Instructions.");
@@ -339,7 +339,7 @@ trym2.appendInstructionsToAccordion = function(){
    instructions.addClass(
                "ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom").hide();
    $("#accordion").append(instructions);
-}
+};
 
 trym2.makeAccordion = function(tutorials) {
     $("#home").append("<div id=\"accordion\"></div>");
@@ -348,7 +348,7 @@ trym2.makeAccordion = function(tutorials) {
         var title = tutorials[i].title; //this is an <h3>
         var lessons = tutorials[i].lessons;
         trym2.appendTutorialToAccordion(title, lessons, i);
-    };
+    }
 
     $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset");
     $(".menuTitle").on("click", {lessonIdNr: "0"}, trym2.showLesson);
@@ -380,10 +380,10 @@ trym2.loadLesson = function(tutorialid, lessonid ) {
     trym2.firstLoadFlag = false;
     if (tutorialid >= 0 && tutorialid < this.tutorials.length) {
         this.tutorialNr = tutorialid;
-    };
+    }
     if (lessonid >= 0 && lessonid < this.tutorials[this.tutorialNr].lessons.length) {
         this.lessonNr = lessonid;
-    };
+    }
     var lessonContent = this.tutorials[this.tutorialNr].lessons[this.lessonNr]
         .html;
 
@@ -410,7 +410,7 @@ trym2.makeTutorialsList = function(i, tutorialNames, callback) {
         });
     } else {
         callback();
-    };
+    }
 };
 
 trym2.populateTutorialElement = function(theHtml) {
@@ -488,7 +488,7 @@ trym2.setCaretPosition = function(inputField, caretPos) {
             }
         }
     }
-}
+};
 
 
 trym2.postMessage = function(msg) {
@@ -532,7 +532,7 @@ trym2.downloadTextArea = function(textarea){
     tmpAnchor.attr('download', textarea.attr("id") + ".txt");
     tmpAnchor.text(textarea.attr("id"));
     return tmpAnchor;
-}
+};
 
 trym2.saveInteractions = function() {
     var input = $("#M2In");
@@ -580,7 +580,7 @@ trym2.uploadTutorial = function() {
         trym2.insertDeleteButtonAtLastTutorial();
     };
     return false;
-}
+};
 
 trym2.insertDeleteButtonAtLastTutorial = function() {
    var lastTitle = $("#loadTutorialMenu").prev().prev();
@@ -589,7 +589,7 @@ trym2.insertDeleteButtonAtLastTutorial = function() {
    deleteButton.addClass("close-icon ui-icon ui-icon-close");
    lastTitle.prepend(deleteButton);
    deleteButton.click(trym2.removeTutorial(lastTitle, lastDiv, deleteButton));
-}
+};
 
 trym2.removeTutorial = function(title, div, button){
    return function(){
@@ -597,7 +597,7 @@ trym2.removeTutorial = function(title, div, button){
       div.remove();
       title.remove();
    }
-}
+};
 
 trym2.importTutorials = function() {
     console.log("Import tutorials.");

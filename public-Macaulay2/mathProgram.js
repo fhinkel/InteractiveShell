@@ -523,12 +523,6 @@ trym2.doUptutorialClick = function() {
     $("#uptutorial").click();
 };
 
-trym2.doUpfileClick = function() {
-    $("#upfile").val("");
-    console.log("Click file: " + typeof($("#upfile")));
-    $("#upfile").click();
-};
-
 trym2.downloadTextArea = function(textarea){
     var msg = textarea.val();
     console.log("Download textarea: " + msg);
@@ -604,54 +598,6 @@ trym2.removeTutorial = function(title, div, button){
       title.remove();
    }
 }
-
-trym2.doUpload = function() {
-    var obj = this;
-    var file = obj.files[0];
-    var fileName = obj.value.split("\\"); // this is an array
-    fileName = fileName[fileName.length - 1]; // take the last element
-    var formData = new FormData();
-    formData.append('file', file);
-    console.log("process form " + file);
-    console.log(file.size);
-    if (file.size > this.MAXFILESIZE) {
-        $(
-            "<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Your file is too big to upload.  Sorry!</div>")
-            .dialog({
-            dialogClass: 'alert',
-        });
-        return false;
-    }
-
-    $.ajax({
-        url: '/upload',
-        type: 'POST',
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        statusCode: {
-            500: function(data) {
-                $(
-                    "<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Uploading failed.</div>")
-                    .dialog({
-                    dialogClass: 'alert'
-                });
-            }
-        },
-        success: function(data) {
-            console.log("File uploaded successfully!" + data);
-            $("<div class='smallFont'>" + fileName +
-                " has been uploaded and you can use it by loading it into your Macaulay2 session (use the input terminal).</div>")
-                .dialog({
-                dialogClass: ' alert',
-                title: 'File uploaded'
-            });
-        }
-    });
-    return false;
-};
-
 
 trym2.importTutorials = function() {
     console.log("Import tutorials.");
@@ -780,14 +726,10 @@ $(document).ready(function() {
     });
     $("#saveBtn").click(trym2.saveInteractions);
 
-    //$("#uploadBtn").click(trym2.doUpfileClick);
-    //$("#upfile").on('change', trym2.doUpload);
-
     var siofu = new SocketIOFileUpload(trym2.socket);
 
     // Configure the three ways that SocketIOFileUpload can read files:
-    $("#uploadBtn").click(siofu.prompt, false);
-    siofu.listenOnInput($("#upfile"));
+    document.getElementById("uploadBtn").addEventListener('click', siofu.prompt, false);
 
     // Do something when a file is uploaded:
     siofu.addEventListener("complete", function(event){

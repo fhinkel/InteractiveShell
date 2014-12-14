@@ -3,4 +3,4 @@
 #echo $$
 #echo "parent PID" 
 #echo $PPID
-echo ">>IMAGE_START>>$1<<IMAGE_END<<";
+echo ">>SPECIAL_EVENT_START>>$1<<SPECIAL_EVENT_END<<";

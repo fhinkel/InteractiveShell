@@ -3,7 +3,6 @@ var assert = require('assert');
 var getIpFromUrl = function(url) {
     matchObject = url.match(/\/IP-(\d+\.\d+\.\d+\.\d+)-/);
     if (!matchObject) {
-        console.log("error, could not find IP from url");
         throw ("could not find IP from url");
     }
     return matchObject[1];
@@ -12,7 +11,6 @@ var getIpFromUrl = function(url) {
 describe('matchobject', function() {
 
     before( function() {
-        console.log("we do the before setup");
     });
 
     it('should find url', function(){

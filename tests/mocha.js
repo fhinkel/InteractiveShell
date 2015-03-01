@@ -1,6 +1,6 @@
 var assert = require("assert");
 var http = require('http');
-var m2 = require('../lib/mathServer.js');
+var mathServer = require('../lib/mathServer.js');
 
 describe('Array', function(){
   describe('#indexOf()', function(){
@@ -43,76 +43,36 @@ describe('m2server', function(){
     describe('basic behavior', function() {
         
         it('should be available as a variable', function(done){
-            var server = m2.MathServer();
+            var server = mathServer.MathServer();
             assert.notEqual(server, null);
-            //server.close();
             done();
         });
         it('should not listen without being started', function(done) {
             var http = require('http');
-            http.get("http://localhost:8002/", function(res) {
-                //console.log("status: " + res.statusCode);
+            http.get("http://localhost:8004/", function(res) {
                 assert.notEqual(res.statusCode, 200);
             }).on('error', function(e) {
-                //console.log("Got error: " + e.message);
-                assert.equal(e.message, "connect ECONNREFUSED");
+                assert.equal(e.message, "connect ECONNREFUSED 127.0.0.1:8004");
                 done();
             });
         });
         it('should be able to create server and get title from html body', function(done){
-            //var server = http.createServer(m2server.app);
-            var server = m2.MathServer();
-            server.listen(8002);
-            http.get("http://localhost:8002/", function(res) {
-                //console.log(res.statusCode);
+            var server = mathServer.MathServer({port: 8002,
+                CONTAINERS: './dummy_containers.js'
+            });
+            server.listen();
+            http.get("http://localhost:8002", function(res) {
                 res.on('data', function(body) {
-                     //console.log(body.toString('utf-8'));
-                     var str = body.toString('utf-8'); 
+                     var str = body.toString('utf-8');
                      var n = str.match(/<title>\s*([^\s]*)\s*<\/title>/); 
                      assert.equal(n[1], 'Macaulay2');
-                     //console.log("The title is: " + n[1]);
+                     console.log("The title is: " + n[1]);
                      server.close();
                      done();
                  });
             });
         });
-        it('should close the server', function(done) {
-            var server = m2.MathServer();
-            server.listen(8002);
-            server.close();
-            var http = require('http');
-            http.get("http://localhost:8002/", function(res) {
-                assert.notEqual(res.statusCode, 200);
-            }).on('error', function(e) {
-                //console.log("Got error: " + e.message);
-                assert.equal(e.message, "connect ECONNREFUSED");
-                done();
-            });
-        });
     });
-    /*describe('JS on M2 website', function() {
-         it('should load content into lesson', function(done) {
-             var fs = require('fs');
-             var jsdom = require('jsdom');
-             var doc   = jsdom.jsdom(fs.readFileSync("./public/index.html"), null, {
-                       features: {
-                         FetchExternalResources   : ['script'],
-                         ProcessExternalResources : ['script'],
-                         MutationEvents           : '2.0',
-                     }
-                 });
-             var window = doc.createWindow(); 
-             jsdom.jQueryify(window, function() {
-                 //console.log(window.document.innerHTML);
-                 var $ = window.jQuery;
-                 var s = $("#lesson").text();
-                 //console.log("Lesson:" + s + ":");
-                 assert.notEqual(s, "");
-                 assert(s.match(/^  Get started by selecting a tutorial or by using the Input Terminal. Have fun!  needsPacka/)); 
-                 done();
-             });
-        });       
-    });*/
     describe('advanced behavior', function() {
         it('should be running M2', function(){
             //assert(false);

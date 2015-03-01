@@ -46,22 +46,13 @@ describe('m2server', function () {
             assert.notEqual(server, null);
             done();
         });
-        it('should not listen without being started', function (done) {
-            var http = require('http');
-            http.get("http://localhost:8004/", function (res) {
-                assert.notEqual(res.statusCode, 200);
-            }).on('error', function (e) {
-                assert.equal(e.message, "connect ECONNREFUSED 127.0.0.1:8004");
-                done();
-            });
-        });
         it('should be able to create server and get title from html body', function (done) {
             var server = mathServer.MathServer({
                 port: 8002,
                 CONTAINERS: './dummy_containers.js'
             });
             server.listen();
-            http.get("http://localhost:8002", function (res) {
+            http.get("http://127.0.0.1:8002", function (res) {
                 res.on('data', function (body) {
                     var str = body.toString('utf-8');
                     var n = str.match(/<title>\s*([^\s]*)\s*<\/title>/);

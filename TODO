@@ -1,3 +1,18 @@
+2015-03-20
+** Get the environment setup such that we can run it in the cloud
+    * get it so Mike (and everybody else including "The Cloud" can install
+    * use Docker or Vagrant for managing and executing the virtual machine in which Node is running
+    * use Docker for managing and executing linux containers or native Docker containers for each user
+    * everybody read a Docker tutorial! Lars, create Dockerfile that builds Virtual machine for us. Thanks :)
+
+** Upload file for directory or several files at once
+** Better error handling
+** New tutorials and tutorial upload?
+** Monitoring
+** Paper in JSAG
+
+
+
 2014-12-14
 * remove duplications from mathProgram.js in 3 public folders
 * graph generated with M2 should not be save on server, stream directly to browser

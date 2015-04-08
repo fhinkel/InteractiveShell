@@ -10,17 +10,20 @@ describe('Start docker container', function () {
         var process = spawn(docker, ["run", "fhinkel/macaulay2", "M2"]);
         var encoding = "utf8";
         process.stderr.setEncoding(encoding);
+        var result = "";
         process.stderr.on('data', function (data) {
             console.log("Preamble: " + data);
-            assert(data.match(/Macaulay2, version 1\.\d/),
-                'M2 preamble does not match');
-            process.kill();
-            done();
+            result += data;
         });
         process.on('error', function (error) {
             assert(false, error);
             next();
-        })
+        });
+        process.on('close', function() {
+            assert(result.match(/Macaulay2, version 1\.\d/),
+                'M2 preamble does not match');
+            done();
+        });
 
     });
 });

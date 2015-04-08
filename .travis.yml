@@ -27,3 +27,6 @@ before_script:
   - docker version
   - docker run fhinkel/macaulay2 M2 --version
 
+script:
+  - npm test
+

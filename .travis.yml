@@ -4,7 +4,7 @@
    - "0.10"
    - "iojs"
 
-install:
+before_install:
   - sudo sh -c "wget -qO- https://get.docker.io/gpg | apt-key add -"
   - sudo sh -c "echo deb http://get.docker.io/ubuntu docker main > /etc/apt/sources.list.d/docker.list"
   - sudo apt-get update
@@ -14,8 +14,7 @@ install:
   - sudo apt-get install -y slirp lxc lxc-docker aufs-tools cgroup-lite
   - curl -sLo linux https://github.com/jpetazzo/sekexe/raw/master/uml
   - chmod +x linux
-  - npm install
 
 script:
+  - docker --version
   - ./linux quiet mem=2G rootfstype=hostfs rw eth0=slirp,,/usr/bin/slirp-fullbolt init=$(pwd)/uml.sh WORKDIR=$(pwd) HOME=$HOME
-  - mocha tests/docker.js

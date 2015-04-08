@@ -23,6 +23,7 @@ Vagrant.configure(2) do |config|
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "forwarded_port", guest: 8002, host: 8002
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -68,7 +69,8 @@ config.vm.provision "shell", privileged:false, inline: <<-SHELL
   sudo apt-get update
   sudo apt-get install -y nodejs docker.io
   sudo apt-get install -y npm
-  docker pull fhinkel/macaulay2
+  sudo ln -s /usr/bin/nodejs /usr/bin/node
+  sudo docker pull fhinkel/macaulay2
   git clone https://github.com/fhinkel/InteractiveShell.git
   (cd InteractiveShell; npm install)
 SHELL

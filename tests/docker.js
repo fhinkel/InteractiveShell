@@ -12,6 +12,9 @@ describe('Start docker container', function () {
         process.stderr.on('data', function (data) {
             console.log("Preamble: " + data);
             result += data;
+            assert(result.match(/Macaulay2, version 1\.\d/),
+                'M2 preamble does not match');
+            done();
         });
         process.on('error', function (error) {
             assert(false, error);

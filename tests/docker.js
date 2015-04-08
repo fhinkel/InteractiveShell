@@ -4,8 +4,6 @@ var spawn = require('child_process').spawn;
 
 describe('Start docker container', function () {
     it('should show M2 preamble', function (done) {
-        // ssh localhost
-
         var docker = "docker";
         var process = spawn(docker, ["run", "fhinkel/macaulay2", "M2"]);
         var encoding = "utf8";

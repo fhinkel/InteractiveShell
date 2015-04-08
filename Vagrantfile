@@ -67,5 +67,6 @@ Vagrant.configure(2) do |config|
 config.vm.provision "shell", inline: <<-SHELL
   sudo apt-get update
   sudo apt-get install -y nodejs docker.io npm
+  docker pull fhinkel/macaulay2
 SHELL
 end

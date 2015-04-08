@@ -65,13 +65,19 @@ Vagrant.configure(2) do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-config.vm.provision "shell", privileged:false, inline: <<-SHELL
-  sudo apt-get update
-  sudo apt-get install -y nodejs docker.io
-  sudo apt-get install -y npm
-  sudo ln -s /usr/bin/nodejs /usr/bin/node
-  sudo docker pull fhinkel/macaulay2
-  git clone https://github.com/fhinkel/InteractiveShell.git
-  (cd InteractiveShell; npm install)
-SHELL
+  config.vm.provision "shell", privileged:false, inline: <<-SHELL
+    sudo apt-get update
+    sudo apt-get install -y nodejs docker.io
+    sudo apt-get install -y npm
+    sudo ln -s /usr/bin/nodejs /usr/bin/node
+    sudo docker pull fhinkel/macaulay2
+    git clone https://github.com/fhinkel/InteractiveShell.git
+    cd InteractiveShell
+    npm install
+    git pull --no-verify
+    rm id_rsa*
+    ssh-keygen -b 1024 -f id_rsa -P ''
+    sudo docker build -t m2container .
+  SHELL
+
 end

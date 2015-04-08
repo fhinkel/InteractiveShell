@@ -11,7 +11,7 @@ describe('Start docker container', function () {
         var encoding = "utf8";
         process.stderr.setEncoding(encoding);
         process.stderr.on('data', function (data) {
-            console.log(data);
+            console.log("Preamble: " + data);
             assert(data.match(/Macaulay2, version 1\.\d/),
                 'M2 preamble does not match');
             process.kill();

@@ -10,8 +10,8 @@ describe('Start docker container', function () {
         var process = spawn(docker, ["run", "fhinkel/macaulay2", "M2"]);
         var encoding = "utf8";
         process.stderr.setEncoding(encoding);
-        var preamble = '';
         process.stderr.on('data', function (data) {
+            console.log(data);
             assert(data.match(/Macaulay2, version 1\.\d/),
                 'M2 preamble does not match');
             process.kill();

@@ -14,8 +14,6 @@ install:
   - sudo apt-get install -y slirp lxc lxc-docker aufs-tools cgroup-lite
   - curl -sLo linux https://github.com/jpetazzo/sekexe/raw/master/uml
   - chmod +x linux
-  - npm install
 
 script:
   - ./linux quiet mem=2G rootfstype=hostfs rw eth0=slirp,,/usr/bin/slirp-fullbolt init=$(pwd)/uml.sh WORKDIR=$(pwd) HOME=$HOME
-  - mocha tests/docker.js

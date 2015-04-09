@@ -18,6 +18,11 @@ describe('Start docker container', function () {
             } else if (result.match(/Are you trying to connect to a TLS-enabled daemon without TLS?/)) {
                 assert(false, 'Error starting Docker container, is docker installed?');
                 done();
+            } else if (result.match(/\/run\/docker.sock: permission denied/)) {
+                assert(false, 'Error starting Docker container, permission denied. Maybe run test as root?');
+            }
+            else {
+                assert(false, 'M2 preamble did not match: ' + result);
             }
         });
         process.on('error', function (error) {

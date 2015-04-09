@@ -48,11 +48,11 @@ describe('m2server', function () {
         });
         it('should be able to create server and get title from html body', function (done) {
             var server = mathServer.MathServer({
-                port: 8002,
+                port: 8004,
                 CONTAINERS: './dummy_containers.js'
             });
             server.listen();
-            http.get("http://127.0.0.1:8002", function (res) {
+            http.get("http://127.0.0.1:8004", function (res) {
                 res.on('data', function (body) {
                     var str = body.toString('utf-8');
                     var n = str.match(/<title>\s*([^\s]*)\s*<\/title>/);

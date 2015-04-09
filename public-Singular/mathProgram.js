@@ -822,7 +822,7 @@ $(document).ready(function() {
         var filename = event.file.name;
         console.log("File uploaded successfully!" + filename);
         $("<div class='smallFont'>"
-            + fileName
+            + filename
             + " has been uploaded and you can use it by loading it into your Singular session (use the input terminal).</div>"
         ).dialog({
                 dialogClass: ' alert',

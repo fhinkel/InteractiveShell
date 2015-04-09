@@ -14,12 +14,11 @@ var trym2 = {
 // initialize with ID (string) of field that should act like a shell,
 //  i.e., command history, taking input and replacing it with output from server
 var shellObject = function(shellArea, historyArea) {
+    var mathProgramOutput = "";
     var shell = shellArea;
     var history = historyArea;
     var cmdHistory = []; // History of M2 commands for shell-like arrow navigation
     cmdHistory.index = 0;
-    var outIndex = 0; // End of real M2 output in M2Out textarea, without user's typing.   
-    var dataSentIndex = 0;
     shell.on("track", function(e, msg) { // add command to history
         if (typeof msg != 'undefined') {
             input = msg.split("\n");
@@ -38,14 +37,13 @@ var shellObject = function(shellArea, historyArea) {
         var l, msg, input;
         if (e.keyCode == 13) { // Return
             trym2.setCaretPosition(shell, shell.val().length);
-            if (shell.val().length > outIndex) {
+            if (shell.val().length > mathProgramOutput.length) {
                 l = shell.val().length;
-                msg = shell.val().substring(dataSentIndex, l);
+                msg = shell.val().substring(mathProgramOutput.length, l);
                 if(history != undefined){
                    history.val(history.val() + msg + "\n");
                    trym2.scrollDown(history);
                 }
-                dataSentIndex += msg.length + 1;
                 trym2.postMessage(msg + "\n")();
             } else {
                 // We don't want empty lines send to M2 at pressing return twice.
@@ -79,7 +77,7 @@ var shellObject = function(shellArea, historyArea) {
 
             // we need to move cursor to end of input
             var pos = shell[0].selectionStart;
-            if (pos < outIndex) {
+            if (pos < mathProgramOutput.length) {
                 //console.log(pos + " Moving to end."); 
                 trym2.setCaretPosition(shell, shell.val().length);
             }
@@ -90,16 +88,16 @@ var shellObject = function(shellArea, historyArea) {
             }
             if ((e.keyCode == arrowUp) && (cmdHistory.index > 0)) { // UP
                 if (cmdHistory.index == cmdHistory.length) {
-                    cmdHistory.current = shell.val().substring(outIndex, $(
+                    cmdHistory.current = shell.val().substring(mathProgramOutput.length, $(
                         shell).val().length);
                 }
                 cmdHistory.index--;
             }
             if (cmdHistory.index == cmdHistory.length) {
-                shell.val(shell.val().substring(0, outIndex) + cmdHistory
+                shell.val(shell.val().substring(0, mathProgramOutput.length) + cmdHistory
                     .current);
             } else {
-                shell.val(shell.val().substring(0, outIndex) + cmdHistory[
+                shell.val(shell.val().substring(0, mathProgramOutput.length) + cmdHistory[
                     cmdHistory.index]);
             }
             trym2.scrollDown(shell);
@@ -108,7 +106,7 @@ var shellObject = function(shellArea, historyArea) {
         // This deals with backspace.
         // We may not shorten the string entered by M2.
         if (e.keyCode == backspace) {
-            if (shell.val().length == outIndex) {
+            if (shell.val().length == mathProgramOutput.length) {
                 e.preventDefault();
             }
         }
@@ -119,33 +117,30 @@ var shellObject = function(shellArea, historyArea) {
     });
 
     shell.on("onmessage", function(e, msg) {
-        var before = shell.val().substring(0, outIndex),
-            after = shell.val().substring(outIndex, shell.val().length);
-        var currIndex = -1;
-        var afterSplit = after.split("\n");
-        while ((after.length > 0) && (afterSplit.length > 1)) {
-            var nextIndex = msg.indexOf(afterSplit[0]);
-            if (afterSplit[0].length == 0) {
-                nextIndex = currIndex + 1;
-            }
-            if (nextIndex > currIndex) {
-                dataSentIndex -= afterSplit[0].length + 1;
-                afterSplit.shift();
-                currIndex = nextIndex;
-            } else {
-                break;
-            }
-        }
-
-        if (/^Macaulay2, version \d\.\d/.test(msg)) {
-            shell.val(before + msg);
-            dataSentIndex = outIndex;
+        if(msg.split("\n").length == 1){
+            console.log("Just one line. " + msg);
+            msg += "\n";
         } else {
-            shell.val(before + msg + afterSplit.join("\n"));
+            console.log("Multiline. " + msg);
         }
-        trym2.scrollDown(shell);
-        outIndex += msg.length;
-        dataSentIndex += msg.length;
+        var completeText = shell.val();
+        var before = completeText.substring(0, mathProgramOutput.length),
+            after = completeText.substring(mathProgramOutput.length, completeText.length);
+        var commonIndex = 0;
+        while((after[commonIndex] == msg[commonIndex]) && (commonIndex < after.length) && (commonIndex < msg.length)){
+            commonIndex++;
+        }
+        console.log(commonIndex + " Common is: " + after.substring(0, commonIndex) + " - " + msg.substring(0, commonIndex));
+        var nonReturnedInput = after.substring(commonIndex, after.length);
+        console.log("The non-returned after is: " + nonReturnedInput);
+        mathProgramOutput += msg;
+        shell.val(mathProgramOutput + nonReturnedInput);
+        
+    });
+
+    shell.on("reset", function(e){
+       console.log("Received reset event.");
+       shell.val(mathProgramOutput);
     });
 };
 
@@ -717,7 +712,7 @@ $(document).ready(function() {
     $('#M2In').val(M2InDefaultText);
     $("#sendBtn").click(trym2.sendCallback('#M2In'));
     $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
-    $("#resetBtn").click(function(){trym2.socket.emit('reset')});
+    $("#resetBtn").click(function(){$("#M2Out").trigger("reset"); trym2.socket.emit('reset')});
     $("#interruptBtn").click(function(){trym2.socket.emit('interrupt')});
     $("#inputBtn").click(function() {
         trym2.navBar.activate("input");

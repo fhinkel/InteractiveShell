@@ -66,7 +66,7 @@ Vagrant.configure(2) do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", privileged:false, inline: <<-SHELL
-    sudo apt-get update
+    sudo apt-get update && apt-get upgrade -y
     sudo apt-get install -y nodejs docker.io
     sudo apt-get install -y npm
     sudo ln -s /usr/bin/nodejs /usr/bin/node

@@ -19,7 +19,9 @@ before_install:
 
 install:
   - sudo apt-get -qqy update
-  - sudo apt-get -qqy install lxc lxc-docker-1.2.0 slirp
+  - sudo apt-get -qqy install slirp
+  - sudo apt-get install -y wget
+  - wget -qO- https://get.docker.com/ | sh
   - sudo sudo usermod -aG docker "$USER"
   - git clone git://github.com/spotify/sekexe
   - npm install

@@ -12,13 +12,17 @@ describe('Start docker container', function () {
         process.stderr.on('data', function (data) {
             console.log("Preamble: " + data);
             result += data;
-            assert(result.match(/Macaulay2, version 1\.\d/),
-                'M2 preamble does not match');
-            done();
+            if (result.match(/Macaulay2, version 1\.\d/)) {
+                assert(true);
+                done()
+            } else if (result.match(/Are you trying to connect to a TLS-enabled daemon without TLS?/)) {
+                assert(false, 'Error starting Docker container, is docker installed?');
+                done();
+            }
         });
         process.on('error', function (error) {
             assert(false, error);
-            next();
+            done();
         });
         process.on('close', function() {
             console.log('on close');

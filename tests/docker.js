@@ -7,6 +7,7 @@ describe('Start docker container', function () {
         var process = spawn("docker", ["run", "fhinkel/macaulay2", "M2", "-e", "exit\ 0;"]);
         process.stderr.setEncoding("utf8");
         var result = '';
+        next();
         process.stderr.on('data', function (data) {
             result += data;
             console.log('first try: ' + data);
@@ -36,6 +37,7 @@ describe('Start docker container', function () {
         var process = spawn("docker", ["run", "fhinkel/macaulay2", "M2", "--version"]);
         process.stdout.setEncoding("utf8");
         var result= '';
+        next();
         process.stdout.on('data', function (data) {
             result += data;
             console.log('Version: ' + result);

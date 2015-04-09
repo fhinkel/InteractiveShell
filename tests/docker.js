@@ -7,7 +7,7 @@ describe('Start docker container', function () {
         var process = spawn("docker", ["run", "fhinkel/macaulay2", "M2", "-e", "exit\ 0;"]);
         process.stderr.setEncoding("utf8");
         var result = '';
-        setTimeout(next(), 3000);
+        setTimeout(next(), 7000);
         process.stderr.on('data', function (data) {
             result += data;
             console.log('first try: ' + data);
@@ -16,6 +16,7 @@ describe('Start docker container', function () {
             console.log('on error');
         });
         process.on('close', function() {
+            console.log('Close in preamble');
             if (result.match(/Macaulay2, version 1\.\d/)) {
                 assert(true);
                 next()
@@ -45,6 +46,7 @@ describe('Start docker container', function () {
             console.log('on error');
         });
         process.on('close', function() {
+            console.log('on close in version');
             if (result.match(/1\.\d/)) {
                 assert(true);
                 next()
@@ -73,6 +75,7 @@ describe('Start docker container', function () {
             console.log('on error');
         });
         process.on('close', function() {
+            console.log('on close in echo');
             if (result.match(/hello/)) {
                 assert(true);
                 next()

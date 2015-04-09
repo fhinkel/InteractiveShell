@@ -206,7 +206,7 @@ var shellObject = function(shellArea, historyArea) {
 
 
 // this global variable changes the content on the left as the users
-// naviges between home, tutorial, and input
+// navigates between home, tutorial, and input
 // tabs are hard coded as home, tutorial, and input
 // the controller assures that always exactly one tab from the tabs list is active. 
 // usage: trym2.navBar.activate("home")
@@ -313,7 +313,7 @@ trym2.appendTutorialToAccordion = function(title, lessons, index) {
         content = content +
             '<li><a href="#" class="submenuItem" tutorialid=' + index +
             ' lessonid=' + j + '>  ' + lessons[j].title + '</a></li>';
-    };
+    }
     content = content + '</ul>';
     if (index > 0) {
         div.append(content).addClass(
@@ -435,10 +435,10 @@ trym2.loadLesson = function(tutorialid, lessonid ) {
     trym2.firstLoadFlag = false;
     if (tutorialid >= 0 && tutorialid < this.tutorials.length) {
         this.tutorialNr = tutorialid;
-    };
+    }
     if (lessonid >= 0 && lessonid < this.tutorials[this.tutorialNr].lessons.length) {
         this.lessonNr = lessonid;
-    };
+    }
     var lessonContent = this.tutorials[this.tutorialNr].lessons[this.lessonNr]
         .html;
 
@@ -465,7 +465,7 @@ trym2.makeTutorialsList = function(i, tutorialNames, callback) {
         });
     } else {
         callback();
-    };
+    }
 };
 
 trym2.populateTutorialElement = function(theHtml) {
@@ -615,7 +615,7 @@ trym2.downloadTextArea = function(textarea){
     tmpAnchor.attr('download', textarea.attr("id") + ".txt");
     tmpAnchor.text(textarea.attr("id"));
     return tmpAnchor;
-}
+};
 
 trym2.saveInteractions = function() {
     var input = $("#M2In");
@@ -663,7 +663,7 @@ trym2.uploadTutorial = function() {
         trym2.insertDeleteButtonAtLastTutorial();
     };
     return false;
-}
+};
 
 trym2.insertDeleteButtonAtLastTutorial = function() {
    var lastTitle = $("#loadTutorialMenu").prev().prev();
@@ -680,53 +680,6 @@ trym2.removeTutorial = function(title, div, button){
       div.remove();
       title.remove();
    }
-};
-
-trym2.doUploadFoo = function() {
-    var obj = this;
-    var file = obj.files[0];
-    var fileName = obj.value.split("\\"); // this is an array
-    fileName = fileName[fileName.length - 1]; // take the last element
-    var formData = new FormData();
-    formData.append('file', file);
-    console.log("process form " + file);
-    console.log(file.size);
-    if (file.size > this.MAXFILESIZE) {
-        $(
-            "<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Your file is too big to upload.  Sorry!</div>")
-            .dialog({
-            dialogClass: 'alert',
-        });
-        return false;
-    }
-
-    $.ajax({
-        url: '/upload',
-        type: 'POST',
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        statusCode: {
-            500: function(data) {
-                $(
-                    "<div><span class='ui-icon ui-icon-alert ' style='float: left; margin-right: .3em;'></span>Uploading failed.</div>")
-                    .dialog({
-                    dialogClass: 'alert'
-                });
-            }
-        },
-        success: function(data) {
-            console.log("File uploaded successfully!" + data);
-            $("<div class='smallFont'>" + fileName +
-                " has been uploaded and you can use it by loading it into your Singular session (use the input terminal).</div>")
-                .dialog({
-                dialogClass: ' alert',
-                title: 'File uploaded'
-            });
-        }
-    });
-    return false;
 };
 
 // Register for notification of new messages using EventSource
@@ -866,6 +819,15 @@ $(document).ready(function() {
     siofu.addEventListener("complete", function(event){
         console.log('we uploaded the file: ' + event.success);
         console.log(event.file);
+        var filename = event.file.name;
+        console.log("File uploaded successfully!" + filename);
+        $("<div class='smallFont'>"
+            + fileName
+            + " has been uploaded and you can use it by loading it into your Singular session (use the input terminal).</div>"
+        ).dialog({
+                dialogClass: ' alert',
+                title: 'File uploaded'
+            });
     });
 
     //$("#upfile").on('change', trym2.doUpload);

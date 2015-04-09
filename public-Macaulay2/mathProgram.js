@@ -726,10 +726,22 @@ $(document).ready(function() {
 
     var siofu = new SocketIOFileUpload(trym2.socket);
 
-    // Configure the three ways that SocketIOFileUpload can read files:
     document.getElementById("uploadBtn").addEventListener('click', siofu.prompt, false);
 
-    // Do something when a file is uploaded:
+    siofu.addEventListener("complete", function(event){
+        console.log('we uploaded the file: ' + event.success);
+        console.log(event.file);
+        var filename = event.file.name;
+        console.log("File uploaded successfully!" + filename);
+        $("<div class='smallFont'>"
+            + fileName
+            + " has been uploaded and you can use it by loading it into your Macaulay2 session (use the input terminal).</div>"
+        ).dialog({
+                dialogClass: ' alert',
+                title: 'File uploaded'
+            });
+    }); 
+
     siofu.addEventListener("complete", function(event){
         console.log('we uploaded the file: ' + event.success);
         console.log(event.file);

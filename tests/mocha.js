@@ -1,6 +1,5 @@
 var assert = require("assert");
 var http = require('http');
-var mathServer = require('../lib/mathServer.js');
 
 describe('Array', function () {
     describe('#indexOf()', function () {
@@ -38,54 +37,18 @@ describe('assert.notEqual', function () {
 });
 
 
-describe('m2server', function () {
-    describe('basic behavior', function () {
-
-        it('should be available as a variable', function (done) {
-            var server = mathServer.MathServer();
-            assert.notEqual(server, null);
-            done();
-        });
-        it('should be able to create server and get title from html body', function (done) {
-            var server = mathServer.MathServer({
-                port: 8004,
-                CONTAINERS: './dummy_containers.js'
-            });
-            server.listen();
-            http.get("http://127.0.0.1:8004", function (res) {
-                res.on('data', function (body) {
-                    var str = body.toString('utf-8');
-                    var n = str.match(/<title>\s*([^\s]*)\s*<\/title>/);
-                    assert.equal(n[1], 'Macaulay2');
-                    server.close();
-                    done();
-                });
-            });
-        });
-    });
-    describe('advanced behavior', function () {
-        it('should be running M2', function () {
-            //assert(false);
-        });
-        it('should calculate 2+2', function () {
-            //assert(false);
-        });
-    });
-});
-
 describe('regexsearch', function () {
     it('should find text between title tags', function () {
         var s = 'bla <title> blubb </title> blobber';
-        var n = s.match(/<title>\s*([^\s]*)\s*<\/title>/);
-        assert.equal(n[1], 'blubb');
+        var match = s.match(/<title>\s*([^\s]*)\s*<\/title>/);
+        assert.equal(match[1], 'blubb');
         s = 'bla <title> blubb\n </title> blobber';
-        var n = s.match(/<title>\s*([^\s]*)\s*<\/title>/);
-        assert.equal(n[1], 'blubb');
+        match = s.match(/<title>\s*([^\s]*)\s*<\/title>/);
+        assert.equal(match[1], 'blubb');
     });
     it('should find beginning of string', function () {
         var s = "hello world";
         assert(s.match(/^hello/));
-        assert(!false);
         assert(!s.match(/^Hello/));
     });
     it('should find the path', function () {
@@ -100,9 +63,9 @@ describe('regexsearch', function () {
         assert.equal(imagePath[1], "M2/share/doc/Macaulay2/Macaulay2Doc/html/_ring.html");
         assert.equal(url.match(/^file:\/\/(.*)/)[1], "/M2/share/doc/Macaulay2/Macaulay2Doc/html/_ring.html");
     });
-})
+});
 
-describe('testserver', function () {
+describe('Http server that echos hello world', function () {
     var server;
     before(function (done) {
         var http = require('http');
@@ -114,6 +77,12 @@ describe('testserver', function () {
             done();
         });
     });
+
+    after(function (done) {
+        server.close();
+        done();
+    });
+
     it("Should fetch /", function (done) {
         http.get("http://localhost:1337/", function (res) {
             assert.equal(res.statusCode, 200);
@@ -128,13 +97,15 @@ describe('testserver', function () {
             });
         });
     });
+});
 
+describe('coercion', function () {
     it("Should use empty String as false-y", function () {
         var empty = "";
         assert(empty == false);
 
         if (empty) {
-            assert(false, 'Expected empty string to evaluate to false in in condition');
+            assert(false, 'Expected empty string to evaluate to false in condition');
         }
 
         if (!empty) {
@@ -153,10 +124,6 @@ describe('testserver', function () {
         }
     });
 
-    after(function (done) {
-        server.close();
-        done();
-    });
 });
 
 

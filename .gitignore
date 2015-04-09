@@ -9,3 +9,5 @@
 *.dvi
 .DS_Store
 node_modules
+.vagrant/
+id_rsa*

@@ -26,7 +26,8 @@
     "express-winston": "~0.2.9",
     "winston": "~0.8.3",
     "socket.io-cookie": "0.0.1",
-    "socketio-file-upload": "~0.2.7"
+    "socketio-file-upload": "~0.2.7",
+    "ssh2": "~0.4.6"
   },
   "scripts": {
     "start": "node lib/Macaulay2LocalServer.js",

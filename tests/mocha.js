@@ -129,6 +129,30 @@ describe('testserver', function () {
         });
     });
 
+    it("Should use empty String as false-y", function () {
+        var empty = "";
+        assert(empty == false);
+
+        if (empty) {
+            assert(false, 'Expected empty string to evaluate to false in in condition');
+        }
+
+        if (!empty) {
+            assert(true);
+        } else {
+            assert(false);
+        }
+
+        var notEmpty = "hello";
+
+        if (notEmpty) {
+            assert(true);
+        }
+        else {
+            assert(false);
+        }
+    });
+
     after(function (done) {
         server.close();
         done();

@@ -40,6 +40,7 @@ var shellObject = function(shellArea, historyArea) {
             if (shell.val().length > mathProgramOutput.length) {
                 l = shell.val().length;
                 msg = shell.val().substring(mathProgramOutput.length, l);
+                console.log("Sending message: " + msg);
                 if(history != undefined){
                    history.val(history.val() + msg + "\n");
                    trym2.scrollDown(history);
@@ -116,24 +117,26 @@ var shellObject = function(shellArea, historyArea) {
         }
     });
 
-    shell.on("onmessage", function(e, msg) {
-        if(msg.split("\n").length == 1){
-            console.log("Just one line. " + msg);
-            // msg += "\n";
-        } else {
-            console.log("Multiline. " + msg);
-        }
+    shell.on("onmessage", function(e, msgDirty) {
+        // console.log("Dirty msg: " + JSON.stringify(msgDirty));
+        var msg = msgDirty.replace(/\r\n/g,"\n");
+        msg = msg.replace(/\r/g,"\n");
+        // console.log("Msg after replace: " + msg);
         var completeText = shell.val();
+        mathProgramOutput += msg;
+        // console.log(completeText + "\n vs \n" + mathProgramOutput);
         var before = completeText.substring(0, mathProgramOutput.length),
             after = completeText.substring(mathProgramOutput.length, completeText.length);
         var commonIndex = 0;
+        // console.log(after[commonIndex] + " -- " + msg[commonIndex] + " gives " + (after[commonIndex] == msg[commonIndex]));
         while((after[commonIndex] == msg[commonIndex]) && (commonIndex < after.length) && (commonIndex < msg.length)){
             commonIndex++;
         }
-        console.log(commonIndex + " Common is: " + after.substring(0, commonIndex) + " - " + msg.substring(0, commonIndex));
+        //console.log("Crucial: " + after[3] + " vs " + msg[3]);
+        // console.log(commonIndex + " Common is: " + after.substring(0, commonIndex) + " - " + msg.substring(0, commonIndex));
         var nonReturnedInput = after.substring(commonIndex, after.length);
-        console.log("The non-returned after is: " + nonReturnedInput);
-        mathProgramOutput += msg;
+        //console.log("The non-returned after is: " + nonReturnedInput);
+        //console.log("mathProgramOutput is " + mathProgramOutput);
         shell.val(mathProgramOutput + nonReturnedInput);
         trym2.scrollDown(shell);
     });

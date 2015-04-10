@@ -4,7 +4,7 @@ var mathServer = require('../lib/mathServer.js');
 var sinon = require('sinon');
 
 describe('MathServer Module test', function () {
-    describe('When we call getTutorialList', function (next) {
+    describe.only('When we call getTutorialList', function (next) {
         it('should get the list', function (done) {
             var server = mathServer.MathServer();
             var response = {
@@ -58,7 +58,8 @@ describe('MathServer Module test', function () {
             var readdirStub = sinon.stub(fs, 'readdir');
             readdirStub.yields(null, ['mock.html', 'nothtml.foo']);
             var existsStub= sinon.stub(fs, 'exists');
-            existsStub.yields(false);
+            existsStub.onFirstCall().yields(true);
+            existsStub.onSecondCall().yields(false);
 
             var spy = sinon.spy(response, "end");
             server.getListOfTutorials(fs)(null, response);

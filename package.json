@@ -26,7 +26,8 @@
     "socket.io-cookie": "~0.0.1",
     "socketio-file-upload": "^0.2.7",
     "ssh2": "~0.4.6",
-    "winston": "^0.8.3"
+    "winston": "^0.8.3",
+    "async": "~0.9.0"
   },
   "scripts": {
     "start": "node lib/Macaulay2LocalServer.js",

@@ -39,6 +39,7 @@ Vagrant.configure(2) do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   config.vm.synced_folder ".", "/home/vagrant/InteractiveShell"
+  config.vm.synced_folder "./Macaulay2-tutorials", "/home/vagrant/InteractiveShell/public-Macaulay2/shared-tutorials"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.

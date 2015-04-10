@@ -71,7 +71,6 @@ describe('regexsearch', function (next) {
 describe('Http server that echos hello world', function (next) {
     var server;
     before(function (done) {
-        var http = require('http');
         server = http.createServer(function (req, res) {
             res.writeHead(200, {'Content-Type': 'text/plain'});
             res.end('Hello World\n');

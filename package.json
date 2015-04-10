@@ -18,16 +18,15 @@
   ],
   "dependencies": {
     "cookies": "~0.5.0",
-    "formidable": "*",
-    "socket.io": "~1.2.1",
-    "express": "~4.10.2",
-    "serve-favicon": "~2.1.7",
-    "serve-static": "~1.7.1",
+    "express": "^4.10.8",
     "express-winston": "~0.2.9",
-    "winston": "~0.8.3",
-    "socket.io-cookie": "0.0.1",
-    "socketio-file-upload": "~0.2.7",
-    "ssh2": "~0.4.6"
+    "serve-favicon": "^2.1.7",
+    "serve-static": "^1.7.2",
+    "socket.io": "^1.2.1",
+    "socket.io-cookie": "~0.0.1",
+    "socketio-file-upload": "^0.2.7",
+    "ssh2": "~0.4.6",
+    "winston": "^0.8.3"
   },
   "scripts": {
     "start": "node lib/Macaulay2LocalServer.js",

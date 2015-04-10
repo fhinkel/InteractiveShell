@@ -32,7 +32,7 @@
   "scripts": {
     "start": "node lib/Macaulay2LocalServer.js",
     "sudo_docker": "node lib/Macaulay2SudoDocker.js",
-    "test": "mocha tests --reporter spec --timeout 10000",
+    "test": "mocha tests --reporter spec --timeout 6000",
     "stop": "kill `ps ax | grep Server | grep -v monitor | grep node | awk '{print $1}'`",
     "forever": "forever start -l /home/webm2.logs/forever.log -o /home/webm2.logs/out.log -e /home/webm2.logs/err.log --append lib/Macaulay2Server.js"
   },

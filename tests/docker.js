@@ -11,10 +11,12 @@ describe('Start docker container', function () {
         process.stdout.on('data', function (data) {
             result += data;
             console.log('Version: ' + result);
+            process.kill('SIGKILL');
         });
         process.stderr.on('data', function (data) {
             result += data;
             console.log('Version: ' + result);
+            process.kill('SIGKILL');
         });
         process.on('error', function (error) {
             console.log('on error');
@@ -97,7 +99,7 @@ describe('Start docker container', function () {
     });
 
     it('should show M2 preamble', function (next) {
-        var process = spawn("docker", ["run", "fhinkel/macaulay2", "M2", "-e",  "exit 0;"]);
+        var process = spawn("docker", ["run", "-i", "fhinkel/macaulay2", "M2", "-e",  "exit 0;"]);
         process.stderr.setEncoding("utf8");
         process.stdout.setEncoding("utf8");
         var result = '';

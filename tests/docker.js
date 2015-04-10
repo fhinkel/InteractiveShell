@@ -85,6 +85,7 @@ describe('Start docker container', function (next) {
         var result;
         process.stdout.on('data', function (data) {
             result += data;
+            process.kill('SIGKILL');
         });
         process.on('disconnected', function (error) {
             console.log('DISCONNECTED for preamble');
@@ -114,10 +115,12 @@ describe('Start docker container', function (next) {
         process.stdout.on('data', function (data) {
             result += data;
             console.log('first try out: ' + data);
+            process.kill('SIGKILL');
         });
         process.stderr.on('data', function (data) {
             result += data;
             console.log('first try err: ' + data);
+            process.kill('SIGKILL');
         });
         process.on('error', function (error) {
             console.log('on error');
@@ -160,6 +163,7 @@ describe('Start docker container', function (next) {
         process.stdout.on('data', function (data) {
             result += data;
             console.log('first try out: ' + data);
+            process.kill('SIGKILL');
         });
         process.stderr.on('data', function (data) {
             result += data;
@@ -169,6 +173,7 @@ describe('Start docker container', function (next) {
                 console.log("stdout: ***" + stdout);
                 console.log("stderr: ***" + stderr);
             });
+            process.kill('SIGKILL');
         });
         process.on('error', function (error) {
             console.log('on error');

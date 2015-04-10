@@ -29,22 +29,22 @@ before_script:
   - "while ! docker info &> /dev/null ; do sleep 1; done"
   - docker version
   - docker pull fhinkel/macaulay2
-  - docker run fhinkel/macaulay2 /bin/echo hello
-  - sleep 10
-  - docker run fhinkel/macaulay2 /bin/bash /usr/bin/M2 -e "exit 0;"
-  - sleep 10
-  - docker run fhinkel/macaulay2 /bin/bash -c "echo \"exit 0;\" | M2 "
-  - sleep 10
-  - docker run fhinkel/macaulay2 /bin/bash -c "echo \"exit 0;\" | M2 "
-  - docker run fhinkel/macaulay2 /bin/bash -c "echo \"exit 0;\" | M2 "
-  - docker run fhinkel/macaulay2 /bin/bash -c "echo \"exit 0;\" | M2 "
-  - sleep 10
-  - docker ps -a
-  - sleep 10
-  - docker ps -a
-  - sleep 10
-  - docker ps -a
-  - sleep 10
+#  - docker run fhinkel/macaulay2 /bin/echo hello
+#  - sleep 10
+#  - docker run fhinkel/macaulay2 /bin/bash /usr/bin/M2 -e "exit 0;"
+#  - sleep 10
+#  - docker run fhinkel/macaulay2 /bin/bash -c "echo \"exit 0;\" | M2 "
+#  - sleep 10
+#  - docker run fhinkel/macaulay2 /bin/bash -c "echo \"exit 0;\" | M2 "
+#  - docker run fhinkel/macaulay2 /bin/bash -c "echo \"exit 0;\" | M2 "
+#  - docker run fhinkel/macaulay2 /bin/bash -c "echo \"exit 0;\" | M2 "
+#  - sleep 10
+#  - docker ps -a
+#  - sleep 10
+#  - docker ps -a
+#  - sleep 10
+#  - docker ps -a
+#  - sleep 10
 
 script:
   - npm test

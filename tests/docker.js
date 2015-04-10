@@ -19,6 +19,9 @@ describe('Start docker container', function () {
         process.on('error', function (error) {
             console.log('on error');
         });
+        process.on('exit', function (error) {
+            console.log('EXIT for -t version');
+        });
         process.on('close', function() {
             console.log('on close in version' + result);
             if (result.match(/1\.\d/)) {
@@ -50,6 +53,9 @@ describe('Start docker container', function () {
             result += data;
             console.log('Version: ' + result);
         });
+        process.on('exit', function (error) {
+            console.log('EXIT for -t version');
+        });
         process.on('error', function (error) {
             console.log('on error');
         });
@@ -79,6 +85,9 @@ describe('Start docker container', function () {
         process.stdout.on('data', function (data) {
             result += data;
         });
+        process.on('exit', function (error) {
+            console.log('EXIT for preamble');
+        });
         process.on('error', function (error) {
             console.log('on error');
         });
@@ -102,11 +111,11 @@ describe('Start docker container', function () {
         var result = '';
         process.stdout.on('data', function (data) {
             result += data;
-            console.log('first try: ' + data);
+            console.log('first try out: ' + data);
         });
         process.stderr.on('data', function (data) {
             result += data;
-            console.log('first try: ' + data);
+            console.log('first try err: ' + data);
         });
         process.on('error', function (error) {
             console.log('on error');

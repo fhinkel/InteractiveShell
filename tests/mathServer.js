@@ -1,12 +1,12 @@
 var assert = require("assert");
 var http = require('http');
-var mathServer = require('../lib/mathServer.js');
 var sinon = require('sinon');
+var tutorials = require('../lib/getListOfTutorials.js');
 
 describe('MathServer Module test', function () {
     describe.only('When we call getTutorialList', function (next) {
         it('should get the list', function (done) {
-            var server = mathServer.MathServer();
+            var tutorials = tutorials.Tutorials("public-Macaulay2/");
             var response = {
                 writeHead: function() {},
                 end: function() {
@@ -16,7 +16,7 @@ describe('MathServer Module test', function () {
             };
             var spy = sinon.spy(response, "end");
             var fs = require('fs');
-            server.getListOfTutorials(fs)(null, response);
+            tutorials.getList(fs)(null, response);
         });
         it('should get the list from mocked file system with shared tutorials', function (done) {
             var server = mathServer.MathServer();

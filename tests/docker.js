@@ -149,7 +149,7 @@ describe('Start docker container', function (next) {
     });
 
     it('should show M2 preamble and exit', function (next) {
-        var process = spawn("docker", ["run", "fhinkel/macaulay2", "/bin/bash", "/bin/echo",  "exit 0;", "|", "/usr/bin/M2"], {stdio: "inherit"});
+        var process = spawn("docker", ["run", "fhinkel/macaulay2", "/bin/bash", "-c", "echo\ \"exit\ 0;\"|M2"]);
         process.stderr.setEncoding("utf8");
         process.stdout.setEncoding("utf8");
         var result = '';

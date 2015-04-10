@@ -147,6 +147,54 @@ describe('Start docker container', function (next) {
             next()
         });
     });
+
+    it('should show M2 preamble and exit', function (next) {
+        var process = spawn("docker", ["run", "fhinkel/macaulay2", "/bin/bash", "/bin/echo",  "exit 0;", "|", "/usr/bin/M2"], {stdio: "inherit"});
+        process.stderr.setEncoding("utf8");
+        process.stdout.setEncoding("utf8");
+        var result = '';
+        process.stdout.on('data', function (data) {
+            result += data;
+            console.log('first try out: ' + data);
+        });
+        process.stderr.on('data', function (data) {
+            result += data;
+            console.log('first try err: ' + data);
+        });
+        process.on('error', function (error) {
+            console.log('on error');
+        });
+        process.on('exit', function() {
+            console.log('In exit in preamble');
+            if (result.match(/Macaulay2, version 1\.\d/)) {
+                assert(true);
+            } else if (result.match(/no such file or directory. Are you trying to connect to a TLS-enabled daemon without TLS/)) {
+                assert(false, 'Error starting Docker container, is docker installed?\n' + result);
+            } else if (result.match(/\/run\/docker.sock: permission denied/)) {
+                assert(false, 'Error starting Docker container, permission denied. Maybe run test as root?\n' + result);
+            }
+            else {
+                assert(false, 'M2 preamble did not match: ' + result);
+            }
+        });
+        process.on('disconnected', function (error) {
+            console.log('DISCONNECTED for preamble');
+        });
+        process.on('close', function() {
+            console.log('Close in preamble');
+            if (result.match(/Macaulay2, version 1\.\d/)) {
+                assert(true);
+            } else if (result.match(/no such file or directory. Are you trying to connect to a TLS-enabled daemon without TLS/)) {
+                assert(false, 'Error starting Docker container, is docker installed?\n' + result);
+            } else if (result.match(/\/run\/docker.sock: permission denied/)) {
+                assert(false, 'Error starting Docker container, permission denied. Maybe run test as root?\n' + result);
+            }
+            else {
+                assert(false, 'M2 preamble did not match: ' + result);
+            }
+            next()
+        });
+    });
 });
 
 

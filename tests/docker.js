@@ -25,21 +25,18 @@ describe('Start docker container', function (next) {
             console.log('EXIT for -t version');
             if (result.match(/1\.\d/)) {
                 assert(true);
-                next()
             } else if (result.match(/no such file or directory. Are you trying to connect to a TLS-enabled daemon without TLS/)) {
                 assert(false, 'Error starting Docker container, is docker installed?\n' + result);
-                next();
             } else if (result.match(/\/run\/docker.sock: permission denied/)) {
                 assert(false, 'Error starting Docker container, permission denied. Maybe run test as root?\n' + result);
-                next();
             }
             else {
                 assert(false, 'M2 version: ' + result);
-                next();
             }
         });
         process.on('close', function() {
             console.log('on close in version' + result);
+            next();
         });
     });
     it('should show M2 version without -t', function (next) {
@@ -60,6 +57,7 @@ describe('Start docker container', function (next) {
         });
         process.on('close', function() {
             console.log('*** in close');
+            next()
         });
         process.on('disconnect', function() {
             console.log('*** in disconnect');
@@ -68,17 +66,13 @@ describe('Start docker container', function (next) {
             console.log('***on exit in version without -t' + result);
             if (result.match(/1\.\d/)) {
                 assert(true);
-                next()
             } else if (result.match(/no such file or directory. Are you trying to connect to a TLS-enabled daemon without TLS/)) {
                 assert(false, 'Error starting Docker container, is docker installed?\n' + result);
-                next();
             } else if (result.match(/\/run\/docker.sock: permission denied/)) {
                 assert(false, 'Error starting Docker container, permission denied. Maybe run test as root?\n' + result);
-                next();
             }
             else {
                 assert(false, '***M2 version: ' + result);
-                next();
             }
         });
     });
@@ -110,7 +104,7 @@ describe('Start docker container', function (next) {
     });
 
     it('should show M2 preamble', function (next) {
-        var process = spawn("docker", ["run", "fhinkel/macaulay2", "M2", "-e",  "exit 0;"]);
+        var process = spawn("docker", ["run", "fhinkel/macaulay2", "/bin/bash", "/usr/bin/M2", "-e",  "exit 0;"]);
         process.stderr.setEncoding("utf8");
         process.stdout.setEncoding("utf8");
         var result = '';
@@ -121,7 +115,6 @@ describe('Start docker container', function (next) {
         process.stderr.on('data', function (data) {
             result += data;
             console.log('first try err: ' + data);
-            process.kill('SIGKILL');
         });
         process.on('error', function (error) {
             console.log('on error');
@@ -130,17 +123,13 @@ describe('Start docker container', function (next) {
             console.log('In exit in preamble');
             if (result.match(/Macaulay2, version 1\.\d/)) {
                 assert(true);
-                next()
             } else if (result.match(/no such file or directory. Are you trying to connect to a TLS-enabled daemon without TLS/)) {
                 assert(false, 'Error starting Docker container, is docker installed?\n' + result);
-                next();
             } else if (result.match(/\/run\/docker.sock: permission denied/)) {
                 assert(false, 'Error starting Docker container, permission denied. Maybe run test as root?\n' + result);
-                next();
             }
             else {
                 assert(false, 'M2 preamble did not match: ' + result);
-                next();
             }
         });
         process.on('close', function() {
@@ -155,6 +144,7 @@ describe('Start docker container', function (next) {
             else {
                 assert(false, 'M2 preamble did not match: ' + result);
             }
+            next()
         });
     });
 });

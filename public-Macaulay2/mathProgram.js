@@ -119,7 +119,7 @@ var shellObject = function(shellArea, historyArea) {
     shell.on("onmessage", function(e, msg) {
         if(msg.split("\n").length == 1){
             console.log("Just one line. " + msg);
-            msg += "\n";
+            // msg += "\n";
         } else {
             console.log("Multiline. " + msg);
         }

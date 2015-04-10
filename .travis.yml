@@ -29,6 +29,12 @@ before_script:
   - "while ! docker info &> /dev/null ; do sleep 1; done"
   - docker version
   - docker pull fhinkel/macaulay2
+  - docker run -t --rm=true fhinkel/macaulay2 /bin/bash /usr/bin/M2 --version
+  - docker run --rm=true fhinkel/macaulay2 /bin/bash /usr/bin/M2 --version
+  - docker run fhinkel/macaulay2 /bin/echo hello
+  - docker run fhinkel/macaulay2 /bin/bash /usr/bin/M2 -e "exit 0;"
+  - docker run fhinkel/macaulay2 /bin/bash -c "echo \"exit 0;\" | M2 "
+  - docker ps -a
 
 script:
   - npm test

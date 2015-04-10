@@ -66,7 +66,7 @@ describe('Start docker container', function () {
     });
 
     it('should show M2 preamble', function (next) {
-        var process = spawn("docker", ["run", "-t", "fhinkel/macaulay2", "M2", "-e", "exit 0;"]);
+        var process = spawn("docker", ["run", "-t", "fhinkel/macaulay2", "M2", "-e",  "exit\ 0;"]);
         process.stderr.setEncoding("utf8");
         process.stdout.setEncoding("utf8");
         var result = '';

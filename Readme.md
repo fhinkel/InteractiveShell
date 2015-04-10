@@ -8,7 +8,7 @@ A node.js webserver that serves an interactive Math Program command line.
 
 See [Macaulay2](http://web.macaulay2.com)  and [Singular](http://habanero.math.cornell.edu:3691/).
 
-Security is provided by starting every process in its own linux container. We recommend starting the web server from inside a virtual box for added security.
+Security is provided by starting every process in its own docker container.
 
 [Macaulay2](http://www.macaulay2.com) is a software system devoted to supporting research in algebraic geometry and commutative algebra, whose creation and development have been funded by the National Science Foundation since 1992.
 
@@ -28,20 +28,25 @@ Still a little hacked, but we think it's working.
 * Running inside LXCs
 
 ## Installation
-    npm install
+    `npm install`
     
 ## Usage
-    npm start
+    `npm start`
 
-By default, listening on port 8002. You can change this in SingularLocalServer.js.
+## Tests
+    `sudo npm test`
+    `or inside boot2docker npm test`
+
+By default, listening on port 8002.
 On your own machine visit the server on http://localhost:8002. If you have Macaulay2 installed, this gives you an (unsecured!) Macaulay2 shell.
 That means, through the browser you have access to your entire machine with the same permissions as the user that started m2server, i.e., you.
 
-
+In order to get a secure system, build the virtual box by running `vagrant up`.
 
 
 You need 
-* node.js
+* node.js and npm
+* Docker
 * [Macaulay2](http://www.macaulay2.com)
 * different node packages, use npm install to get them (express, socket.io,... )
 * [forever](https://github.com/nodejitsu/forever) to run server as a daemon, use npm install forever -g.

@@ -1,6 +1,7 @@
 language: node_js
 node_js:
  - "0.10"
+ - "0.10.25"
  - "0.12"
  - "iojs"
 
@@ -19,6 +20,7 @@ before_install:
 
 install:
   - sudo apt-get -qqy update
+  - apt-cache search docker
   - sudo apt-get -qqy install lxc lxc-docker-1.2.0 slirp
   - sudo sudo usermod -aG docker "$USER"
   - git clone git://github.com/spotify/sekexe

@@ -11,3 +11,8 @@
 node_modules
 .vagrant/
 id_rsa*
+manuscript/jsag.maf
+manuscript/jsag.mtc
+manuscript/jsag.mtc0
+manuscript/jsag.out
+manuscript/jsag.synctex.gz

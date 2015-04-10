@@ -31,13 +31,13 @@ before_script:
   - docker pull fhinkel/macaulay2
   - docker run fhinkel/macaulay2 /bin/echo hello
   - sleep 10
-  - docker run fhinkel/macaulay2 /bin/bash /usr/bin/M2 -e "exit 0;"
+  - docker run fhinkel/macaulay2 /bin/bash /usr/bin/M2 -e "exit 0;"; exit;
   - sleep 10
-  - docker run fhinkel/macaulay2 /bin/bash -c "echo \"exit 0;\" | M2 "
+  - docker run fhinkel/macaulay2 /bin/bash -c "echo \"exit 0;\" | M2 "; exit
   - sleep 10
-  - docker run fhinkel/macaulay2 /bin/bash -c "echo \"exit 0;\" | M2 "
-  - docker run fhinkel/macaulay2 /bin/bash -c "echo \"exit 0;\" | M2 "
-  - docker run fhinkel/macaulay2 /bin/bash -c "echo \"exit 0;\" | M2 "
+  - docker run fhinkel/macaulay2 /bin/bash -c "echo \"exit 0;\" | M2 "; exit
+  - docker run fhinkel/macaulay2 /bin/bash -c "echo \"exit 0;\" | M2 "; exit
+  - docker run fhinkel/macaulay2 /bin/bash -c "echo \"exit 0;\" | M2 "; exit
   - sleep 10
   - docker ps -a
   - sleep 10

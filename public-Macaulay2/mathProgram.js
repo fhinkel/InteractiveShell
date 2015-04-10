@@ -24,7 +24,7 @@ var shellObject = function(shellArea, historyArea) {
             input = msg.split("\n");
             for (var line in input) {
                 if (input[line].length > 0) {
-                    console.log("Line: " + input[line]);
+                    // console.log("Line: " + input[line]);
                     cmdHistory.index = cmdHistory.push(input[line]);
                 }
             }
@@ -33,22 +33,23 @@ var shellObject = function(shellArea, historyArea) {
     });
 
     // On pressing return send last part of M2Out to M2 and remove it.
-    shell.keypress(function(e) {
+    shell.keyup(function(e) {
         var l, msg, input;
         if (e.keyCode == 13) { // Return
             trym2.setCaretPosition(shell, shell.val().length);
             if (shell.val().length > mathProgramOutput.length) {
                 l = shell.val().length;
                 msg = shell.val().substring(mathProgramOutput.length, l);
-                console.log("Sending message: " + msg);
+                // console.log("Sending message: " + msg);
                 if(history != undefined){
-                   history.val(history.val() + msg + "\n");
+                   history.val(history.val() + msg);
                    trym2.scrollDown(history);
                 }
-                trym2.postMessage(msg + "\n")();
+                trym2.postMessage(msg)();
             } else {
+                console.log("There must be an error.");
                 // We don't want empty lines send to M2 at pressing return twice.
-                e.preventDefault();
+                //e.preventDefault();
             }
         }
     });
@@ -626,7 +627,7 @@ $(document).ready(function() {
 
     trym2.socket.on('result', function(msg) {
         if (msg !== "") {
-            console.log("The result from the server is " + msg);
+            // console.log("The result from the server is " + msg);
             $("#M2Out").trigger("onmessage", msg);
         }
     });

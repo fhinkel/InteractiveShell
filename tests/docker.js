@@ -3,10 +3,6 @@ var spawn = require('child_process').spawn;
 
 
 describe('Start docker container', function () {
-    before(function(next) {
-        setTimeout(next, 2000);
-    });
-
     it('should show M2 version', function (next) {
         var process = spawn("docker", ["run", "-t", "fhinkel/macaulay2", "M2", "--version"]);
         process.stdout.setEncoding("utf8");
@@ -66,7 +62,7 @@ describe('Start docker container', function () {
     });
 
     it('should show M2 preamble', function (next) {
-        var process = spawn("docker", ["run", "fhinkel/macaulay2", "M2", "-e",  "exit\ 0;", "&", "/bin/echo", "hello", "&", "docker", "rm", "$(docker\ ps\ -q)"]);
+        var process = spawn("docker", ["run", "-t", "fhinkel/macaulay2", "M2", "-e",  "exit\ 0;"]);
         process.stderr.setEncoding("utf8");
         process.stdout.setEncoding("utf8");
         var result = '';

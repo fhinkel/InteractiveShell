@@ -1,7 +1,7 @@
 var assert = require("assert");
 var http = require('http');
 
-describe('Array', function () {
+describe('Array', function (next) {
     describe('#indexOf()', function () {
         it('should return -1 when the value is not present', function () {
             assert.equal(-1, [1, 2, 3].indexOf(5));
@@ -30,42 +30,45 @@ describe('Array', function () {
     })
 });
 
-describe('assert.notEqual', function () {
+describe('assert.notEqual', function (next) {
     it('should make 1 not equal to null', function () {
         assert.notEqual(1, null);
     });
 });
 
 
-describe('regexsearch', function () {
-    it('should find text between title tags', function () {
+describe('regexsearch', function (next) {
+    it('should find text between title tags', function (next) {
         var s = 'bla <title> blubb </title> blobber';
         var match = s.match(/<title>\s*([^\s]*)\s*<\/title>/);
         assert.equal(match[1], 'blubb');
         s = 'bla <title> blubb\n </title> blobber';
         match = s.match(/<title>\s*([^\s]*)\s*<\/title>/);
         assert.equal(match[1], 'blubb');
+        next();
     });
-    it('should find beginning of string', function () {
+    it('should find beginning of string', function (next) {
         var s = "hello world";
         assert(s.match(/^hello/));
         assert(!s.match(/^Hello/));
+        next();
     });
-    it('should find the path', function () {
+    it('should find the path', function (next) {
         var url = "/M2-2812-0/blablubb";
         var imagePath = url.match(/^\/(user)?\d+\/(.*)/);
         url = "/2812/abunchofstuff/M2-2812-0/blablubb";
         imagePath = url.match(/^\/(user)?\d+\/(.*)/);
         assert.equal(imagePath[2], "abunchofstuff/M2-2812-0/blablubb");
 
-        url = "file:///M2/share/doc/Macaulay2/Macaulay2Doc/html/_ring.html"
+        url = "file:///M2/share/doc/Macaulay2/Macaulay2Doc/html/_ring.html";
         imagePath = url.match(/^file:\/\/\/(.*)/);
         assert.equal(imagePath[1], "M2/share/doc/Macaulay2/Macaulay2Doc/html/_ring.html");
         assert.equal(url.match(/^file:\/\/(.*)/)[1], "/M2/share/doc/Macaulay2/Macaulay2Doc/html/_ring.html");
+        next();
     });
 });
 
-describe('Http server that echos hello world', function () {
+describe('Http server that echos hello world', function (next) {
     var server;
     before(function (done) {
         var http = require('http');
@@ -99,8 +102,8 @@ describe('Http server that echos hello world', function () {
     });
 });
 
-describe('coercion', function () {
-    it("Should use empty String as false-y", function () {
+describe('coercion', function (done) {
+    it("Should use empty String as false-y", function (done) {
         var empty = "";
         assert(empty == false);
 
@@ -122,6 +125,7 @@ describe('coercion', function () {
         else {
             assert(false);
         }
+        done();
     });
 
 });

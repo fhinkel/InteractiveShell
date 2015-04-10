@@ -2,8 +2,8 @@ var assert = require("assert");
 var http = require('http');
 var mathServer = require('../lib/mathServer.js');
 
-describe('Acceptance test', function () {
-    describe('As basic behavior we', function () {
+describe('Acceptance test', function (next) {
+    describe('As basic behavior we', function (next) {
         it('should be able to create server and get title from html body', function (done) {
             var server = mathServer.MathServer({
                 port: 8006,

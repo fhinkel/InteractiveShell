@@ -48,10 +48,12 @@ describe('Start docker container', function (next) {
         process.stdout.on('data', function (data) {
             result += data;
             console.log('***Version: ' + result);
+            process.kill('SIGKILL');
         });
         process.stderr.on('data', function (data) {
             result += data;
             console.log('***Version: ' + result);
+            process.kill('SIGKILL');
         });
         process.on('error', function (error) {
             console.log('***on error');

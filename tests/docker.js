@@ -4,7 +4,7 @@ var spawn = require('child_process').spawn;
 
 describe('Start docker container', function () {
     it('should show M2 version', function (next) {
-        var process = spawn("docker", ["run", "-t", "fhinkel/macaulay2", "M2", "--version"]);
+        var process = spawn("docker", ["run", "-t", "fhinkel/macaulay2", "/bin/bash", "/usr/bin/M2", "--version"]);
         process.stdout.setEncoding("utf8");
         process.stderr.setEncoding("utf8");
         var result= '';
@@ -43,10 +43,14 @@ describe('Start docker container', function () {
         });
     });
     it('should show M2 version without -t', function (next) {
-        var process = spawn("docker", ["run", "fhinkel/macaulay2", "M2", "--version"]);
+        var process = spawn("docker", ["run", "fhinkel/macaulay2", "/bin/bash", "/usr/bin/M2", "--version"]);
         process.stdout.setEncoding("utf8");
         var result= '';
         process.stdout.on('data', function (data) {
+            result += data;
+            console.log('Version: ' + result);
+        });
+        process.stderr.on('data', function (data) {
             result += data;
             console.log('Version: ' + result);
         });

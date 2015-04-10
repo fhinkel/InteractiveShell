@@ -3,12 +3,20 @@ var spawn = require('child_process').spawn;
 
 
 describe('Start docker container', function () {
+    before(function(next) {
+        setTimeout(next, 2000);
+    });
 
     it('should show M2 version', function (next) {
-        var process = spawn("docker", ["run", "fhinkel/macaulay2", "M2", "--version"]);
+        var process = spawn("docker", ["run", "-t", "fhinkel/macaulay2", "M2", "--version"]);
         process.stdout.setEncoding("utf8");
+        process.stderr.setEncoding("utf8");
         var result= '';
         process.stdout.on('data', function (data) {
+            result += data;
+            console.log('Version: ' + result);
+        });
+        process.stderr.on('data', function (data) {
             result += data;
             console.log('Version: ' + result);
         });
@@ -16,7 +24,7 @@ describe('Start docker container', function () {
             console.log('on error');
         });
         process.on('close', function() {
-            console.log('on close in version');
+            console.log('on close in version' + result);
             if (result.match(/1\.\d/)) {
                 assert(true);
                 next()
@@ -35,7 +43,7 @@ describe('Start docker container', function () {
     });
 
     it('should return after echo', function (next) {
-        var process = spawn("docker", ["run", "fhinkel/macaulay2", "/bin/echo", "hello"]);
+        var process = spawn("docker", ["run", "-t", "fhinkel/macaulay2", "/bin/echo", "hello"]);
         process.stdout.setEncoding("utf8");
         var result;
         process.stdout.on('data', function (data) {
@@ -58,9 +66,14 @@ describe('Start docker container', function () {
     });
 
     it('should show M2 preamble', function (next) {
-        var process = spawn("docker", ["run", "fhinkel/macaulay2", "M2", "-e", "exit\ 0;"]);
+        var process = spawn("docker", ["run", "-t", "fhinkel/macaulay2", "M2", "-e", "exit 0;"]);
         process.stderr.setEncoding("utf8");
+        process.stdout.setEncoding("utf8");
         var result = '';
+        process.stdout.on('data', function (data) {
+            result += data;
+            console.log('first try: ' + data);
+        });
         process.stderr.on('data', function (data) {
             result += data;
             console.log('first try: ' + data);

@@ -7,7 +7,7 @@ describe('Start docker container', function (next) {
         var process = spawn("docker", ["run", "-t", "--rm=true", "fhinkel/macaulay2", "/bin/bash", "/usr/bin/M2", "--version"]);
         process.stdout.setEncoding("utf8");
         process.stderr.setEncoding("utf8");
-        var result= '';
+        var result = '';
         process.stdout.on('data', function (data) {
             result += data;
             console.log('Version: ' + result);
@@ -21,6 +21,7 @@ describe('Start docker container', function (next) {
         process.on('error', function (error) {
             console.log('on error');
         });
+        console.log('Is connected: ' + process.connected);
         process.on('exit', function (error) {
             console.log('EXIT for -t version');
             if (result.match(/1\.\d/)) {
@@ -34,7 +35,7 @@ describe('Start docker container', function (next) {
                 assert(false, 'M2 version: ' + result);
             }
         });
-        process.on('close', function() {
+        process.on('close', function () {
             console.log('on close in version' + result);
             next();
         });
@@ -43,7 +44,7 @@ describe('Start docker container', function (next) {
         var process = spawn("docker", ["run", "--rm=true", "fhinkel/macaulay2", "/bin/bash", "/usr/bin/M2", "--version"]);
         process.stdout.setEncoding("utf8");
         process.stderr.setEncoding("utf8");
-        var result= '';
+        var result = '';
         process.stdout.on('data', function (data) {
             result += data;
             console.log('***Version: ' + result);
@@ -55,14 +56,15 @@ describe('Start docker container', function (next) {
         process.on('error', function (error) {
             console.log('***on error');
         });
-        process.on('close', function() {
+        process.on('close', function () {
             console.log('*** in close');
             next()
         });
-        process.on('disconnect', function() {
+        process.on('disconnect', function () {
             console.log('*** in disconnect');
         });
-        process.on('exit', function() {
+        console.log('Is connected: ' + process.connected);
+        process.on('exit', function () {
             console.log('***on exit in version without -t' + result);
             if (result.match(/1\.\d/)) {
                 assert(true);
@@ -90,7 +92,8 @@ describe('Start docker container', function (next) {
         process.on('error', function (error) {
             console.log('on error');
         });
-        process.on('exit', function() {
+        console.log('Is connected: ' + process.connected);
+        process.on('exit', function () {
             console.log('on exit in echo');
             if (result.match(/hello/)) {
                 assert(true);
@@ -104,7 +107,7 @@ describe('Start docker container', function (next) {
     });
 
     it('should show M2 preamble', function (next) {
-        var process = spawn("docker", ["run", "fhinkel/macaulay2", "/bin/bash", "/usr/bin/M2", "-e",  "exit 0;", "\n"]);
+        var process = spawn("docker", ["run", "fhinkel/macaulay2", "/bin/bash", "/usr/bin/M2", "-e", "exit 0;", "\n"]);
         process.stderr.setEncoding("utf8");
         process.stdout.setEncoding("utf8");
         var result = '';
@@ -119,7 +122,8 @@ describe('Start docker container', function (next) {
         process.on('error', function (error) {
             console.log('on error');
         });
-        process.on('exit', function() {
+        console.log('Is connected: ' + process.connected);
+        process.on('exit', function () {
             console.log('In exit in preamble');
             if (result.match(/Macaulay2, version 1\.\d/)) {
                 assert(true);
@@ -132,7 +136,7 @@ describe('Start docker container', function (next) {
                 assert(false, 'M2 preamble did not match: ' + result);
             }
         });
-        process.on('close', function() {
+        process.on('close', function () {
             console.log('Close in preamble');
             if (result.match(/Macaulay2, version 1\.\d/)) {
                 assert(true);
@@ -160,11 +164,17 @@ describe('Start docker container', function (next) {
         process.stderr.on('data', function (data) {
             result += data;
             console.log('first try err: ' + data);
+            require('child_process').exec('docker ps -a', function (error, stdout, stderr) {
+                console.log("error:***" + error);
+                console.log("stdout: ***" + stdout);
+                console.log("stderr: ***" + stderr);
+            });
         });
         process.on('error', function (error) {
             console.log('on error');
         });
-        process.on('exit', function() {
+        console.log('Is connected: ' + process.connected);
+        process.on('exit', function () {
             console.log('In exit in preamble');
             if (result.match(/Macaulay2, version 1\.\d/)) {
                 assert(true);
@@ -180,7 +190,7 @@ describe('Start docker container', function (next) {
         process.on('disconnected', function (error) {
             console.log('DISCONNECTED for preamble');
         });
-        process.on('close', function() {
+        process.on('close', function () {
             console.log('Close in preamble');
             if (result.match(/Macaulay2, version 1\.\d/)) {
                 assert(true);

@@ -135,7 +135,7 @@ var shellObject = function(shellArea, historyArea) {
         console.log("The non-returned after is: " + nonReturnedInput);
         mathProgramOutput += msg;
         shell.val(mathProgramOutput + nonReturnedInput);
-        
+        trym2.scrollDown(shell);
     });
 
     shell.on("reset", function(e){

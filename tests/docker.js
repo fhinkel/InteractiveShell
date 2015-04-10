@@ -85,6 +85,9 @@ describe('Start docker container', function () {
         process.stdout.on('data', function (data) {
             result += data;
         });
+        process.on('disconnected', function (error) {
+            console.log('DISCONNECTED for preamble');
+        });
         process.on('exit', function (error) {
             console.log('EXIT for preamble');
         });

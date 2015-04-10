@@ -107,6 +107,7 @@ describe('Start docker container', function () {
             process.stdin.end();
             process.stdout.end();
             process.stderr.end();
+            process.kill();
         });
         process.stderr.on('data', function (data) {
             result += data;

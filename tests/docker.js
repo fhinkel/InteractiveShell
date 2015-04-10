@@ -4,7 +4,7 @@ var spawn = require('child_process').spawn;
 
 describe('Start docker container', function () {
     it('should show M2 version', function (next) {
-        var process = spawn("docker", ["run", "-t", "fhinkel/macaulay2", "/bin/bash", "/usr/bin/M2", "--version"]);
+        var process = spawn("docker", ["run", "-t", "--rm=true", "fhinkel/macaulay2", "/bin/bash", "/usr/bin/M2", "--version"]);
         process.stdout.setEncoding("utf8");
         process.stderr.setEncoding("utf8");
         var result= '';
@@ -43,22 +43,29 @@ describe('Start docker container', function () {
         });
     });
     it('should show M2 version without -t', function (next) {
-        var process = spawn("docker", ["run", "fhinkel/macaulay2", "/bin/bash", "/usr/bin/M2", "--version"]);
+        var process = spawn("docker", ["run", "--rm=true", "fhinkel/macaulay2", "/bin/bash", "/usr/bin/M2", "--version"]);
         process.stdout.setEncoding("utf8");
+        process.stderr.setEncoding("utf8");
         var result= '';
         process.stdout.on('data', function (data) {
             result += data;
-            console.log('Version: ' + result);
+            console.log('***Version: ' + result);
         });
         process.stderr.on('data', function (data) {
             result += data;
-            console.log('Version: ' + result);
+            console.log('***Version: ' + result);
         });
         process.on('error', function (error) {
-            console.log('on error');
+            console.log('***on error');
+        });
+        process.on('close', function() {
+            console.log('*** in close');
+        });
+        process.on('disconnect', function() {
+            console.log('*** in disconnect');
         });
         process.on('exit', function() {
-            console.log('on exit in version without -t' + result);
+            console.log('***on exit in version without -t' + result);
             if (result.match(/1\.\d/)) {
                 assert(true);
                 next()
@@ -70,7 +77,7 @@ describe('Start docker container', function () {
                 next();
             }
             else {
-                assert(false, 'M2 version: ' + result);
+                assert(false, '***M2 version: ' + result);
                 next();
             }
         });

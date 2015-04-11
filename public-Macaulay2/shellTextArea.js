@@ -74,12 +74,6 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
         }
     }
 
-    shell.keypress(function(e){
-        if(e.keyCode == keys.tab){
-            packageAndSendMessage("\t", true);
-            e.preventDefault();
-        }
-    });
 
     var upDownArrowKeyHandling = function(e){
         if ((e.keyCode == keys.arrowDown) && (cmdHistory.index < cmdHistory.length)) { // DOWN
@@ -102,6 +96,7 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
 
     // If something is entered, change to end of textarea, if at wrong position.
     shell.keydown(function(e) {
+        // console.log("Got keydown: " + e.keyCode);
         // The keys 37, 38, 39 and 40 are the arrow keys.
         if (e.keyCode == keys.enter){
             setCaretPosition(shell, shell.val().length);
@@ -134,10 +129,11 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
                 e.preventDefault();
             }
         }
-        //if (e.keyCode == keys.tab) {
-        //    e.preventDefault();
-            // Do something for tab-completion.
-        //}
+        // Forward key for tab completion, but do not track it.
+        if(e.keyCode == keys.tab){
+            packageAndSendMessage("\t", true);
+            e.preventDefault();
+        }
     });
 
     shell.on("onmessage", function(e, msgDirty) {

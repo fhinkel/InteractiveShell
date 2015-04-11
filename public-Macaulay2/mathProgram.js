@@ -538,7 +538,7 @@ $(document).ready(function() {
     }
 
     $.getScript("shellTextArea.js", function(){
-        alert("Script loaded and executed.");
+        //alert("Script loaded and executed.");
         shellObject($("#M2Out"), $("#M2In"), shellFunctions);
     });
 

@@ -145,7 +145,8 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
         if(msgDirty == unicodeBell){
             return;
         }
-        var msg = msgDirty.replace(/\r\n/g,"\n");
+        var msg = msgDirty.replace(/\u0007/,"");
+        msg = msg.replace(/\r\n/g,"\n");
         msg = msg.replace(/\r/g,"\n");
         var completeText = shell.val();
         mathProgramOutput += msg;

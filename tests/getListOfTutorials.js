@@ -1,12 +1,13 @@
 var assert = require("assert");
 var http = require('http');
-var mathServer = require('../lib/mathServer.js');
 var sinon = require('sinon');
+var t = require('../lib/getListOfTutorials.js');
 
-describe('MathServer Module test', function () {
-    describe('When we call getTutorialList', function (next) {
+describe('GetListOfTutorials Module test', function () {
+    describe('When we call getTutorialList', function (done) {
+        var fs = require('fs');
         it('should get the list', function (done) {
-            var server = mathServer.MathServer();
+            var tutorials = t.Tutorials("public-Macaulay2/", fs);
             var response = {
                 writeHead: function() {},
                 end: function() {
@@ -15,11 +16,10 @@ describe('MathServer Module test', function () {
                 }
             };
             var spy = sinon.spy(response, "end");
-            var fs = require('fs');
-            server.getListOfTutorials(fs)(null, response);
+            tutorials.getList(null, response);
         });
         it('should get the list from mocked file system with shared tutorials', function (done) {
-            var server = mathServer.MathServer();
+            var tutorials = t.Tutorials("public-Macaulay2/", fs);
             var response = {
                 writeHead: function() {},
                 end: function() {
@@ -32,18 +32,17 @@ describe('MathServer Module test', function () {
                     done();
                 }
             };
-            var fs = require('fs');
             var readdirStub = sinon.stub(fs, 'readdir');
             readdirStub.yields(null, ['mock.html', 'nothtml.foo']);
             var existsStub= sinon.stub(fs, 'exists');
             existsStub.yields(true);
 
             var spy = sinon.spy(response, "end");
-            server.getListOfTutorials(fs)(null, response);
+            tutorials.getList(null, response);
 
         });
         it('should get the list from mocked file system without shared tutorials', function (done) {
-            var server = mathServer.MathServer();
+            var tutorials = t.Tutorials("public-Macaulay2/", fs);
             var response = {
                 writeHead: function() {},
                 end: function() {
@@ -54,34 +53,32 @@ describe('MathServer Module test', function () {
                     done();
                 }
             };
-            var fs = require('fs');
             var readdirStub = sinon.stub(fs, 'readdir');
             readdirStub.yields(null, ['mock.html', 'nothtml.foo']);
             var existsStub= sinon.stub(fs, 'exists');
-            existsStub.yields(false);
+            existsStub.onFirstCall().yields(true);
+            existsStub.onSecondCall().yields(false);
 
             var spy = sinon.spy(response, "end");
-            server.getListOfTutorials(fs)(null, response);
+            tutorials.getList(null, response);
         });
     });
 
     describe('When calling moveWelcomeTutorialToBeginning', function() {
-        it('shoud move the tutorial to the beginning', function() {
-            var server = mathServer.MathServer();
+        var fs = {};
+        it('should move the tutorial to the beginning', function() {
             var tutorials = ['a', 'b', 'c'];
-            var sorted = server.sortTutorials(tutorials, 'b');
+            var sorted = t.Tutorials("public-Macaulay2/", fs).sortTutorials(tutorials, 'b');
             assert.equal(JSON.stringify(sorted), JSON.stringify(['b', 'a', 'c']));
         });
-        it('shoud move the tutorial to the beginning and keep the others', function() {
-            var server = mathServer.MathServer();
+        it('should move the tutorial to the beginning and keep the others', function() {
             var tutorials = ['c', 'b', 'a'];
-            var sorted = server.sortTutorials(tutorials, 'b');
+            var sorted = t.Tutorials("public-Macaulay2/", fs).sortTutorials(tutorials, 'b');
             assert.equal(JSON.stringify(sorted), JSON.stringify(['b', 'c', 'a']));
         });
-        it('shoud move do nothing it index not found', function() {
-            var server = mathServer.MathServer();
+        it('should move do nothing it index not found', function() {
             var tutorials = ['c', 'b', 'a'];
-            var sorted = server.sortTutorials(tutorials, 'x');
+            var sorted = t.Tutorials("public-Macaulay2/", fs).sortTutorials(tutorials, 'x');
             assert.equal(JSON.stringify(sorted), JSON.stringify(['c', 'b', 'a']));
         });
     });

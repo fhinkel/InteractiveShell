@@ -2,7 +2,7 @@ var assert = require("assert");
 var http = require('http');
 
 describe('Array', function (next) {
-    describe('#indexOf()', function () {
+    describe('The indexOf function', function () {
         it('should return -1 when the value is not present', function () {
             assert.equal(-1, [1, 2, 3].indexOf(5));
             assert.equal(-1, [1, 2, 3].indexOf(0));

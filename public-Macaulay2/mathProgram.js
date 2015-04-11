@@ -304,57 +304,6 @@ trym2.inspect = function(obj) {
     }
 };
 
-trym2.scrollDown = function(area) {
-    area.scrollTop(area[0].scrollHeight);
-    return false;
-    // Return false to cancel the default link action
-};
-
-/* get selected text, or current line, in the textarea #M2In */
-trym2.getSelected = function(inputField) {
-    var str = $(inputField).val(),
-        start = $(inputField)[0].selectionStart,
-        end = $(inputField)[0].selectionEnd,
-        endPos;
-    if (start === end) {
-        // grab the current line
-        if (end != 0) {
-            start = 1 + str.lastIndexOf("\n", end - 1);
-        } else {
-            start = 0;
-        }
-        endPos = str.indexOf("\n", start);
-        if (endPos !== -1) {
-            end = endPos;
-        } else {
-            str = $(inputField).val() + "\n";
-            $(inputField).val(str);
-            end = str.length - 1; // position of last \n 
-        }
-        // move cursor to beginning of line below 
-        this.setCaretPosition($(inputField), end + 1);
-    }
-    return str.slice(start, end) + "\n";
-};
-
-
-trym2.setCaretPosition = function(inputField, caretPos) {
-    if (inputField != null) {
-        if (inputField[0].createTextRange) {
-            var range = inputField[0].createTextRange();
-            range.move('character', caretPos);
-            range.select();
-        } else {
-            if (inputField[0].selectionStart || $(inputField)[0].selectionStart ===
-                0) {
-                inputField[0].focus();
-                inputField[0].setSelectionRange(caretPos, caretPos);
-            } else {
-                inputField[0].focus();
-            }
-        }
-    }
-};
 
 
 trym2.postMessage = function(msg, notrack) {
@@ -466,6 +415,8 @@ trym2.removeTutorial = function(title, div, button){
    }
 };
 
+
+
 trym2.importTutorials = function() {
     console.log("Import tutorials.");
 
@@ -489,6 +440,10 @@ trym2.importTutorials = function() {
 };
 
 $(document).ready(function() {
+
+    trym2.scrollDown = scrollDown;
+    trym2.getSelected = getSelected;
+    trym2.setCaretPosition = setCaretPosition;
 
     trym2.socket = io();
 
@@ -537,10 +492,10 @@ $(document).ready(function() {
         interrupt: function(){trym2.postMessage(ctrlc, true)}
     }
 
-    $.getScript("shellTextArea.js", function(){
+    //$.getScript("shellTextArea.js", function(){
         //alert("Script loaded and executed.");
         shellObject($("#M2Out"), $("#M2In"), shellFunctions);
-    });
+    //});
 
     $("#navigation").children("input").attr("name", "navbutton");
     $("#navigation").buttonset();

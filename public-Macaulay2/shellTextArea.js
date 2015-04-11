@@ -84,6 +84,11 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
 
 
     var upDownArrowKeyHandling = function(e){
+        e.preventDefault();
+        if (cmdHistory.length == 0){
+            // Maybe we did nothing so far.
+            return;
+        }
         if ((e.keyCode == keys.arrowDown) && (cmdHistory.index < cmdHistory.length)) { // DOWN
             cmdHistory.index++;
         }
@@ -99,7 +104,6 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
             shell.val(shell.val().substring(0, mathProgramOutput.length) + cmdHistory[cmdHistory.index]);
         }
         scrollDown(shell);
-        e.preventDefault();
     };
 
     // If something is entered, change to end of textarea, if at wrong position.

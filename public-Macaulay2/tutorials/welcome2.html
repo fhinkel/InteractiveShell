@@ -10,23 +10,29 @@
 
   <p>In this tutorial, we will show how to use this web site effectively.</p>
 
-  <p>Every tutorial usually consists of a number of pages, with highlighted Macaulay2
-  code.</p>
-  
-  <p>If you click or tap on the highlighted Macaulay2 code, the code will
-  be sent to the server, and evaluated.  The result will be displayed in the right hand window.
-  For example</p>
+  <p>If you click on the yellow highlighted Macaulay2 code, the results of running
+    those commands will be displayed in the right hand window. You may also
+    type directly into the right hand window.</p>
+
+  <p>
+    For example, click on this yellow code to compute the factors of the
+    given polynomial.
+  </p>
 
   <code>R = QQ[x,y,z]</code><br>
   <code>F = (x-1)^3 - (y-1)^3</code><br>
   <code>factor F</code><br>
 
-  <p>If you are already familiar with Macaulay2 and know some commands, you 
-    can type them directly in the right hand window. </p>
-    
-    
-  <p>You are on the first page of this tutorial.  At the top of the window, you see how many pages are
-  in this tutorial.  After you are finished with a page, click or tap on the right arrow key.  You can also go back to previous pages of the tutorial by clicking on the left arrow button.</p>
+    <p>
+  This code is evaluated by Macaulay2 on the server.  This means that
+    you don't need to have Macaulay2 or any of its included packages installed
+    on your computer.</p>
+
+  <p>You are on the first page of this tutorial.  At the top of the
+  window, you see how many pages are in this tutorial.  After you are
+  finished with a page, click or tap on the right arrow key.  You can
+  also go back to previous pages of the tutorial by clicking on the
+  left arrow button.</p>
 
   <p>Right now, please continue to the next page of the tutorial.</p>
 </div>
@@ -56,13 +62,17 @@
 </div>
 
 <div>
-    <h4>Using the <b>Input</b> Window</h4>
+    <h4>Using the terminal and the Input window</h4>
 
+    <p> You can type in Macaulay2 commands directly into the right hand side terminal.
+    The usual shell like behavior works, such as
+    up and down arrows and tab completion.</p>
 
+    <h4>Using the Input window on the left</h4>
+    
   <p>When you write M2 functions or long loops, it is often more convenient to write your code
     in a separate window and execute the code after you wrote it. This allows you to easily modify previous code and 
-    move the cursor around freely. When installing Macaulay2, you can best achieve this behavior by using emacs, see</p>
-    <code>viewHelp setupEmacs</code><br>
+    move the cursor around freely.</p> 
     
     <p>Clicking or tapping the <b>Input</b> button at the top of the page, navigates you to the Input Window.
   This is where you may type in Macaulay2 code and have it evaluated.</p>
@@ -77,15 +87,11 @@
   lines already there.  When you are ready to come back to the tutorial, click or tap on the
   <b>Tutorial</b> button at the top of the page.  You will end up right here!
 
-   <p><b>To save your work:</b>
-  Click on the <b>Save</b> button at the top right of the window.  A dialog will appear
-  where you can save the text in the <b>Input</b> window, or the text in the Macaulay2 output (or both).
-  Alternatively, you can just select the text you wish, and copy it.
-  </p>
   
 </div>
 
 <div>
+
   <h4>Macaulay2 sessions and the Reset button</h4>
   
   <p> When your browser starts, it starts a Macaulay2 process on our server.
@@ -111,6 +117,16 @@
   Sometimes the server must be restarted for maintenance or other reasons, and at those times, all sessions
   are terminated.
   </p>
+
+    <h4>Downloading your work</h4>
+  
+   <p>
+  Click on the <b>Save</b> button at the top right of the window.  A dialog will appear
+  where you can save the text in the <b>Input</b> window, or the text in the Macaulay2
+  terminal on the right-hand side.
+  Alternatively, you can just select the text you wish, and copy it.
+  </p>
+
 </div>
 
 <div>
@@ -171,12 +187,14 @@
   </p>
   
 
-  <h4>Helping with this project</h4>
+  <h4>Contributing</h4>
 
   <p>
-  If you would like to help develop this site, or if you have tutorials that
-  you would like to upload please contact us.  The code for this server is at
-  <a href="http://github.com/fhinkel/tryM2" target="_blank">tryM2 on github</a>.
+  This is an open source project, hosted on <a href="http://github.com/fhinkel/InteractiveShell" target="_blank">GitHub</a>.
+  </p>
+  <p>
+    If you have tutorials that you would like to contribute, please
+    <a href='mailto:trym2@googlegroups.com'>contact us</a>.
   </p>
 
 </div>

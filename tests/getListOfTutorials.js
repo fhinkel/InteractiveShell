@@ -1,17 +1,24 @@
-var assert = require("assert");
-var http = require('http');
 var sinon = require('sinon');
 var t = require('../lib/getListOfTutorials.js');
+var assert = require('chai').assert;
 
-describe('GetListOfTutorials Module test', function () {
+describe.only('GetListOfTutorials Module test', function () {
     describe('When we call getTutorialList', function (done) {
+        before(function() {
+
+        });
+        after(function() {
+
+
+        });
         var fs = require('fs');
         it('should get the list', function (done) {
             var tutorials = t.Tutorials("public-Macaulay2/", fs);
             var response = {
                 writeHead: function() {},
                 end: function() {
-                    assert(spy.withArgs(sinon.match(/tutorials\/welcome2.html/)).calledOnce);
+                    assert(spy.calledOnce);
+                    assert.include(spy.getCall(0).args[0], "welcome2.html");
                     done();
                 }
             };
@@ -26,7 +33,8 @@ describe('GetListOfTutorials Module test', function () {
                     var expected = JSON.stringify(["tutorials/mock.html",
                     "shared-tutorials/mock.html"
                     ]);
-                    assert(spy.withArgs(expected).calledOnce);
+                    assert.equal(spy.args, expected);
+                    assert(spy.calledOnce);
                     readdirStub.restore();
                     existsStub.restore();
                     done();
@@ -47,7 +55,8 @@ describe('GetListOfTutorials Module test', function () {
                 writeHead: function() {},
                 end: function() {
                     var expected = JSON.stringify(["tutorials/mock.html"]);
-                    assert(spy.withArgs(expected).calledOnce);
+                    assert.equal(spy.args, expected);
+                    assert(spy.calledOnce);
                     readdirStub.restore();
                     existsStub.restore();
                     done();
@@ -69,26 +78,30 @@ describe('GetListOfTutorials Module test', function () {
         it('should move the tutorial to the beginning', function() {
             var tutorials = ['a', 'b', 'c'];
             var sorted = t.Tutorials("public-Macaulay2/", fs).sortTutorials(tutorials, 'b');
-            assert.equal(JSON.stringify(sorted), JSON.stringify(['b', 'a', 'c']));
+            assert.deepEqual(sorted, ['b', 'a', 'c']);
         });
         it('should move the tutorial to the beginning and keep the others', function() {
             var tutorials = ['c', 'b', 'a'];
             var sorted = t.Tutorials("public-Macaulay2/", fs).sortTutorials(tutorials, 'b');
-            assert.equal(JSON.stringify(sorted), JSON.stringify(['b', 'c', 'a']));
+            assert.deepEqual(sorted, ['b', 'c', 'a']);
         });
         it('should move do nothing it index not found', function() {
             var tutorials = ['c', 'b', 'a'];
             var sorted = t.Tutorials("public-Macaulay2/", fs).sortTutorials(tutorials, 'x');
-            assert.equal(JSON.stringify(sorted), JSON.stringify(['c', 'b', 'a']));
+            assert.deepEqual(sorted, ['c', 'b', 'a']);
         });
     });
 
     describe('Stringify', function() {
-        it('should stringify an array', function() {
+        it('should stringify an array to a string', function() {
             var tutorials = ["a", "b"];
             var message = JSON.stringify(tutorials);
-            console.log(message);
             assert.equal(message, "[\"a\",\"b\"]");
-        })
+        });
+        it('should compare arrays', function() {
+            var tutorials = ["a", "b"];
+            assert.deepEqual(tutorials, ["a","b"]);
+            assert.notDeepEqual(tutorials, ["b","a"]);
+        });
     });
 });

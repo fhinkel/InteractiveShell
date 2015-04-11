@@ -25,10 +25,10 @@ RUN chmod 755 /home/m2user/.ssh
 RUN chmod 644 /home/m2user/.ssh/authorized_keys
 
 # Bertini
-RUN sudo apt-get install -y gcc libmpfrc++-dev make libtool
-RUN wget https://bertini.nd.edu/BertiniSource_v1.5.tar.gz
-RUN tar xzf BertiniSource_v1.5.tar.gz
-RUN cd BertiniSource_v1.5; ./configure; /usr/bin/make; sudo /usr/bin/make install
+# RUN sudo apt-get install -y gcc libmpfrc++-dev make libtool
+# RUN wget https://bertini.nd.edu/BertiniSource_v1.5.tar.gz
+# RUN tar xzf BertiniSource_v1.5.tar.gz
+# RUN cd BertiniSource_v1.5; ./configure; /usr/bin/make; sudo /usr/bin/make install
 
 RUN mkdir /var/run/sshd
 # RUN echo 'root:screencast' | chpasswd
@@ -42,6 +42,7 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 
 # copy open
 COPY open /usr/bin/open
+RUN ln -s /usr/bin/open /usr/bin/display
 
 
 EXPOSE 22

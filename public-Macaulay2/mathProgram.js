@@ -9,6 +9,8 @@ var trym2 = {
     socket: null
 };
 
+var ctrlc = "\x03";
+
 
 
 
@@ -355,18 +357,19 @@ trym2.setCaretPosition = function(inputField, caretPos) {
 };
 
 
-trym2.postMessage = function(msg) {
-    return function() {
-        trym2.socket.emit('input', msg);
-        $("#M2Out").trigger("track", msg);
-        return true;
+trym2.postMessage = function(msg, notrack) {
+    trym2.socket.emit('input', msg);
+    if(!notrack){
+        $("#M2Out").trigger("track");
+        console.log("Tracking.");
     }
+    return true;
 };
 
 trym2.sendCallback = function(inputField) {
     return function() {
         var str = trym2.getSelected(inputField);
-        trym2.postMessage(str)();
+        trym2.postMessage(str);
         return false;
     };
 };
@@ -376,7 +379,7 @@ trym2.sendOnEnterCallback = function(inputfield) {
         if (e.which === 13 && e.shiftKey) {
             e.preventDefault();
             // do not make a line break or remove selected text when sending
-            trym2.postMessage(trym2.getSelected(inputfield))();
+            trym2.postMessage(trym2.getSelected(inputfield));
         }
     };
 };
@@ -531,7 +534,7 @@ $(document).ready(function() {
         setCaretPosition: trym2.setCaretPosition,
         scrollDown: trym2.scrollDown,
         postMessage: trym2.postMessage,
-        interrupt: function(){trym2.socket.emit('interrupt')}
+        interrupt: function(){trym2.postMessage(ctrlc, true)}
     }
 
     $.getScript("shellTextArea.js", function(){
@@ -593,7 +596,7 @@ $(document).ready(function() {
     $("#sendBtn").click(trym2.sendCallback('#M2In'));
     $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
     $("#resetBtn").click(function(){$("#M2Out").trigger("reset"); trym2.socket.emit('reset')});
-    $("#interruptBtn").click(function(){trym2.socket.emit('interrupt')});
+    $("#interruptBtn").click(function(){trym2.postMessage(ctrlc, true)});
     $("#inputBtn").click(function() {
         trym2.navBar.activate("input");
     });
@@ -643,7 +646,7 @@ $(document).ready(function() {
         code = code + "\n";
         $("#M2In").val($("#M2In").val() + code);
         trym2.scrollDown($("#M2In"));
-        trym2.postMessage(code)();
+        trym2.postMessage(code);
     });
 
     trym2.importTutorials();

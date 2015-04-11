@@ -20,43 +20,63 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
     var postMessage = shellFunctions['postMessage'];
     var scrollDown = shellFunctions['scrollDown'];
     var interrupt = shellFunctions['interrupt'];
+    var tabPress = shellFunctions['tabPress'];
     var mathProgramOutput = "";
     var shell = shellArea;
     var history = historyArea;
     var cmdHistory = []; // History of M2 commands for shell-like arrow navigation
     cmdHistory.index = 0;
-    shell.on("track", function(e, msg) { // add command to history
+    
+    shell.on("track", function(e) { // add command to history
+        msg = getCurrentCommand();
         if (typeof msg != 'undefined') {
-            input = msg.split("\n");
-            for (var line in input) {
-                if (input[line].length > 0) {
-                    // console.log("Line: " + input[line]);
-                    cmdHistory.index = cmdHistory.push(input[line]);
-                }
+            if (msg.length > 0) {
+                // console.log("Line: " + input[line]);
+                cmdHistory.index = cmdHistory.push(msg);
             }
         }
-
     });
+
+    var getCurrentCommand = function(){
+        var completeText = shell.val().split("\n");
+        console.log(completeText);
+        var lastLine = completeText[completeText.length-2];
+        lastLine = lastLine.replace(/^i\d+\s*:/,"");
+        lastLine = lastLine.replace(/^\s*/,"");
+        console.log("Last line is: " + lastLine);
+        return lastLine;
+    };
 
     // On pressing return send last part of M2Out to M2 and remove it.
     shell.keyup(function(e) {
         var l, msg, input;
         if (e.keyCode == keys.enter) { // Return
-            setCaretPosition(shell, shell.val().length);
-            if (shell.val().length > mathProgramOutput.length) {
-                l = shell.val().length;
-                msg = shell.val().substring(mathProgramOutput.length, l);
-                // console.log("Sending message: " + msg);
-                if(history != undefined){
-                   history.val(history.val() + msg);
-                   scrollDown(history);
-                }
-                postMessage(msg)();
-            } else {
-                console.log("There must be an error.");
-                // We don't want empty lines send to M2 at pressing return twice.
-                //e.preventDefault();
+            packageAndSendMessage('');
+        }
+    });
+
+    var packageAndSendMessage = function(tail, notrack){
+        setCaretPosition(shell, shell.val().length);
+        if (shell.val().length > mathProgramOutput.length) {
+            l = shell.val().length;
+            msg = shell.val().substring(mathProgramOutput.length, l) + tail;
+            // console.log("Sending message: " + msg);
+            if(history != undefined){
+               history.val(history.val() + msg);
+               scrollDown(history);
             }
+            postMessage(msg, notrack);
+        } else {
+            console.log("There must be an error.");
+            // We don't want empty lines send to M2 at pressing return twice.
+            //e.preventDefault();
+        }
+    }
+
+    shell.keypress(function(e){
+        if(e.keyCode == keys.tab){
+            packageAndSendMessage("\t", true);
+            e.preventDefault();
         }
     });
 
@@ -113,10 +133,10 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
                 e.preventDefault();
             }
         }
-        if (e.keyCode == keys.tab) {
-            e.preventDefault();
+        //if (e.keyCode == keys.tab) {
+        //    e.preventDefault();
             // Do something for tab-completion.
-        }
+        //}
     });
 
     shell.on("onmessage", function(e, msgDirty) {

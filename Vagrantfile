@@ -73,6 +73,7 @@ Vagrant.configure(2) do |config|
     sudo ln -s /usr/bin/nodejs /usr/bin/node
     sudo chown -R vagrant:vagrant /home/vagrant/InteractiveShell
     cd InteractiveShell
+    mkdir public/images
     npm install
     git pull --no-verify
     rm id_rsa*

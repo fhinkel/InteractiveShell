@@ -1,4 +1,8 @@
 
+1.1.0
+* docker containers instead of schroots
+* Vagrantfile for users who want to host interactive shell
+
 * public-common and public-specific
 * upload tutorials
 * linux containers instead of schroots

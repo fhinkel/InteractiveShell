@@ -15,7 +15,8 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
         tab: 9,
         enter: 13
     }
-
+    
+    var unicodeBell = '\u0007';
     var setCaretPosition = shellFunctions['setCaretPosition'];
     var postMessage = shellFunctions['postMessage'];
     var scrollDown = shellFunctions['scrollDown'];
@@ -57,7 +58,7 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
 
     var packageAndSendMessage = function(tail, notrack){
         setCaretPosition(shell, shell.val().length);
-        if (shell.val().length > mathProgramOutput.length) {
+        if (shell.val().length >= mathProgramOutput.length) {
             l = shell.val().length;
             msg = shell.val().substring(mathProgramOutput.length, l) + tail;
             // console.log("Sending message: " + msg);
@@ -140,6 +141,10 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
     });
 
     shell.on("onmessage", function(e, msgDirty) {
+        console.log("Dirty JSON message: " + JSON.stringify(msgDirty));
+        if(msgDirty == unicodeBell){
+            return;
+        }
         var msg = msgDirty.replace(/\r\n/g,"\n");
         msg = msg.replace(/\r/g,"\n");
         var completeText = shell.val();

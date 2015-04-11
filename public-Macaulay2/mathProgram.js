@@ -360,7 +360,7 @@ trym2.setCaretPosition = function(inputField, caretPos) {
 trym2.postMessage = function(msg, notrack) {
     trym2.socket.emit('input', msg);
     if(!notrack){
-        $("#M2Out").trigger("track");
+        $("#M2Out").trigger("track", msg);
         console.log("Tracking.");
     }
     return true;

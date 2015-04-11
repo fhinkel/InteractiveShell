@@ -28,15 +28,20 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
     var cmdHistory = []; // History of M2 commands for shell-like arrow navigation
     cmdHistory.index = 0;
     
-    shell.on("track", function(e) { // add command to history
-        msg = getCurrentCommand();
+
+    shell.on("track", function(e, msg) { // add command to history
+        //console.log("Tracking message: " + msg);
         if (typeof msg != 'undefined') {
-            if (msg.length > 0) {
-                // console.log("Line: " + input[line]);
-                cmdHistory.index = cmdHistory.push(msg);
+            input = msg.split("\n");
+            for (var line in input) {
+                if (input[line].length > 0) {
+                    // console.log("Line: " + input[line]);
+                    cmdHistory.index = cmdHistory.push(input[line]);
+                }
             }
         }
     });
+
 
     var getCurrentCommand = function(){
         var completeText = shell.val().split("\n");
@@ -52,7 +57,10 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
     shell.keyup(function(e) {
         var l, msg, input;
         if (e.keyCode == keys.enter) { // Return
-            packageAndSendMessage('');
+            // We trigger the track manually, since we might have used tab.
+            shell.trigger('track',getCurrentCommand());
+            // Disable traking of posted message.
+            packageAndSendMessage('', true);
         }
     });
 

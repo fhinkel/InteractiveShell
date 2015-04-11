@@ -267,34 +267,8 @@ trym2.switchLesson = function(incr) {
     trym2.navBar.activate("tutorial");
 };
 
-trym2.makeTutorialsList = function(i, tutorialNames, callback) {
-    if (i < tutorialNames.length) {
-        $.get(tutorialNames[i], function(resultHtml) {
-            trym2.tutorials[i] = trym2.populateTutorialElement(resultHtml);
-            console.log(trym2.tutorials[i].title);
-            trym2.makeTutorialsList(i + 1, tutorialNames, callback);
-        });
-    } else {
-        callback();
-    }
-};
 
-trym2.populateTutorialElement = function(theHtml) {
-    // populate a Tutorial element, and return it
-    var theLessons = [];
-    var tutorial = $("<div>").html(theHtml);
-    $("div", tutorial).each(function() {
-        theLessons.push({
-            title: $("h4:first", $(this)).text(),
-            html: $(this)
-        });
-    });
-    return { // class Tutorial
-        title: $("<h3>").append($("title", tutorial).text()),
-        current: 0,
-        lessons: theLessons
-    };
-};
+
 
 trym2.inspect = function(obj) {
     for (var prop in obj) {
@@ -339,16 +313,6 @@ trym2.doUptutorialClick = function() {
     $("#uptutorial").click();
 };
 
-trym2.downloadTextArea = function(textarea){
-    var msg = textarea.val();
-    console.log("Download textarea: " + msg);
-    var msgAsHref = 'data:application/octet-stream,' + encodeURIComponent(msg);
-    var tmpAnchor = $("<a>");
-    tmpAnchor.attr('href', msgAsHref);
-    tmpAnchor.attr('download', textarea.attr("id") + ".txt");
-    tmpAnchor.text(textarea.attr("id"));
-    return tmpAnchor;
-};
 
 trym2.saveInteractions = function() {
     var input = $("#M2In");
@@ -398,52 +362,21 @@ trym2.uploadTutorial = function() {
     return false;
 };
 
-trym2.insertDeleteButtonAtLastTutorial = function() {
-   var lastTitle = $("#loadTutorialMenu").prev().prev();
-   var lastDiv = $("#loadTutorialMenu").prev();
-   var deleteButton = $("<span>");
-   deleteButton.addClass("close-icon ui-icon ui-icon-close");
-   lastTitle.prepend(deleteButton);
-   deleteButton.click(trym2.removeTutorial(lastTitle, lastDiv, deleteButton));
-};
 
-trym2.removeTutorial = function(title, div, button){
-   return function(){
-      button.remove();
-      div.remove();
-      title.remove();
-   }
-};
+var tf = tutorialFunctions($("#loadTutorialMenu"),trym2.makeAccordion, trym2.tutorials);
+trym2.insertDeleteButtonAtLastTutorial = tf.insertDeleteButtonAtLastTutorial;
+trym2.importTutorials = tf.importTutorials;
+trym2.populateTutorialElement = tf.populateTutorialElement;
 
 
 
-trym2.importTutorials = function() {
-    console.log("Import tutorials.");
-
-    $.ajax({
-          url: '/getListOfTutorials',
-          type: 'GET',
-          statusCode: {
-              500: function(error) {
-                  console.log("There was an error obtaining the list of tutorial files: " + error);
-              }
-          },
-          success: function(tutorialData) {
-              console.log("Obtaining list of tutorials successful: " + tutorialData);
-              var tutorialPaths =  JSON.parse(tutorialData);
-              trym2.makeTutorialsList(0, tutorialPaths, function() {
-                  trym2.makeAccordion(trym2.tutorials);
-              });
-          }
-      });
-      return false;
-};
 
 $(document).ready(function() {
 
     trym2.scrollDown = scrollDown;
     trym2.getSelected = getSelected;
     trym2.setCaretPosition = setCaretPosition;
+    trym2.downloadTextArea = downloadTextArea;
 
     trym2.socket = io();
 

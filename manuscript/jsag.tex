@@ -253,7 +253,7 @@ The following steps to create a tutorial are also documented in the package {\tt
 In the case that you do not have access to \M2 on your local machine, you can upload the {\it SimpleDoc} file to the server, convert it there and then download it using the \M2 {\tt open} function.
 
 
-\section{Internal structure, secure chroots}
+\section{Internal structure}
 
 The \tryM2 web server runs on a virtual machine on a linux computer on the web.
 The server is implemented using {\tt node.js}, and the client
@@ -278,43 +278,20 @@ several questions:
 \item How do we clean up after a user has left?
 \end{enumerate}
 
-The answer to the second question was to create and delete users on
-the fly. Since this implies that the server must be run as root, we
-decided to run it inside a virtual machine in order not to compromise
-the security of the host system.
+Thus \M2 needs to be started in a separate container environment for every user, e.g. using \cite{docker}:
+\begin{verbatim}
+docker run -c 1 -m 128m -t fhinkel/macaulay2 M2
+\end{verbatim}
+will start \M2 in a docker container, restricted to one core and 128m of memory.
 
-Since any system command can be run from inside \M2, we
-decided to run M2 inside a `secure chroot' (schroot) \cite{schroot}. To provide full
-functionality we mount a full file system inside the schroot. The mounting
-happens read only, except that the few folders that \M2 needs write access to are provided with a writable layer.
-In the definition of a user specific
-schroot there is no root user, so it should not be possible to become
-root or execute any command via sudo.
+When a user connects, a container is created with a running sshd server that
+the nodejs then connects with the user. On ssh connection \M2 is initialized.
+Files can be transferred from and to that container via sftp.
 
-When a user connects to the server the following happens:
-\begin{enumerate}
-\item A user account on the system is created.
-\item A schroot configuration file is created with the above user as only user.
-\item Control groups for memory and CPU are created.
-\item The schroot is started.
-\end{enumerate}
+It is possible to use other container environments instead of \cite{docker}.
+One just needs to rewrite the container management file.
 
-Control groups (cgroups) allow you to restrict the number of CPU
-shares and the memory for a process and all its children \cite{cgroups}. When M2 is
-executed inside a schroot it is called via {\tt cgexec} with the
-cgroups specifically created for this user. Using this technique it is
-possible to limit the total consumption of CPU and memory by each
-user. Additionally we ensure that the administrator of the virtual
-machine always is able to execute any command required for
-maintenance, i.e. if the node server is down or has been compromised.
 
-At this point, any Macaulay2 command can be run in this schroot inside the
-corresponding cgroups.
-
-User cleanup is done with a combination of shell scripts and the web server itself.
-
-You can find a detailed description how to set up this environment on
-\cite{trym2-github} in the file {\tt configuring\_linux.tex}.
 
 \section{The future}
 
@@ -327,8 +304,17 @@ the entire structure will work for other command line programs such as Singular 
 and GAP \cite{GAP4}.  We are currently working on creating a similar server for Singular.
 Tutorials for other systems may be created in the same way as \M2 tutorials.
 
-We are excited to receive tutorials that you have developed and would be happy to include them on the website, so that others can profit from your work as well. We plan to develop the feature to upload your tutorials for others as well as a more sophisticated tutorial review process. 
+We are excited to receive tutorials that you have developed and would be happy
+to include them on the website, so that others can profit from your work as
+well. We plan to develop the feature to upload your tutorials for others as
+well as a more sophisticated tutorial review process. 
 
+Since the communication of the nodejs server with the single containers is done
+solely via ssh, we want to separate the nodejs server from the containers even
+further. Having the containers run on a different virtual machine or even a
+different physical machine will make the nodejs server more stable. Furthermore
+we may then modify the number of available containers depending on the number
+of active users.
 
 
 \bibliographystyle{plain}

@@ -7,7 +7,7 @@ describe('Acceptance test', function (next) {
         it('should be able to create server and get title from html body', function (done) {
             var server = mathServer.MathServer({
                 port: 8006,
-                CONTAINERS: './sudo_docker_containers.js'
+                CONTAINERS: './dummy_containers.js'
             });
             server.listen();
             http.get("http://127.0.0.1:8006", function (res) {

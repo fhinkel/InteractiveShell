@@ -3,9 +3,23 @@ console.log("1: Loading shell.");
 //  i.e., command history, taking input and replacing it with output from server
 var shellObject = function(shellArea, historyArea, shellFunctions) {
     console.log("2: Loading shell.");
+    var keys = {
+        arrowUp: 38,
+        arrowDown: 40,
+        arrowLeft: 37,
+        arrowRight: 39,
+        cKey: 67,
+        ctrlKeyCode: 17,
+        metaKeyCodes: [224, 17, 91, 93],
+        backspace: 8,
+        tab: 9,
+        enter: 13
+    }
+
     var setCaretPosition = shellFunctions['setCaretPosition'];
     var postMessage = shellFunctions['postMessage'];
     var scrollDown = shellFunctions['scrollDown'];
+    var interrupt = shellFunctions['interrupt'];
     var mathProgramOutput = "";
     var shell = shellArea;
     var history = historyArea;
@@ -27,7 +41,7 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
     // On pressing return send last part of M2Out to M2 and remove it.
     shell.keyup(function(e) {
         var l, msg, input;
-        if (e.keyCode == 13) { // Return
+        if (e.keyCode == keys.enter) { // Return
             setCaretPosition(shell, shell.val().length);
             if (shell.val().length > mathProgramOutput.length) {
                 l = shell.val().length;
@@ -46,90 +60,77 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
         }
     });
 
+    var upDownArrowKeyHandling = function(e){
+        if ((e.keyCode == keys.arrowDown) && (cmdHistory.index < cmdHistory.length)) { // DOWN
+            cmdHistory.index++;
+        }
+        if ((e.keyCode == keys.arrowUp) && (cmdHistory.index > 0)) { // UP
+            if (cmdHistory.index == cmdHistory.length) {
+                cmdHistory.current = shell.val().substring(mathProgramOutput.length, shell.val().length);
+            }
+            cmdHistory.index--;
+        }
+        if (cmdHistory.index == cmdHistory.length) {
+            shell.val(shell.val().substring(0, mathProgramOutput.length) + cmdHistory.current);
+        } else {
+            shell.val(shell.val().substring(0, mathProgramOutput.length) + cmdHistory[cmdHistory.index]);
+        }
+        scrollDown(shell);
+        e.preventDefault();
+    };
+
     // If something is entered, change to end of textarea, if at wrong position.
     shell.keydown(function(e) {
         // The keys 37, 38, 39 and 40 are the arrow keys.
-        var arrowUp = 38;
-        var arrowDown = 40;
-        var arrowLeft = 37;
-        var arrowRight = 39;
-        var cKey = 67;
-        var ctrlKeyCode = 17;
-        var metaKeyCodes = [224, 17, 91, 93];
-        var backspace = 8;
-        var tab = 9;
-        if ((e.keyCode > arrowDown) || (e.keyCode < arrowLeft)) { //  we did not receive an arrow key
-            if ((e.ctrlKey && e.keyCode == cKey) || e.keyCode == ctrlKeyCode) { // do not jump to bottom on Ctrl+C or on Ctrl
-                return;
-            }
-
-            // for MAC OS
-            if ((e.metaKey && e.keyCode == cKey) || (metaKeyCodes.indexOf(e.keyCode) > -
-                1)) { // do not jump to bottom on Command+C or on Command
-                return;
-            }
-
-            // we need to move cursor to end of input
-            var pos = shell[0].selectionStart;
-            if (pos < mathProgramOutput.length) {
-                //console.log(pos + " Moving to end."); 
-                setCaretPosition(shell, shell.val().length);
-            }
-        } else if ((e.keyCode == arrowUp) || (e.keyCode == arrowDown)) {
+        if (e.keyCode == keys.enter){
+            setCaretPosition(shell, shell.val().length);
+        }
+        
+        if ((e.keyCode == keys.arrowUp) || (e.keyCode == keys.arrowDown)) {
+            upDownArrowKeyHandling(e);
             // console.log("Arrow key.");
-            if ((e.keyCode == arrowDown) && (cmdHistory.index < cmdHistory.length)) { // DOWN
-                cmdHistory.index++;
-            }
-            if ((e.keyCode == arrowUp) && (cmdHistory.index > 0)) { // UP
-                if (cmdHistory.index == cmdHistory.length) {
-                    cmdHistory.current = shell.val().substring(mathProgramOutput.length, $(
-                        shell).val().length);
-                }
-                cmdHistory.index--;
-            }
-            if (cmdHistory.index == cmdHistory.length) {
-                shell.val(shell.val().substring(0, mathProgramOutput.length) + cmdHistory
-                    .current);
-            } else {
-                shell.val(shell.val().substring(0, mathProgramOutput.length) + cmdHistory[
-                    cmdHistory.index]);
-            }
-            scrollDown(shell);
-            e.preventDefault();
+        }
+        if (e.keyCode == keys.ctrlKeyCode) { // do not jump to bottom on Ctrl+C or on Ctrl
+            return;
+        }
+        if (e.ctrlKey && e.keyCode == keys.cKey){
+            interrupt();
+        }
+        // for MAC OS
+        if ((e.metaKey && e.keyCode == keys.cKey) || (keys.metaKeyCodes.indexOf(e.keyCode) > -
+            1)) { // do not jump to bottom on Command+C or on Command
+            return;
+        }
+        var pos = shell[0].selectionStart;
+        if (pos < mathProgramOutput.length) {
+            //console.log(pos + " Moving to end."); 
+            setCaretPosition(shell, shell.val().length);
         }
         // This deals with backspace.
         // We may not shorten the string entered by M2.
-        if (e.keyCode == backspace) {
+        if (e.keyCode == keys.backspace) {
             if (shell.val().length == mathProgramOutput.length) {
                 e.preventDefault();
             }
         }
-        if (e.keyCode == tab) {
+        if (e.keyCode == keys.tab) {
             e.preventDefault();
             // Do something for tab-completion.
         }
     });
 
     shell.on("onmessage", function(e, msgDirty) {
-        // console.log("Dirty msg: " + JSON.stringify(msgDirty));
         var msg = msgDirty.replace(/\r\n/g,"\n");
         msg = msg.replace(/\r/g,"\n");
-        // console.log("Msg after replace: " + msg);
         var completeText = shell.val();
         mathProgramOutput += msg;
-        // console.log(completeText + "\n vs \n" + mathProgramOutput);
         var before = completeText.substring(0, mathProgramOutput.length),
             after = completeText.substring(mathProgramOutput.length, completeText.length);
         var commonIndex = 0;
-        // console.log(after[commonIndex] + " -- " + msg[commonIndex] + " gives " + (after[commonIndex] == msg[commonIndex]));
         while((after[commonIndex] == msg[commonIndex]) && (commonIndex < after.length) && (commonIndex < msg.length)){
             commonIndex++;
         }
-        //console.log("Crucial: " + after[3] + " vs " + msg[3]);
-        // console.log(commonIndex + " Common is: " + after.substring(0, commonIndex) + " - " + msg.substring(0, commonIndex));
         var nonReturnedInput = after.substring(commonIndex, after.length);
-        //console.log("The non-returned after is: " + nonReturnedInput);
-        //console.log("mathProgramOutput is " + mathProgramOutput);
         shell.val(mathProgramOutput + nonReturnedInput);
         scrollDown(shell);
     });

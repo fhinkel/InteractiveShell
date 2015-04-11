@@ -530,7 +530,8 @@ $(document).ready(function() {
     var shellFunctions = {
         setCaretPosition: trym2.setCaretPosition,
         scrollDown: trym2.scrollDown,
-        postMessage: trym2.postMessage
+        postMessage: trym2.postMessage,
+        interrupt: function(){trym2.socket.emit('interrupt')}
     }
 
     $.getScript("shellTextArea.js", function(){

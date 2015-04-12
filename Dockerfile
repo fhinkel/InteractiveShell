@@ -27,7 +27,7 @@ RUN chmod 644 /home/m2user/.ssh/authorized_keys
 # Bertini
 # RUN sudo apt-get install -y gcc libmpfrc++-dev make libtool
 # RUN wget https://bertini.nd.edu/BertiniSource_v1.5.tar.gz
-RUN https://bertini.nd.edu/BertiniLinux64_v1.5.tar.gz
+RUN wget https://bertini.nd.edu/BertiniLinux64_v1.5.tar.gz
 # RUN tar xzf BertiniSource_v1.5.tar.gz
 RUN tar xzf BertiniLinux64_v1.5.tar.gz
 # RUN cd BertiniSource_v1.5; ./configure; /usr/bin/make; sudo /usr/bin/make install

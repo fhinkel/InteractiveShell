@@ -1,0 +1,93 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+if not File.exists?('docker/docker_key') then system( "ssh-keygen -b 1024 -f docker/docker_key -P ''") end
+if not File.exists?('host_key') then
+   system( "ssh-keygen -b 1024 -f host_key -P ''") 
+   system( "cp host_key.pub docker/")   
+end
+
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure(2) do |config|
+
+
+  config.vm.define "nodejs" do |nodejs|
+     nodejs.vm.box = "ubuntu/trusty64"
+     nodejs.vm.synced_folder "../", "/home/vagrant/InteractiveShell"
+     nodejs.vm.network "forwarded_port", guest: 22, host: 4998
+     nodejs.ssh.port = 4998
+     nodejs.vm.network "forwarded_port", guest: 8002, host: 3692
+     nodejs.vm.provision "shell", privileged:false, inline: <<-SHELL
+       sudo apt-get update
+       sudo apt-get upgrade -y
+       sudo apt-get install -y nodejs npm wget git
+       sudo ln -s /usr/bin/nodejs /usr/bin/node
+       sudo chown -R vagrant:vagrant /home/vagrant/InteractiveShell
+       cd InteractiveShell
+       npm install
+     SHELL
+  end
+
+  config.vm.define "docker" do |docker|
+     docker.vm.box = "ubuntu/trusty64"
+     docker.vm.synced_folder "./docker", "/home/vagrant/"
+     docker.vm.network "forwarded_port", guest: 22, host: 4999
+     docker.ssh.port = 4999
+     for i in 5000..6000
+        docker.vm.network :forwarded_port, guest: i, host: i
+     end
+     docker.vm.provision "shell", privileged:false, inline: <<-SHELL
+       sudo apt-get update 
+       sudo apt-get upgrade -y
+       sudo apt-get install -y wget
+       wget -qO- https://get.docker.com/ | sh
+       sudo docker build -t m2container .
+     SHELL
+     # cat /home/vagrant/host_key.pub >> .ssh/authorized_keys
+  end 
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://atlas.hashicorp.com/search.
+
+   
+
+  # Disable automatic box update checking. If you disable this, then
+  # boxes will only be checked for updates when the user runs
+  # `vagrant box outdated`. This is not recommended.
+  # config.vm.box_check_update = false
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine. In the example below,
+  # accessing "localhost:8080" will access port 80 on the guest machine.
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+  # config.vm.network "forwarded_port", guest: 8002, host: 8002
+
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  # config.vm.network "private_network", ip: "192.168.33.10"
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  # config.vm.network "public_network"
+
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # Example for VirtualBox:
+  #
+  # config.vm.provider "virtualbox" do |vb|
+  #   # Display the VirtualBox GUI when booting the machine
+  #   vb.gui = true
+  #
+  #   # Customize the amount of memory on the VM:
+  #   vb.memory = "1024"
+  # end
+  #
+
+end

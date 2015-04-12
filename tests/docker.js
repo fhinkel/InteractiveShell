@@ -1,7 +1,6 @@
 var assert = require("assert");
 var spawn = require('child_process').spawn;
 
-
 describe('Start docker container', function (next) {
     it('should show M2 version', function (next) {
         var process = spawn("docker", ["run", "-t", "--rm=true", "fhinkel/macaulay2", "/bin/bash", "/usr/bin/M2", "--version"]);

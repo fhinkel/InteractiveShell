@@ -74,7 +74,7 @@ Vagrant.configure(2) do |config|
     sudo chown -R vagrant:vagrant /home/vagrant/InteractiveShell
     cd InteractiveShell
     npm install
-    git pull --no-verify
+    git pull
     rm id_rsa*
     ssh-keygen -b 1024 -f id_rsa -P ''
     sudo docker build -t m2container .

@@ -3,11 +3,19 @@ var http = require('http');
 var mathServer = require('../lib/mathServer.js');
 var request = require('supertest');
 
+process.env.NODE_ENV = 'test';
+
 describe('Acceptance test', function () {
     var port = 8006;
     var server;
 
     before(function () {
+        process.on('stdout', function(data) {
+            console.log('**' + data);
+        });
+        process.on('stderr', function(data) {
+            console.log('**' + data);
+        });
         server = mathServer.MathServer({
             port: port,
             CONTAINERS: './dummy_containers.js'

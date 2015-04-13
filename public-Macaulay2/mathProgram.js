@@ -389,17 +389,26 @@ $(document).ready(function() {
 
     trym2.socket.on('disconnect', function(msg) {
         console.log("We got disconnected. " + msg);
-        var btn = document.createElement("button");        // Create a <button> element
-        btn.click(function(){
-            console.log("I will reconnect.");
-            //trym2.socket.connect();
-        });
-        var title = document.createTextNode("Reconnect");       // Create a text node
-        btn.appendChild(title);                                // Append the text to <button>
-        document.getElementById("outputarea").appendChild(btn);
-        console.log("Button appended.");
-        trym2.socket.connect();
+    //     var btn = document.createElement("button");        // Create a <button> element
+    //     btn.on('click', function(){
+    //         console.log("I will reconnect.");
+    //         trym2.socket.connect();
+    //     });
+    //     var title = document.createTextNode("Reconnect");       // Create a text node
+    //     btn.appendChild(title);                                // Append the text to <button>
+    //     document.getElementById("outputarea").appendChild(btn);
+    //     console.log("Button appended.");
     });
+
+    trym2.socket.oldEmit = trym2.socket.emit;
+    trym2.socket.emit = function(event, msg){
+        if(trym2.socket.disconnected){
+            console.log("We are disconnected.");
+        } else {
+            console.log("Everything is fine, emitting. " + msg);
+            trym2.socket.oldEmit(event, msg);
+        }
+    }
 
     trym2.socket.on('image', function(imageUrl) {
         if (imageUrl) {

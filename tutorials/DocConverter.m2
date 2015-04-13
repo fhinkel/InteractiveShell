@@ -74,7 +74,7 @@ replaceWithValueOf = method()
 replaceWithValueOf String  :=  s -> (
   -- replace content between @-symbols with its value
   -- s = "2+2 = @ TO 2+2@, and 4-2= @TO2 {(4-2),"nnnn" }@." 
-  << "s = " << s << endl;
+  --<< "s = " << s << endl;
   l := separate("@", s);
   concatenate for i from 0 to #l-1 list (
     if even i then 

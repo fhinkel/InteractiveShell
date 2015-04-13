@@ -12,14 +12,14 @@ var MathServer = function (overrideOptions) {
 
     var options = {
         port: 8002, // default port number to use
-        CONTAINERS: './dummy_containers.js',
+        CONTAINERS: './LocalContainerManager.js',
         MATH_PROGRAM: "Macaulay2",
         MATH_PROGRAM_COMMAND: 'M2'
     };
 
     var logExceptOnTest = function (string) {
         if (process.env.NODE_ENV !== 'test') {
-            console.log("Do you want to play with magic?" + string);
+            console.log(string);
         }
     };
 
@@ -316,7 +316,6 @@ var MathServer = function (overrideOptions) {
             clients[clientID].mathProgramInstance
                 .removeAllListeners('data')
                 .on('data', sendDataToClient(clientID));
-            //.stderr('data', sendDataToClient(clientID));
         }
     };
 
@@ -546,6 +545,7 @@ var MathServer = function (overrideOptions) {
 
 
     process.on('uncaughtException', function (err) {
+        console.trace(err);
         console.error('Caught exception in global process object: ' + err);
     });
 

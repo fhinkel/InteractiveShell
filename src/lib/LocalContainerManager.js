@@ -1,4 +1,4 @@
-var dummy_manager = function () {
+var localContainerManager = function () {
     var exec = require('child_process').exec;
 
     var options = {
@@ -17,20 +17,21 @@ var dummy_manager = function () {
     });
 
 
-    var removeCredentials = function(ip){
+    var removeInstance = function(ip){
        return;
     };
    
-    var getNewCredentials = function (next) {
+    var getNewInstance = function (next) {
       next(options.credentials);
     };
 
 
     return {
-        getNewCredentials : getNewCredentials,
-        removeCredentials : removeCredentials
+        getNewInstance: getNewInstance,
+        removeInstance: removeInstance,
+        updateLastActiveTime: function(){}
     };
 
 };
 
-exports.manager = dummy_manager;
+exports.manager = localContainerManager;

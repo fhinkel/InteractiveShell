@@ -1,7 +1,7 @@
 var SingularServer = require('./mathServer.js').MathServer({
     MATH_PROGRAM: 'Singular',
     MATH_PROGRAM_COMMAND: 'Singular',
-    CONTAINERS: './dummy_containers.js'
+    CONTAINERS: './LocalContainerManager.js'
 });
 SingularServer.listen();
 

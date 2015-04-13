@@ -1,20 +1,19 @@
 
-1.1.0
-* docker containers instead of schroots
-* Vagrantfile for users who want to host interactive shell
-* tab completion on Macaulay2 commands
+1.1.0 4/13/2015
+    * Multi-line code tags
+    * Docker containers instead of schroots
+    * Vagrantfile for users who want to host interactive shell
+    * Tab completion on Macaulay2 commands
+    * New layout
+    * Public-common and public-specific
+    * Users can upload tutorials
+    * Singular support
 
-* public-common and public-specific
-* upload tutorials
-* linux containers instead of schroots
-* Singular support
-
-0.1.0 3/31/2013
-
+1.0.0 3/31/2013
 Stable version running since March 2013
-  * shell-like right hand side
-  * upload and download of files
-  * supports graphs.m2 package
-  * several basic tutorials
+    * shell-like right hand side
+    * upload and download of files
+    * supports graphs.m2 package
+    * several basic tutorials
 
 

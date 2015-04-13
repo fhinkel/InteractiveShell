@@ -5,11 +5,13 @@
 ## Purpose
 
 With *Interactive Shell* you can build a web app for interactive command-line tools.
-We have developed *Interactive Shell* specifically for Macaulay2,
-**available here: [http://web.macaulay2.com](http://web.macaulay2.com)**.
+We have developed *Interactive Shell* specifically for Macaulay2.
+**To see *Interactive Shell* in action, visit [http://web.macaulay2.com](http://web.macaulay2.com)**.
 
 [Macaulay2](http://www.macaulay2.com) is a software system devoted to supporting research in algebraic geometry and
 commutative algebra, whose creation and development have been funded by the National Science Foundation since 1992.
+
+![Web App Screenshot](https://raw.githubusercontent.com/fhinkel/InteractiveShell/master/Readme/WebAppScreenshot.png "Interactive Shell with Macaulay2 running at http://web.macaulay2.com")
 
 At its core, **the web app is a terminal emulator, giving you an interface to a Macaulay2
 instance running remotely.** The main advantage of providing a web app rather than a native app is that you
@@ -36,7 +38,12 @@ Anybody is welcome to use and direct their students to [http://web.macaulay2.com
 This works from any device, even mobile, all
 you need is a network connection. We start a new Macaulay2 instance for every user and provide
 them with an underlying linux system of their own. Thus you can use all the features you a natively installed Macaulay2:
-execute linux commands through Macaulay2's `get "!uname -ar"` command, access the file system to write and read
+execute linux commands through Macaulay2's
+
+```shell
+get "!uname -ar"
+```
+command, access the file system to write and read
 files, and install third party Macaulay2 packages.
 
 We identify you by cookies. If you run long computations, you can come back later and we will

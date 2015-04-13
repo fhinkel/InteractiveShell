@@ -140,7 +140,7 @@ var MathServer = function (overrideOptions) {
             instanceManager.getNewInstance(function(err, instance){
                 if(err){
                     clients[clientID].socket.emit('result', "Sorry, there was an error. Please come back later.\n" + err + "\n\n");
-                    deleteClient(clientID);
+                    deleteClientData(clientID);
                 } else {
                     next(instance);
                 }

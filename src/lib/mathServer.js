@@ -67,7 +67,7 @@ var MathServer = function (overrideOptions) {
     var deleteClientData = function(clientID){
         logExceptOnTest("deleting folder " + staticFolder + userSpecificPath(clientID));
         try{
-            clients[clientID].socket.emit('disconnect');
+            clients[clientID].socket.emit('serverDisconnect');
             console.log("Sending disconnect. " + clientID);
             clients[clientID].socket.disconnect();
         } catch(error){

@@ -6,7 +6,8 @@ var trym2 = {
     tutorials: [],
     firstLoadFlag: true, // true until we show tutorial for the first time. Needed because we need to load lesson 0
     MAXFILESIZE: 500000, // max size in bytes for file uploads
-    socket: null
+    socket: null,
+    serverDisconnect: false
 };
 
 var ctrlc = "\x03";
@@ -387,9 +388,12 @@ $(document).ready(function() {
             $("#M2Out").trigger("onmessage", msg);
         }
     });
+    
 
-    trym2.socket.on('disconnect', function(msg) {
+    trym2.socket.on('serverDisconnect', function(msg) {
         console.log("We got disconnected. " + msg);
+        $("#M2Out").trigger("onmessage", " Sorry, your session was disconnected by the server.\n\n");
+        trym2.serverDisconnect = true;
     //     var btn = document.createElement("button");        // Create a <button> element
     //     btn.on('click', function(){
     //         console.log("I will reconnect.");
@@ -403,11 +407,12 @@ $(document).ready(function() {
 
     trym2.socket.oldEmit = trym2.socket.emit;
     trym2.socket.emit = function(event, msg){
-        if(trym2.socket.disconnected){
+        if(trym2.serverDisconnect){
             var events = ['reset', 'input'];
             console.log("We are disconnected.");
             if(events.indexOf(event) != -1){
                 trym2.socket.connect();
+                trym2.serverDisconnect = false;
                 trym2.socket.oldEmit(event, msg);
             } else {
                 console.log("Will not reconnect for " + event);

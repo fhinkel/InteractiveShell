@@ -74,6 +74,7 @@ replaceWithValueOf = method()
 replaceWithValueOf String  :=  s -> (
   -- replace content between @-symbols with its value
   -- s = "2+2 = @ TO 2+2@, and 4-2= @TO2 {(4-2),"nnnn" }@." 
+  << "s = " << s << endl;
   l := separate("@", s);
   concatenate for i from 0 to #l-1 list (
     if even i then 
@@ -82,7 +83,7 @@ replaceWithValueOf String  :=  s -> (
       t := value replace( ///TO|TO2|TT///, "", l#i);
       if instance(t, List) then 
         t = last t;
-      t = "{\\tt " | toString t | "}"
+      t = "\\({\\tt " | toString t | "}\\)"
     )  
     )
  )
@@ -95,7 +96,8 @@ toHtml = method()
 toHtml String := (s) ->  (
   s = replaceWithValueOf s;
   --print s;
-  s = html TEX s;
+  --s = html TEX s;
+  s = html s;
   s | "<br/>\n"
   )
 
@@ -103,7 +105,8 @@ toHtmlPara = method()
 toHtmlPara String := (s) -> (
   s = replaceWithValueOf s;
   --print s;
-  s = "<p>" | html TEX s | "</p>\n"
+  --s = "<p>" | html TEX s | "</p>\n"
+  s = "<p>" | html s | "</p>\n"
   )
 
 -- return string with HTML head for given title
@@ -134,7 +137,7 @@ processTextSection = (lines) -> (
           then ""
           else (   "<p>\n"
 --                 | concatenate apply(g, g1 -> "    " | html TEX g1 | "\n") 
-                 | concatenate apply(g, g1 -> "    " | html g1 | "\n") 
+                 | concatenate apply(g, g1 -> "    " | html replaceWithValueOf g1 | "\n") 
                  | "</p>\n")
      ))
 

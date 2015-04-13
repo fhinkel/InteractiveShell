@@ -1,4 +1,8 @@
+Headline
+    Elementary uses of Groebner bases
 Description
+    Code
+        SUBSECTION "Contents"
     Text
         In this tutorial we introduce a number
         of basic operations using Gröbner bases, and

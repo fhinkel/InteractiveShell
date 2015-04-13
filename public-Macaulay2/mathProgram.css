@@ -62,7 +62,7 @@ body {
 
 div-border {
     border-style: solid;
-    border-width: 2px;
+    border-width: 1px;
 }
 
 .rel {
@@ -92,11 +92,6 @@ div-border {
 }
 
 .terminal {
-    background-color: #C2DFFF;
-    background: -webkit-linear-gradient(left, whitesmoke, lightsteelblue); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(right, whitesmoke, lightsteelblue); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(right, whitesmoke, lightsteelblue); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(to right,#CCE9FF,#B8D5F5); /* Standard syntax */
 
 }
 
@@ -105,11 +100,10 @@ div-border {
 }
 
 #inputarea, #lesson, #home, #outputarea {
-    border-radius: 5px;
     width: 49.6%;
     height: 100%;
     border-style: solid;
-    border-width: 1px;
+    border-width: 0.5px;
 }
 
 #lesson, #home {
@@ -124,6 +118,7 @@ div-border {
 }
 
 #M2In, #M2Out {
+    border-radius: 5px;
     width: 100%;
     font-family: monospace;
     height: 100%;

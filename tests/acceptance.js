@@ -5,22 +5,17 @@ var request = require('supertest');
 
 process.env.NODE_ENV = 'test';
 
-describe('Acceptance test', function () {
+describe.only('Acceptance test', function () {
     var port = 8006;
     var server;
 
     before(function () {
-        process.on('stdout', function(data) {
-            console.log('**' + data);
-        });
-        process.on('stderr', function(data) {
-            console.log('**' + data);
-        });
         server = mathServer.MathServer({
             port: port,
             CONTAINERS: './dummy_containers.js'
         });
         server.listen();
+        request = request('http://localhost:' + port);
     });
 
     after(function (done) {
@@ -40,13 +35,10 @@ describe('Acceptance test', function () {
             });
         });
         it('should show title', function (done) {
-            request = request('http://localhost:' + port);
-
             request.get('/').expect(200).end(function(error, result) {
                 assert.match(result.text, /<title>\s*Macaulay2\s*<\/title>/);
                 done();
             });
-
         });
     });
 });

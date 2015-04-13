@@ -255,42 +255,53 @@ In the case that you do not have access to \M2 on your local machine, you can up
 
 \section{Internal structure}
 
-The \tryM2 web server runs on a virtual machine on a linux computer on the web.
-The server is implemented using {\tt node.js}, and the client
-communicates with the server via asynchronous AJAX calls, which often
-provide very responsive interaction with the server \cite{nodejs}.
+We choose to implement the server in Node.js
+because of Node.js's event-driven, non-blocking I/O model \cite{nodejs}.
+The Node.js server functions as a bridge between Macaulay2 instances and end user.
 
-Any user with moderate knowledge of linux can set up their own {\it try Macaulay2}
-server.  Detailed directions for doing so are in the github repository \cite{github}.
+For every user, we start a new Macaulay2 process and
+provide them with the underlying linux system. This allows advanced users to
+interact with the file system or run shell commands by using Macaulay2's {\tt get} command.
 
-A major concern is security.
-One of the first questions that occurred to us in this context was
-whether to offer a sandboxed version of \M2 or \M2 with full
-functionality.
-We decided on the second alternative, since it seemed
-easier to realize and more likely to attract new users.  This lead to
-several questions:
-
-\begin{enumerate}
-\item A fully functional \M2 also gives the user system access. How does that impact security and how to deal with it?
-\item How do we distinguish the users on the system?
-\item How can we limit resources to prevent one user from breaking the system? e.g. via fork bombs.
-\item How do we clean up after a user has left?
-\end{enumerate}
-
-Thus \M2 needs to be started in a separate container environment for every user, e.g. using \cite{docker}:
 \begin{verbatim}
-docker run -c 1 -m 128m -t fhinkel/macaulay2 M2
+-- get information on the underlying operating system
+i8 : get "!uname -ar "
+o8 = Linux 35d4e91d4779 3.13.0-48-generic #80-Ubuntu SMP Thu Mar 12 11:16:15 UTC 2015 x86_64 x86_64
+     x86_64 GNU/Linux
+i9 : "important-results.txt" << "very important results" << close
+o9 = important-results.txt
+o9 : File
+-- list all files in the current directory
+i21 : get "!ls -l"
+o21 = total 4 -rw-r--r-- 1 m2user m2user 22 Apr 12 22:37 important-results.txt
+-- obtain the file
+i22 : get "!open important-results.txt"
 \end{verbatim}
-will start \M2 in a docker container, restricted to one core and 128m of memory.
 
-When a user connects, a container is created with a running sshd server that
-the nodejs then connects with the user. On ssh connection \M2 is initialized.
-Files can be transferred from and to that container via sftp.
+Technically, this is achieved by using Docker containers \cite{docker}. Docker implements
+a high-level  API to provide lightweight containers that run processes in isolation.
+We start a new Docker container running Macaulay2 for every user. The Node.js
+server communicates with Docker containers via ssh, which will allow us in the future
+scale the application as demand grows.
 
-It is possible to use other container environments instead of \cite{docker}.
-One just needs to rewrite the container management file.
+To ease the setup process we provide a virtual machine that contains both the Node.js server
+and Docker. This virtual machine is configured using {\tt vagrant}, a tool to create and
+configure lightweight, reproducible, and portable development environments \cite{vagrant}.
 
+There are several ways the web app can be used:
+\begin{itemize}
+    \item Using it at web.macaulay2.com from any device, a network connection is necessary.
+    \item Users who need more resources or want to use the app locally, can
+    run an instance of the web version locally, only accessible from their own device.
+    This is easily done by using the vagrant configuration we provide
+    \item Users who want to have control over the Macaulay2 web app can run an
+     instance on their own server or on a cloud
+    service such as AWS or DigitalOcean \cite{AWS,digitalocean}.
+     \item Users who want to contribute can get the project from GitHub \cite{github}.
+     The folder
+     with the source code is symlinked into the Vagrant machine resulting
+     in a smooth development experience.
+\end{itemize}
 
 
 \section{The future}
@@ -306,15 +317,8 @@ Tutorials for other systems may be created in the same way as \M2 tutorials.
 
 We are excited to receive tutorials that you have developed and would be happy
 to include them on the website, so that others can profit from your work as
-well. We plan to develop the feature to upload your tutorials for others as
-well as a more sophisticated tutorial review process. 
+well.
 
-Since the communication of the nodejs server with the single containers is done
-solely via ssh, we want to separate the nodejs server from the containers even
-further. Having the containers run on a different virtual machine or even a
-different physical machine will make the nodejs server more stable. Furthermore
-we may then modify the number of available containers depending on the number
-of active users.
 
 
 \bibliographystyle{plain}

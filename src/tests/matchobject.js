@@ -8,7 +8,7 @@ var getIpFromUrl = function(url) {
     return matchObject[1];
 };
 
-describe('matchobject', function(next) {
+describe('matchobject', function() {
     it('should find url', function(next){
         var url = 'http://bal/blubb/IP-123.0.0.1-/whupp';
         var ip = getIpFromUrl(url);

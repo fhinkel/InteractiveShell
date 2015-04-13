@@ -10,7 +10,7 @@ describe('GetListOfTutorials Module test', function () {
         directoryReader = require('../lib/tutorialReader.js')("public-Macaulay2/", fs);
     });
 
-    describe('When we call getTutorialList on the real file system', function (done) {
+    describe('When we call getTutorialList on the real file system', function () {
         it('should get the list with welcome tutorials', function (done) {
             var response = {
                 writeHead: function () {
@@ -26,7 +26,7 @@ describe('GetListOfTutorials Module test', function () {
         });
     });
 
-    describe('When we call getTutorialList with a stubbed file system', function (done) {
+    describe('When we call getTutorialList with a stubbed file system', function () {
         var readDirStub,
             existsStub,
             tutorials;

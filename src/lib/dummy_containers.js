@@ -27,8 +27,9 @@ var dummy_manager = function () {
 
 
     return {
-        getNewCredentials : getNewCredentials,
-        removeCredentials : removeCredentials
+        getNewInstance: getNewCredentials,
+        removeInstance: removeCredentials,
+        updateLastActiveTime: function(){}
     };
 
 };

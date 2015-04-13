@@ -109,7 +109,7 @@
 <code>degree M</code><br/>
 <p>
     As one might expect, the degree of the quartic
-    is 4 !
+    is 4.
 </p>
 <p>
     The Hilbert polynomial is obtained by
@@ -155,7 +155,7 @@
     gives the degrees of generators of the
     $j$th module(counting from $0$); 
     an $n$ in the $j$th column in the
-    row headed by ``$d$:'' means that the $j$th
+    row headed by $d$: means that the $j$th
     free module has $n$ generators of degree
     $n+j$.  Thus for example in our case, the
     generator of the third (last) free module in the
@@ -167,9 +167,9 @@
 <p>
     An interesting and illustrative open problem
     is to understand the initial ideal (and 
-    the Gröbner basis) of a ``generic'' 
+    the Gröbner basis) of a "generic"
     regular sequence (i.e. an ideal generated
-    by a small number of random homogeneous polynomials.
+    by a small number of random homogeneous polynomials).
     To study a very simple case
     we take a matrix of 2 random forms 
     in a polynomial ring in
@@ -282,7 +282,7 @@
     <h4>D. Elimination Theory</h4>
 <p>
     Consider the problem of projecting the
-    "twisted cubic", a curve in ${\PP}^3$ defined
+    twisted cubic, a curve in ${\PP}^3$ defined
     by the three $2 \times 2$ minors of a certain
     $2 \times 3$ matrix into the plane.  
     Such problems can be solved in a very 
@@ -330,11 +330,11 @@
     $$y_0 = x_0, y_1 = x_1, y_2 = x_2, y_3 = x_0+x_3$$
     and thus
     $x_3 = y_3-y_0$, etc. 
-    We want the new ring to have an ``elimination
-    order'' for the first variable.
+    We want the new ring to have an elimination
+    order for the first variable.
 </p>
 <code>y = global y</code><br/>
-<code>S = KK[y_0..y_3,MonomialOrder=> Eliminate 1]</code><br/>
+<code>S = KK[y_0..y_3,MonomialOrder => Eliminate 1]</code><br/>
 <p>
     Here is one way to make the substitution
 </p>
@@ -369,7 +369,7 @@
     to $R/I$, taking the variables $y$ to the three
     linear forms that define the projection 
     center.  Then we just take the kernel of
-    this map!  (``Under the hood'', 
+    this map!  (Under the hood, 
     Macaulay2 is doing a more refined version
     of the same computation as before.)
     Here is the ring map

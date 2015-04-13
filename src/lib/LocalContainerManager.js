@@ -22,7 +22,7 @@ var localContainerManager = function () {
     };
    
     var getNewInstance = function (next) {
-      next(options.credentials);
+      next(false, options.credentials);
     };
 
 

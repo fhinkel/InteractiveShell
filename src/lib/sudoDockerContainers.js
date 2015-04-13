@@ -75,7 +75,7 @@ var sudo_docker_manager = function () {
 
          if(RunningSshDaemons){
             console.log("sshd is ready.");
-            next(instance);
+            next(false, instance);
          } else {
             console.log("sshd not ready yet.");
             waitForSshd(next, instance, dockerContainerName);

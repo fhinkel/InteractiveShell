@@ -4,9 +4,10 @@
 
 ## Purpose
 
-With *Interactive Shell* you can build a web app for interactive command-line tools.
-We have developed *Interactive Shell* specifically for Macaulay2.
-**To see *Interactive Shell* in action, visit [http://web.macaulay2.com](http://web.macaulay2.com)**.
+With Interactive Shell you can build a web app for interactive command-line tools.
+We have developed Interactive Shell specifically for Macaulay2.
+
+**To see Interactive Shell in action, visit [http://web.macaulay2.com](http://web.macaulay2.com)**.
 
 [Macaulay2](http://www.macaulay2.com) is a software system devoted to supporting research in algebraic geometry and
 commutative algebra, whose creation and development have been funded by the National Science Foundation since 1992.

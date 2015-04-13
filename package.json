@@ -31,19 +31,19 @@
     "winston": "^0.8.3"
   },
   "scripts": {
-    "start": "node lib/Macaulay2LocalServer.js",
-    "sudo_docker": "node lib/Macaulay2SudoDocker.js",
-    "ssh_docker": "node lib/Macaulay2SshDocker.js",
-    "test": "mocha tests/ --reporter spec --timeout 6000",
+    "start": "node src/lib/Macaulay2LocalServer.js",
+    "sudo_docker": "node src/lib/Macaulay2SudoDocker.js",
+    "ssh_docker": "node src/lib/Macaulay2SshDocker.js",
+    "test": "mocha src/tests/ --reporter spec --timeout 6000",
     "stop": "kill `ps ax | grep Server | grep -v monitor | grep node | awk '{print $1}'`",
-    "forever": "forever start -l /home/webm2.logs/forever.log -o /home/webm2.logs/out.log -e /home/webm2.logs/err.log --append lib/Macaulay2Server.js"
+    "forever": "forever start -l /home/webm2.logs/forever.log -o /home/webm2.logs/out.log -e /home/webm2.logs/err.log --append src/lib/Macaulay2Server.js"
   },
   "repository": {
     "type": "git",
     "url": "git@github.com:fhinkel/tryM2.git"
   },
   "devDependencies": {
-    "jsdom": "~1.4.1",
+    "jsdom": "^4.3.0",
     "mocha": "^2.1.0",
     "sinon": "^1.14.1",
     "supertest": "^0.15.0"

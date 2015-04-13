@@ -14,7 +14,7 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
         backspace: 8,
         tab: 9,
         enter: 13
-    }
+    };
     
     var unicodeBell = '\u0007';
     var setCaretPosition = shellFunctions['setCaretPosition'];
@@ -80,7 +80,7 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
             // We don't want empty lines send to M2 at pressing return twice.
             //e.preventDefault();
         }
-    }
+    };
 
 
     var upDownArrowKeyHandling = function(e){

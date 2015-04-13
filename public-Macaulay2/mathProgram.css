@@ -31,7 +31,7 @@ body {
     background: -webkit-linear-gradient(left, whitesmoke, lightsteelblue); /* For Safari 5.1 to 6.0 */
     background: -o-linear-gradient(right, whitesmoke, lightsteelblue); /* For Opera 11.1 to 12.0 */
     background: -moz-linear-gradient(right, whitesmoke, lightsteelblue); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(to right, whitesmoke, grey); /* Standard syntax */
+    background: linear-gradient(to right, whitesmoke, lightsteelblue); /* Standard syntax */
 }
 
 .halfWidth {
@@ -58,11 +58,6 @@ body {
 
 .clear {
     clear: both;
-}
-
-div-border {
-    border-style: solid;
-    border-width: 1px;
 }
 
 .rel {
@@ -102,8 +97,6 @@ div-border {
 #inputarea, #lesson, #home, #outputarea {
     width: 49.6%;
     height: 100%;
-    border-style: solid;
-    border-width: 0.5px;
 }
 
 #lesson, #home {
@@ -141,6 +134,7 @@ div-border {
 }
 
 code {
+    white-space: pre;    
     background-color: lightyellow;
     padding: 1px 3px;
     line-height: 1.5;
@@ -150,6 +144,22 @@ code {
     font-family: courier new;
     border-radius: 5px;
     box-shadow: 1px 1px 2px #000;
+}
+
+code2 {
+    white-space: pre;
+	background-color: lightyellow;
+	/*padding: 1px 3px;*/
+    box-shadow: 1px 1px 2px #000;
+	margin-left: 20px;
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+	border-radius:10px;
+	display:inline-block;
+	cursor:pointer;
+	font-family: courier new;
+    padding: 3px 6px;
+	text-decoration:none;
 }
 
 .submenuItem {

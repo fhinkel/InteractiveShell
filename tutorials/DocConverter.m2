@@ -87,8 +87,6 @@ replaceWithValueOf String  :=  s -> (
     )
  )
 
-
-
 -- create string with code for HTML rather than simple doc
 -- add extra line break at every paragraph
 -- translate TEX code
@@ -135,7 +133,8 @@ processTextSection = (lines) -> (
      concatenate apply(groups, g -> if not instance(g, List) 
           then ""
           else (   "<p>\n"
-                 | concatenate apply(g, g1 -> "    " | html TEX g1 | "\n") 
+--                 | concatenate apply(g, g1 -> "    " | html TEX g1 | "\n") 
+                 | concatenate apply(g, g1 -> "    " | html g1 | "\n") 
                  | "</p>\n")
      ))
 
@@ -150,6 +149,7 @@ processExampleSection = (lines) -> (
      -- have some text.  Each line with more indentation than the
      -- previous is appended to a <code> block
      -- A string is returned.
+     lines = select(lines, s -> #s > 0);
      sizes := lines / initialSpaceSize;
      minsize := min sizes;
      if minsize != sizes#0 then error "The first line of an Example section should have the
@@ -168,9 +168,9 @@ processExampleSection = (lines) -> (
           if first == last then (
                "<code>" | lines#first | "</code><br/>\n"
           ) else (
-               "<code>" | 
-               concatenate (for j from first to last-1 list (lines#j | "<br/>\n"))
-               | lines#last | "</code><br/>\n"
+               "<p><code2>" | 
+               concatenate (for j from first to last-1 list (lines#j | "\n"))
+               | lines#last | "</code2></p>\n"
                )
           )
      )
@@ -323,6 +323,14 @@ Description
     web.macaulay2.com, are required to be in a special html format.
     This package is able to translate simpledoc
     format, to the required html format, suitable for use on web.macaulay2.com.
+    
+    Tutorials may use mathjax latex commands (@HREF"http://www.mathjax.org"@), see also
+    @HREF "http://www.onemathematicalcat.org/MathJaxDocumentation/TeXSyntax.htm"@
+    for a complete list, or @HREF "http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference"@
+    for examples.
+
+    Mathjax is very good, but there are some idiosyncracies: To use latex formatting
+    for "TT", one must place the phrase in math context.
     
     For an example, suitable for basing your own tutorials on, see @TO "convert"@.
 SeeAlso

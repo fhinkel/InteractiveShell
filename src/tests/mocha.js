@@ -1,7 +1,7 @@
 var assert = require("assert");
 var http = require('http');
 
-describe('Array', function (next) {
+describe('Array', function () {
     describe('The indexOf function', function () {
         it('should return -1 when the value is not present', function () {
             assert.equal(-1, [1, 2, 3].indexOf(5));
@@ -30,14 +30,14 @@ describe('Array', function (next) {
     })
 });
 
-describe('assert.notEqual', function (next) {
+describe('assert.notEqual', function () {
     it('should make 1 not equal to null', function () {
         assert.notEqual(1, null);
     });
 });
 
 
-describe('regexsearch', function (next) {
+describe('regexsearch', function () {
     it('should find text between title tags', function (next) {
         var s = 'bla <title> blubb </title> blobber';
         var match = s.match(/<title>\s*([^\s]*)\s*<\/title>/);
@@ -68,7 +68,7 @@ describe('regexsearch', function (next) {
     });
 });
 
-describe('Http server that echos hello world', function (next) {
+describe('Http server that echos hello world', function () {
     var server;
     before(function (done) {
         server = http.createServer(function (req, res) {
@@ -101,7 +101,7 @@ describe('Http server that echos hello world', function (next) {
     });
 });
 
-describe('coercion', function (done) {
+describe('coercion', function () {
     it("Should use empty String as false-y", function (done) {
         var empty = "";
         assert(empty == false);

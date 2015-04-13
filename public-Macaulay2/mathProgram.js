@@ -551,6 +551,17 @@ $(document).ready(function() {
         trym2.postMessage(code);
     });
 
+    $(document).on("click", "code2", function() {
+        $(this).effect("highlight", {
+            color: 'red'
+        }, 300);
+        var code = $(this).text();
+        code = code + "\n";
+        $("#M2In").val($("#M2In").val() + code);
+        trym2.scrollDown($("#M2In"));
+        trym2.postMessage(code);
+    });
+
     trym2.importTutorials();
 
     trym2.navBar.activate("home");

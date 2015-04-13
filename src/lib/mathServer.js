@@ -8,7 +8,7 @@ var ssh2 = require('ssh2');
 
 
 var MathServer = function (overrideOptions) {
-    var staticFolder = __dirname + '/../public';
+    var staticFolder = __dirname + '/../../public';
 
     var options = {
         port: 8002, // default port number to use
@@ -19,7 +19,7 @@ var MathServer = function (overrideOptions) {
 
     var logExceptOnTest = function (string) {
         if (process.env.NODE_ENV !== 'test') {
-            console.log(string);
+            console.log("Do you want to play with magic?" + string);
         }
     };
 

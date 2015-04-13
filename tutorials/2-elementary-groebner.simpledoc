@@ -4,7 +4,8 @@ Description
     Code
         SUBSECTION "Contents"
     Text
-        In this tutorial we introduce a number
+        In this tutorial, written by D. Eisenbud and M. Stillman,
+        we introduce a number
         of basic operations using Gröbner bases, and
         at the same time become familiar with a range
         of useful Macaulay2 constructs. The sections are:
@@ -39,7 +40,7 @@ Description
     Text
         now the punch line:
     Example
-        J = gens gb I
+        J = groebnerBasis I
     Text
         From this we can for example compute the
         codimension, dimension,
@@ -48,7 +49,7 @@ Description
         This will be more fun if we work with an
         example having some meaning.  We choose
         to work with the ideal defining the
-        rational quartic curve in ${\bf P}^3$ given
+        rational quartic curve in ${\PP}^3$ given
         parametrically in an affine representation
         by 
         $$t \mapsto{} (t,t^3,t^4).$$
@@ -58,17 +59,16 @@ Description
         gift from the gods... .)
         We obtain the ideal by first making the 
         polynomial ring in 4 variables (the
-        homogeneous coordinate ring of ${\bf P}^3$)
+        homogeneous coordinate ring of ${\PP}^3$)
     Example
         R = KK[a..d]
     Text
-        and then using a function {\tt monomialCurveIdeal}, which we shall
+        and then using a function "monomialCurveIdeal", which we shall
         treat for now as a black box
     Example
         I = monomialCurveIdeal(R,{1,3,4})
     Text
-        From Macaulay2's point of view, $I$ is an
-        ideal, and the codimension of its support
+        $I$ is an ideal, and the codimension of its support
         is 2, while its dimension is 2:
     Example
         codim I
@@ -103,7 +103,7 @@ Description
     Example
         hilbertPolynomial M
     Text
-        The term ${\bf P}^i$ represents the Hilbert polynomial of
+        The term ${\PP}^i$ represents the Hilbert polynomial of
         projective $i$-space.  This formula tells
         us that the Hilbert polynomial of $M$ is
         $H(m) = 4(m+1) - 3 = 4m + 1$.  Thus the degree
@@ -118,23 +118,19 @@ Description
     Example
         hilbertSeries M
     Text
-        The indeterminate in this expression is \$T.
+        The indeterminate in this expression is \(T\).
         
         Another way to get information about
         the module $M$ is to see its free resolution
     Example
         Mres = res M
     Text
-        To get more precise information about {\tt Mres},
+        To get more precise information about \({\tt Mres}\),
         we could do
     Example
         betti Mres
     Text
         The display is chosen for compactness:
-        B    total: 1 4 4 1
-        B        0: 1 . . .
-        B        1: . 1 . .
-        B        2: . 3 4 1
         the first line gives the total betti 
         numbers, the same information given when
         we type the resolution.  The remaining
@@ -155,7 +151,9 @@ Description
         An interesting and illustrative open problem
         is to understand the initial ideal (and 
         the Gröbner basis) of a ``generic'' 
-        regular sequence.  To study a very simple case
+        regular sequence (i.e. an ideal generated
+        by a small number of random homogeneous polynomials.
+        To study a very simple case
         we take a matrix of 2 random forms 
         in a polynomial ring in
         3 variables:
@@ -170,8 +168,8 @@ Description
         the free module with generators in the listed
         degrees, $\{2,3\}$).  We now can compute
     Example
-        GB = gens gb F
-        LT = leadTerm gens gb F
+        GB = groebnerBasis F
+        LT = leadTerm GB
         betti LT
     Text
         shows that there are Gröbner basis elements
@@ -182,7 +180,7 @@ Description
     Example
         R = KK[x,y,z, MonomialOrder => Lex]
     Text
-        (see {\tt help MonomialOrder} for other possibilities).
+        (do "help MonomialOrder" for other possibilities).
         We get 
     Example
         F = random(R^1, R^{-2,-3})
@@ -212,7 +210,7 @@ Description
         I = flatten N
     Text
         (actually this produces a 1 x 9 matrix of
-        of forms, not the ideal: {\tt J = ideal I};
+        of forms, not the ideal: "J = ideal I";
         the matrix will be more useful to us).
         But the trace is not in $I$!  This is obvious
         from the fact that the trace has degree $1$,
@@ -224,22 +222,23 @@ Description
         Tr //I  -- the quotient, which is 0
         Tr % I  -- the remainder, which is Tr again
     Text
-        (Here {\tt Tr} is an element of $R$, not a matrix.
+        (Here $Tr$ is an element of $R$, not a matrix.
         We could do the same thing with a $1 \times 1$ matrix
-        with {\tt Tr} as its element.)
+        with $Tr$ as its element.)
         This is of course because the entries of $I$ do
         NOT
         generate the ideal of all forms 
         vanishing on $X$ -- this we may find with
-        {\tt J = radical ideal I},
-        (but this takes a while: see the documentation for
-        {\tt radical} on a faster way to find this)
-        which shows that the radical is generated by
+    Example
+        J = radical ideal I;
+        netList J_*
+    Text
+        that the radical is generated by
         the trace, the determinant, and the sum of 
         the principal $2 \times 2$ minors, that is, by the
         coefficients of the characteristic polynomial.
         In particular, we can try the powers of the
-        radical:
+        trace:
     Example
         Tr^2 % I
         Tr^3 % I
@@ -263,7 +262,7 @@ Description
         SUBSECTION "D. Elimination Theory"
     Text
         Consider the problem of projecting the
-        ``twisted cubic'', a curve in ${\bf P}^3$ defined
+        "twisted cubic", a curve in ${\PP}^3$ defined
         by the three $2 \times 2$ minors of a certain
         $2 \times 3$ matrix into the plane.  
         Such problems can be solved in a very 
@@ -278,7 +277,7 @@ Description
         and then show how to use Macaulay2's 
         general tool to solve the problem.
         We first
-        clear the earlier meaning of {\tt x} to make it
+        clear the earlier meaning of $x$ to make it
         into a subscripted variable
     Example
         x = global x
@@ -287,7 +286,7 @@ Description
     Example
         R = KK[x_0..x_3] 
     Text
-        the homogeneous coordinate ring of ${\bf P}^3$
+        the homogeneous coordinate ring of ${\PP}^3$
         and
     Example
         M = map(R^2, 3, (i,j)->x_(i+j))
@@ -302,7 +301,7 @@ Description
     Text
         To find the image we must intersect the ideal
         $I$ with the subring generated by the 
-        generators of {\tt pideal}.  We make a change of
+        generators of "pideal".  We make a change of
         variable so that these generators become
         the last three variables in the ring; that
         is, we write the ring as $KK[y_0..y_3]$
@@ -338,7 +337,7 @@ Description
         J1 = substitute(J, S1)
     Text
         This time we didn't have to give so much
-        detail to the {\tt substitute} command because of 
+        detail to the "substitute" command because of 
         the coincidence of the names of the variables.
         
         Having shown the primitive method, we
@@ -367,7 +366,7 @@ Description
         computation of ideal quotients and 
         saturations.  Again we give an easy example
         that we can treat directly, and then 
-        introduce the tool used in Macaulay2 to 
+        introduce the tool used in \(\mac\) to 
         treat the general case.
         
         If $I$ and $J$ are ideals in a ring $R$, we define
@@ -386,7 +385,7 @@ Description
         be $(b-a^2, c-a^3)$ (where we have taken
         $a,b,c$ as the coordinates of affine space).
         To find the projective closure of the curve
-        in ${\bf P}^3$, we must homogenize these equations 
+        in ${\PP}^3$, we must homogenize these equations 
         with respect to a new variable d, getting
         $db-a^2, d^2c-a^3$.  But these forms do NOT
         define the projective closure! In general,
@@ -455,7 +454,7 @@ Description
     Example
         I22 = I21 : d
     Text
-        which is again larger than {\tt I21}, having
+        which is again larger than "I21", having
         three quadratic generators. Repeating,
     Example
         I23 = I22 : d
@@ -468,10 +467,10 @@ Description
     Example
         (gens I23) % (gens I22)
     Text
-        which returns 0, showing that {\tt I23} is 
+        which returns 0, showing that "I23" is 
         contained in (gives remainder 0 when divided
-        by) {\tt I22}.  Thus the homogeneous ideal {\tt I2} of 
-        the projective closure is equal to {\tt I23}
+        by) "I22".  Thus the homogeneous ideal "I2" of 
+        the projective closure is equal to "I23"
         (this is the homogeneous ideal of 
         the twisted cubic, already encountered above).
         
@@ -484,7 +483,7 @@ Description
     Example
         gens gb I1
     Text
-        This yields {\tt (a2-bd, abd-cd2, b2d2-acd2)},
+        This yields $(a2-bd, abd-cd2, b2d2-acd2)$,
         meaning 
         $$(a^2-bd, abd-cd^2, b^2d^2-acd^2).$$
         We see that the second generator is divisible
@@ -498,6 +497,6 @@ Description
     Example
         I2 = divideByVariable(gens gb I1,d)
     Text
-        This saturation may be found directly in Macaulay2:
+        This saturation may be found directly in \(\mac\):
     Example
         saturate(I1, d)

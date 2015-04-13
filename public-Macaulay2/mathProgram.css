@@ -31,7 +31,7 @@ body {
     background: -webkit-linear-gradient(left, whitesmoke, lightsteelblue); /* For Safari 5.1 to 6.0 */
     background: -o-linear-gradient(right, whitesmoke, lightsteelblue); /* For Opera 11.1 to 12.0 */
     background: -moz-linear-gradient(right, whitesmoke, lightsteelblue); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(to right, whitesmoke, grey); /* Standard syntax */
+    background: linear-gradient(to right, whitesmoke, lightsteelblue); /* Standard syntax */
 }
 
 .halfWidth {

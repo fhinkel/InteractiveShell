@@ -26,9 +26,9 @@ dockerip = '192.168.2.42'
 # you're doing.
 Vagrant.configure(2) do |config|
   config.vm.define "nodejs" do |nodejs|
-     # nodejs.vm.provider "virtualbox" do |v|
-     #   v.gui = true
-     # end
+     nodejs.vm.provider "virtualbox" do |v|
+       # v.gui = true
+     end
      nodejs.vm.network :private_network, ip: nodejsip, virtualbox__intnet: "internal"
      nodejs.vm.hostname = "nodejs"
      nodejs.vm.box = "ubuntu/trusty64"
@@ -48,9 +48,9 @@ Vagrant.configure(2) do |config|
 
   config.vm.define "docker" do |docker|
      docker.vm.network :private_network, ip: dockerip, virtualbox__intnet: "internal"
-     # docker.vm.provider "virtualbox" do |v|
-     #   v.gui = true
-     # end
+     docker.vm.provider "virtualbox" do |v|
+       # v.gui = true
+     end
      docker.vm.hostname = "docker"
      docker.vm.box = "ubuntu/trusty64"
      docker.vm.synced_folder "./docker", "/home/vagrant/docker"

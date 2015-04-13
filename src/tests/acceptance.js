@@ -15,7 +15,7 @@ describe('Acceptance test', function () {
     before(function (done) {
         server = mathServer.MathServer({
             port: port,
-            CONTAINERS: './dummy_containers.js'
+            CONTAINERS: './LocalContainerManager.js'
         });
         server.listen();
         request = request('http://localhost:' + port);

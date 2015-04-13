@@ -12,7 +12,7 @@ var MathServer = function (overrideOptions) {
 
     var options = {
         port: 8002, // default port number to use
-        CONTAINERS: './dummy_containers.js',
+        CONTAINERS: './LocalContainerManager.js',
         MATH_PROGRAM: "Macaulay2",
         MATH_PROGRAM_COMMAND: 'M2'
     };

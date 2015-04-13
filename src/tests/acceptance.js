@@ -2,6 +2,7 @@ var assert = require('chai').assert;
 var http = require('http');
 var mathServer = require('../lib/mathServer.js');
 var request = require('supertest');
+var jsdom = require("jsdom");
 
 process.env.NODE_ENV = 'test';
 
@@ -35,21 +36,35 @@ describe('Acceptance test', function () {
             });
         });
         it('should show title', function (done) {
-            request.get('/').expect(200).end(function(error, result) {
-                assert.match(result.text, /<title>\s*Macaulay2\s*<\/title>/);
-                done();
+            request.get('/').expect(200).end(function (error, result) {
+                jsdom.env(
+                    result.text,
+                    ["http://code.jquery.com/jquery.js"],
+                    function (errors, window) {
+                        var title = window.$("title").text();
+                        assert.match(title, /\s*Macaulay2\s*/);
+                        done();
+                    }
+                );
             });
         });
         it('should get statistics', function (done) {
-            request.get('/admin').expect(200).end(function(error, result) {
-                assert.match(result.text, /<h1>Macaulay2 User Statistics<\/h1>/);
-                done();
+            request.get('/admin').expect(200).end(function (error, result) {
+                jsdom.env(
+                    result.text,
+                    ["http://code.jquery.com/jquery.js"],
+                    function (errors, window) {
+                        var header = window.$("h1").text();
+                        assert.equal(header, "Macaulay2 User Statistics");
+                        done();
+                    }
+                );
             });
         });
         it('should get the list of tutorials', function (done) {
-            request.get('/getListOfTutorials').expect(200).end(function(error, result) {
+            request.get('/getListOfTutorials').expect(200).end(function (error, result) {
                 var tutorialList = JSON.parse(result.text);
-                var expected =  "tutorials/welcome2.html";
+                var expected = "tutorials/welcome2.html";
                 assert.include(tutorialList, expected);
                 done();
             });

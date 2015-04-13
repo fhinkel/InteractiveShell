@@ -50,6 +50,9 @@ you can easily run the web app locally or set up your own server.
 
 ### Local server for private use
 
+We have a Vagrant file that configures a virtual machine with everything you need to run your own Server with Macaulay2.
+You do not need to install Macaulay2 locally.
+
 Make sure [VirtualBox](https://www.virtualbox.org/) and [Vagrant](https://www.vagrantup.com/) are installed. On Windows,
 we recommend to run
 Vagrant from within [Git BASH](https://msysgit.github.io/). Do the following inside a terminal or Git BASH:
@@ -77,14 +80,14 @@ npm start
 ### Hosting
 
 If you want to give other users access to the web app that you are hosting (e.g., on your laptop or a server), we provide a
-secure version by using Docker containers for every user.
-We have a Vagrant file that configures a virtual machine with everything you need to run your own Server with Macaulay2.
-You do not need to install Macaulay2 locally.
+secure version that uses Docker containers for every user.
 
 
-`git clone https://github.com/fhinkel/InteractiveShell.git`
-`cd InteractiveShell`
-`vagrant up`
+```bash
+git clone https://github.com/fhinkel/InteractiveShell.git
+cd InteractiveShell
+vagrant up
+```
 
 The web app is running at [http://localhost:8002](http://localhost:8002). Every Macaulay2 instance runs in a
 separate Docker container with limited resources and does not have access to your
@@ -96,6 +99,7 @@ Edit the Vagrantfile in AWS/ or DigitalOcean/, respectively, with your credentia
 the web app on your AWS or DigitalOcean machine:
 
 `vagrant up AWS/`
+
 `vagrant up DigitalOcean/`
 
 ### Scaling

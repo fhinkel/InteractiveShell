@@ -8,11 +8,23 @@
     <script type="text/javascript" src="jquery-ui-1.10.2.custom/js/jquery-ui-1.10.2.custom.min.js"></script>
     <script type="text/x-mathjax-config">
       MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+      MathJax.Hub.Config({
+      TeX: {
+      Macros: {
+      PP: "{\\mathbb{P}}",
+      ZZ: "{\\mathbb{Z}}",
+      QQ: "{\\mathbb{Q}}",
+      RR: "{\\mathbb{R}}",
+      CC: "{\\mathbb{C}}",
+      bold: ["{\\bf #1}",1]
+      }
+      }
+});
     </script>
     <script type="text/javascript"
             src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
-    
+
     <script src="/siofu/client.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="textAreaManipulation.js"></script>

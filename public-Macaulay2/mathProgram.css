@@ -141,6 +141,7 @@ div-border {
 }
 
 code {
+    white-space: pre;    
     background-color: lightyellow;
     padding: 1px 3px;
     line-height: 1.5;
@@ -150,6 +151,22 @@ code {
     font-family: courier new;
     border-radius: 5px;
     box-shadow: 1px 1px 2px #000;
+}
+
+code2 {
+    white-space: pre;
+	background-color: lightyellow;
+	/*padding: 1px 3px;*/
+    box-shadow: 1px 1px 2px #000;
+	margin-left: 20px;
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+	border-radius:10px;
+	display:inline-block;
+	cursor:pointer;
+	font-family: courier new;
+    padding: 3px 6px;
+	text-decoration:none;
 }
 
 .submenuItem {

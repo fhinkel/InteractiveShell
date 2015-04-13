@@ -1,9 +1,36 @@
+* getting running on windows 7.
+    step 1: Install virtual box: https://www.virtualbox.org/wiki/Downloads
+      Selected all of the default options while installing.
+    step 2. download and install vagrant from http://www.vagrantup.com/downloads
+      click on (or double click on) the resulting file vagrant.msi
+      (for me: "vagrant 1.7.2.msi").  Allow this program to make changes.
+    step 3.  Restart your computer when/if prompted.
+    step 4: Install "Git Bash" from: https://github.com/msysgit/msysgit/releases/
+    step 5:    
+      git clone https://github.com/fhinkel/InteractiveShell.git
+      mkdir vagrant-trym2
+      cd vagrant-trym2
+      cp ../InteractiveShell/Vagrantfile_user Vagrantfile
+      vagrant up
+      vagrant ssh
+      npm run-script sudo_docker
+    step 6:
+      in Chrome or Firefox, open the URL: localhost:3691
+        
+    * we tried to change loading of tutorials to allows loading from a URL.
+    However, it appears that cross-domain loading is not allowed, and we
+    would need to use our server in the middle, which appears to have
+    legality and possibly security issues that would need to be explored.
+    (2015-04-12)
+
 2015-03-20
 ** Get the environment setup such that we can run it in the cloud
     * get it so Mike (and everybody else including "The Cloud" can install
     * use Docker or Vagrant for managing and executing the virtual machine in which Node is running
     * use Docker for managing and executing linux containers or native Docker containers for each user
     * everybody read a Docker tutorial! Lars, create Dockerfile that builds Virtual machine for us. Thanks :)
+
+
 
 ** Upload file for directory or several files at once
 ** Better error handling

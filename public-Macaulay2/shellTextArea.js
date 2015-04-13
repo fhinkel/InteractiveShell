@@ -149,7 +149,7 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
     });
 
     shell.on("onmessage", function(e, msgDirty) {
-        console.log("Dirty JSON message: " + JSON.stringify(msgDirty));
+        // console.log("Dirty JSON message: " + JSON.stringify(msgDirty));
         if(msgDirty == unicodeBell){
             return;
         }

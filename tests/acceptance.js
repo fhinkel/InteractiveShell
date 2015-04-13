@@ -40,5 +40,11 @@ describe.only('Acceptance test', function () {
                 done();
             });
         });
+        it('should get statistics', function (done) {
+            request.get('/admin').expect(200).end(function(error, result) {
+                assert.match(result.text, /<h1>Macaulay2 User Statistics<\/h1>/);
+                done();
+            });
+        });
     });
 });

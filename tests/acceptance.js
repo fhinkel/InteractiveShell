@@ -46,5 +46,13 @@ describe.only('Acceptance test', function () {
                 done();
             });
         });
+        it('should get the list of tutorials', function (done) {
+            request.get('/getListOfTutorials').expect(200).end(function(error, result) {
+                var tutorialList = JSON.parse(result.text);
+                var expected =  "tutorials/welcome2.html";
+                assert.include(tutorialList, expected);
+                done();
+            });
+        });
     });
 });

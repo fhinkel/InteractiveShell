@@ -28,17 +28,7 @@ describe('Acceptance test', function () {
         done();
     });
 
-    describe('As basic behavior we', function () {
-        it('should be able to create server and get title from html body', function (done) {
-            http.get("http://127.0.0.1:" + port, function (res) {
-                res.on('data', function (body) {
-                    var str = body.toString('utf-8');
-                    var n = str.match(/<title>\s*([^\s]*)\s*<\/title>/);
-                    assert.equal(n[1], 'Macaulay2');
-                    done();
-                });
-            });
-        });
+    describe('As basic behavior', function () {
         it('should show title', function (done) {
             request.get('/').expect(200).end(function (error, result) {
                 jsdom.env(

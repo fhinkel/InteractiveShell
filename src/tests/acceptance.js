@@ -3,20 +3,24 @@ var http = require('http');
 var mathServer = require('../lib/mathServer.js');
 var request = require('supertest');
 var jsdom = require("jsdom");
+var fs = require('fs');
 
 process.env.NODE_ENV = 'test';
 
 describe('Acceptance test', function () {
     var port = 8006;
     var server;
+    var jquery;
 
-    before(function () {
+    before(function (done) {
         server = mathServer.MathServer({
             port: port,
             CONTAINERS: './dummy_containers.js'
         });
         server.listen();
         request = request('http://localhost:' + port);
+        jquery = fs.readFileSync(__dirname + "/../../public/jquery-ui-1.10.2.custom/js/jquery-1.9.1.js", "utf-8");
+        done();
     });
 
     after(function (done) {
@@ -39,7 +43,7 @@ describe('Acceptance test', function () {
             request.get('/').expect(200).end(function (error, result) {
                 jsdom.env(
                     result.text,
-                    ["http://code.jquery.com/jquery.js"],
+                    {src: [jquery]},
                     function (errors, window) {
                         var title = window.$("title").text();
                         assert.match(title, /\s*Macaulay2\s*/);
@@ -52,7 +56,7 @@ describe('Acceptance test', function () {
             request.get('/admin').expect(200).end(function (error, result) {
                 jsdom.env(
                     result.text,
-                    ["http://code.jquery.com/jquery.js"],
+                    {src: [jquery]},
                     function (errors, window) {
                         var header = window.$("h1").text();
                         assert.equal(header, "Macaulay2 User Statistics");

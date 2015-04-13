@@ -281,6 +281,7 @@ trym2.inspect = function(obj) {
 
 
 trym2.postMessage = function(msg, notrack) {
+    console.log("Posting msg " + msg);
     trym2.socket.emit('input', msg);
     if(!notrack){
         $("#M2Out").trigger("track", msg);
@@ -403,7 +404,14 @@ $(document).ready(function() {
     trym2.socket.oldEmit = trym2.socket.emit;
     trym2.socket.emit = function(event, msg){
         if(trym2.socket.disconnected){
+            var events = ['reset', 'input'];
             console.log("We are disconnected.");
+            if(events.indexOf(event) != -1){
+                trym2.socket.connect();
+                trym2.socket.oldEmit(event, msg);
+            } else {
+                console.log("Will not reconnect for " + event);
+            }
         } else {
             console.log("Everything is fine, emitting. " + msg);
             trym2.socket.oldEmit(event, msg);
@@ -506,7 +514,7 @@ $(document).ready(function() {
     $('#M2In').val(M2InDefaultText);
     $("#sendBtn").click(trym2.sendCallback('#M2In'));
     $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
-    $("#resetBtn").click(function(){$("#M2Out").trigger("reset"); trym2.socket.emit('reset')});
+    $("#resetBtn").click(function(){$("#M2Out").trigger("reset"); trym2.socket.emit('reset')});;
     $("#interruptBtn").click(function(){trym2.postMessage(ctrlc, true)});
     $("#inputBtn").click(function() {
         trym2.navBar.activate("input");

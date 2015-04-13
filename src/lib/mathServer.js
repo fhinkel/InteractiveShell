@@ -67,6 +67,8 @@ var MathServer = function (overrideOptions) {
     var deleteClientData = function(clientID){
         logExceptOnTest("deleting folder " + staticFolder + userSpecificPath(clientID));
         try{
+            clients[clientID].socket.emit('disconnect');
+            console.log("Sending disconnect. " + clientID);
             clients[clientID].socket.disconnect();
         } catch(error){
             console.log("Socket seems already dead: " + error);
@@ -101,7 +103,7 @@ var MathServer = function (overrideOptions) {
 
 
     var Client = function () {
-        this.recentlyRestarted = false;
+        this.saneState = true;
         //this.lastActiveTime = Date.now(); // milliseconds when client was last active
         this.instance = 0;
     };
@@ -135,7 +137,14 @@ var MathServer = function (overrideOptions) {
         if (clients[clientID].instance) {
             next(clients[clientID].instance);
         } else {
-            instanceManager.getNewInstance(next);
+            instanceManager.getNewInstance(function(err, instance){
+                if(err){
+                    clients[clientID].socket.emit('result', "Sorry, there was an error. Please come back later.\n" + err + "\n\n");
+                    deleteClient(clientID);
+                } else {
+                    next(instance);
+                }
+            });
         }
     };
 
@@ -180,9 +189,11 @@ var MathServer = function (overrideOptions) {
             stream.setEncoding("utf8");
             clients[clientID].mathProgramInstance = stream;
             attachListenersToOutput(clientID);
-            if (next) {
-                next(clientID);
-            }
+            setTimeout(function(){
+                if (next) {
+                    next(clientID);
+                }
+            }, 2000); // Always need a little time before start is done.
         });
     };
 
@@ -339,18 +350,12 @@ var MathServer = function (overrideOptions) {
         stream.close();
     };
 
-    var resetRecentlyRestarted = function (client) {
-        client.recentlyRestarted = true;
-        setTimeout(function () {
-            client.recentlyRestarted = false;
-        }, 1000);
-    };
-
 
     var checkCookie = function (request, response, next) {
         var cookies = new Cookies(request, response);
         var clientID = cookies.get(cookieName);
         if (!clientID) {
+            console.log("New cookie.");
             logExceptOnTest('New client without a cookie set came along');
             logExceptOnTest('Set new cookie!');
             clientID = getNewClientID();
@@ -451,14 +456,26 @@ var MathServer = function (overrideOptions) {
     };
 
     var socketSanityCheck = function (clientId, socket) {
+        console.log("CID is: " + clientId);
         if (!clients[clientId]) {
+            console.log("No client, yet.");
             clients[clientId] = new Client();
             clients[clientId].clientID = clientId;
+        } else if(!clients[clientId].saneState){
+            console.log("Have client " + clientId + ", but he is not sane.");
+            return;
         }
+        clients[clientId].saneState = false;
         clients[clientId].socket = socket;
 
         if (!clients[clientId].mathProgramInstance) {
-            mathProgramStart(clientId);
+            console.log("Starting new mathProgram instance.");
+            mathProgramStart(clientId, function(){
+                clients[clientId].saneState = true;
+            });
+        } else {
+            console.log("Has mathProgram instance.");
+            clients[clientId].saneState = true;
         }
     };
 
@@ -466,6 +483,7 @@ var MathServer = function (overrideOptions) {
         var cookieParser = require('socket.io-cookie');
         io.use(cookieParser);
         io.on('connection', function (socket) {
+            console.log("Incoming new connection!");
             var cookies = socket.request.headers.cookie;
             var clientId = cookies[cookieName];
             socketSanityCheck(clientId, socket);
@@ -476,41 +494,53 @@ var MathServer = function (overrideOptions) {
         return http.listen(options.port);
     };
 
-    var checkStdinAndWrite = function (clientId, msg) {
-        var stdinIsDown = clients[clientId].mathProgramInstance._writableState.ended;
-        if (stdinIsDown) {
-            mathProgramStart(clientId, function () {
-                checkStdinAndWrite(clientId, msg);
-            });
+    var writeMsgOnStream = function(clientId, msg){
+        clients[clientId].mathProgramInstance.stdin.write(msg, function (err) {
+            if (err) {
+                logClient(clientId, "write failed: " + err);
+            }
+        });
+    }
+
+    var checkAndWrite = function (clientId, msg) {
+        if(!clients[clientId].mathProgramInstance || !clients[clientId].mathProgramInstance._writableState){
+            socketSanityCheck(clientId, clients[clientId].socket);
         } else {
-            clients[clientId].mathProgramInstance.stdin.write(msg, function (err) {
-                if (err) {
-                    logClient(clientId, "write failed: " + err);
-                }
-            });
+            writeMsgOnStream(clientId, msg);
         }
     };
-
+    
     var socketInputAction = function (clientId) {
         return function (msg) {
+            console.log("Have clientId: " + clientId);
             updateLastActiveTime(clientId);
-            checkStdinAndWrite(clientId, msg);
+            checkStateAndExecuteAction(clientId, function(){
+                checkAndWrite(clientId, msg);
+            });
         };
+    };
+
+    var checkStateAndExecuteAction = function(clientId, next){
+        if(!clients[clientId] || !clients[clientId].saneState){
+            console.log(clientId + " not accepting events.");
+        } else {
+            next();
+        }
     };
 
     var socketResetAction = function (clientId) {
         return function () {
             logExceptOnTest('Received reset.');
-            var client = clients[clientId];
-            if (client.recentlyRestarted) {
-                logExceptOnTest("Ignore repeated restart request");
-                return;
-            }
-            if (client.mathProgramInstance) {
-                killMathProgram(client.mathProgramInstance, clientId);
-            }
-            resetRecentlyRestarted(client);
-            mathProgramStart(clientId);
+            checkStateAndExecuteAction(clientId, function(){
+                var client = clients[clientId];
+                client.saneState = false;
+                if (client.mathProgramInstance) {
+                    killMathProgram(client.mathProgramInstance, clientId);
+                }
+                mathProgramStart(clientId, function(){
+                    client.saneState = true;
+                });
+            });
         };
     };
 

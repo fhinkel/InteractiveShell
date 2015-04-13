@@ -69,7 +69,7 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
         if (shell.val().length >= mathProgramOutput.length) {
             l = shell.val().length;
             msg = shell.val().substring(mathProgramOutput.length, l) + tail;
-            // console.log("Sending message: " + msg);
+            console.log("Sending message: " + msg);
             if(history != undefined){
                history.val(history.val() + msg);
                scrollDown(history);
@@ -170,7 +170,7 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
     });
 
     shell.on("reset", function(e){
-       console.log("Received reset event.");
+       //console.log("Received reset event.");
        shell.val(mathProgramOutput);
     });
 };

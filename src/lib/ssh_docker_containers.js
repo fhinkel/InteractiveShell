@@ -152,11 +152,11 @@ var ssh_docker_manager = function (overrideResources, overrideHostConfig, overri
                 // var error = dataObject.toString();
                 
             });
-        });
+        }, next);
 
     };
 
-    var connectToHostAndExecCmd = function(cmd, next){
+    var connectToHostAndExecCmd = function(cmd, next, errorHandler){
         // console.log("Will exec cmd:\n" + cmd);
         var connection = new ssh2.Client();
         connection.on('ready', function () {
@@ -179,6 +179,9 @@ var ssh_docker_manager = function (overrideResources, overrideHostConfig, overri
             });
         }).on('error', function(error){
             console.log("Error while sshing: " + error +"\nTried to do: " + cmd);
+            if(errorHandler){
+                errorHandler(error);
+            }   
         }).connect({
             host: hostConfig.host,
             port: hostConfig.port,
@@ -206,7 +209,7 @@ var ssh_docker_manager = function (overrideResources, overrideHostConfig, overri
             stream.stderr.on('data', function(dataObject){
                 console.log("ContainerStart: Receiving stderr: " + dataObject);
             });
-        });
+        }, next);
     };
 
     var checkForRunningSshd = function(instance, next){
@@ -226,14 +229,14 @@ var ssh_docker_manager = function (overrideResources, overrideHostConfig, overri
                     console.log('Container started + sshd running: ' + data);
                     instance.lastActiveTime = Date.now();
                     addInstanceToArray(instance);
-                    next(instance);
+                    next(null, instance);
                 }
             });
 
             stream.stderr.on('data', function(dataObject){
                 console.log("CheckRunningSshd: Receiving stderr: " + dataObject);
             });
-        });
+        }, next);
     };
 
     var sortInstancesByAge = function(){

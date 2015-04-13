@@ -5,7 +5,7 @@ var request = require('supertest');
 
 process.env.NODE_ENV = 'test';
 
-describe.only('Acceptance test', function () {
+describe('Acceptance test', function () {
     var port = 8006;
     var server;
 

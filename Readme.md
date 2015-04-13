@@ -38,7 +38,12 @@ Anybody is welcome to use and direct their students to [http://web.macaulay2.com
 This works from any device, even mobile, all
 you need is a network connection. We start a new Macaulay2 instance for every user and provide
 them with an underlying linux system of their own. Thus you can use all the features you a natively installed Macaulay2:
-execute linux commands through Macaulay2's `get "!uname -ar"` command, access the file system to write and read
+execute linux commands through Macaulay2's
+
+```shell
+get "!uname -ar"
+```
+command, access the file system to write and read
 files, and install third party Macaulay2 packages.
 
 We identify you by cookies. If you run long computations, you can come back later and we will

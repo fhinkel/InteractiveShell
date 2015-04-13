@@ -22,6 +22,7 @@
     "cookies": "~0.5.0",
     "express": "^4.10.8",
     "express-winston": "~0.2.9",
+    "forever": "^0.14.1",
     "serve-favicon": "^2.1.7",
     "serve-static": "^1.7.2",
     "socket.io": "^1.2.1",
@@ -36,7 +37,7 @@
     "ssh_docker": "node src/lib/Macaulay2SshDocker.js",
     "test": "mocha src/tests/ --reporter spec --timeout 6000",
     "stop": "kill `ps ax | grep Server | grep -v monitor | grep node | awk '{print $1}'`",
-    "forever": "forever start -l /home/webm2.logs/forever.log -o /home/webm2.logs/out.log -e /home/webm2.logs/err.log --append src/lib/Macaulay2Server.js"
+    "forever": "./node_modules/forever/bin/forever start -l /home/webm2.logs/forever.log -o /home/webm2.logs/out.log -e /home/webm2.logs/err.log --append src/lib/Macaulay2Server.js"
   },
   "repository": {
     "type": "git",

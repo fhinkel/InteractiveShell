@@ -36,13 +36,14 @@ Vagrant.configure(2) do |config|
      nodejs.vm.box = "ubuntu/trusty64"
      nodejs.vm.synced_folder "../", "/home/vagrant/InteractiveShell"
      nodejs.vm.network "forwarded_port", guest: 22, host: 4998, id: 'ssh'
-     nodejs.vm.network "forwarded_port", guest: 8002, host: 3692
+     nodejs.vm.network "forwarded_port", guest: 8002, host: 3690
      nodejs.vm.provision "shell", privileged:false, inline: <<-SHELL
        sudo apt-get update
        sudo apt-get upgrade -y
        sudo apt-get install -y nodejs npm wget git
        sudo ln -s /usr/bin/nodejs /usr/bin/node
        sudo chown -R vagrant:vagrant /home/vagrant/InteractiveShell
+       mkdir webm2.logs
        cd InteractiveShell
        npm install
      SHELL

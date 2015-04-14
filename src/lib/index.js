@@ -304,6 +304,7 @@ var MathServer = function (overrideOptions) {
             if (err) {
                 logClient(clientId, "write failed: " + err);
             }
+            socketSanityCheck(clientId, clients[clientId].socket);
         });
     };
 

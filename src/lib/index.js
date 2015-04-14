@@ -3,8 +3,8 @@ var http = require('http').Server(app);
 var fs = require('fs');
 var Cookies = require('cookies');
 var io = require('socket.io')(http);
-var SocketIOFileUpload = require('socketio-file-upload');
 var ssh2 = require('ssh2');
+var SocketIOFileUpload = require('socketio-file-upload');
 
 
 var MathServer = function (overrideOptions) {
@@ -31,6 +31,16 @@ var MathServer = function (overrideOptions) {
             }
         }
     };
+
+    var sshCredentials = function (instance) {
+        return {
+            host: instance.host,
+            port: instance.port,
+            username: instance.username,
+            privateKey: fs.readFileSync(instance.sshKey)
+        }
+    };
+
 
     overrideDefaultOptions(overrideOptions);
 
@@ -194,12 +204,13 @@ var MathServer = function (overrideOptions) {
             }
             updateLastActiveTime(clientID);
             if (containsSpecialEvent(data)) {
+                logExceptOnTest('Contains special data');
                 var specialUrlEmitter = require('./specialUrlEmitter')(clients,
                     options,
                     staticFolder,
                     userSpecificPath,
                     sshCredentials,
-                    logExceptOnTest()
+                    logExceptOnTest
                 );
                 specialUrlEmitter.emitEventUrlToClient(clientID, containsSpecialEvent(data), data);
                 return;
@@ -304,59 +315,6 @@ var MathServer = function (overrideOptions) {
             .use(unhandled);
     };
 
-    var attachUploadListenerToSocket = function (clientId, socket) {
-        var uploader = new SocketIOFileUpload();
-        uploader.listen(socket);
-
-        uploader.on("error", function (event) {
-            console.error("Error in upload " + event);
-        });
-
-        uploader.on("start", function (event) {
-            clients[clientId].fileUploadBuffer = "";
-            logExceptOnTest('File upload ' + event.file.name);
-        });
-
-        uploader.on("progress", function (event) {
-            // TODO: Limit size.
-            clients[clientId].fileUploadBuffer += event.buffer;
-        });
-
-        uploader.on("complete", completeFileUpload(clientId));
-    };
-
-    var completeFileUpload = function (clientId) {
-        return function (event) {
-            var connection = ssh2();
-
-            connection.on('end', function () {
-            });
-
-            connection.on('ready', function () {
-                connection.sftp(function (err, sftp) {
-                    var stream = sftp.createWriteStream(event.file.name);
-                    stream.write(clients[clientId].fileUploadBuffer.toString());
-                    stream.end(function () {
-                        connection.end();
-                    });
-                    clients[clientId].fileUploadBuffer = "";
-                });
-            });
-
-            connection.connect(sshCredentials(clients[clientId].instance));
-
-        };
-    };
-
-    var sshCredentials = function (instance) {
-        return {
-            host: instance.host,
-            port: instance.port,
-            username: instance.username,
-            privateKey: fs.readFileSync(instance.sshKey)
-        }
-    };
-
     var socketSanityCheck = function (clientId, socket) {
         console.log("CID is: " + clientId);
         if (!clients[clientId]) {
@@ -389,7 +347,8 @@ var MathServer = function (overrideOptions) {
             var cookies = socket.request.headers.cookie;
             var clientId = cookies[cookieName];
             socketSanityCheck(clientId, socket);
-            attachUploadListenerToSocket(clientId, socket);
+            var fileUpload = require('./fileUpload.js')(clients, logExceptOnTest, sshCredentials);
+            fileUpload.attachUploadListenerToSocket(clientId, socket);
             socket.on('input', socketInputAction(clientId));
             socket.on('reset', socketResetAction(clientId));
         });
@@ -445,11 +404,6 @@ var MathServer = function (overrideOptions) {
             });
         };
     };
-
-    process.on('uncaughtException', function (err) {
-        console.trace(err);
-        console.error('Caught exception in global process object: ' + err);
-    });
 
     initializeServer();
 

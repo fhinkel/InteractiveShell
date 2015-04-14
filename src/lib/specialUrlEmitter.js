@@ -6,8 +6,7 @@ module.exports = function (clients,
                            staticFolder,
                            userSpecificPath,
                            sshCredentials,
-                           logExceptOnTest
-) {
+                           logExceptOnTest) {
     var emitUrlForUserGeneratedFileToClient = function (clientId, path) {
         var partAfterLastSlash = /([^\/]*)$/;
         var fileName = path.match(partAfterLastSlash);
@@ -17,38 +16,40 @@ module.exports = function (clients,
             return;
         }
         var sshConnection = ssh2();
-
         sshConnection.on('end', function () {
             logExceptOnTest("Image action ended.");
         });
 
-        sshConnection.on('ready', function () {
-            sshConnection.sftp(function (err, sftp) {
-                var targetPath = staticFolder + '-' + options.MATH_PROGRAM + userSpecificPath(clientId);
-                fs.mkdir(targetPath, function (err) {
-                    if (err) {
-                        logExceptOnTest("Folder exists, but we proceed anyway");
+        var handleUserGeneratedFile = function (err, sftp) {
+            var targetPath = staticFolder + '-' + options.MATH_PROGRAM + userSpecificPath(clientId);
+            console.log('Path: ' + targetPath);
+            fs.mkdir(targetPath, function (err) {
+                if (err) {
+                    logExceptOnTest("Folder exists, but we proceed anyway");
+                }
+                var completePath = targetPath + fileName;
+                sftp.fastGet(path, completePath, function (error) {
+                    if (error) {
+                        console.error("Error while downloading image. PATH: " + path + ", ERROR: " + error);
+                    } else {
+                        setTimeout(function () {
+                            fs.unlink(completePath, function (err) {
+                                if (err) {
+                                    console.error("Error unlinking user generated file " + completePath);
+                                    console.error(err);
+                                }
+                            })
+                        }, 1000 * 60 * 10);
+                        clients[clientId].socket.emit(
+                            "image", userSpecificPath(clientId) + fileName
+                        );
                     }
-                    var completePath = targetPath + fileName;
-                    sftp.fastGet(path, completePath, function (error) {
-                        if (error) {
-                            console.error("Error while downloading image. PATH: " + path + ", ERROR: " + error);
-                        } else {
-                            setTimeout(function () {
-                                fs.unlink(completePath, function (err) {
-                                    if (err) {
-                                        console.error("Error unlinking user generated file " + completePath);
-                                        console.error(err);
-                                    }
-                                })
-                            }, 1000 * 60 * 10);
-                            clients[clientId].socket.emit(
-                                "image", userSpecificPath(clientId) + fileName
-                            );
-                        }
-                    });
                 });
             });
+        };
+
+        sshConnection.on('ready', function () {
+            sshConnection.sftp(handleUserGeneratedFile);
         });
 
         sshConnection.connect(sshCredentials(clients[clientId].instance));
@@ -78,6 +79,7 @@ module.exports = function (clients,
                 return;
             } else {
                 emitUrlForUserGeneratedFileToClient(clientID, eventType);
+                console.log('emitted');
             }
             var outputData = data.replace(/>>SPECIAL_EVENT_START>>/, "opening ");
             outputData = outputData.replace(/<<SPECIAL_EVENT_END<</, "");

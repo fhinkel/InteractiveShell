@@ -74,10 +74,10 @@ var ssh_docker_manager = function (overrideResources, overrideHostConfig, overri
         var removalCommand = "sudo docker rm -f " + instance.containerName;
         connectToHostAndExecCmd(removalCommand, function(stream){
             stream.on('data', function(dataObject){
-                console.log("Got data while removing: " + dataObject);
+                //console.log("Got data while removing: " + dataObject);
             });
             stream.stderr.on('data', function(dataObject){
-                console.log("Receiving stderr while removing: " + dataObject);
+                //console.log("Receiving stderr while removing: " + dataObject);
             });
             removeInstanceFromArray(instance);
             if(next){
@@ -101,7 +101,7 @@ var ssh_docker_manager = function (overrideResources, overrideHostConfig, overri
     }
    
     var killOldestContainer = function(next){
-        console.log("Have reached max num of instances, killing oldest.");
+        // console.log("Have reached max num of instances, killing oldest.");
         sortInstancesByAge();
         if(isLegal(currentContainers[0])){
             removeInstance(currentContainers[0], function(){
@@ -145,7 +145,7 @@ var ssh_docker_manager = function (overrideResources, overrideHostConfig, overri
                 // console.log("Receiving stderr: " + dataObject);
                 var data = dataObject.toString();
                 if(data.match(/ERROR/i)){
-                    console.log("We got an error. Requesting other instance.");
+                    // console.log("We got an error. Requesting other instance.");
                     getNewInstance(next);
                     stream.end();
                 }
@@ -207,7 +207,7 @@ var ssh_docker_manager = function (overrideResources, overrideHostConfig, overri
             });
 
             stream.stderr.on('data', function(dataObject){
-                console.log("ContainerStart: Receiving stderr: " + dataObject);
+                // console.log("ContainerStart: Receiving stderr: " + dataObject);
             });
         }, next);
     };
@@ -223,10 +223,10 @@ var ssh_docker_manager = function (overrideResources, overrideHostConfig, overri
                 // console.log("Receiving data: " + dataObject);
                 var data = dataObject.toString();
                 if(data == 0){
-                    console.log('No sshd running');
+                    // console.log('No sshd running');
                     checkForRunningSshd(instance, next);
                 } else {
-                    console.log('Container started + sshd running: ' + data);
+                    // console.log('Container started + sshd running: ' + data);
                     instance.lastActiveTime = Date.now();
                     addInstanceToArray(instance);
                     next(null, instance);
@@ -234,7 +234,7 @@ var ssh_docker_manager = function (overrideResources, overrideHostConfig, overri
             });
 
             stream.stderr.on('data', function(dataObject){
-                console.log("CheckRunningSshd: Receiving stderr: " + dataObject);
+                // console.log("CheckRunningSshd: Receiving stderr: " + dataObject);
             });
         }, next);
     };

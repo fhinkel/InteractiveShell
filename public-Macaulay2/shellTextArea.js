@@ -1,8 +1,6 @@
-console.log("1: Loading shell.");
 // initialize with ID (string) of field that should act like a shell,
 //  i.e., command history, taking input and replacing it with output from server
 var shellObject = function(shellArea, historyArea, shellFunctions) {
-    console.log("2: Loading shell.");
     var keys = {
         arrowUp: 38,
         arrowDown: 40,
@@ -45,11 +43,9 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
 
     var getCurrentCommand = function(){
         var completeText = shell.val().split("\n");
-        console.log(completeText);
         var lastLine = completeText[completeText.length-2];
         lastLine = lastLine.replace(/^i\d+\s*:/,"");
         lastLine = lastLine.replace(/^\s*/,"");
-        console.log("Last line is: " + lastLine);
         return lastLine;
     };
 
@@ -69,7 +65,6 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
         if (shell.val().length >= mathProgramOutput.length) {
             l = shell.val().length;
             msg = shell.val().substring(mathProgramOutput.length, l) + tail;
-            console.log("Sending message: " + msg);
             if(history != undefined){
                history.val(history.val() + msg);
                scrollDown(history);
@@ -116,7 +111,6 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
         
         if ((e.keyCode == keys.arrowUp) || (e.keyCode == keys.arrowDown)) {
             upDownArrowKeyHandling(e);
-            // console.log("Arrow key.");
         }
         if (e.keyCode == keys.ctrlKeyCode) { // do not jump to bottom on Ctrl+C or on Ctrl
             return;
@@ -131,7 +125,6 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
         }
         var pos = shell[0].selectionStart;
         if (pos < mathProgramOutput.length) {
-            //console.log(pos + " Moving to end."); 
             setCaretPosition(shell, shell.val().length);
         }
         // This deals with backspace.

@@ -79,17 +79,6 @@ var MathServer = function (overrideOptions) {
         delete clients[clientID];
     };
 
-
-    var removeOldClients = function (minimalLastActiveTimeForClient) {
-        for (var clientID in clients) {
-            if (clients.hasOwnProperty(clientID)) {
-                if (clients[clientID].instance.lastActiveTime < minimalLastActiveTimeForClient) {
-                    deleteClient(clientID);
-                }
-            }
-        }
-    };
-
     var logCurrentlyActiveClients = function () {
         for (var clientID in clients) {
             if (clients.hasOwnProperty(clientID)) {

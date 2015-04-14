@@ -20,6 +20,15 @@ module.exports = function (clients,
             logExceptOnTest("Image action ended.");
         });
 
+        var unlink = function (completePath) {
+            fs.unlink(completePath, function (err) {
+                if (err) {
+                    console.error("Error unlinking user generated file " + completePath);
+                    console.error(err);
+                }
+            })
+        };
+
         var handleUserGeneratedFile = function (err, sftp) {
             var targetPath = staticFolder + '-' + options.MATH_PROGRAM + userSpecificPath(clientId);
             console.log('Path: ' + targetPath);
@@ -32,14 +41,7 @@ module.exports = function (clients,
                     if (error) {
                         console.error("Error while downloading image. PATH: " + path + ", ERROR: " + error);
                     } else {
-                        setTimeout(function () {
-                            fs.unlink(completePath, function (err) {
-                                if (err) {
-                                    console.error("Error unlinking user generated file " + completePath);
-                                    console.error(err);
-                                }
-                            })
-                        }, 1000 * 60 * 10);
+                        setTimeout(unlink(completePath), 1000 * 60 * 10);
                         clients[clientId].socket.emit(
                             "image", userSpecificPath(clientId) + fileName
                         );

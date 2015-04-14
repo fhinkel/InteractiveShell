@@ -6,13 +6,14 @@
 
 With Interactive Shell you can build a web app for interactive command-line tools.
 We have developed Interactive Shell specifically for Macaulay2.
+[Macaulay2](http://www.macaulay2.com) is a software system devoted to supporting research in algebraic geometry and
+commutative algebra, whose creation and development have been funded by the National Science Foundation since 1992.
+Interactive Shell has been used in courses at Cornell University, Harvard University, Georgia Tech,
+and Free University of Berlin.
 
 **[See Interactive Shell in action](http://web.macaulay2.com)**.
 
-[Macaulay2](http://www.macaulay2.com) is a software system devoted to supporting research in algebraic geometry and
-commutative algebra, whose creation and development have been funded by the National Science Foundation since 1992.
-
-![Web App Screenshot](https://raw.githubusercontent.com/fhinkel/InteractiveShell/master/Readme/WebAppScreenshot-low.jpg)  "Interactive Shell with Macaulay2 running at http://web.macaulay2.com")
+![Web App Screenshot](https://raw.githubusercontent.com/fhinkel/InteractiveShell/master/Readme/WebAppScreenshot-low.jpg "Interactive Shell with Macaulay2 running at http://web.macaulay2.com")
 
 At its core, **the web app is a terminal emulator, giving you an interface to a Macaulay2
 instance running remotely.** The main advantage of providing a web app rather than a native app is that you
@@ -52,7 +53,7 @@ have the results ready for you. Occasionally, we have to reboot the server or de
 If you want to use the web app offline or run very intense computations that need more resources than we provide,
 you can easily run the web app locally or set up your own server.
 
-### Local server for private use
+### With Docker Containers (Recommended)
 
 We have a Vagrant file that configures a virtual machine with everything you need to run your own Server with Macaulay2.
 You do not need to install Macaulay2 locally.
@@ -64,12 +65,18 @@ Vagrant from within [Git BASH](https://msysgit.github.io/). Do the following ins
 ```bash
 git clone https://github.com/fhinkel/InteractiveShell.git
 cd InteractiveShell
-vagrant up local
+vagrant up
+vagrant ssh
+cd InteractiveShell
+npm start
 ```
 
-This gives you an (unsecured!) Macaulay2 terminal emulator at [http://localhost:8002](http://localhost:8002).
-That means users can access and modify your private data through Macaulay2's `get` command. Make sure you do not
-allow web access to your machine to other users on the same network, i.e., make sure your laptop's firewall is on.
+The web app is running at [http://localhost:8002](http://localhost:8002). Every Macaulay2 instance runs in a
+separate Docker container with limited resources and does not have access to your
+filesystem. Users can only access files inside their
+Docker container.
+
+### Without Virtualisation
 
 If you do not want to run the web app within a virtual machine, you can run it locally. You need Macaulay2,
 Node.js, npm, and Git. Start the web app with the following commands:
@@ -78,45 +85,29 @@ Node.js, npm, and Git. Start the web app with the following commands:
 git clone https://github.com/fhinkel/InteractiveShell.git
 cd InteractiveShell
 npm install
-npm start
+npm start basic
 ```
 
-### Hosting
+This gives you an (unsecured!) Macaulay2 terminal emulator at [http://localhost:8002](http://localhost:8002).
+That means users can access and modify your private data through Macaulay2's `get` command. Make sure you do not
+allow web access to your machine to other users on the same network, i.e., make sure your laptop's firewall is on.
 
-If you want to give other users access to the web app that you are hosting (e.g., on your laptop or a server), we provide a
-secure version that uses Docker containers for every user.
+### Scaling Up (Advanced)
 
-
-```bash
-git clone https://github.com/fhinkel/InteractiveShell.git
-cd InteractiveShell
-vagrant up
-```
-
-The web app is running at [http://localhost:8002](http://localhost:8002). Every Macaulay2 instance runs in a
-separate Docker container with limited resources and does not have access to your
-filesystem. Users can only access files inside their
-Docker container.
-
-With Vagrant it is easy to run the web app in the cloud, e.g., at AWS or DigitalOcean.
-Edit the Vagrantfile in AWS/ or DigitalOcean/, respectively, with your credentials. Then you can easily bring up
-the web app on your AWS or DigitalOcean machine:
-
-```bash
-vagrant up AWS
-vagrant up DigitalOcean
-```
-
-### Scaling
+With Vagrant it is easy to run the web app in the cloud, e.g., at AWS or DigitalOcean. You need to customize the file
+ `Vagrantfile_aws` with your credentials.
 
 When you teach large classes, the resources on one machine might not suffice. Remember, for every user we start a
 Docker container with Macaulay2. The Docker containers and the server
-that handles requests can be on remote machines because they communicate via ssh. We have a vagrant configuration for
-this setup as well. You need to configure the IP addresses of the machines the Docker containers can run in. Then run
+that handles requests can be on remote machines because they communicate via ssh.
+We have a vagrant configuration that starts server and containers on separate instances.
 
 ```bash
-vagrant up scaling
+cd separate_machines
+vagrant up
 ```
+Adjust resource limits as needed.
+
 ## Contributing
 We welcome any contributions. Feel free to send us an email if you want to provide a tutorial or have
 any questions: [trym2@googlegroups.com](mailto:trym2@googlegroups.com).
@@ -140,12 +131,12 @@ Allowing you to develop locally but having the complete setup with Docker and se
 server and Docker containers. To start different versions run
 
 ```bash
-npm run-script start  ## insecure
-npm run-script startLocal ## insecure without Docker
-npm run-script startDocker ## Docker containers
-npm run-script startSshDocker ## Docker containers on different machine than server
+npm run-script basic  ## basic without Docker containers
+npm start ## basic with Docker containers
+npm run-script ssh ## Docker containers on different machine than server
 ```
 
 ### Continuous Integration
-We use TravisCi to check our builds. We recommend signing up for TravisCi and enabling
-this repository before sending a pull request.
+We use [Travis Ci](https://travis-ci.org) to check our builds. We recommend signing up for Travis Ci and enabling
+our fork of this repository before sending a pull request.
+[![Build Status](https://travis-ci.org/fhinkel/InteractiveShell.svg?branch=master)](https://travis-ci.org/fhinkel/InteractiveShell)

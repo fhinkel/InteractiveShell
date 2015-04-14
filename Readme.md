@@ -17,7 +17,7 @@ commutative algebra, whose creation and development have been funded by the Nati
 At its core, **the web app is a terminal emulator, giving you an interface to a Macaulay2
 instance running remotely.** The main advantage of providing a web app rather than a native app is that you
 do not need to download and install Macaulay2,
-thus easing the entry barrier for new users. We have also found, that users unfamiliar with unix-style
+thus easing the entry barrier for new users. We have also found that users unfamiliar with unix-style
 command-line tools are more comfortable using a web app than a terminal.
 
 The web app contains **interactive tutorials** that explain how to use the web app, show some more advanced features
@@ -117,7 +117,6 @@ this setup as well. You need to configure the IP addresses of the machines the D
 ```bash
 vagrant up scaling
 ```
-
 ## Contributing
 We welcome any contributions. Feel free to send us an email if you want to provide a tutorial or have
 any questions: [trym2@googlegroups.com](mailto:trym2@googlegroups.com).

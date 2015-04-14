@@ -103,8 +103,8 @@ Edit the Vagrantfile in AWS/ or DigitalOcean/, respectively, with your credentia
 the web app on your AWS or DigitalOcean machine:
 
 ```bash
-`vagrant up AWS`
-`vagrant up DigitalOcean`
+vagrant up AWS
+vagrant up DigitalOcean
 ```
 
 ### Scaling

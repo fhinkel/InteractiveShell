@@ -457,10 +457,10 @@ Description
      Example
 	  saturate (ideal"u3w,uv", ideal"u")
      Text
-	  We can also take the ``ideal quotient'' I:J of an ideal I with
-	  respect to another, J
-	  defined as the set of elements f such that
-	  f*J is contained in I:
+	  We can also take the \({\it ideal\ quotient}\) $I:J$ of an ideal $I$ with
+	  respect to another, $J$
+	  defined as the set of elements $f$ such that
+	  $fJ$ is contained in $I$:
      Example
 	  ideal"u3w,uv":ideal"u"
      Text
@@ -471,8 +471,8 @@ Description
      Text
 	  It is easy to define your own functions in \(\mac\), and this
 	  can save a lot of typing. Functions are defined with the 
-	  symbol ->. For example, the famous {\em Collatz Conjecture}
-	  (also called the ``hailstone problem'') asks
+	  symbol ->. For example, the famous \({\it Collatz\ Conjecture}\)
+	  (also called the "hailstone problem") asks
 	  about the following procedure: given an integer $n$, divide it
 	  by 2 if possible, or else multiply by 3 and add 1. 
 	  If we repeat this over and over,
@@ -487,12 +487,10 @@ Description
      Example
 	  Collatz 27
      Text
-	  If you don't understand this code easily, see @ TO Function @ and @ TO "while" @, or try:
-     Code
-     	  EXAMPLE { 
-	       PRE "viewHelp Function",
-	       PRE ///viewHelp "while"///
-	       }
+	  If you don't understand this code easily, see:
+     Example
+      viewHelp Function
+      viewHelp "while"
      Text
 	  In order to understand a process it is often useful to tabulate the 
 	  results of applying it many times. One feature of the Collatz process
@@ -509,7 +507,7 @@ Description
      Text
 	  in the result means that a Collatz sequence of length 18
 	  was seen 3 times. 
-	  To see the successive ``record-breakers'', 
+	  To see the successive "record-breakers", 
 	  that is, the numbers with longer Collatz sequences than any
 	  number before them, we might try:
      Example
@@ -531,29 +529,29 @@ Description
 	  Note that in
 	  writing functions of more than one expression (usually
 	  there's one expression per line), the expressions must be
-	  separated by semicolons. For example in the ``for'' loop
-	  above, the first expression was ``{\tt l = length Collatz n}''. 
+	  separated by semicolons. For example in the "for" loop
+	  above, the first expression was \({\tt l = length\ Collatz\ n}\).
 	  After the last expression of an input line or of a function body,
 	  a semicolon suppresses output, useful when the output
 	  would be large. 	  
 	  
 	  There are many packages of ready-made functions available for
 	  your use, many written by other users (perhaps you'll contribute one
-	  someday!) A list of ``installed'' packages can be found with:
-     Code
-     	  EXAMPLE { PRE ///viewHelp/// }
+	  someday!) A list of installed packages can be found with:
+     Example
+      viewHelp "packages provided with Macaulay2"
      Text
-	  For example, there is a package called @TO "EdgeIdeals::EdgeIdeals"@. 
+	  For example, there is a package called @TO EdgeIdeals@. 
 	  To load the package, use:
      Example
-	  loadPackage "EdgeIdeals"
+	  needsPackage "EdgeIdeals"
      Text
 	  After loading it, you can view its documentation with 
-     Code
-     	  EXAMPLE { PRE "viewHelp EdgeIdeals" }
+     Example
+      viewHelp EdgeIdeals
      Text
      	  or you can call its functions, 
-	  such as @TO "EdgeIdeals::randomGraph"@ and @TO "EdgeIdeals::edgeIdeal"@:
+	  such as @TO "randomGraph"@ and @TO "edgeIdeal"@:
      Example
 	  R = kk[vars(0..10)]
 	  G=randomGraph (R,20)
@@ -566,9 +564,9 @@ Description
 	  large number of randomly chosen
 	  examples.
 	  Here's some typical code that one might use to study
-	  a random graph ideal.  First we use ``{\tt for ... list ...}'' to construct a list {\tt L}
+	  a random graph ideal.  First we use "for ... list ..." to construct a list $L$
 	  and suppress its printing by ending the line that creates
-	  it with a ``;''.  Each entry of {\tt L} is a triple consisting of the
+	  it with a ";".  Each entry of $L$ is a triple consisting of the
 	  codimension, degree, and Betti table of a random graph ideal
 	  on 10 vertices having only 4 edges.
      Example
@@ -643,10 +641,10 @@ Description
 	  the multiplicity with which a 2-plane meets the union
 	  of two 2-planes in 4-space (this is the first case in which
 	  the length of the intersection scheme is NOT the right answer.)
-	  The notation ``{\tt M**N}'' denotes the tensor product of the modules $M$ and $N$.
+	  The notation "M**N" denotes the tensor product $M \otimes_S N$ of the modules $M$ and $N$.
 	  We use the syntactical forms
-	  ``{\tt for j from 0 to 4 list ...}'' to list some results and
-	  ``{\tt sum(0..4, j -> ...)}'' to sum some results.
+	  "for j from 0 to 4 list ..." to list some results and
+	  "sum(0..4, j -> ...)" to sum some results.
      Example
 	  S=kk[a,b,c,d]
 	  IX = intersect(ideal(a,b), ideal(c,d))

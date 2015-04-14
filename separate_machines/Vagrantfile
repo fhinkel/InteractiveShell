@@ -76,7 +76,9 @@ Vagrant.configure(2) do |config|
        sudo docker build -t m2container .
        sudo iptables -I DOCKER ! -d 192.168.2.37 -j DROP
        sudo iptables -I DOCKER ! -s 192.168.2.37 -j DROP
-       dpkg-reconfigure iptables-persistent
+       sudo iptables -I DOCKER -d 192.168.2.37 -j ACCEPT
+       sudo iptables -I DOCKER -s 192.168.2.37 -j ACCEPT
+       sudo dpkg-reconfigure iptables-persistent
      SHELL
      # Last three lines need the nodejs IP from above, but this does not work
      # with verbatim mode.

@@ -491,7 +491,7 @@ QUnit = {
 // All of these must either call QUnit.push() or manually do:
 // - runLoggingCallbacks( "log", .. );
 // - config.current.assertions.push({ .. });
-// We attach it to the QUnit object *after* we expose the public API,
+// We attach it to the QUnit object *after* we expose the public-common API,
 // otherwise `assert` will become a global variable in browsers (#341).
 assert = {
 	/**

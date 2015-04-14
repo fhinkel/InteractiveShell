@@ -7,7 +7,7 @@ describe('GetListOfTutorials Module test', function () {
 
     before(function () {
         fs = require('fs');
-        directoryReader = require('../lib/tutorialReader.js')("public-Macaulay2/", fs);
+        directoryReader = require('../lib/tutorialReader.js')("public/public-Macaulay2/", fs);
     });
 
     describe('When we call getTutorialList on the real file system', function () {

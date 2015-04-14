@@ -3,12 +3,12 @@ var http = require('http').Server(app);
 var fs = require('fs');
 var Cookies = require('cookies');
 var io = require('socket.io')(http);
-var SocketIOFileUpload = require('socketio-file-upload');
 var ssh2 = require('ssh2');
+var SocketIOFileUpload = require('socketio-file-upload');
 
 
 var MathServer = function (overrideOptions) {
-    var staticFolder = __dirname + '/../../public';
+    var staticFolder = __dirname + '/../../public/public';
 
     var options = {
         port: 8002, // default port number to use
@@ -32,15 +32,24 @@ var MathServer = function (overrideOptions) {
         }
     };
 
-    overrideDefaultOptions(overrideOptions);
+    var sshCredentials = function (instance) {
+        return {
+            host: instance.host,
+            port: instance.port,
+            username: instance.username,
+            privateKey: fs.readFileSync(instance.sshKey)
+        }
+    };
 
+    overrideDefaultOptions(overrideOptions);
 
     var cookieName = "try" + options.MATH_PROGRAM;
 
-    var totalUsers = 0; //only used for stats: total # users since server started
 
     // Global array of all Client objects.  Each has a math program process.
-    var clients = {};
+    var clients = {
+        totalUsers: 0
+    };
     if (!options.CONTAINERS) {
         console.error("error, no container management given.");
         throw ("No CONTAINERS!");
@@ -48,7 +57,6 @@ var MathServer = function (overrideOptions) {
 
     var instanceManager = require(options.CONTAINERS).manager();
 
-    // preamble every log with the client ID
     var logClient = function (clientID, str) {
         if (process.env.NODE_ENV !== 'test') {
             logExceptOnTest(clientID + ": " + str);
@@ -64,67 +72,26 @@ var MathServer = function (overrideOptions) {
         deleteClientData(clientID);
     };
 
-    var deleteClientData = function(clientID){
+    var deleteClientData = function (clientID) {
         logExceptOnTest("deleting folder " + staticFolder + userSpecificPath(clientID));
-        try{
+        try {
             clients[clientID].socket.emit('serverDisconnect');
             console.log("Sending disconnect. " + clientID);
             clients[clientID].socket.disconnect();
-        } catch(error){
+        } catch (error) {
             console.log("Socket seems already dead: " + error);
         }
-        fs.rmdir(staticFolder + userSpecificPath(clientID), function(error) {
-            if(error) {
+        fs.rmdir(staticFolder + userSpecificPath(clientID), function (error) {
+            if (error) {
                 console.error('Error deleting user folder: ' + error);
             }
         });
         delete clients[clientID];
     };
 
-
-    var removeOldClients = function (minimalLastActiveTimeForClient) {
-        for (var clientID in clients) {
-            if (clients.hasOwnProperty(clientID)) {
-                if (clients[clientID].instance.lastActiveTime < minimalLastActiveTimeForClient) {
-                    deleteClient(clientID);
-                }
-            }
-        }
-    };
-
-    var logCurrentlyActiveClients = function () {
-        for (var clientID in clients) {
-            if (clients.hasOwnProperty(clientID)) {
-                logExceptOnTest(clientID);
-            }
-        }
-    };
-
-
-
     var Client = function () {
         this.saneState = true;
-        //this.lastActiveTime = Date.now(); // milliseconds when client was last active
         this.instance = 0;
-    };
-
-    var clientIDExists = function (clientID) {
-        if (clients[clientID] == null) {
-            return false;
-        }
-        logClient(clientID, "Client already exists");
-        return true;
-    };
-
-    var getNewClientID = function () {
-        totalUsers += 1;
-        do {
-            var clientID = Math.random() * 1000000;
-            clientID = Math.floor(clientID);
-        } while (clientIDExists(clientID));
-        clientID = "user" + clientID.toString(10);
-        logExceptOnTest("New Client ID " + clientID);
-        return clientID;
     };
 
     var setCookie = function (cookies, clientID) {
@@ -137,8 +104,8 @@ var MathServer = function (overrideOptions) {
         if (clients[clientID].instance) {
             next(clients[clientID].instance);
         } else {
-            instanceManager.getNewInstance(function(err, instance){
-                if(err){
+            instanceManager.getNewInstance(function (err, instance) {
+                if (err) {
                     clients[clientID].socket.emit('result', "Sorry, there was an error. Please come back later.\n" + err + "\n\n");
                     deleteClientData(clientID);
                 } else {
@@ -148,8 +115,8 @@ var MathServer = function (overrideOptions) {
         }
     };
 
-    var killNotify = function(clientID){
-        return function(){
+    var killNotify = function (clientID) {
+        return function () {
             console.log("KILL: " + clientID);
             deleteClientData(clientID);
         };
@@ -173,13 +140,7 @@ var MathServer = function (overrideOptions) {
                     });
                     next(stream);
                 });
-            }).connect({
-                host: instance.host,
-                port: instance.port,
-                username: instance.username,
-                privateKey: fs.readFileSync(instance.sshKey)
-            });
-
+            }).connect(sshCredentials(instance));
         });
     };
 
@@ -189,104 +150,12 @@ var MathServer = function (overrideOptions) {
             stream.setEncoding("utf8");
             clients[clientID].mathProgramInstance = stream;
             attachListenersToOutput(clientID);
-            setTimeout(function(){
+            setTimeout(function () {
                 if (next) {
                     next(clientID);
                 }
             }, 2000); // Always need a little time before start is done.
         });
-    };
-
-    var captureSpecialEvent = function (data) {
-        var eventData = data.match(/>>SPECIAL_EVENT_START>>(.*)<<SPECIAL_EVENT_END/);
-        if (eventData) {
-            // logExceptOnTest("Have special event: " + eventData[1]);
-            return eventData[1];
-        }
-    };
-
-
-    var emitUrlForUserGeneratedFileToClient = function (clientId, path) {
-        var partAfterLastSlash = /([^\/]*)$/;
-        var fileName = path.match(partAfterLastSlash);
-        if (fileName) {
-            fileName = fileName[0];
-        } else {
-            return;
-        }
-        var sshConnection = ssh2();
-
-        sshConnection.on('end', function () {
-            logExceptOnTest("Image action ended.");
-        });
-
-        sshConnection.on('ready', function () {
-            sshConnection.sftp(function (err, sftp) {
-                fs.mkdir(staticFolder + userSpecificPath(clientId), function (err) {
-                    if (err) {
-                        logExceptOnTest("Folder exists, but we proceed anyway");
-                    }
-                    var completePath = staticFolder + userSpecificPath(clientId) + fileName;
-                    sftp.fastGet(path, completePath, function (error) {
-                        if (error) {
-                            console.error("Error while downloading image. PATH: " + path + ", ERROR: " + error);
-                        } else {
-                            setTimeout(function () {
-                                fs.unlink(completePath, function (err) {
-                                    if (err) {
-                                        console.error("Error unlinking user generated file " + completePath);
-                                        console.error(err);
-                                    }
-                                })
-                            }, 1000 * 60 * 10);
-                            clients[clientId].socket.emit(
-                                "image", userSpecificPath(clientId) + fileName
-                            );
-                        }
-                    });
-                });
-            });
-        });
-
-        sshConnection.connect(
-            {
-                host: clients[clientId].instance.host,
-                port: clients[clientId].instance.port,
-                username: clients[clientId].instance.username,
-                privateKey: fs.readFileSync(clients[clientId].instance.sshKey)
-            }
-        );
-
-    };
-
-    var emitHelpUrlToClient = function (clientID, viewHelp) {
-        logExceptOnTest("Look at " + viewHelp);
-        var helpPath = viewHelp.match(/(\/Macaulay2Doc.*)$/);
-        if (helpPath) {
-            helpPath = helpPath[0];
-        } else {
-            return;
-        }
-        helpPath = "http://www.math.uiuc.edu/Macaulay2/doc/Macaulay2-1.7/share/doc/Macaulay2" + helpPath;
-        logExceptOnTest(helpPath);
-        clients[clientID].socket.emit("viewHelp", helpPath);
-    };
-
-    var isViewHelpEvent = function (eventData) {
-        return eventData.match(/^file:.*/);
-    };
-
-    var emitEventUrlToClient = function (clientID, eventType, data) {
-        if (isViewHelpEvent(eventType)) {
-            logCurrentlyActiveClients(data);
-            emitHelpUrlToClient(clientID, eventType);
-            return;
-        } else {
-            emitUrlForUserGeneratedFileToClient(clientID, eventType);
-        }
-        var outputData = data.replace(/>>SPECIAL_EVENT_START>>/, "opening ");
-        outputData = outputData.replace(/<<SPECIAL_EVENT_END<</, "");
-        clients[clientID].socket.emit('result', outputData);
     };
 
     var sendDataToClient = function (clientID) {
@@ -298,9 +167,16 @@ var MathServer = function (overrideOptions) {
                 return;
             }
             updateLastActiveTime(clientID);
-            var specialEvent = captureSpecialEvent(data);
-            if (specialEvent) {
-                emitEventUrlToClient(clientID, specialEvent, data);
+            var specialUrlEmitter = require('./specialUrlEmitter')(clients,
+                options,
+                staticFolder,
+                userSpecificPath,
+                sshCredentials,
+                logExceptOnTest
+            );
+            var specialData = specialUrlEmitter.isSpecial(data);
+            if (specialData) {
+                specialUrlEmitter.emitEventUrlToClient(clientID, specialData, data);
                 return;
             }
             socket.emit('result', data);
@@ -317,27 +193,6 @@ var MathServer = function (overrideOptions) {
                 .removeAllListeners('data')
                 .on('data', sendDataToClient(clientID));
         }
-    };
-
-    var stats = function (request, response) {
-        // to do: authorization
-        response.writeHead(200, {
-            "Content-Type": "text/html"
-        });
-        var currentUsers = 0;
-        for (var c in clients) {
-            if (clients.hasOwnProperty(c))
-                currentUsers = currentUsers + 1;
-        }
-        response.write(
-            '<head><link rel="stylesheet" href="mathProgram.css" type="text/css" media="screen"></head>');
-        response.write('<h1>' + options.MATH_PROGRAM + ' User Statistics</h1>');
-        response.write('There are currently ' + currentUsers +
-        ' users using ' + options.MATH_PROGRAM + '.<br>');
-        response.write('In total, there were ' + totalUsers +
-        ' users since the server started.<br>');
-        response.write('Enjoy ' + options.MATH_PROGRAM + '!');
-        response.end();
     };
 
     var updateLastActiveTime = function (clientID) {
@@ -357,7 +212,7 @@ var MathServer = function (overrideOptions) {
             console.log("New cookie.");
             logExceptOnTest('New client without a cookie set came along');
             logExceptOnTest('Set new cookie!');
-            clientID = getNewClientID();
+            clientID = require('./clientId')(clients, logExceptOnTest).getNewId();
         }
         setCookie(cookies, clientID);
 
@@ -391,67 +246,17 @@ var MathServer = function (overrideOptions) {
             ]
         };
         var prefix = staticFolder + "-" + options.MATH_PROGRAM + "/";
-        var tutorialReader = require('./tutorialReader.js')(prefix, fs);
+        var tutorialReader = require('./tutorialReader')(prefix, fs);
+        var admin = require('./admin')(clients, options);
         app.use(favicon(staticFolder + '-' + options.MATH_PROGRAM + '/favicon.ico'));
         app.use(SocketIOFileUpload.router);
         app.use(checkCookie);
         app.use(serveStatic(staticFolder + '-' + options.MATH_PROGRAM));
-        app.use(serveStatic(staticFolder));
+        app.use(serveStatic(staticFolder + '-common'));
         app.use(expressWinston.logger(loggerSettings));
-        app.use('/admin', stats)
+        app.use('/admin', admin.stats)
             .use('/getListOfTutorials', tutorialReader.getList)
             .use(unhandled);
-    };
-
-    var attachUploadListenerToSocket = function (clientId, socket) {
-        var uploader = new SocketIOFileUpload();
-        uploader.listen(socket);
-
-        uploader.on("error", function (event) {
-            console.error("Error in upload " + event);
-        });
-
-        uploader.on("start", function (event) {
-            clients[clientId].fileUploadBuffer = "";
-            logExceptOnTest('File upload ' + event.file.name);
-        });
-
-        uploader.on("progress", function (event) {
-            // TODO: Limit size.
-            clients[clientId].fileUploadBuffer += event.buffer;
-        });
-
-        uploader.on("complete", completeFileUpload(clientId));
-    };
-
-    var completeFileUpload = function (clientId) {
-        return function (event) {
-            var connection = ssh2();
-
-            connection.on('end', function () {
-            });
-
-            connection.on('ready', function () {
-                connection.sftp(function (err, sftp) {
-                    var stream = sftp.createWriteStream(event.file.name);
-                    stream.write(clients[clientId].fileUploadBuffer.toString());
-                    stream.end(function () {
-                        connection.end();
-                    });
-                    clients[clientId].fileUploadBuffer = "";
-                });
-            });
-
-            connection.connect(
-                {
-                    host: clients[clientId].instance.host,
-                    port: clients[clientId].instance.port,
-                    username: clients[clientId].instance.username,
-                    privateKey: fs.readFileSync(clients[clientId].instance.sshKey)
-                }
-            );
-
-        };
     };
 
     var socketSanityCheck = function (clientId, socket) {
@@ -460,7 +265,7 @@ var MathServer = function (overrideOptions) {
             console.log("No client, yet.");
             clients[clientId] = new Client();
             clients[clientId].clientID = clientId;
-        } else if(!clients[clientId].saneState){
+        } else if (!clients[clientId].saneState) {
             console.log("Have client " + clientId + ", but he is not sane.");
             return;
         }
@@ -469,7 +274,7 @@ var MathServer = function (overrideOptions) {
 
         if (!clients[clientId].mathProgramInstance) {
             console.log("Starting new mathProgram instance.");
-            mathProgramStart(clientId, function(){
+            mathProgramStart(clientId, function () {
                 clients[clientId].saneState = true;
             });
         } else {
@@ -486,41 +291,42 @@ var MathServer = function (overrideOptions) {
             var cookies = socket.request.headers.cookie;
             var clientId = cookies[cookieName];
             socketSanityCheck(clientId, socket);
-            attachUploadListenerToSocket(clientId, socket);
+            var fileUpload = require('./fileUpload.js')(clients, logExceptOnTest, sshCredentials);
+            fileUpload.attachUploadListenerToSocket(clientId, socket);
             socket.on('input', socketInputAction(clientId));
             socket.on('reset', socketResetAction(clientId));
         });
         return http.listen(options.port);
     };
 
-    var writeMsgOnStream = function(clientId, msg){
+    var writeMsgOnStream = function (clientId, msg) {
         clients[clientId].mathProgramInstance.stdin.write(msg, function (err) {
             if (err) {
                 logClient(clientId, "write failed: " + err);
             }
         });
-    }
+    };
 
     var checkAndWrite = function (clientId, msg) {
-        if(!clients[clientId].mathProgramInstance || !clients[clientId].mathProgramInstance._writableState){
+        if (!clients[clientId].mathProgramInstance || !clients[clientId].mathProgramInstance._writableState) {
             socketSanityCheck(clientId, clients[clientId].socket);
         } else {
             writeMsgOnStream(clientId, msg);
         }
     };
-    
+
     var socketInputAction = function (clientId) {
         return function (msg) {
             console.log("Have clientId: " + clientId);
             updateLastActiveTime(clientId);
-            checkStateAndExecuteAction(clientId, function(){
+            checkStateAndExecuteAction(clientId, function () {
                 checkAndWrite(clientId, msg);
             });
         };
     };
 
-    var checkStateAndExecuteAction = function(clientId, next){
-        if(!clients[clientId] || !clients[clientId].saneState){
+    var checkStateAndExecuteAction = function (clientId, next) {
+        if (!clients[clientId] || !clients[clientId].saneState) {
             console.log(clientId + " not accepting events.");
         } else {
             next();
@@ -530,24 +336,18 @@ var MathServer = function (overrideOptions) {
     var socketResetAction = function (clientId) {
         return function () {
             logExceptOnTest('Received reset.');
-            checkStateAndExecuteAction(clientId, function(){
+            checkStateAndExecuteAction(clientId, function () {
                 var client = clients[clientId];
                 client.saneState = false;
                 if (client.mathProgramInstance) {
                     killMathProgram(client.mathProgramInstance, clientId);
                 }
-                mathProgramStart(clientId, function(){
+                mathProgramStart(clientId, function () {
                     client.saneState = true;
                 });
             });
         };
     };
-
-
-    process.on('uncaughtException', function (err) {
-        console.trace(err);
-        console.error('Caught exception in global process object: ' + err);
-    });
 
     initializeServer();
 

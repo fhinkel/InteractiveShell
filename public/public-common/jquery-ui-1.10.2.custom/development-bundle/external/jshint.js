@@ -4362,7 +4362,7 @@ loop:
     reserve("package");
     reserve("private");
     reserve("protected");
-    reserve("public");
+    reserve("public-common");
     reserve("static");
 
 

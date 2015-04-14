@@ -7,17 +7,17 @@
 With Interactive Shell you can build a web app for interactive command-line tools.
 We have developed Interactive Shell specifically for Macaulay2.
 
-**To see Interactive Shell in action, visit [http://web.macaulay2.com](http://web.macaulay2.com)**.
+**[See Interactive Shell in action](http://web.macaulay2.com)**.
 
 [Macaulay2](http://www.macaulay2.com) is a software system devoted to supporting research in algebraic geometry and
 commutative algebra, whose creation and development have been funded by the National Science Foundation since 1992.
 
-![Web App Screenshot](https://raw.githubusercontent.com/fhinkel/InteractiveShell/master/Readme/WebAppScreenshot.jpg "Interactive Shell with Macaulay2 running at http://web.macaulay2.com")
+![Web App Screenshot](https://raw.githubusercontent.com/fhinkel/InteractiveShell/master/Readme/WebAppScreenshot-low.jpg)  "Interactive Shell with Macaulay2 running at http://web.macaulay2.com")
 
 At its core, **the web app is a terminal emulator, giving you an interface to a Macaulay2
 instance running remotely.** The main advantage of providing a web app rather than a native app is that you
 do not need to download and install Macaulay2,
-thus easing the entry barrier for new users. We have also found, that users unfamiliar with unix-style
+thus easing the entry barrier for new users. We have also found that users unfamiliar with unix-style
 command-line tools are more comfortable using a web app than a terminal.
 
 The web app contains **interactive tutorials** that explain how to use the web app, show some more advanced features
@@ -40,12 +40,7 @@ This works from any device, even mobile, all
 you need is a network connection. We start a new Macaulay2 instance for every user and provide
 them with an underlying linux system of their own. Thus you can use all the features of
 a natively installed Macaulay2 such as
-executing linux commands through Macaulay2's
-
-```shell
-get "!uname -ar"
-```
-command, accessing the file system to write and read
+executing linux commands through Macaulay2's `get` command, accessing the file system to write and read
 files, and installing third party Macaulay2 packages.
 
 We identify you by cookies. If you run long computations, you can come back later and we will
@@ -107,31 +102,39 @@ With Vagrant it is easy to run the web app in the cloud, e.g., at AWS or Digital
 Edit the Vagrantfile in AWS/ or DigitalOcean/, respectively, with your credentials. Then you can easily bring up
 the web app on your AWS or DigitalOcean machine:
 
-`vagrant up AWS/`
-
-`vagrant up DigitalOcean/`
+```bash
+vagrant up AWS
+vagrant up DigitalOcean
+```
 
 ### Scaling
 
 When you teach large classes, the resources on one machine might not suffice. Remember, for every user we start a
 Docker container with Macaulay2. The Docker containers and the server
 that handles requests can be on remote machines because they communicate via ssh. We have a vagrant configuration for
-this setup as well. You need to configure the IP address of the machines the Docker containers can run it. Then run
+this setup as well. You need to configure the IP addresses of the machines the Docker containers can run in. Then run
 
-`vagrant up scaling/`
-
+```bash
+vagrant up scaling
+```
 ## Contributing
 We welcome any contributions. Feel free to send us an email if you want to provide a tutorial or have
 any questions: [trym2@googlegroups.com](mailto:trym2@googlegroups.com).
 
 ### Tests
 Install Docker, or boot2docker etc. Inside boot2docker, run the tests with
-`npm test`
+```bash
+npm test
+```
 For linux systems that support Docker natively, please run
-`sudo npm test`
+```bash
+sudo npm test
+```
 
 We recommend developing locally and running
-`vagrant up developer/`
+```bash
+vagrant up developer
+```
 In this setup, the source code is symlinked between your host and guest system.
 Allowing you to develop locally but having the complete setup with Docker and separate virtual machines for
 server and Docker containers. To start different versions run

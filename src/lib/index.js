@@ -203,28 +203,6 @@ var MathServer = function (overrideOptions) {
         }
     };
 
-    var stats = function (request, response) {
-        // to do: authorization
-        response.writeHead(200, {
-            "Content-Type": "text/html"
-        });
-        var currentUsers = -1;
-        for (var c in clients) {
-            if (clients.hasOwnProperty(c))
-                currentUsers = currentUsers + 1;
-        }
-        response.write(
-            '<head><link rel="stylesheet" href="mathProgram.css" type="text/css" media="screen"></head>');
-        response.write('<h1>' + options.MATH_PROGRAM + ' User Statistics</h1>');
-        response.write('There are currently ' + currentUsers +
-        ' users using ' + options.MATH_PROGRAM + '.<br>');
-        response.write('In total, there were '
-        + clients.totalUsers
-        + ' new users since the server started.<br>');
-        response.write('Enjoy ' + options.MATH_PROGRAM + '!');
-        response.end();
-    };
-
     var updateLastActiveTime = function (clientID) {
         instanceManager.updateLastActiveTime(clients[clientID].instance);
     };
@@ -276,14 +254,15 @@ var MathServer = function (overrideOptions) {
             ]
         };
         var prefix = staticFolder + "-" + options.MATH_PROGRAM + "/";
-        var tutorialReader = require('./tutorialReader.js')(prefix, fs);
+        var tutorialReader = require('./tutorialReader')(prefix, fs);
+        var admin = require('./admin')(clients, options);
         app.use(favicon(staticFolder + '-' + options.MATH_PROGRAM + '/favicon.ico'));
         app.use(SocketIOFileUpload.router);
         app.use(checkCookie);
         app.use(serveStatic(staticFolder + '-' + options.MATH_PROGRAM));
         app.use(serveStatic(staticFolder + '-common'));
         app.use(expressWinston.logger(loggerSettings));
-        app.use('/admin', stats)
+        app.use('/admin', admin.stats)
             .use('/getListOfTutorials', tutorialReader.getList)
             .use(unhandled);
     };

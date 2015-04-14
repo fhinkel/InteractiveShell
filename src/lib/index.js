@@ -34,7 +34,6 @@ var MathServer = function (overrideOptions) {
 
     overrideDefaultOptions(overrideOptions);
 
-
     var cookieName = "try" + options.MATH_PROGRAM;
 
     var totalUsers = 0; //only used for stats: total # users since server started
@@ -48,7 +47,6 @@ var MathServer = function (overrideOptions) {
 
     var instanceManager = require(options.CONTAINERS).manager();
 
-    // preamble every log with the client ID
     var logClient = function (clientID, str) {
         if (process.env.NODE_ENV !== 'test') {
             logExceptOnTest(clientID + ": " + str);
@@ -64,17 +62,17 @@ var MathServer = function (overrideOptions) {
         deleteClientData(clientID);
     };
 
-    var deleteClientData = function(clientID){
+    var deleteClientData = function (clientID) {
         logExceptOnTest("deleting folder " + staticFolder + userSpecificPath(clientID));
-        try{
+        try {
             clients[clientID].socket.emit('serverDisconnect');
             console.log("Sending disconnect. " + clientID);
             clients[clientID].socket.disconnect();
-        } catch(error){
+        } catch (error) {
             console.log("Socket seems already dead: " + error);
         }
-        fs.rmdir(staticFolder + userSpecificPath(clientID), function(error) {
-            if(error) {
+        fs.rmdir(staticFolder + userSpecificPath(clientID), function (error) {
+            if (error) {
                 console.error('Error deleting user folder: ' + error);
             }
         });
@@ -99,7 +97,6 @@ var MathServer = function (overrideOptions) {
             }
         }
     };
-
 
 
     var Client = function () {
@@ -137,8 +134,8 @@ var MathServer = function (overrideOptions) {
         if (clients[clientID].instance) {
             next(clients[clientID].instance);
         } else {
-            instanceManager.getNewInstance(function(err, instance){
-                if(err){
+            instanceManager.getNewInstance(function (err, instance) {
+                if (err) {
                     clients[clientID].socket.emit('result', "Sorry, there was an error. Please come back later.\n" + err + "\n\n");
                     deleteClientData(clientID);
                 } else {
@@ -148,8 +145,8 @@ var MathServer = function (overrideOptions) {
         }
     };
 
-    var killNotify = function(clientID){
-        return function(){
+    var killNotify = function (clientID) {
+        return function () {
             console.log("KILL: " + clientID);
             deleteClientData(clientID);
         };
@@ -173,13 +170,7 @@ var MathServer = function (overrideOptions) {
                     });
                     next(stream);
                 });
-            }).connect({
-                host: instance.host,
-                port: instance.port,
-                username: instance.username,
-                privateKey: fs.readFileSync(instance.sshKey)
-            });
-
+            }).connect(sshCredentials(instance));
         });
     };
 
@@ -189,7 +180,7 @@ var MathServer = function (overrideOptions) {
             stream.setEncoding("utf8");
             clients[clientID].mathProgramInstance = stream;
             attachListenersToOutput(clientID);
-            setTimeout(function(){
+            setTimeout(function () {
                 if (next) {
                     next(clientID);
                 }
@@ -249,15 +240,7 @@ var MathServer = function (overrideOptions) {
             });
         });
 
-        sshConnection.connect(
-            {
-                host: clients[clientId].instance.host,
-                port: clients[clientId].instance.port,
-                username: clients[clientId].instance.username,
-                privateKey: fs.readFileSync(clients[clientId].instance.sshKey)
-            }
-        );
-
+        sshConnection.connect(sshCredentials(clients[clientId].instance));
     };
 
     var emitHelpUrlToClient = function (clientID, viewHelp) {
@@ -443,16 +426,18 @@ var MathServer = function (overrideOptions) {
                 });
             });
 
-            connection.connect(
-                {
-                    host: clients[clientId].instance.host,
-                    port: clients[clientId].instance.port,
-                    username: clients[clientId].instance.username,
-                    privateKey: fs.readFileSync(clients[clientId].instance.sshKey)
-                }
-            );
+            connection.connect(sshCredentials(clients[clientId].instance));
 
         };
+    };
+
+    var sshCredentials = function (instance) {
+        return {
+            host: instance.host,
+            port: instance.port,
+            username: instance.username,
+            privateKey: fs.readFileSync(instance.sshKey)
+        }
     };
 
     var socketSanityCheck = function (clientId, socket) {
@@ -461,7 +446,7 @@ var MathServer = function (overrideOptions) {
             console.log("No client, yet.");
             clients[clientId] = new Client();
             clients[clientId].clientID = clientId;
-        } else if(!clients[clientId].saneState){
+        } else if (!clients[clientId].saneState) {
             console.log("Have client " + clientId + ", but he is not sane.");
             return;
         }
@@ -470,7 +455,7 @@ var MathServer = function (overrideOptions) {
 
         if (!clients[clientId].mathProgramInstance) {
             console.log("Starting new mathProgram instance.");
-            mathProgramStart(clientId, function(){
+            mathProgramStart(clientId, function () {
                 clients[clientId].saneState = true;
             });
         } else {
@@ -494,7 +479,7 @@ var MathServer = function (overrideOptions) {
         return http.listen(options.port);
     };
 
-    var writeMsgOnStream = function(clientId, msg){
+    var writeMsgOnStream = function (clientId, msg) {
         clients[clientId].mathProgramInstance.stdin.write(msg, function (err) {
             if (err) {
                 logClient(clientId, "write failed: " + err);
@@ -503,25 +488,25 @@ var MathServer = function (overrideOptions) {
     };
 
     var checkAndWrite = function (clientId, msg) {
-        if(!clients[clientId].mathProgramInstance || !clients[clientId].mathProgramInstance._writableState){
+        if (!clients[clientId].mathProgramInstance || !clients[clientId].mathProgramInstance._writableState) {
             socketSanityCheck(clientId, clients[clientId].socket);
         } else {
             writeMsgOnStream(clientId, msg);
         }
     };
-    
+
     var socketInputAction = function (clientId) {
         return function (msg) {
             console.log("Have clientId: " + clientId);
             updateLastActiveTime(clientId);
-            checkStateAndExecuteAction(clientId, function(){
+            checkStateAndExecuteAction(clientId, function () {
                 checkAndWrite(clientId, msg);
             });
         };
     };
 
-    var checkStateAndExecuteAction = function(clientId, next){
-        if(!clients[clientId] || !clients[clientId].saneState){
+    var checkStateAndExecuteAction = function (clientId, next) {
+        if (!clients[clientId] || !clients[clientId].saneState) {
             console.log(clientId + " not accepting events.");
         } else {
             next();
@@ -531,19 +516,18 @@ var MathServer = function (overrideOptions) {
     var socketResetAction = function (clientId) {
         return function () {
             logExceptOnTest('Received reset.');
-            checkStateAndExecuteAction(clientId, function(){
+            checkStateAndExecuteAction(clientId, function () {
                 var client = clients[clientId];
                 client.saneState = false;
                 if (client.mathProgramInstance) {
                     killMathProgram(client.mathProgramInstance, clientId);
                 }
-                mathProgramStart(clientId, function(){
+                mathProgramStart(clientId, function () {
                     client.saneState = true;
                 });
             });
         };
     };
-
 
     process.on('uncaughtException', function (err) {
         console.trace(err);

@@ -499,7 +499,7 @@ var MathServer = function (overrideOptions) {
                 logClient(clientId, "write failed: " + err);
             }
         });
-    }
+    };
 
     var checkAndWrite = function (clientId, msg) {
         if(!clients[clientId].mathProgramInstance || !clients[clientId].mathProgramInstance._writableState){

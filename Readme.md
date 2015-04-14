@@ -53,7 +53,7 @@ have the results ready for you. Occasionally, we have to reboot the server or de
 If you want to use the web app offline or run very intense computations that need more resources than we provide,
 you can easily run the web app locally or set up your own server.
 
-### Local server for private use
+### With Docker Containers (Recommended)
 
 We have a Vagrant file that configures a virtual machine with everything you need to run your own Server with Macaulay2.
 You do not need to install Macaulay2 locally.
@@ -71,7 +71,12 @@ cd InteractiveShell
 npm start
 ```
 
-Interactive Shell is now running at [http://localhost:8002](http://localhost:8002).
+The web app is running at [http://localhost:8002](http://localhost:8002). Every Macaulay2 instance runs in a
+separate Docker container with limited resources and does not have access to your
+filesystem. Users can only access files inside their
+Docker container.
+
+### Without Virtualisation
 
 If you do not want to run the web app within a virtual machine, you can run it locally. You need Macaulay2,
 Node.js, npm, and Git. Start the web app with the following commands:
@@ -87,42 +92,16 @@ This gives you an (unsecured!) Macaulay2 terminal emulator at [http://localhost:
 That means users can access and modify your private data through Macaulay2's `get` command. Make sure you do not
 allow web access to your machine to other users on the same network, i.e., make sure your laptop's firewall is on.
 
-### Hosting
-
-If you want to give other users access to the web app that you are hosting (e.g., on your laptop or a server), we provide a
-secure version that uses Docker containers for every user.
-
-
-```bash
-git clone https://github.com/fhinkel/InteractiveShell.git
-cd InteractiveShell
-vagrant up
-```
-
-The web app is running at [http://localhost:8002](http://localhost:8002). Every Macaulay2 instance runs in a
-separate Docker container with limited resources and does not have access to your
-filesystem. Users can only access files inside their
-Docker container.
+### Scaling Up (Advanced)
 
 With Vagrant it is easy to run the web app in the cloud, e.g., at AWS or DigitalOcean. You can
-Edit the Vagrantfile with your credentials. Then you can easily bring up
-the web app on your AWS or DigitalOcean machine:
-
-```bash
-vagrant up AWS
-vagrant up DigitalOcean
-```
-
-### Scaling
+need to edit the Vagrantfile with your credentials.
 
 When you teach large classes, the resources on one machine might not suffice. Remember, for every user we start a
 Docker container with Macaulay2. The Docker containers and the server
-that handles requests can be on remote machines because they communicate via ssh. We have a vagrant configuration for
-this setup as well. You need to configure the IP addresses of the machines the Docker containers can run in. Then run
+that handles requests can be on remote machines because they communicate via ssh.
+We have a vagrant configuration that starts server and containers on separate instances.
 
-```bash
-vagrant up scaling
-```
 ## Contributing
 We welcome any contributions. Feel free to send us an email if you want to provide a tutorial or have
 any questions: [trym2@googlegroups.com](mailto:trym2@googlegroups.com).

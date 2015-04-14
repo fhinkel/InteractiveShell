@@ -158,14 +158,6 @@ var MathServer = function (overrideOptions) {
         });
     };
 
-    var containsSpecialEvent = function (data) {
-        var eventData = data.match(/>>SPECIAL_EVENT_START>>(.*)<<SPECIAL_EVENT_END/);
-        if (eventData) {
-            // logExceptOnTest("Have special event: " + eventData[1]);
-            return eventData[1];
-        }
-    };
-
     var sendDataToClient = function (clientID) {
         return function (dataObject) {
             var data = dataObject.toString();
@@ -175,16 +167,16 @@ var MathServer = function (overrideOptions) {
                 return;
             }
             updateLastActiveTime(clientID);
-            if (containsSpecialEvent(data)) {
-                logExceptOnTest('Contains special data');
-                var specialUrlEmitter = require('./specialUrlEmitter')(clients,
-                    options,
-                    staticFolder,
-                    userSpecificPath,
-                    sshCredentials,
-                    logExceptOnTest
-                );
-                specialUrlEmitter.emitEventUrlToClient(clientID, containsSpecialEvent(data), data);
+            var specialUrlEmitter = require('./specialUrlEmitter')(clients,
+                options,
+                staticFolder,
+                userSpecificPath,
+                sshCredentials,
+                logExceptOnTest
+            );
+            var specialData = specialUrlEmitter.isSpecial(data);
+            if (specialData) {
+                specialUrlEmitter.emitEventUrlToClient(clientID, specialData, data);
                 return;
             }
             socket.emit('result', data);

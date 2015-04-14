@@ -394,15 +394,6 @@ $(document).ready(function() {
         console.log("We got disconnected. " + msg);
         $("#M2Out").trigger("onmessage", " Sorry, your session was disconnected by the server.\n\n");
         trym2.serverDisconnect = true;
-    //     var btn = document.createElement("button");        // Create a <button> element
-    //     btn.on('click', function(){
-    //         console.log("I will reconnect.");
-    //         trym2.socket.connect();
-    //     });
-    //     var title = document.createTextNode("Reconnect");       // Create a text node
-    //     btn.appendChild(title);                                // Append the text to <button>
-    //     document.getElementById("outputarea").appendChild(btn);
-    //     console.log("Button appended.");
     });
 
     trym2.socket.oldEmit = trym2.socket.emit;
@@ -415,10 +406,9 @@ $(document).ready(function() {
                 trym2.serverDisconnect = false;
                 trym2.socket.oldEmit(event, msg);
             } else {
-                console.log("Will not reconnect for " + event);
+                // console.log("Will not reconnect for " + event);
             }
         } else {
-            console.log("Everything is fine, emitting. " + msg);
             trym2.socket.oldEmit(event, msg);
         }
     }

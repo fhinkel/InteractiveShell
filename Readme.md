@@ -94,8 +94,8 @@ allow web access to your machine to other users on the same network, i.e., make 
 
 ### Scaling Up (Advanced)
 
-With Vagrant it is easy to run the web app in the cloud, e.g., at AWS or DigitalOcean. You can
-need to edit the Vagrantfile with your credentials.
+With Vagrant it is easy to run the web app in the cloud, e.g., at AWS or DigitalOcean. You need to customize the file
+ Vagrantfile_aws with your credentials.
 
 When you teach large classes, the resources on one machine might not suffice. Remember, for every user we start a
 Docker container with Macaulay2. The Docker containers and the server

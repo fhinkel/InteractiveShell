@@ -45,10 +45,11 @@ var MathServer = function (overrideOptions) {
 
     var cookieName = "try" + options.MATH_PROGRAM;
 
-    var totalUsers = 0; //only used for stats: total # users since server started
 
     // Global array of all Client objects.  Each has a math program process.
-    var clients = {};
+    var clients = {
+        totalUsers: 0
+    };
     if (!options.CONTAINERS) {
         console.error("error, no container management given.");
         throw ("No CONTAINERS!");
@@ -90,27 +91,7 @@ var MathServer = function (overrideOptions) {
 
     var Client = function () {
         this.saneState = true;
-        //this.lastActiveTime = Date.now(); // milliseconds when client was last active
         this.instance = 0;
-    };
-
-    var clientIDExists = function (clientID) {
-        if (clients[clientID] == null) {
-            return false;
-        }
-        logClient(clientID, "Client already exists");
-        return true;
-    };
-
-    var getNewClientID = function () {
-        totalUsers += 1;
-        do {
-            var clientID = Math.random() * 1000000;
-            clientID = Math.floor(clientID);
-        } while (clientIDExists(clientID));
-        clientID = "user" + clientID.toString(10);
-        logExceptOnTest("New Client ID " + clientID);
-        return clientID;
     };
 
     var setCookie = function (cookies, clientID) {
@@ -227,7 +208,7 @@ var MathServer = function (overrideOptions) {
         response.writeHead(200, {
             "Content-Type": "text/html"
         });
-        var currentUsers = 0;
+        var currentUsers = -1;
         for (var c in clients) {
             if (clients.hasOwnProperty(c))
                 currentUsers = currentUsers + 1;
@@ -237,8 +218,9 @@ var MathServer = function (overrideOptions) {
         response.write('<h1>' + options.MATH_PROGRAM + ' User Statistics</h1>');
         response.write('There are currently ' + currentUsers +
         ' users using ' + options.MATH_PROGRAM + '.<br>');
-        response.write('In total, there were ' + totalUsers +
-        ' users since the server started.<br>');
+        response.write('In total, there were '
+        + clients.totalUsers
+        + ' new users since the server started.<br>');
         response.write('Enjoy ' + options.MATH_PROGRAM + '!');
         response.end();
     };
@@ -260,7 +242,7 @@ var MathServer = function (overrideOptions) {
             console.log("New cookie.");
             logExceptOnTest('New client without a cookie set came along');
             logExceptOnTest('Set new cookie!');
-            clientID = getNewClientID();
+            clientID = require('./clientId')(clients, logExceptOnTest).getNewId();
         }
         setCookie(cookies, clientID);
 

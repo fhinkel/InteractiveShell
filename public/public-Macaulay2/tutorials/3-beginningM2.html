@@ -74,9 +74,9 @@
 <code>use S</code><br/>
 <code>I=ideal"3(a+b)3, 4c5"</code><br/>
 <p>
-    Note the command \({\tt use S}\), which specifies 
-    that we want to work with the generators of the polynomial ring S again;
-    otherwise the variables \({\tt a}\), \({\tt b}\), and \({\tt c}\)
+    Note the command "use S", which specifies 
+    that we want to work with the generators of the polynomial ring $S$ again;
+    otherwise the variables $a$, $b$, and $c$
     would still have had values in $R$ instead of in $S$.
 </p>
 <p>
@@ -109,7 +109,7 @@
 <p>
     Here are some basic operations on matrices:
 </p>
-<code>M= matrix{{a,b,c},{b,c,d},{c,d,e}}</code><br/>
+<code>M = matrix{{a,b,c},{b,c,d},{c,d,e}}</code><br/>
 <code>M^2</code><br/>
 <code>determinant M</code><br/>
 <code>trace M</code><br/>
@@ -126,7 +126,7 @@
 <code>flatten entries M</code><br/>
 <p>
     If you want a particular entry, say the one in the upper left corner, 
-    you can use the underscore operator \({\tt _}\):
+    you can use the underscore operator.
 </p>
 <code>M_(0,0)</code><br/>
 <p>
@@ -139,7 +139,7 @@
 </p>
 <code>I_*</code><br/>
 <p>
-    A {\em module} can be defined as a cokernel, kernel, image, or even as a subquotient:
+    A \({\it module}\) can be defined as a cokernel, kernel, image, or even as a subquotient:
 </p>
 <code>coker M     </code><br/>
 <code>image M</code><br/>
@@ -156,6 +156,7 @@
     start is the top of the documentation tree, which can be reached, for
     example, by typing:
 </p>
+<code>viewHelp "Macaulay2Doc"</code><br/>
 </div>
 <div>
     <h4>Properties of ideals and modules</h4>
@@ -179,11 +180,12 @@
 </p>
 <code>J = groebnerBasis I</code><br/>
 <p>
-    Gr\"obner bases are always computed with respect to a particular
+    Gröbner bases are always computed with respect to a particular
     monomial order on the ring. In fact, the ring we defined above has
     a default monomial order, the graded reverse lex order. For many
-    other possibilities, see \({\tt MonomialOrder}\), or type:
+    other possibilities, see \({\tt MonomialOrder}\):
 </p>
+<code>viewHelp MonomialOrder</code><br/>
 <p>
     The analogue of factorization in the theory of ideals
     is primary decomposition.
@@ -275,9 +277,9 @@
 </p>
 <code>hilbertPolynomial(R/I, Projective => false)</code><br/>
 <p>
-    The construction {\tt Projective => false} is our first example of
-    an {\em option} to a function: we specified that the option 
-    {\tt Projective} was to have the value {\tt false}.
+    The construction "Projective => false" is our first example of
+    an \({\it option}\) to a function: we specified that the option 
+    \({\tt Projective}\) was to have the value \({\tt false}\).
     The form we used first could also have been written this way:
 </p>
 <code>hilbertPolynomial(R/I, Projective => true)</code><br/>
@@ -289,16 +291,17 @@
 <code>hilbertSeries (R/I)</code><br/>
 <p>
     This generating function is expressed
-    as a rational function with denominator equal to (1-T)^n, where
+    as a rational function with denominator equal to $(1-T)^n$, where
     n is the number of variables in R. 
-    Since R/I has dimension 2, it can also be written
-    with denominator (1-t)^2. To see it in this form, use \({\tt reduceHilbert}\):
+    Since $R/I$ has dimension 2, it can also be written
+    with denominator $(1-t)^2$. To see it in this form, use \({\tt reduceHilbert}\):
 </p>
 <code>reduceHilbert hilbertSeries (R/I)</code><br/>
 <p>
     It is possible to manipulate the numerator and denominator of this
-    expression. To learn how to do so, see \({\tt hilbertSeries}\) or type:
+    expression. To learn how to do so, see \({\tt hilbertSeries}\):
 </p>
+<code>viewHelp hilbertSeries</code><br/>
 <p>
     A great deal of subtle information about a module is visible using
     free resolutions. For an example, we begin
@@ -308,7 +311,7 @@
 <code>M=R^1/I</code><br/>
 <code>Mres = res M</code><br/>
 <p>
-    To get more precise information about {\tt Mres},
+    To get more precise information about \({\tt Mres}\),
     we could compute its Betti table with \({\tt betti}\):
 </p>
 <code>betti Mres</code><br/>
@@ -316,12 +319,11 @@
     The display is chosen for compactness. Each column of the
     table corresponds
     to a free module in the resolution. The column's heading
-    specifies the {\em homological degree} (the position of the free
+    specifies the \({\it homological\ degree}\) (the position of the free
     module in the resolution).
     The entry just below the homological degree
     is the rank of the free module, also called the
-    {\em total betti 
-    number}. The remaining entries in the column
+    \({\it total\ betti\ number}\). The remaining entries in the column
     tell us how many generators of each degree this free
     module has: the number in the column labelled $j$ and in the row labelled $d$
     tells how many generators of degree $j+d$ the $j$-th free module has.
@@ -331,8 +333,8 @@
 </p>
 <p>
     Commonly computed homological invariants
-    such as \({\tt projective dimension}\) and 
-    \({\tt regularity}\) are (also) available directly:
+    such as projective dimension and regularity
+    are (also) available directly:
 </p>
 <code>pdim M</code><br/>
 <code>regularity M</code><br/>
@@ -353,23 +355,24 @@
 <code>I = ideal M^3</code><br/>
 <p>
     This gives the ideal of entries of the matrix. In the expression
-    ``{\tt M = genericMatrix(R,a,3,3)}'' the arguments ``{\tt R,a,3,3}'' specify the
+    "M = genericMatrix(R,a,3,3)" the arguments \({\tt R,a,3,3}\) specify the
     ring, the first variable to use, and the numbers of rows and columns
     desired.
 </p>
 <code>Tr = trace M </code><br/>
 <code>for p from 1 to 10 do print (Tr^p % I)</code><br/>
 <p>
-    The expression ``\({\tt Tr^p % I}\)'' computes the normal form for the p-th power
-    of the trace {\tt Tr} with respect to the Gröbner basis of I.
-    The expression ``\({\tt for p from 1 to 10 do}\)'' specifies a 
-    {\em for loop} that executes the following expression, ``\({\tt print (Tr^p % I)}\)'',
-    with 10 consecutive values of {\tt p}. For more information on such loops see \({\tt for}\)
+    The expression $Tr^p \% I$ computes the normal form for the $p$-th power
+    of the trace \({\tt Tr}\) with respect to the Gröbner basis of $I$.
+    The expression "for p from 1 to 10 do" specifies a 
+    \({\it for\ loop}\) that executes the following expression, "print (Tr^p % I)",
+    with 10 consecutive values of $p$. For more information on such loops see \({\tt for}\)
     or type:
 </p>
+<code>viewHelp "for"</code><br/>
 <p>
-    Here we have put quotes around ``for'' because
-    ``for'' is a keyword in the \(\mac\) language.  (In general, it's always safe to use
+    Here we have put quotes around "for" because
+    "for" is a keyword in the \(\mac\) language.  (In general, it's always safe to use
     quotes with viewHelp.)
 </p>
 <p>

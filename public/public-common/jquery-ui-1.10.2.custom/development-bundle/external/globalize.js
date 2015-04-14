@@ -1260,7 +1260,7 @@ parseNegativePattern = function( value, nf, negativePattern ) {
 };
 
 //
-// public instance functions
+// public-common instance functions
 //
 
 Globalize.prototype.findClosestCulture = function( cultureSelector ) {
@@ -1288,7 +1288,7 @@ Globalize.prototype.culture = function( cultureSelector ) {
 };
 
 //
-// public singleton functions
+// public-common singleton functions
 //
 
 Globalize.addCultureInfo = function( cultureName, baseCultureName, info ) {

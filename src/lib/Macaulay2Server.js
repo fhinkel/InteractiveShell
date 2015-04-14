@@ -1,4 +1,4 @@
-var Macaulay2Server = require('./mathServer.js').MathServer({
+var Macaulay2Server = require('./index.js').MathServer({
     SECURE_CONTAINERS: true,
     SECURE_CONTAINERS_USER_NAME: "m2user",
     MATH_PROGRAM: 'Macaulay2',

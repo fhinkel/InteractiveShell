@@ -1,6 +1,6 @@
 var assert = require('chai').assert;
 var http = require('http');
-var mathServer = require('../lib/mathServer.js');
+var mathServer = require('../lib/index.js');
 var request = require('supertest');
 var jsdom = require("jsdom");
 var fs = require('fs');
@@ -13,7 +13,7 @@ describe('Acceptance test for all containers', function () {
     var jquery;
     var containers = ['LocalContainerManager', 'sudoDockerContainers', 'sshDockerContainers'];
     request = request('http://localhost:' + port);
-    jquery = fs.readFileSync(__dirname + "/../../public/jquery-ui-1.10.2.custom/js/jquery-1.9.1.js", "utf-8");
+    jquery = fs.readFileSync(__dirname + "/../../public/public-common/jquery-ui-1.10.2.custom/js/jquery-1.9.1.js", "utf-8");
 
     for (var container in containers) {
         before(function (done) {

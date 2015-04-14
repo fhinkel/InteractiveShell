@@ -8,7 +8,7 @@ var ssh2 = require('ssh2');
 
 
 var MathServer = function (overrideOptions) {
-    var staticFolder = __dirname + '/../../public';
+    var staticFolder = __dirname + '/../../public/public';
 
     var options = {
         port: 8002, // default port number to use
@@ -222,11 +222,12 @@ var MathServer = function (overrideOptions) {
 
         sshConnection.on('ready', function () {
             sshConnection.sftp(function (err, sftp) {
-                fs.mkdir(staticFolder + userSpecificPath(clientId), function (err) {
+                var targetPath = staticFolder + '-' + options.MATH_PROGRAM + userSpecificPath(clientId);
+                fs.mkdir(targetPath, function (err) {
                     if (err) {
                         logExceptOnTest("Folder exists, but we proceed anyway");
                     }
-                    var completePath = staticFolder + userSpecificPath(clientId) + fileName;
+                    var completePath = targetPath + fileName;
                     sftp.fastGet(path, completePath, function (error) {
                         if (error) {
                             console.error("Error while downloading image. PATH: " + path + ", ERROR: " + error);
@@ -396,7 +397,7 @@ var MathServer = function (overrideOptions) {
         app.use(SocketIOFileUpload.router);
         app.use(checkCookie);
         app.use(serveStatic(staticFolder + '-' + options.MATH_PROGRAM));
-        app.use(serveStatic(staticFolder));
+        app.use(serveStatic(staticFolder + '-common'));
         app.use(expressWinston.logger(loggerSettings));
         app.use('/admin', stats)
             .use('/getListOfTutorials', tutorialReader.getList)

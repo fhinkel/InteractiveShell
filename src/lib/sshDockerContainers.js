@@ -6,12 +6,12 @@ var ssh_docker_manager = function (overrideResources, overrideHostConfig, overri
    
     var resources = {
         cpus: 1,
-        memory: 128
+        memory: 512
     };
 
     var hostConfig = {
-        minContainerAge: 10,
-        maxContainerNumber: 1,
+        minContainerAge: 1000 * 60 * 5,
+        maxContainerNumber: 30,
         containerType: 'm2container',
         sshdCmd: "/usr/sbin/sshd -D",
         dockerRunCmd: '',

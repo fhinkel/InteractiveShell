@@ -79,7 +79,6 @@ module.exports = function (clients,
                 return;
             } else {
                 emitUrlForUserGeneratedFileToClient(clientID, eventType);
-                console.log('emitted');
             }
             var outputData = data.replace(/>>SPECIAL_EVENT_START>>/, "opening ");
             outputData = outputData.replace(/<<SPECIAL_EVENT_END<</, "");

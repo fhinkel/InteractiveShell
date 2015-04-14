@@ -41,7 +41,6 @@ var MathServer = function (overrideOptions) {
         }
     };
 
-
     overrideDefaultOptions(overrideOptions);
 
     var cookieName = "try" + options.MATH_PROGRAM;
@@ -87,14 +86,6 @@ var MathServer = function (overrideOptions) {
             }
         });
         delete clients[clientID];
-    };
-
-    var logCurrentlyActiveClients = function () {
-        for (var clientID in clients) {
-            if (clients.hasOwnProperty(clientID)) {
-                logExceptOnTest(clientID);
-            }
-        }
     };
 
     var Client = function () {

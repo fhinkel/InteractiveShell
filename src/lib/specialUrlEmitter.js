@@ -91,7 +91,7 @@ module.exports = function (clients,
             }
             var outputData = data.replace(/>>SPECIAL_EVENT_START>>/, "opening ");
             outputData = outputData.replace(/<<SPECIAL_EVENT_END<</, "");
-            clients[clientID].socket.emit('result', outputData);
+            // clients[clientID].socket.emit('result', outputData);
         },
         isSpecial: function (data) {
             var eventData = data.match(/>>SPECIAL_EVENT_START>>(.*)<<SPECIAL_EVENT_END/);

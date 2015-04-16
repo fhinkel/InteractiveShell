@@ -43,6 +43,8 @@ Vagrant.configure(2) do |config|
        sudo apt-get install -y nodejs npm wget git
        sudo ln -s /usr/bin/nodejs /usr/bin/node
        sudo chown -R vagrant:vagrant /home/vagrant/InteractiveShell
+       sudo cp /home/vagrant/InteractiveShell/separate_machines/docker/sshd_config /etc/ssh/sshd_config
+       sudo cp /home/vagrant/InteractiveShell/separate_machines/docker/ssh_config /etc/ssh/ssh_config
        mkdir webm2.logs
        cd InteractiveShell
        npm install
@@ -72,6 +74,7 @@ Vagrant.configure(2) do |config|
        cd docker
        cat /home/vagrant/docker/host_key.pub >> /home/vagrant/.ssh/authorized_keys
        sudo cp /home/vagrant/docker/sshd_config /etc/ssh/sshd_config
+       sudo cp /home/vagrant/docker/ssh_config /etc/ssh/ssh_config
        sudo chown root:root /etc/ssh/sshd_config
        sudo chmod 600 /etc/ssh/sshd_config
        sudo docker build -t m2container .

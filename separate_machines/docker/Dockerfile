@@ -20,6 +20,9 @@ RUN sudo apt-get install -y graphviz
 RUN useradd -m -d /home/m2user m2user
 RUN mkdir /home/m2user/.ssh
 COPY docker_key.pub /home/m2user/.ssh/authorized_keys
+COPY ssh_config /etc/ssh/ssh_config
+RUN chown root:root /etc/ssh/ssh_config
+RUN chmod 644 /etc/ssh/ssh_config
 RUN chown -R m2user:m2user /home/m2user/.ssh
 RUN chmod 755 /home/m2user/.ssh
 RUN chmod 644 /home/m2user/.ssh/authorized_keys

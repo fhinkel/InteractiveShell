@@ -21,27 +21,32 @@ module.exports = function (clients,
         });
 
         var unlink = function (completePath) {
-            fs.unlink(completePath, function (err) {
-                if (err) {
-                    console.error("Error unlinking user generated file " + completePath);
-                    console.error(err);
-                }
-            })
+            return function(){
+                fs.unlink(completePath, function (err) {
+                    console.log("Unlinking.");
+                    if (err) {
+                        console.error("Error unlinking user generated file " + completePath);
+                        console.error(err);
+                    }
+                });
+            };
         };
 
         var handleUserGeneratedFile = function (err, sftp) {
             var targetPath = staticFolder + '-' + options.MATH_PROGRAM + userSpecificPath(clientId);
-            console.log('Path: ' + targetPath);
+            // console.log('Path: ' + targetPath);
             fs.mkdir(targetPath, function (err) {
                 if (err) {
                     logExceptOnTest("Folder exists, but we proceed anyway");
                 }
+                console.log('Image we want is ' + path);
                 var completePath = targetPath + fileName;
                 sftp.fastGet(path, completePath, function (error) {
                     if (error) {
                         console.error("Error while downloading image. PATH: " + path + ", ERROR: " + error);
                     } else {
                         setTimeout(unlink(completePath), 1000 * 60 * 10);
+                        // console.log("Emitting path.");
                         clients[clientId].socket.emit(
                             "image", userSpecificPath(clientId) + fileName
                         );
@@ -51,8 +56,10 @@ module.exports = function (clients,
         };
 
         sshConnection.on('ready', function () {
+            console.log("I am ready.");
             sshConnection.sftp(handleUserGeneratedFile);
         });
+        console.log(sshCredentials(clients[clientId].instance));
 
         sshConnection.connect(sshCredentials(clients[clientId].instance));
     };

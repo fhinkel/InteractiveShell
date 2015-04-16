@@ -11,6 +11,7 @@ module.exports = function (clients, logExceptOnTest, sshCredentials) {
 
             connection.on('ready', function () {
                 connection.sftp(function (err, sftp) {
+                    console.log("Have stream.");
                     var stream = sftp.createWriteStream(event.file.name);
                     stream.write(clients[clientId].fileUploadBuffer.toString());
                     stream.end(function () {
@@ -19,7 +20,7 @@ module.exports = function (clients, logExceptOnTest, sshCredentials) {
                     clients[clientId].fileUploadBuffer = "";
                 });
             });
-
+            console.log(sshCredentials(clients[clientId].instance));
             connection.connect(sshCredentials(clients[clientId].instance));
         };
     };

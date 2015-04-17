@@ -136,7 +136,7 @@ var MathServer = function (overrideOptions) {
                     stream.on('end', function () {
                         stream.close();
                         logExceptOnTest('I ended.');
-                        //connection.end();
+                        connection.end();
                     });
                     next(stream);
                 });
@@ -272,7 +272,7 @@ var MathServer = function (overrideOptions) {
         clients[clientId].saneState = false;
         clients[clientId].socket = socket;
 
-        if (!clients[clientId].mathProgramInstance) {
+        if (!clients[clientId].mathProgramInstance || clients[clientId].mathProgramInstance._writableState.ended) {
             console.log("Starting new mathProgram instance.");
             mathProgramStart(clientId, function () {
                 clients[clientId].saneState = true;
@@ -309,7 +309,7 @@ var MathServer = function (overrideOptions) {
     };
 
     var checkAndWrite = function (clientId, msg) {
-        if (!clients[clientId].mathProgramInstance || !clients[clientId].mathProgramInstance._writableState) {
+        if (!clients[clientId].mathProgramInstance || clients[clientId].mathProgramInstance._writableState.ended) {
             socketSanityCheck(clientId, clients[clientId].socket);
         } else {
             writeMsgOnStream(clientId, msg);

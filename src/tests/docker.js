@@ -1,7 +1,12 @@
 var assert = require("assert");
 var spawn = require('child_process').spawn;
 
+
 describe('Start docker container', function () {
+    before(function () {
+        console.testLog = function () {
+        };
+    });
     it('should show M2 version', function (next) {
         var process = spawn("docker", ["run", "-t", "--rm=true", "fhinkel/macaulay2", "/bin/bash", "/usr/bin/M2", "--version"]);
         process.stdout.setEncoding("utf8");
@@ -9,20 +14,20 @@ describe('Start docker container', function () {
         var result = '';
         process.stdout.on('data', function (data) {
             result += data;
-            console.log('Version: ' + result);
+            console.testLog('Version: ' + result);
             process.kill('SIGKILL');
         });
         process.stderr.on('data', function (data) {
             result += data;
-            console.log('Version: ' + result);
+            console.testLog('Version: ' + result);
             process.kill('SIGKILL');
         });
         process.on('error', function (error) {
-            console.log('on error');
+            console.testLog('on error');
         });
-        console.log('Is connected: ' + process.connected);
+        console.testLog('Is connected: ' + process.connected);
         process.on('exit', function (error) {
-            console.log('EXIT for -t version');
+            console.testLog('EXIT for -t version');
             if (result.match(/1\.\d/)) {
                 assert(true);
             } else if (result.match(/no such file or directory. Are you trying to connect to a TLS-enabled daemon without TLS/)) {
@@ -35,7 +40,7 @@ describe('Start docker container', function () {
             }
         });
         process.on('close', function () {
-            console.log('on close in version' + result);
+            console.testLog('on close in version' + result);
             next();
         });
     });
@@ -46,27 +51,27 @@ describe('Start docker container', function () {
         var result = '';
         process.stdout.on('data', function (data) {
             result += data;
-            console.log('***Version: ' + result);
+            console.testLog('***Version: ' + result);
             process.kill('SIGKILL');
         });
         process.stderr.on('data', function (data) {
             result += data;
-            console.log('***Version: ' + result);
+            console.testLog('***Version: ' + result);
             process.kill('SIGKILL');
         });
         process.on('error', function (error) {
-            console.log('***on error');
+            console.testLog('***on error');
         });
         process.on('close', function () {
-            console.log('*** in close');
+            console.testLog('*** in close');
             next()
         });
         process.on('disconnect', function () {
-            console.log('*** in disconnect');
+            console.testLog('*** in disconnect');
         });
-        console.log('Is connected: ' + process.connected);
+        console.testLog('Is connected: ' + process.connected);
         process.on('exit', function () {
-            console.log('***on exit in version without -t' + result);
+            console.testLog('***on exit in version without -t' + result);
             if (result.match(/1\.\d/)) {
                 assert(true);
             } else if (result.match(/no such file or directory. Are you trying to connect to a TLS-enabled daemon without TLS/)) {
@@ -89,14 +94,14 @@ describe('Start docker container', function () {
             process.kill('SIGKILL');
         });
         process.on('disconnected', function (error) {
-            console.log('DISCONNECTED for preamble');
+            console.testLog('DISCONNECTED for preamble');
         });
         process.on('error', function (error) {
-            console.log('on error');
+            console.testLog('on error');
         });
-        console.log('Is connected: ' + process.connected);
+        console.testLog('Is connected: ' + process.connected);
         process.on('exit', function () {
-            console.log('on exit in echo');
+            console.testLog('on exit in echo');
             if (result.match(/hello/)) {
                 assert(true);
                 next()
@@ -115,20 +120,20 @@ describe('Start docker container', function () {
         var result = '';
         process.stdout.on('data', function (data) {
             result += data;
-            console.log('first try out: ' + data);
+            console.testLog('first try out: ' + data);
             process.kill('SIGKILL');
         });
         process.stderr.on('data', function (data) {
             result += data;
-            console.log('first try err: ' + data);
+            console.testLog('first try err: ' + data);
             process.kill('SIGKILL');
         });
         process.on('error', function (error) {
-            console.log('on error');
+            console.testLog('on error');
         });
-        console.log('Is connected: ' + process.connected);
+        console.testLog('Is connected: ' + process.connected);
         process.on('exit', function () {
-            console.log('In exit in preamble');
+            console.testLog('In exit in preamble');
             if (result.match(/Macaulay2, version 1\.\d/)) {
                 assert(true);
             } else if (result.match(/no such file or directory. Are you trying to connect to a TLS-enabled daemon without TLS/)) {
@@ -141,7 +146,7 @@ describe('Start docker container', function () {
             }
         });
         process.on('close', function () {
-            console.log('Close in preamble');
+            console.testLog('Close in preamble');
             if (result.match(/Macaulay2, version 1\.\d/)) {
                 assert(true);
             } else if (result.match(/no such file or directory. Are you trying to connect to a TLS-enabled daemon without TLS/)) {
@@ -163,25 +168,25 @@ describe('Start docker container', function () {
         var result = '';
         process.stdout.on('data', function (data) {
             result += data;
-            console.log('first try out: ' + data);
+            console.testLog('first try out: ' + data);
             process.kill('SIGKILL');
         });
         process.stderr.on('data', function (data) {
             result += data;
-            console.log('first try err: ' + data);
+            console.testLog('first try err: ' + data);
             require('child_process').exec('docker ps -a', function (error, stdout, stderr) {
-                console.log("error:***" + error);
-                console.log("stdout: ***" + stdout);
-                console.log("stderr: ***" + stderr);
+                console.testLog("error:***" + error);
+                console.testLog("stdout: ***" + stdout);
+                console.testLog("stderr: ***" + stderr);
             });
             process.kill('SIGKILL');
         });
         process.on('error', function (error) {
-            console.log('on error');
+            console.testLog('on error');
         });
-        console.log('Is connected: ' + process.connected);
+        console.testLog('Is connected: ' + process.connected);
         process.on('exit', function () {
-            console.log('In exit in preamble');
+            console.testLog('In exit in preamble');
             if (result.match(/Macaulay2, version 1\.\d/)) {
                 assert(true);
             } else if (result.match(/no such file or directory. Are you trying to connect to a TLS-enabled daemon without TLS/)) {
@@ -194,10 +199,10 @@ describe('Start docker container', function () {
             }
         });
         process.on('disconnected', function (error) {
-            console.log('DISCONNECTED for preamble');
+            console.testLog('DISCONNECTED for preamble');
         });
         process.on('close', function () {
-            console.log('Close in preamble');
+            console.testLog('Close in preamble');
             if (result.match(/Macaulay2, version 1\.\d/)) {
                 assert(true);
             } else if (result.match(/no such file or directory. Are you trying to connect to a TLS-enabled daemon without TLS/)) {
@@ -212,6 +217,5 @@ describe('Start docker container', function () {
         });
     });
 });
-
 
 

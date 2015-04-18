@@ -33,6 +33,7 @@ Vagrant.configure(2) do |config|
      nodejs.vm.hostname = "nodejs"
      nodejs.vm.box = "ubuntu/trusty64"
      nodejs.vm.synced_folder "../", "/home/vagrant/InteractiveShell"
+     nodejs.vm.synced_folder ".", "/vagrant", disabled: true
      nodejs.vm.network "forwarded_port", guest: 22, host: 4998, id: 'ssh'
      nodejs.vm.network "forwarded_port", guest: 8002, host: 3692
      nodejs.vm.provision "shell", privileged:false, inline: <<-SHELL
@@ -57,20 +58,34 @@ Vagrant.configure(2) do |config|
      docker.vm.network :private_network, ip: dockerip, virtualbox__intnet: "internal"
      docker.vm.provider "virtualbox" do |v|
        # v.gui = true
+       v.cpus = 1
+       v.memory = 1024
      end
      docker.vm.hostname = "docker"
-     docker.vm.box = "ubuntu/trusty64"
+     docker.vm.box = "phusion-open-ubuntu-14.04-amd64"
+     docker.vm.box_url = "https://oss-binaries.phusionpassenger.com/vagrant/boxes/latest/ubuntu-14.04-amd64-vbox.box"
      docker.vm.synced_folder "./docker", "/home/vagrant/docker"
+     docker.vm.synced_folder ".", "/vagrant", disabled: true
      docker.vm.network "forwarded_port", guest: 22, host: 4999, id: 'ssh'
      # for i in 5000..6000
      #    docker.vm.network :forwarded_port, guest: i, host: i
      # end
+     if Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/default/*/id").empty?
+        # Install Docker
+        pkg_cmd = "wget -q -O - https://get.docker.io/gpg | apt-key add -;" \
+          "echo deb http://get.docker.io/ubuntu docker main > /etc/apt/sources.list.d/docker.list;" \
+          "apt-get update -qq; apt-get install -q -y --force-yes lxc-docker; "
+        # Add vagrant user to the docker group
+        pkg_cmd << "usermod -a -G docker vagrant; "
+        docker.vm.provision :shell, :inline => pkg_cmd
+     end
      docker.vm.provision "shell", privileged:false, inline: <<-SHELL
        export DEBIAN_FRONTEND=noninteractive
        sudo apt-get update 
        sudo apt-get upgrade -y
+       echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
+       echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
        sudo apt-get install -y wget iptables-persistent
-       wget -qO- https://get.docker.com/ | sh
        cd docker
        cat /home/vagrant/docker/host_key.pub >> /home/vagrant/.ssh/authorized_keys
        sudo cp /home/vagrant/docker/sshd_config /etc/ssh/sshd_config
@@ -84,7 +99,7 @@ Vagrant.configure(2) do |config|
        sudo iptables -I DOCKER ! -s 192.168.2.37 -j DROP
        sudo iptables -I DOCKER -d 192.168.2.37 -j ACCEPT
        sudo iptables -I DOCKER -s 192.168.2.37 -j ACCEPT
-       sudo dpkg-reconfigure iptables-persistent
+       sudo dpkg-reconfigure -fnoninteractive iptables-persistent
      SHELL
   end 
   # The most common configuration options are documented and commented below.

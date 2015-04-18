@@ -21,18 +21,22 @@ RUN useradd -m -d /home/m2user m2user
 RUN mkdir /home/m2user/.ssh
 COPY docker_key.pub /home/m2user/.ssh/authorized_keys
 COPY ssh_config /etc/ssh/ssh_config
+COPY sshd_config /etc/ssh/sshd_config
 RUN chown root:root /etc/ssh/ssh_config
 RUN chmod 644 /etc/ssh/ssh_config
+RUN chown root:root /etc/ssh/sshd_config
+RUN chmod 600 /etc/ssh/sshd_config
 RUN chown -R m2user:m2user /home/m2user/.ssh
-RUN chmod 755 /home/m2user/.ssh
+RUN chmod 700 /home/m2user/.ssh
 RUN chmod 644 /home/m2user/.ssh/authorized_keys
+RUN sed -i 's/m2user:!/m2user:*/' /etc/shadow
 
 # Bertini
 # RUN sudo apt-get install -y gcc libmpfrc++-dev make libtool
 # RUN wget https://bertini.nd.edu/BertiniSource_v1.5.tar.gz
-RUN wget https://bertini.nd.edu/BertiniLinux64_v1.5.tar.gz
+# RUN wget https://bertini.nd.edu/BertiniLinux64_v1.5.tar.gz
 # RUN tar xzf BertiniSource_v1.5.tar.gz
-RUN tar xzf BertiniLinux64_v1.5.tar.gz
+# RUN tar xzf BertiniLinux64_v1.5.tar.gz
 # RUN cd BertiniSource_v1.5; ./configure; /usr/bin/make; sudo /usr/bin/make install
 
 

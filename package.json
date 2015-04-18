@@ -44,7 +44,7 @@
     "url": "git@github.com:fhinkel/tryM2.git"
   },
   "devDependencies": {
-    "jsdom": "^4.3.0",
+    "jsdom": "4.3.0",
     "mocha": "^2.1.0",
     "rewire": "^2.3.1",
     "sinon": "^1.14.1",

@@ -10,7 +10,11 @@
 # possible, but leave them commented.  Uncommented options override the
 # default value.
 
+<<<<<<< HEAD
 Port 3869
+=======
+Port 22
+>>>>>>> master
 #AddressFamily any
 #ListenAddress 0.0.0.0
 #ListenAddress ::

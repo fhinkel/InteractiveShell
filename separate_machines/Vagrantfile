@@ -35,6 +35,7 @@ Vagrant.configure(2) do |config|
      nodejs.vm.hostname = "nodejs"
      nodejs.vm.box = "ubuntu/trusty64"
      nodejs.vm.synced_folder "../", "/home/vagrant/InteractiveShell"
+     nodejs.vm.synced_folder ".", "/vagrant", disabled: true
      nodejs.vm.network "forwarded_port", guest: 22, host: 4998, id: 'ssh'
      nodejs.vm.network "forwarded_port", guest: 8002, host: 3690
      nodejs.vm.provision "shell", privileged:false, inline: <<-SHELL
@@ -44,7 +45,11 @@ Vagrant.configure(2) do |config|
        sudo ln -s /usr/bin/nodejs /usr/bin/node
        sudo chown -R vagrant:vagrant /home/vagrant/InteractiveShell
        sudo cp /home/vagrant/InteractiveShell/separate_machines/docker/sshd_config /etc/ssh/sshd_config
+       sudo chown root:root /etc/ssh/sshd_config
+       sudo chmod 600 /etc/ssh/sshd_config
        sudo cp /home/vagrant/InteractiveShell/separate_machines/docker/ssh_config /etc/ssh/ssh_config
+       sudo chown root:root /etc/ssh/ssh_config
+       sudo chmod 644 /etc/ssh/ssh_config
        mkdir webm2.logs
        cd InteractiveShell
        npm install
@@ -61,7 +66,8 @@ Vagrant.configure(2) do |config|
      docker.vm.hostname = "docker"
      docker.vm.box = "ubuntu/trusty64"
      docker.vm.synced_folder "./docker", "/home/vagrant/docker"
-     # docker.vm.network "forwarded_port", guest: 22, host: 4999, id: 'ssh'
+     docker.vm.synced_folder ".", "/vagrant", disabled: true
+     docker.vm.network "forwarded_port", guest: 22, host: 4999, id: 'ssh'
      # for i in 5000..6000
      #    docker.vm.network :forwarded_port, guest: i, host: i
      # end
@@ -69,20 +75,24 @@ Vagrant.configure(2) do |config|
        export DEBIAN_FRONTEND=noninteractive
        sudo apt-get update 
        sudo apt-get upgrade -y
+       echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
+       echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
        sudo apt-get install -y wget iptables-persistent
        wget -qO- https://get.docker.com/ | sh
        cd docker
        cat /home/vagrant/docker/host_key.pub >> /home/vagrant/.ssh/authorized_keys
        sudo cp /home/vagrant/docker/sshd_config /etc/ssh/sshd_config
-       sudo cp /home/vagrant/docker/ssh_config /etc/ssh/ssh_config
        sudo chown root:root /etc/ssh/sshd_config
        sudo chmod 600 /etc/ssh/sshd_config
+       sudo cp /home/vagrant/docker/ssh_config /etc/ssh/ssh_config
+       sudo chown root:root /etc/ssh/ssh_config
+       sudo chmod 644 /etc/ssh/ssh_config
        sudo docker build -t m2container .
        sudo iptables -I DOCKER ! -d 192.168.2.37 -j DROP
        sudo iptables -I DOCKER ! -s 192.168.2.37 -j DROP
        sudo iptables -I DOCKER -d 192.168.2.37 -j ACCEPT
        sudo iptables -I DOCKER -s 192.168.2.37 -j ACCEPT
-       sudo dpkg-reconfigure iptables-persistent
+       sudo dpkg-reconfigure -fnoninteractive iptables-persistent
      SHELL
      # Last three lines need the nodejs IP from above, but this does not work
      # with verbatim mode.

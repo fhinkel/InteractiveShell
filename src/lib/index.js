@@ -209,7 +209,6 @@ var MathServer = function (overrideOptions) {
         var cookies = new Cookies(request, response);
         var clientID = cookies.get(cookieName);
         if (!clientID) {
-            console.log("New cookie.");
             logExceptOnTest('New client without a cookie set came along');
             logExceptOnTest('Set new cookie!');
             clientID = require('./clientId')(clients, logExceptOnTest).getNewId();

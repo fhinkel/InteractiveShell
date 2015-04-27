@@ -23,7 +23,7 @@ module.exports = function (clients,
         var unlink = function (completePath) {
             return function(){
                 fs.unlink(completePath, function (err) {
-                    console.log("Unlinking.");
+                    // console.log("Unlinking.");
                     if (err) {
                         console.error("Error unlinking user generated file " + completePath);
                         console.error(err);
@@ -56,10 +56,10 @@ module.exports = function (clients,
         };
 
         sshConnection.on('ready', function () {
-            console.log("I am ready.");
+            // console.log("I am ready.");
             sshConnection.sftp(handleUserGeneratedFile);
         });
-        console.log(sshCredentials(clients[clientId].instance));
+        // console.log(sshCredentials(clients[clientId].instance));
 
         sshConnection.connect(sshCredentials(clients[clientId].instance));
     };

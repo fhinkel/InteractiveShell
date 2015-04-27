@@ -62,23 +62,13 @@ Vagrant.configure(2) do |config|
        v.memory = 1024
      end
      docker.vm.hostname = "docker"
-     docker.vm.box = "phusion-open-ubuntu-14.04-amd64"
-     docker.vm.box_url = "https://oss-binaries.phusionpassenger.com/vagrant/boxes/latest/ubuntu-14.04-amd64-vbox.box"
+     docker.vm.box = "ubuntu/trusty64"
      docker.vm.synced_folder "./docker", "/home/vagrant/docker"
      docker.vm.synced_folder ".", "/vagrant", disabled: true
      docker.vm.network "forwarded_port", guest: 22, host: 4999, id: 'ssh'
      # for i in 5000..6000
      #    docker.vm.network :forwarded_port, guest: i, host: i
      # end
-     if Dir.glob("#{File.dirname(__FILE__)}/.vagrant/machines/default/*/id").empty?
-        # Install Docker
-        pkg_cmd = "wget -q -O - https://get.docker.io/gpg | apt-key add -;" \
-          "echo deb http://get.docker.io/ubuntu docker main > /etc/apt/sources.list.d/docker.list;" \
-          "apt-get update -qq; apt-get install -q -y --force-yes lxc-docker; "
-        # Add vagrant user to the docker group
-        pkg_cmd << "usermod -a -G docker vagrant; "
-        docker.vm.provision :shell, :inline => pkg_cmd
-     end
      docker.vm.provision "shell", privileged:false, inline: <<-SHELL
        export DEBIAN_FRONTEND=noninteractive
        sudo apt-get update 
@@ -86,6 +76,7 @@ Vagrant.configure(2) do |config|
        echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
        echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
        sudo apt-get install -y wget iptables-persistent
+       wget -qO- https://get.docker.com/ | sh
        cd docker
        cat /home/vagrant/docker/host_key.pub >> /home/vagrant/.ssh/authorized_keys
        sudo cp /home/vagrant/docker/sshd_config /etc/ssh/sshd_config

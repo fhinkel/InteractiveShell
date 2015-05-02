@@ -81,42 +81,45 @@ Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \th
 
 
 \begin{abstract}
-
-    A web app of Macaulay2, a computer algebra system funded by the
-    National Sciences Foundation since 1992. The webversion gives easy
+    \M2 is a software system devoted to supporting research in algebraic
+    geometry and commutative algebra, whose creation has been funded by the
+    National Science Foundation since 1992. It is a command-line tool that
+    can be installed on every common operating system. It has no graphical user
+    interface but runs in a terminal. A new web app of \M2 allows easy
     access to this sophisticated software without the hurdles that
     usually come with installing it. This is particularly useful for
     first time users and students as it is easy to try out. The
-    web app has all features that a desktop version has and can be
-    used to its full potential. The web app contains tutorials,
+    web app has all features that a desktop version offers. The web app contains tutorials
     that explain different concepts such as an introduction to
     Gr\"obner bases. Users can develop their own tutorials and provide
-    them to their students, making it a great tool for education.
-
+    them to their students, substantially improving education in computational algebra.
+    Interactive Shell has been used in courses at Cornell
+    University, Harvard University, Georgia Tech, and Free University of Berlin.
 \end{abstract}
 
 
 \section{Introduction}
-\begin{figure*}[htb]
-    \includegraphics[width=.95\textwidth]{homeWebsite.jpg}
-    \caption{A typical view in \tryM2. The left hand
-      side shows a tutorial giving an introduction to Gr\"obner
-      bases. Text in yellow can be clicked and is then executed by
-      Macaulay2 on the server. The complete output of the calculations
-      is show on the right hand side. {\it Home, Tutorial, Input} let
-      the user change the left hand view, {\it Reset, Interrupt} allow
-      to reset and interrupt the Macaulay2 session on the server, {\it
+\begin{figure}[htb]
+    \includegraphics[width=.99\textwidth]{homeWebsite.jpg}
+    \caption{A typical view in the web version of \M2. The left hand
+        side shows a tutorial giving an introduction to Gr\"obner
+        bases. Text in yellow can be clicked and is then executed by
+        Macaulay2 on the server. The complete output of the calculations
+        is show on the right hand side. Clicking {\it Home, Tutorial, Input}
+        changes the left hand view, {\it Reset, Interrupt}
+        reset and interrupt the Macaulay2 session on the server, {\it
         Save} provides both the input and the output of the current
-      session to the user as a text file, and with {\it Upload} one
-      can upload files that can then be accessed by \M2.}
-    \label{fig:home}
-\end{figure*}
+        session to the user as a text file, and {\it Upload} uploads files
+        that can then be accessed by \M2.}
+\label{fig:home}
+\end{figure}
 
 
 
-\tryM2 is an on-line version of \M2 \cite{M2} which
-does not require users to download or install the program, and also
-does not require users to set up an account and log in.  \tryM2
+We developed a web version of \M2 \cite{M2}. It is available at \cite{webM2}.
+The web version has the advantage that users do not need to
+download or install any software. A browser and internet connection are enough to
+run calculations in \M2. It
 has the same functionality as the desktop version,
 albeit users might have access to less resources
 than on their own machine. Users can upload files and
@@ -124,14 +127,18 @@ load packages, generate files such as images, and also have
 access to other shell commands, such as gfan, 4ti2, and code for
 generating images of graphs.
 
+
 Our primary motivation for creating this web application was to
 provide an easy to use experience for classroom and student use.
 Having students download and install software such as \M2 is time
 consuming and inevitably there are some situations for which this
 process fails or takes significant effort to get runnning, e.g., on
 some versions of Windows.  The \tryM2 web application is designed to
-be able to handle many students at once, and without having the users
-need to create accounts or log in.  \tryM2 was used at the Syzygyies
+be able to handle many students at once. To keep it as simple as possible,
+there is no signup or login process.
+
+
+ \tryM2 was used at the Syzygyies
 meeting in Berlin in May 2013, with about 70 users.  We would like to point out that the
 site is suited not only for beginners, but also for seasoned experts.
 
@@ -268,6 +275,7 @@ interact with the file system or run shell commands by using Macaulay2's {\tt ge
 i8 : get "!uname -ar "
 o8 = Linux 35d4e91d4779 3.13.0-48-generic #80-Ubuntu SMP Thu Mar 12 11:16:15 UTC 2015 x86_64 x86_64
      x86_64 GNU/Linux
+-- write to a file     
 i9 : "important-results.txt" << "very important results" << close
 o9 = important-results.txt
 o9 : File

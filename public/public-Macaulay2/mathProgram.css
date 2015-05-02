@@ -114,6 +114,7 @@ body {
     border-radius: 5px;
     width: 100%;
     font-family: monospace;
+    font-size: 15px;
     height: 100%;
     box-sizing: border-box;
     -webkit-box-sizing: border-box;

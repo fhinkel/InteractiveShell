@@ -4,6 +4,7 @@ var SocketIOFileUpload = require('socketio-file-upload');
 module.exports = function (clients, logExceptOnTest, sshCredentials) {
     var completeFileUpload = function (clientId) {
         return function (event) {
+            var credentials = sshCredentials(clients[clientId].instance);
             var connection = ssh2();
 
             connection.on('end', function () {
@@ -11,7 +12,9 @@ module.exports = function (clients, logExceptOnTest, sshCredentials) {
 
             connection.on('ready', function () {
                 connection.sftp(function (err, sftp) {
-                    console.log("Have stream.");
+                    if(err){
+                        console.log("There was an error while connecting via sftp: " + err);
+                    }
                     var stream = sftp.createWriteStream(event.file.name);
                     stream.write(clients[clientId].fileUploadBuffer.toString());
                     stream.end(function () {
@@ -20,8 +23,8 @@ module.exports = function (clients, logExceptOnTest, sshCredentials) {
                     clients[clientId].fileUploadBuffer = "";
                 });
             });
-            console.log(sshCredentials(clients[clientId].instance));
-            connection.connect(sshCredentials(clients[clientId].instance));
+            
+            connection.connect(credentials);
         };
     };
 

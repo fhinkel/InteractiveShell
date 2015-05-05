@@ -4,7 +4,7 @@
 %  Created by franzi on 2013-03-24.
 %  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
 %
-\documentclass[]{article}
+\documentclass[twocolumn]{article}
 
 % Use utf-8 encoding for foreign characters
 \usepackage[utf8]{inputenc}
@@ -97,7 +97,7 @@ Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \th
 
 
 \section{Introduction}
-\begin{figure}[htb]
+\begin{figure*}[htb]
     \includegraphics[width=.95\textwidth]{homeWebsite.jpg}
     \caption{A typical view in \tryM2. The left hand
       side shows a tutorial giving an introduction to Gr\"obner
@@ -110,7 +110,7 @@ Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \th
       session to the user as a text file, and with {\it Upload} one
       can upload files that can then be accessed by \M2.}
     \label{fig:home}
-\end{figure}
+\end{figure*}
 
 
 
@@ -211,14 +211,14 @@ the user's session.
 %want to manipulate or read data from with Macaulay2 can be uploaded to
 %the user's session.
 
-\begin{figure}[htb]
+\begin{figure*}[htb]
     \includegraphics[width=.95\textwidth]{withGraph.jpg}
     \caption{Screenshot of \tryM2 after the user
       generated an image. Some Macaulay2 packages can generate
       graphs. By invoking the command {\tt displayGraph}, the image is
       generated on the server and displayed to the user.}
     \label{fig:graph}
-\end{figure}
+\end{figure*}
 
 Results from a session can be retrieved by using the {\it Save}
 button, or by using copy and paste. If Macaulay2 generates
@@ -263,7 +263,7 @@ For every user, we start a new Macaulay2 process and
 provide them with the underlying linux system. This allows advanced users to
 interact with the file system or run shell commands by using Macaulay2's {\tt get} command.
 
-\begin{verbatim}
+\begin{lstlisting}[breaklines]
 -- get information on the underlying operating system
 i8 : get "!uname -ar "
 o8 = Linux 35d4e91d4779 3.13.0-48-generic #80-Ubuntu SMP Thu Mar 12 11:16:15 UTC 2015 x86_64 x86_64
@@ -276,7 +276,7 @@ i21 : get "!ls -l"
 o21 = total 4 -rw-r--r-- 1 m2user m2user 22 Apr 12 22:37 important-results.txt
 -- obtain the file
 i22 : get "!open important-results.txt"
-\end{verbatim}
+\end{lstlisting}
 
 Technically, this is achieved by using Docker containers \cite{docker}. Docker implements
 a high-level  API to provide lightweight containers that run processes in isolation.

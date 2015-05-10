@@ -92,7 +92,7 @@ Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \th
     that explain different concepts such as an introduction to
     Gr\"obner bases. Users can develop their own tutorials and provide
     them to their students, substantially improving education in computational algebra.
-    The web app has been used in courses at Cornell
+    The web app is beeing used in courses at Cornell
     University, Harvard University, Georgia Tech, and Free University of Berlin.
 \end{abstract}
 
@@ -124,18 +124,15 @@ download or install any software. A browser and internet connection are enough t
 run calculations in \M2. It
 has the same functionality as the desktop version,
 albeit users might have access to less resources
-than on their own machine. Users can upload files and
-load packages, generate files such as images, and also have
-access to other shell commands, such as gfan, 4ti2, and code for
-generating images of graphs.
-
+than on their own machine. Users can upload files,
+load packages, and generate files such as images.
 
 Our primary motivation for creating this web application was to
 provide an easy to use experience for classroom and student use.
 Having students download and install software such as \M2 is time
 consuming and inevitably there are some situations for which this
 process fails or takes significant effort to get runnning, e.g., on
-some versions of Windows.  The \tryM2 web application is designed to
+some versions of Windows.  The web application is designed to
 be able to handle many students at once. To keep it as simple as possible,
 there is no signup or login process.
 
@@ -180,6 +177,11 @@ We would like to thank Charles Boyd, Dan Grayson, Greg Smith, and Benjamin Loren
 fruitful discussions on system security and on user interface design.
 
 \section{How to use the website}
+
+An important
+design decision is to keep the interface as simple as possible.
+Therefore there is no login or registration.
+
 The right hand side provides a shell like environment running
 Macaulay2. You can type into it, as well as use the arrow keys for
 navigating through your command history.
@@ -224,7 +226,7 @@ the user's session.
 
 \begin{figure*}[htb]
     \includegraphics[width=.95\textwidth]{withGraph.jpg}
-    \caption{Screenshot of \tryM2 after the user
+    \caption{Screenshot after the user
       generated an image. Some Macaulay2 packages can generate
       graphs. By invoking the command {\tt displayGraph}, the image is
       generated on the server and displayed to the user.}
@@ -263,8 +265,9 @@ We choose to implement the server in Node.js
 because of Node.js's event-driven, non-blocking I/O model \cite{nodejs}.
 The Node.js server functions as a bridge between Macaulay2 instances and end user.
 
-For every user, we start a new Macaulay2 process and
-provide them with the underlying linux system. This allows advanced users to
+For every user we start a new Macaulay2 process and
+provide them with the underlying linux system in a separate virtual environment.
+This allows advanced users to
 interact with the file system or run shell commands by using Macaulay2's {\tt get} command.
 
 \begin{lstlisting}[breaklines]
@@ -284,70 +287,27 @@ i22 : get "!open important-results.txt"
 \end{lstlisting}
 
 Technically, this is achieved by using Docker containers \cite{docker}. Docker implements
-a high-level  API to provide lightweight containers that run processes in isolation.
+a high-level API to provide lightweight containers that run processes in isolation.
 We start a new Docker container running Macaulay2 for every user. The Node.js
-server communicates with Docker containers via ssh, which will allow us in the future
+server communicates with Docker containers via {\it ssh}. This allows us to easily
 scale the application as demand grows.
 
 To ease the setup process we provide a virtual machine that contains both the Node.js server
 and Docker. This virtual machine is configured using {\tt vagrant}, a tool to create and
 configure lightweight, reproducible, and portable development environments \cite{vagrant}.
 
-There are several ways the web app can be used:
-\begin{itemize}
-    \item Using it at web.macaulay2.com from any device, a network connection is necessary.
-    \item Users who need more resources or want to use the app locally, can
-    run an instance of the web version locally, only accessible from their own device.
-    This is easily done by using the vagrant configuration we provide
-    \item Users who want to have control over the Macaulay2 web app can run an
-     instance on their own server or on a cloud
-    service such as AWS or DigitalOcean \cite{AWS,digitalocean}.
-     \item Users who want to contribute can get the project from GitHub \cite{github}.
-     The folder
-     with the source code is symlinked into the Vagrant machine resulting
-     in a smooth development experience.
-\end{itemize}
-
-
 \section{The future}
 
-Some important small enhancements that we envision include command
-line completion and colorization of \M2 code.  However, an important
-design decision is to keep the interface as simple as possible.
+We envision some form of session sharing which would turn the web app into a tool for collaborative research.
 
-The system we have written was designed with \M2 in mind, but 
+We are collaborating with several mathematicians to develop more tutorials.
+We plan to substantically increase the number of tutorials in the tutorial database over the next semester.
+
+The web app was designed with \M2 in mind, but
 the entire structure will work for other command line programs such as Singular \cite{singular},
-and GAP \cite{GAP4}.  We are currently working on creating a similar server for Singular.
-Tutorials for other systems may be created in the same way as \M2 tutorials.
-
-We are excited to receive tutorials that you have developed and would be happy
-to include them on the website, so that others can profit from your work as
-well.
-
+and GAP \cite{GAP4}. A similar web app for Singular is work in progress.
 
 
 \bibliographystyle{plain}
 \bibliography{references}
 \end{document}
-
-. What we do?
-  . Provide a web-based M2
-  . Full featured
-  . No creation of accounts needed.
-  . No setup time to use in a class setting.  Students can work immediately, with no setup fuss.
-  . Tutorials to learn M2 provided.
-  . Instructors can create their own tutorials for their students to learn.
-  . Also suitable for advanced users.
-  . The source is open and on github: any user can create a web-based server
-      for others.  Todo: can lock it down to your own self.
-  . This runs acceptably on ipad and android, although having a separate 
-    keyboard is good.  Future: improve experience on tablets.
-
-  section 2: how to use web Macaulay2, an overview of the features.
-  section 3: writing tutorials, making them available.
-  section 4: some details about how the server was written and structured.
-  section 5: wishlist for additional features.
-
-. Why not other solutions, such as the Sage notebook?
-  . need accounts
-  . this solution seems more ``lightweight''

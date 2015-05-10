@@ -51,12 +51,10 @@
 \usepackage{graphicx}
 \fi
 
-\def\tryM2{{\it Try Macaulay2}}
 \def\M2{{\it Macaulay2}}
 
 \title{A Web App for Macaulay2}
-%\title{\tryM2: A web version of \M2}
-\author{Lars Kastner\\ Freie Universit\"at Berlin \\{\small kastner\char`\@math.fu-berlin.de} \and 
+\author{Lars Kastner\\ Freie Universit\"at Berlin \\{\small kastner\char`\@math.fu-berlin.de} \and
 Franziska Hinkelmann\\TNG Technology Consulting GmbH \\{\small franziska.hinkelmann\char`\@tngtech.com} \and 
 Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \thanks{Stillman has been supported by NSF grants DMS 08-10909 and 10-02210. Hinkelmann has been supported by NSF award 0635561. Kastner by DFG SPP 1489. 
 } }
@@ -142,8 +140,10 @@ be able to handle many students at once. To keep it as simple as possible,
 there is no signup or login process.
 
 
- \tryM2 was used at the Syzygyies
-meeting in Berlin in May 2013, with about 70 users. It is being used in courses at Cornell University, Harvard University, Georgia Tech, and Free University of Berlin. We would like to point out that the
+ The web version was used at the Syzygyies
+meeting in Berlin in May 2013, with about 70 users. It is being used in courses at Cornell
+University, Harvard University, Georgia Tech, and Free University of
+ Berlin. We would like to point out that the
 site is suited not only for beginners, but also for seasoned experts.
 
 We considered off the shelf solutions, such as the Sage
@@ -152,7 +152,7 @@ lighter-weight solution, and one that did not require users to create
 new accounts at a web site.  Nothing available seemed to meet our
 needs, hence the current system.
 
-\tryM2 runs under the Chrome, Firefox and Safari web browsers, but not
+The web version runs under the Chrome, Firefox and Safari web browsers, but not
 under Internet Explorer.  On the iPad, it runs under Chrome and
 Safari, although it seems that Chrome offers a nicer user experience.
 It runs under recent versions of Android ($4.0$ and higher).
@@ -245,23 +245,16 @@ have not closed their browser, or set the browser to remember their
 windows.
 
 \section{Tutorials}
-Instructors and other users can create their own tutorials for use with \tryM2. Instructors can email or otherwise distribute an html file with their tutorial to their students or seminar participants. They then can load it into \tryM2 and use it. 
 
-Since it it cumbersome to write the tutorial in the required html format, we provide the \M2 package {\it DocConverter}. It converts a file i  
-First, you write your tutorial in \M2's {\it SimpleDoc} format, which includes example \M2 code.
-Then, run the \M2 command script {\tt convert} to create an html document. This document has the format required by \tryM2 to be displayed nicely as a tutorial. To load this tutorial into your running {\tt web.macaulay2.com} session use the {\tt Load Tutorial} button at the end of the tutorial list.
-Your tutorial will remain locally on your computer and is not uploaded to any server. You can easily delete it from the list by clicking on the close button next to its title. It will also be removed from the list the next time you start your browser. 
+You can create your own tutorials for the web version. If you teach a course,
+email your tutorial to your students. They can click
+{\it Load Tutorial} on the website and work through the tutorial.
+If you want to share tutorial with the community, we would
+be happy to include them on the website!
 
-Email the html file to your students or provide it on your own website for download. Your students then load this tutorial into their {\tt= web.macaulay2.com} session using the {\tt Load Tutorial} button as well.
-
-The following steps to create a tutorial are also documented in the package {\tt DocConverter}.
-\begin{enumerate}
-\item Create a tutorial in simpledoc format, say {\tt foo.simpledoc}.  For an example, type into \M2, {\tt viewHelp "DocConverter"}.
-\item Use {\tt convert "foo"} to create a file "foo.html".
-\item In the {\it Home} screen in \tryM2, click on the {\it Load Tutorial} button, and select this file.
-\end{enumerate}
-
-In the case that you do not have access to \M2 on your local machine, you can upload the {\it SimpleDoc} file to the server, convert it there and then download it using the \M2 {\tt open} function.
+We provide the \M2 package {\it DocConverter}.
+It converts a file from {\it SimpleDoc} to the tutorial specific HTML. Please see the
+{\it DocConverter} package for instructions and examples.
 
 
 \section{Internal structure}

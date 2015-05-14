@@ -53,7 +53,7 @@
 
 \def\M2{{\it Macaulay2}}
 
-\title{A Web App for Macaualy2}
+\title{A Web Application for Macaulay2}
 \author{Lars Kastner\\ Freie Universit\"at Berlin \\{\small kastner\char`\@math.fu-berlin.de} \and
 Franziska Hinkelmann\\TNG Technology Consulting GmbH \\{\small franziska.hinkelmann\char`\@tngtech.com} \and 
 Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \thanks{Stillman has been supported by NSF grants DMS 08-10909 and 10-02210. Hinkelmann has been supported by NSF award 0635561. Kastner by DFG SPP 1489. 
@@ -257,8 +257,8 @@ interact with the file system or run shell commands by using \M2's {\tt get} com
 i1 : -- get information on the underlying operating system
      get "!uname -ar" 
 
-o1 = Darwin Franziskas-MBP.home 14.3.0 Darwin Kernel Version 14.3.0: Mon Mar 23
-     11:59:05 PDT 2015; root:xnu-2782.20.48~5/RELEASE_X86_64 x86_64
+o1 = Linux babc970803e5 3.13.0-49-generic #83-Ubuntu SMP Fri Apr 10 20:11:33 UTC 2015 x86_64 x86_64
+     x86_64 GNU/Linux
 
 i2 : -- write to a file     
      "important-results.txt" << "very important results" << close

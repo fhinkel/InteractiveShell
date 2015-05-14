@@ -162,7 +162,7 @@ Providing a program such as \M2 which allows users to
 access system resources presents a number of challenges to keep users
 from naively or mischievously misusing the system.  In Section 4, we
 provide technical details of the application.
-The last section describes future features the web application.
+In the last section we describe future features the web application.
 
 The system is open source, and available on GitHub (see \cite{github}).
 If you would like more information on using this in your own courses,
@@ -252,9 +252,8 @@ For every user we start a new \M2 process and
 provide them with the underlying Linux system in a separate virtual environment.
 This allows advanced users to
 interact with the file system or run shell commands by using \M2's {\tt get} 
-command, see Figure \ref{fig:code}.
+command:
 
-%\begin{figure*}
 \begin{verbatim}
 i1 : -- get information on the underlying 
      -- operating system
@@ -274,10 +273,6 @@ o3 = results.txt
 i4 : -- obtain the file
      get "!open results.txt"
 \end{verbatim}
-%\caption{Sample \M2 commands that interact with the underlying Linux system.}
-%\label{fig:code}
-
-%\end{figure*}
 
 Technically, this is achieved by using Docker containers \cite{docker}. Docker implements
 a high-level API to provide lightweight containers that run processes in isolation.
@@ -289,7 +284,7 @@ To ease the setup process we provide a virtual machine that contains both the No
 and Docker. This virtual machine is configured using {\tt vagrant}, a tool to create and
 configure reproducible and portable development environments \cite{vagrant}.
 
-\section{The future}
+\section{Conclusion}
 
 By providing \M2 as a web application, we hope to lower the
  entry barrier for new users, therefore increasing the number 

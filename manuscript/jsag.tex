@@ -82,10 +82,10 @@ Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \th
             National Science Foundation since 1992. It is a command-line tool that
             has no graphical user
             interface. 
-            This manuscript describes a new web app for \M2. The web app requires no installation
-            and provides a graphical user interface, making \M2 more 
+            This manuscript describes a new web application for \M2. It requires no installation
+            and provides a graphical user interface. Therefore making \M2 more 
             accessible, especially to first time users and students. 
-            The web app has all features that the desktop version offers. 
+            The web application has all features that the desktop version offers. 
             In addition, it contains tutorials
             that explain different concepts of algebraic geometry such as
             Gr\"obner bases. Users can also create their own tutorials.
@@ -100,7 +100,7 @@ Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \th
 \M2 is a software system devoted to supporting research
 in algebraic geometry and commutative algebra, whose creation and
 development have been funded by the National Science Foundation
-since 1992. We developed a web version of \M2 \cite{M2}. It is available at \cite{webM2}.
+since 1992\cite{M2}. We developed a web version of \M2. It is available at \cite{webM2}.
 The web version has the advantage that users do not need to
 download or install any software. A browser and internet connection are enough to
 run calculations in \M2. It
@@ -113,13 +113,13 @@ Our primary motivation for creating this web application was to
 provide an easy to use experience for classroom and student use.
 Having students download and install software such as \M2 is time
 consuming and inevitably there are some situations for which this
-process fails or takes significant effort to get runnning, e.g., on
-some versions of Windows.  The web application is designed to
+process fails or takes significant effort to get running, e.g., on Windows.  
+The web application is designed to
 be able to handle many students at once. To keep it as simple as possible,
-there is no signup or login process.
+there is no sign-up or login process.
 
 
- The web version was used at the Syzygyies
+ The web version was used at the Syzygies
 meeting in Berlin in May 2013, with about 70 users. It is being used in courses at Cornell
 University, Harvard University, Georgia Tech, and Free University of
  Berlin. We would like to point out that the
@@ -136,9 +136,9 @@ under Internet Explorer.  On the iPad, it runs under Chrome and
 Safari, although it seems that Chrome offers a nicer user experience.
 It runs under recent versions of Android ($4.0$ and higher).
 
-In addition to the interface to \M2, the web app provides several tutorials.  
+In addition to the interface to \M2, the web application provides several tutorials.  
 Users can also create their own
-tutorials and sharem them with other \M2 users.  
+tutorials and share them with other \M2 users.  
 
 \begin{figure*}[htb]
     \includegraphics[width=.99\textwidth]{homeWebsite.jpg}
@@ -162,7 +162,7 @@ Providing a program such as \M2 which allows users to
 access system resources presents a number of challenges to keep users
 from naively or mischievously misusing the system.  In Section 4, we
 provide technical details of the application.
-The last section describes future features the web app.
+The last section describes future features the web application.
 
 The system is open source, and available on GitHub (see \cite{github}).
 If you would like more information on using this in your own courses,
@@ -202,8 +202,8 @@ The {\it Interrupt} button stops a running calculation, without
 resetting the \M2 session. This is useful if you want to stop a long calculation.
 
 \subsection{Features}
-You can run any command in the \M2 web app that you can run in the desktop version.
-To find the version of \M2 running in the web app,
+You can run any command in the \M2 web application that you can run in the desktop version.
+To find the current version of \M2,
 enter and evaluate: {\tt version\#"VERSION"}.  You can load a package
  using {\tt loadPackage} or {\tt needsPackage}, e.g. {\tt needsPackage "BoijSoederberg"}.  
 You can upload a new packages by clicking the {\it Upload file}
@@ -249,7 +249,7 @@ because of Node.js's event-driven, non-blocking I/O model \cite{nodejs}.
 The Node.js server functions as a bridge between \M2 instances and end users.
 
 For every user we start a new \M2 process and
-provide them with the underlying linux system in a separate virtual environment.
+provide them with the underlying Linux system in a separate virtual environment.
 This allows advanced users to
 interact with the file system or run shell commands by using \M2's {\tt get} command.
 
@@ -287,7 +287,7 @@ By providing \M2 as a web application, we hope to lower the
 
 
 We are collaborating with several mathematicians to develop more tutorials.
-We plan to substantically increase the number of tutorials in the tutorial database over the next semester.
+We plan to substantially increase the number of tutorials in the tutorial database over the next semester.
 
 
 We envision some form of session sharing which allows to use the web app as a tool for collaborative research.

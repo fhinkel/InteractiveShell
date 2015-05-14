@@ -254,19 +254,27 @@ This allows advanced users to
 interact with the file system or run shell commands by using \M2's {\tt get} command.
 
 \begin{lstlisting}[breaklines]
--- get information on the underlying operating system
-i8 : get "!uname -ar "
-o8 = Linux 35d4e91d4779 3.13.0-48-generic #80-Ubuntu SMP Thu Mar 12 11:16:15 UTC 2015 x86_64 x86_64
-     x86_64 GNU/Linux
--- write to a file     
-i9 : "important-results.txt" << "very important results" << close
-o9 = important-results.txt
-o9 : File
--- list all files in the current directory
-i21 : get "!ls -l"
-o21 = total 4 -rw-r--r-- 1 m2user m2user 22 Apr 12 22:37 important-results.txt
--- obtain the file
-i22 : get "!open important-results.txt"
+i1 : -- get information on the underlying operating system
+     get "!uname -ar" 
+
+o1 = Darwin Franziskas-MBP.home 14.3.0 Darwin Kernel Version 14.3.0: Mon Mar 23
+     11:59:05 PDT 2015; root:xnu-2782.20.48~5/RELEASE_X86_64 x86_64
+
+i2 : -- write to a file     
+     "important-results.txt" << "very important results" << close
+
+o2 = important-results.txt
+
+o2 : File
+
+i3 : -- list all files in the current directory
+     get "!ls -l"
+
+o3 = total 152
+     -rw-r--r--@  1 franzi  staff     22 14 Mai 17:07 important-results.txt
+ 
+i4 : -- obtain the file
+     get "!open important-results.txt"
 \end{lstlisting}
 
 Technically, this is achieved by using Docker containers \cite{docker}. Docker implements

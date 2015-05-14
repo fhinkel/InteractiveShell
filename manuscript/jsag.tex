@@ -53,7 +53,7 @@
 
 \def\M2{{\it Macaulay2}}
 
-\title{A Web App for Macaulay2}
+\title{A Web App for Macaualy2}
 \author{Lars Kastner\\ Freie Universit\"at Berlin \\{\small kastner\char`\@math.fu-berlin.de} \and
 Franziska Hinkelmann\\TNG Technology Consulting GmbH \\{\small franziska.hinkelmann\char`\@tngtech.com} \and 
 Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \thanks{Stillman has been supported by NSF grants DMS 08-10909 and 10-02210. Hinkelmann has been supported by NSF award 0635561. Kastner by DFG SPP 1489. 
@@ -106,10 +106,10 @@ Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \th
     \caption{A typical view in the web version of \M2. The left hand
         side shows a tutorial giving an introduction to Gr\"obner
         bases. Text in yellow can be clicked and is then executed by
-        Macaulay2 on the server. The complete output of the calculations
+        \M2 on the server. The complete output of the calculations
         is show on the right hand side. Clicking {\it Home, Tutorial, Input}
         changes the left hand view, {\it Reset, Interrupt}
-        reset and interrupt the Macaulay2 session on the server, {\it
+        reset and interrupt the \M2 session on the server, {\it
         Save} provides both the input and the output of the current
         session to the user as a text file, and {\it Upload} uploads files
         that can then be accessed by \M2.}
@@ -118,7 +118,7 @@ Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \th
 
 
 
-Macaulay2 is a software system devoted to supporting research
+\M2 is a software system devoted to supporting research
 in algebraic geometry and commutative algebra, whose creation and
 development have been funded by the National Science Foundation
 since 1992. We developed a web version of \M2 \cite{M2}. It is available at \cite{webM2}.
@@ -186,27 +186,27 @@ design decision is to keep the interface as simple as possible.
 Therefore there is no login or registration.
 
 The right hand side provides a shell like environment running
-Macaulay2. You can type into it, as well as use the arrow keys for
+\M2. You can type into it, as well as use the arrow keys for
 navigating through your command history.
 
 On the left hand side, the user can navigate between {\it Home}, {\it
   Tutorial}, and {\it Input}. {\it Home} shows the table of contents
 of tutorials. {\it Tutorial} shows the currently selected
 tutorial. Tutorials are interactive and contain executable pieces of
-Macaulay2 code that are run by clicking on them. {\it Input} shows a
-terminal window in which the user can type {\it Macaulay2} commands and execute them.
+\M2 code that are run by clicking on them. {\it Input} shows a
+terminal window in which the user can type \M2 commands and execute them.
 
 All code executed, either by clicking on interactive parts in a
 tutorial or by entering code in the {\it Input} window, appears on the
-right hand side together with the output from Macaulay2 to those
+right hand side together with the output from \M2 to those
 results.
 
-The {\it Reset} button resets a Macaulay2 session, i.e., restarts 
+The {\it Reset} button resets a \M2 session, i.e., restarts 
 the \M2 process: it stops any running calculation, deletes all variables, 
 unloads all packages, and then reloads the standard packages.
 
 The {\it Interrupt} button stops a running calculation, without
-resetting the Macaulay2 session.
+resetting the \M2 session.
 
 \subsection{Features}
 
@@ -224,20 +224,20 @@ the user's session.
 %such as {\tt loadPackage}. If packages are not available, they can be
 %uploaded to the users session, by clicking the {\it Upload file}
 %%nbutton. Similarly, any other file, such as text files, that one might
-%want to manipulate or read data from with Macaulay2 can be uploaded to
+%want to manipulate or read data from with \M2 can be uploaded to
 %the user's session.
 
 \begin{figure*}[htb]
     \includegraphics[width=.95\textwidth]{withGraph.jpg}
     \caption{Screenshot after the user
-      generated an image. Some Macaulay2 packages can generate
+      generated an image. Some \M2 packages can generate
       graphs. By invoking the command {\tt displayGraph}, the image is
       generated on the server and displayed to the user.}
     \label{fig:graph}
 \end{figure*}
 
 Results from a session can be retrieved by using the {\it Save}
-button, or by using copy and paste. If Macaulay2 generates
+button, or by using copy and paste. If \M2 generates
 images such as graphs, those are presented to the user, see Figure \ref{fig:graph}.
 
 %If the user needs to retrieve
@@ -266,12 +266,12 @@ It converts a file from {\it SimpleDoc} to the tutorial specific HTML. Please se
 
 We choose to implement the server in Node.js
 because of Node.js's event-driven, non-blocking I/O model \cite{nodejs}.
-The Node.js server functions as a bridge between Macaulay2 instances and end user.
+The Node.js server functions as a bridge between \M2 instances and end user.
 
-For every user we start a new Macaulay2 process and
+For every user we start a new \M2 process and
 provide them with the underlying linux system in a separate virtual environment.
 This allows advanced users to
-interact with the file system or run shell commands by using Macaulay2's {\tt get} command.
+interact with the file system or run shell commands by using \M2's {\tt get} command.
 
 \begin{lstlisting}[breaklines]
 -- get information on the underlying operating system
@@ -291,7 +291,7 @@ i22 : get "!open important-results.txt"
 
 Technically, this is achieved by using Docker containers \cite{docker}. Docker implements
 a high-level API to provide lightweight containers that run processes in isolation.
-We start a new Docker container running Macaulay2 for every user. The Node.js
+We start a new Docker container running \M2 for every user. The Node.js
 server communicates with Docker containers via {\it ssh}. This allows us to easily
 scale the application as demand grows.
 

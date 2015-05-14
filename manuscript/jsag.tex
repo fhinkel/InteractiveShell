@@ -74,49 +74,28 @@ Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \th
 
 
 \twocolumn[
-  \begin{@twocolumnfalse}
-\maketitle
-
-
-
-\begin{abstract}
-    \M2 is a software system devoted to supporting research in algebraic
-    geometry and commutative algebra, whose creation has been funded by the
-    National Science Foundation since 1992. It is a command-line tool that
-    can be installed on every common operating system. It runs in the terminal
-    and has no graphical user
-    interface. A new web app for \M2 allows easy
-    access to this sophisticated software without the hurdles that
-    usually come with installing it. This is particularly useful for
-    first time users and teaching as it is easy to try out. The
-    web app has all features that a desktop version offers. The web app contains tutorials
-    that explain different concepts such as an introduction to
-    Gr\"obner bases. Users can develop their own tutorials and provide
-    them to their students, substantially improving education in computational algebra.
-    The web app is beeing used in courses at Cornell
-    University, Harvard University, Georgia Tech, and Free University of Berlin.
-\end{abstract}
-\end{@twocolumnfalse}
+    \begin{@twocolumnfalse}
+    \maketitle
+        \begin{abstract}
+            \M2 is a software system devoted to supporting research in algebraic
+            geometry and commutative algebra, whose creation has been funded by the
+            National Science Foundation since 1992. It is a command-line tool that
+            has no graphical user
+            interface. 
+            This manuscript describes a new web app for \M2. The web app requires no installation
+            and provides a graphical user interface, making \M2 more 
+            accessible, especially to first time users and students. 
+            The web app has all features that the desktop version offers. 
+            In addition, it contains tutorials
+            that explain different concepts of algebraic geometry such as
+            Gr\"obner bases. Users can also create their own tutorials.
+            The web version has been used in courses at Cornell
+            University, Harvard University, Georgia Tech, and Free University of Berlin.
+        \end{abstract}
+    \end{@twocolumnfalse}
 ]
 
-
 \section{Introduction}
-\begin{figure*}[htb]
-    \includegraphics[width=.99\textwidth]{homeWebsite.jpg}
-    \caption{A typical view in the web version of \M2. The left hand
-        side shows a tutorial giving an introduction to Gr\"obner
-        bases. Text in yellow can be clicked and is then executed by
-        \M2 on the server. The complete output of the calculations
-        is show on the right hand side. Clicking {\it Home, Tutorial, Input}
-        changes the left hand view, {\it Reset, Interrupt}
-        reset and interrupt the \M2 session on the server, {\it
-        Save} provides both the input and the output of the current
-        session to the user as a text file, and {\it Upload} uploads files
-        that can then be accessed by \M2.}
-\label{fig:home}
-\end{figure*}
-
-
 
 \M2 is a software system devoted to supporting research
 in algebraic geometry and commutative algebra, whose creation and
@@ -147,8 +126,8 @@ University, Harvard University, Georgia Tech, and Free University of
 site is suited not only for beginners, but also for seasoned experts.
 
 We considered off the shelf solutions, such as the Sage
-notebook~\cite{sagenotebook}, but decided that we wished for a
-lighter-weight solution, and one that did not require users to create
+notebook~\cite{sagenotebook}, but decided that we wished for a more
+lightweight solution, and one that did not require users to create
 new accounts at a web site.  Nothing available seemed to meet our
 needs, hence the current system.
 
@@ -157,22 +136,35 @@ under Internet Explorer.  On the iPad, it runs under Chrome and
 Safari, although it seems that Chrome offers a nicer user experience.
 It runs under recent versions of Android ($4.0$ and higher).
 
-In addition to presenting an interface to an instance of \M2
-running on a distant server, a number of tutorials to
-learn \M2 are provided.  Instructors can create their own
-tutorials, and can make them available to their students, as well as
-to other \M2 users.  
+In addition to the interface to \M2, the web app provides several tutorials.  
+Users can also create their own
+tutorials and sharem them with other \M2 users.  
+
+\begin{figure*}[htb]
+    \includegraphics[width=.99\textwidth]{homeWebsite.jpg}
+    \caption{A typical view in the web version of \M2. The left hand
+        side shows a tutorial giving an introduction to Gr\"obner
+        bases. Text in yellow can be clicked and is then executed by
+        \M2 on the server. The complete output of the calculations
+        is show on the right hand side. Clicking {\it Home, Tutorial, Input}
+        changes the left hand view, {\it Reset, Interrupt}
+        reset and interrupt the \M2 session on the server, {\it
+        Save} provides both the input and the output of the current
+        session to the user as a text file, and {\it Upload} uploads files
+        that can then be accessed by \M2.}
+\label{fig:home}
+\end{figure*}
+
 
 In Section 2, we describe the basics of using the web application.
-Section 3 details how to create and make available your own tutorials.
+Section 3 details how to create tutorials.
 Providing a program such as \M2 which allows users to
 access system resources presents a number of challenges to keep users
 from naively or mischievously misusing the system.  In Section 4, we
-provide details as to how we structure the application on the server.
-In the last section, we describe some of our wish-list items for
-improving and extending the system.
+provide technical details of the application.
+The last section describes future features the web app.
 
-The system is open source, and available on github (see \cite{github}).
+The system is open source, and available on GitHub (see \cite{github}).
 If you would like more information on using this in your own courses,
 or if you have suggestions, please contact one of us.
 
@@ -186,39 +178,38 @@ design decision is to keep the interface as simple as possible.
 Therefore there is no login or registration.
 
 The right hand side provides a shell like environment running
-\M2. You can type into it, as well as use the arrow keys for
-navigating through your command history.
+\M2. You can type into it and use the arrow keys for
+navigating through your command history. You can use the tabulator 
+key for command completion. 
 
-On the left hand side, the user can navigate between {\it Home}, {\it
-  Tutorial}, and {\it Input}. {\it Home} shows the table of contents
-of tutorials. {\it Tutorial} shows the currently selected
+On the left hand side, you can switch between {\it Home}, {\it
+  Tutorial}, and {\it Input}. {\it Home} shows the available
+ tutorials. {\it Tutorial} shows the currently selected
 tutorial. Tutorials are interactive and contain executable pieces of
-\M2 code that are run by clicking on them. {\it Input} shows a
-terminal window in which the user can type \M2 commands and execute them.
+\M2 code that are run by clicking on them. {\it Input} is a
+text area in which you can type \M2 commands and execute them.
 
 All code executed, either by clicking on interactive parts in a
-tutorial or by entering code in the {\it Input} window, appears on the
-right hand side together with the output from \M2 to those
-results.
+tutorial or by entering code in the {\it Input} window, will appear in 
+the terminal on the right hand side together with the \M2 output.
+
 
 The {\it Reset} button resets a \M2 session, i.e., restarts 
 the \M2 process: it stops any running calculation, deletes all variables, 
 unloads all packages, and then reloads the standard packages.
 
 The {\it Interrupt} button stops a running calculation, without
-resetting the \M2 session.
+resetting the \M2 session. This is useful if you want to stop a long calculation.
 
 \subsection{Features}
+You can run any command in the \M2 web app that you can run in the desktop version.
+To find the version of \M2 running in the web app,
+enter and evaluate: {\tt version\#"VERSION"}.  You can load a package
+ using {\tt loadPackage} or {\tt needsPackage}, e.g. {\tt needsPackage "BoijSoederberg"}.  
+You can upload a new packages by clicking the {\it Upload file}
+button. Similarly, you can upload any other file that you want to 
+read or manipulate with \M2, e.g., text files with data. 
 
-The user is free to run all \M2 commands that are available in the
-running version. To find the version of \M2 running on the server,
-enter and evaluate: {\tt version\#"VERSION"}.  Loading packages is
-done using {\tt loadPackage} or {\tt needsPackage}, e.g. {\tt needsPackage "BoijSoederberg"}.  
-New packages can be
-uploaded to the user's session, by clicking the {\it Upload file}
-button. Similarly, any other file, such as text files, that one might
-want to manipulate or read data from with \M2, can be uploaded to
-the user's session.
 
 %Loading packages is possible, too, with commands
 %such as {\tt loadPackage}. If packages are not available, they can be

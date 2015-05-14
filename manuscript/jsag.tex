@@ -210,14 +210,6 @@ You can upload a new packages by clicking the {\it Upload file}
 button. Similarly, you can upload any other file that you want to 
 read or manipulate with \M2, e.g., text files with data. 
 
-
-%Loading packages is possible, too, with commands
-%such as {\tt loadPackage}. If packages are not available, they can be
-%uploaded to the users session, by clicking the {\it Upload file}
-%%nbutton. Similarly, any other file, such as text files, that one might
-%want to manipulate or read data from with \M2 can be uploaded to
-%the user's session.
-
 \begin{figure*}[htb]
     \includegraphics[width=.95\textwidth]{withGraph.jpg}
     \caption{Screenshot after the user
@@ -231,24 +223,21 @@ Results from a session can be retrieved by using the {\it Save}
 button, or by using copy and paste. If \M2 generates
 images such as graphs, those are presented to the user, see Figure \ref{fig:graph}.
 
-%If the user needs to retrieve
-%files that are stored in his session, those can be retrieved by
-%executing {\tt open} in the user's session. 
 
-Session are usually kept alive for several days, which allows users to
-continue their work next time they access the server, if either they
-have not closed their browser, or set the browser to remember their
-windows.
+Session are usually kept alive for several days. When you start a \M2 session and visit the web app at a later time, 
+you will find your previous session. Occasionally, 
+we have to reboot the server or deploy a new version, this, 
+unfortunately, will delete your session. Also, we have to restrict resources since you are on a shared machine.
 
 \section{Tutorials}
 
 You can create your own tutorials for the web version. If you teach a course,
-email your tutorial to your students. They can click
-{\it Load Tutorial} on the website and work through the tutorial.
-If you want to share tutorial with the community, we would
+email your tutorial to your students. They can include your tutorial in their web app by clicking
+{\it Load Tutorial} on the website.
+If you want to share a tutorial with the community, we would
 be happy to include them on the website!
 
-We provide the \M2 package {\it DocConverter}.
+You can use the \M2 package {\it DocConverter}.
 It converts a file from {\it SimpleDoc} to the tutorial specific HTML. Please see the
 {\it DocConverter} package for instructions and examples.
 
@@ -257,7 +246,7 @@ It converts a file from {\it SimpleDoc} to the tutorial specific HTML. Please se
 
 We choose to implement the server in Node.js
 because of Node.js's event-driven, non-blocking I/O model \cite{nodejs}.
-The Node.js server functions as a bridge between \M2 instances and end user.
+The Node.js server functions as a bridge between \M2 instances and end users.
 
 For every user we start a new \M2 process and
 provide them with the underlying linux system in a separate virtual environment.
@@ -288,16 +277,23 @@ scale the application as demand grows.
 
 To ease the setup process we provide a virtual machine that contains both the Node.js server
 and Docker. This virtual machine is configured using {\tt vagrant}, a tool to create and
-configure lightweight, reproducible, and portable development environments \cite{vagrant}.
+configure reproducible and portable development environments \cite{vagrant}.
 
 \section{The future}
 
-We envision some form of session sharing which would turn the web app into a tool for collaborative research.
+By providing \M2 as a web application, we hope to lower the
+ entry barrier for new users, therefore increasing the number 
+ of users and fostering research in computational algebraic geometry and commutative algebra. 
+
 
 We are collaborating with several mathematicians to develop more tutorials.
 We plan to substantically increase the number of tutorials in the tutorial database over the next semester.
 
-The web app was designed with \M2 in mind, but
+
+We envision some form of session sharing which allows to use the web app as a tool for collaborative research.
+
+
+The application was designed with \M2 in mind, but
 the entire structure will work for other command line programs such as Singular \cite{singular},
 and GAP \cite{GAP4}. A similar web app for Singular is work in progress.
 

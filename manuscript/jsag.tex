@@ -273,7 +273,7 @@ The Node.js server functions as a bridge between Macaulay2 instances and end use
 For every user, we start a new Macaulay2 process and
 provide them with the underlying linux system. This allows advanced users to
 interact with the file system or run shell commands by using Macaulay2's {\tt get} command.
-
+\begin{figure*}[htb]
 \begin{lstlisting}[breaklines]
 -- get information on the underlying operating system
 i8 : get "!uname -ar "
@@ -289,6 +289,7 @@ o21 = total 4 -rw-r--r-- 1 m2user m2user 22 Apr 12 22:37 important-results.txt
 -- obtain the file
 i22 : get "!open important-results.txt"
 \end{lstlisting}
+\end{figure*}
 
 Technically, this is achieved by using Docker containers \cite{docker}. Docker implements
 a high-level  API to provide lightweight containers that run processes in isolation.

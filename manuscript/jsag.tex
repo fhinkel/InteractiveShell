@@ -99,7 +99,7 @@ Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \th
 \M2 is a software system devoted to supporting research
 in algebraic geometry and commutative algebra, whose creation and
 development have been funded by the National Science Foundation
-since 1992~\cite{M2}. We developed a web version of \M2. It is available at \cite{webM2}.
+since 1992~\cite{M2}. We developed a web version of \M2. It is available at~\cite{webM2}.
 The web version has the advantage that users do not need to
 download or install any software. A browser and internet connection are enough to
 run calculations in \M2. It
@@ -163,7 +163,7 @@ from naively or mischievously misusing the system.  In Section 4, we
 provide technical details of the application.
 In the last section we describe future features the web application.
 
-The system is open source, and available on GitHub (see \cite{github}).
+The system is open source, and available on GitHub~\cite{github}.
 If you would like more information on using this in your own courses,
 or if you have suggestions, please contact one of us.
 
@@ -242,7 +242,7 @@ It converts a file from {\it SimpleDoc} to the tutorial specific HTML. Please se
 \section{Internal structure}
 
 We choose to implement the server in Node.js
-because of Node.js's event-driven, non-blocking I/O model \cite{nodejs}.
+because of Node.js's event-driven, non-blocking I/O model~\cite{nodejs}.
 The Node.js server functions as a bridge between \M2 instances and end users.
 
 For every user we start a new \M2 process and
@@ -271,7 +271,7 @@ i4 : -- obtain the file
      get "!open results.txt"
 \end{verbatim}
 
-Technically, this is achieved by using Docker containers \cite{docker}. Docker implements
+Technically, this is achieved by using Docker containers~\cite{docker}. Docker implements
 a high-level API to provide lightweight containers that run processes in isolation.
 We start a new Docker container running \M2 for every user. The Node.js
 server communicates with Docker containers via {\it ssh}. This allows us to easily
@@ -279,7 +279,7 @@ scale the application as demand grows.
 
 To ease the setup process we provide a virtual machine that contains both the Node.js server
 and Docker. This virtual machine is configured using {\tt vagrant}, a tool to create and
-configure reproducible and portable development environments \cite{vagrant}.
+configure reproducible and portable development environments~\cite{vagrant}.
 
 \section{Conclusion}
 
@@ -296,8 +296,8 @@ We envision some form of session sharing which allows to use the web app as a to
 
 
 The application was designed with \M2 in mind, but
-the entire structure will work for other command line programs such as Singular \cite{singular},
-and GAP \cite{GAP4}. A similar web application for Singular is work in progress.
+the entire structure will work for other command line programs such as Singular~\cite{singular},
+and GAP~\cite{GAP4}. A similar web application for Singular is work in progress.
 
 \section{Acknowledgments}
 

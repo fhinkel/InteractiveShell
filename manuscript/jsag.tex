@@ -12,6 +12,7 @@
 % Setup for fullpage use
 \usepackage{fullpage, hyperref}
 
+\usepackage{abstract}
 % Uncomment some of the following if you use the features
 %
 % Running Headers and footers
@@ -74,9 +75,8 @@ Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \th
 
 
 \twocolumn[
-    \begin{@twocolumnfalse}
     \maketitle
-        \begin{abstract}
+        \begin{onecolabstract}
             \M2 is a software system devoted to supporting research in algebraic
             geometry and commutative algebra, whose creation has been funded by the
             National Science Foundation since 1992. It is a command-line tool that
@@ -91,10 +91,9 @@ Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \th
             Gr\"obner bases. Users can also create their own tutorials.
             The web version has been used in courses at Cornell
             University, Harvard University, Georgia Tech, and Free University of Berlin.
-        \end{abstract}
-    \end{@twocolumnfalse}
+        \end{onecolabstract}
 ]
-
+\saythanks
 \section{Introduction}
 
 \M2 is a software system devoted to supporting research
@@ -253,7 +252,7 @@ interact with the file system or run shell commands by using \M2's {\tt get}
 command:
 
 \begin{verbatim}
-i1 : -- get information on the underlying 
+i1 : -- get information on the underlying
      -- operating system
      get "!uname -mrs" 
 o1 = Linux 3.13.0-49-generic x86_64
@@ -263,7 +262,7 @@ i2 : -- write to a file
 o2 = results.txt
 o2 : File
 
-i3 : -- list all files in the current 
+i3 : -- list all files in the current
      -- directory
      get "!ls"
 o3 = results.txt

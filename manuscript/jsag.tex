@@ -12,6 +12,7 @@
 % Setup for fullpage use
 \usepackage{fullpage, hyperref}
 
+\usepackage{abstract}
 % Uncomment some of the following if you use the features
 %
 % Running Headers and footers
@@ -51,12 +52,10 @@
 \usepackage{graphicx}
 \fi
 
-\def\tryM2{{\it Try Macaulay2}}
 \def\M2{{\it Macaulay2}}
 
-\title{A Web App for Macaulay2}
-%\title{\tryM2: A web version of \M2}
-\author{Lars Kastner\\ Freie Universit\"at Berlin \\{\small kastner\char`\@math.fu-berlin.de} \and 
+\title{A Web Application for Macaulay2}
+\author{Lars Kastner\\ Freie Universit\"at Berlin \\{\small kastner\char`\@math.fu-berlin.de} \and
 Franziska Hinkelmann\\TNG Technology Consulting GmbH \\{\small franziska.hinkelmann\char`\@tngtech.com} \and 
 Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \thanks{Stillman has been supported by NSF grants DMS 08-10909 and 10-02210. Hinkelmann has been supported by NSF award 0635561. Kastner by DFG SPP 1489. 
 } }
@@ -75,274 +74,236 @@ Michael Stillman\\Cornell University \\{\small mike\char`\@math.cornell.edu} \th
 \fi
 
 
-
-\maketitle
-
-
-
-\begin{abstract}
-
-    A web app of Macaulay2, a computer algebra system funded by the
-    National Sciences Foundation since 1992. The webversion gives easy
-    access to this sophisticated software without the hurdles that
-    usually come with installing it. This is particularly useful for
-    first time users and students as it is easy to try out. The
-    web app has all features that a desktop version has and can be
-    used to its full potential. The web app contains tutorials,
-    that explain different concepts such as an introduction to
-    Gr\"obner bases. Users can develop their own tutorials and provide
-    them to their students, making it a great tool for education.
-
-\end{abstract}
-
-
+\twocolumn[
+    \maketitle
+        \begin{onecolabstract}
+            \M2 is a software system devoted to supporting research in algebraic
+            geometry and commutative algebra, whose creation has been funded by the
+            National Science Foundation since 1992. It is a command-line tool that
+            has no graphical user
+            interface. 
+            This manuscript describes a new web application for \M2. It requires no installation
+            and provides a graphical user interface. Therefore making \M2 more 
+            accessible, especially to first time users and students. 
+            The web application has all features that the desktop version offers. 
+            In addition, it contains tutorials
+            that explain different concepts of algebraic geometry such as
+            Gr\"obner bases. Users can also create their own tutorials.
+            The web version has been used in courses at Cornell
+            University, Harvard University, Georgia Tech, and Free University of Berlin.
+        \end{onecolabstract}
+]
+\saythanks
 \section{Introduction}
-\begin{figure*}[htb]
-    \includegraphics[width=.95\textwidth]{homeWebsite.jpg}
-    \caption{A typical view in \tryM2. The left hand
-      side shows a tutorial giving an introduction to Gr\"obner
-      bases. Text in yellow can be clicked and is then executed by
-      Macaulay2 on the server. The complete output of the calculations
-      is show on the right hand side. {\it Home, Tutorial, Input} let
-      the user change the left hand view, {\it Reset, Interrupt} allow
-      to reset and interrupt the Macaulay2 session on the server, {\it
-        Save} provides both the input and the output of the current
-      session to the user as a text file, and with {\it Upload} one
-      can upload files that can then be accessed by \M2.}
-    \label{fig:home}
-\end{figure*}
 
-
-
-\tryM2 is an on-line version of \M2 \cite{M2} which
-does not require users to download or install the program, and also
-does not require users to set up an account and log in.  \tryM2
+\M2 is a software system devoted to supporting research
+in algebraic geometry and commutative algebra, whose creation and
+development have been funded by the National Science Foundation
+since 1992~\cite{M2}. We developed a web version of \M2. It is available at~\cite{webM2}.
+The web version has the advantage that users do not need to
+download or install any software. A browser and internet connection are enough to
+run calculations in \M2. It
 has the same functionality as the desktop version,
 albeit users might have access to less resources
-than on their own machine. Users can upload files and
-load packages, generate files such as images, and also have
-access to other shell commands, such as gfan, 4ti2, and code for
-generating images of graphs.
+than on their own machine. Users can upload files,
+load packages, and generate files such as images.
 
 Our primary motivation for creating this web application was to
 provide an easy to use experience for classroom and student use.
 Having students download and install software such as \M2 is time
 consuming and inevitably there are some situations for which this
-process fails or takes significant effort to get runnning, e.g., on
-some versions of Windows.  The \tryM2 web application is designed to
-be able to handle many students at once, and without having the users
-need to create accounts or log in.  \tryM2 was used at the Syzygyies
-meeting in Berlin in May 2013, with about 70 users.  We would like to point out that the
+process fails or takes significant effort to get running, e.g., on Windows.  
+The web application is designed to
+be able to handle many students at once. To keep it as simple as possible,
+there is no sign-up or login process.
+
+
+ The web version was used at the Syzygies
+meeting in Berlin in May 2013, with about 70 users. It is being used in courses at Cornell
+University, Harvard University, Georgia Tech, and Free University of
+ Berlin. We would like to point out that the
 site is suited not only for beginners, but also for seasoned experts.
 
 We considered off the shelf solutions, such as the Sage
-notebook~\cite{sagenotebook}, but decided that we wished for a
-lighter-weight solution, and one that did not require users to create
+notebook~\cite{sagenotebook}, but decided that we wished for a more
+lightweight solution, and one that did not require users to create
 new accounts at a web site.  Nothing available seemed to meet our
 needs, hence the current system.
 
-\tryM2 runs under the Chrome, Firefox and Safari web browsers, but not
+The web version runs under the Chrome, Firefox and Safari web browsers, but not
 under Internet Explorer.  On the iPad, it runs under Chrome and
 Safari, although it seems that Chrome offers a nicer user experience.
 It runs under recent versions of Android ($4.0$ and higher).
 
-In addition to presenting an interface to an instance of \M2
-running on a distant server, a number of tutorials to
-learn \M2 are provided.  Instructors can create their own
-tutorials, and can make them available to their students, as well as
-to other \M2 users.  
+In addition to the interface to \M2, the web application provides several tutorials.  
+Users can also create their own
+tutorials and share them with other \M2 users.  
+
+\begin{figure*}[htb]
+    \includegraphics[width=.99\textwidth]{homeWebsite.jpg}
+    \caption{A typical view in the web version of \M2. The left hand
+        side shows a tutorial giving an introduction to Gr\"obner
+        bases. Text in yellow can be clicked and is then executed by
+        \M2 on the server. The complete output of the calculations
+        is show on the right hand side. Clicking {\it Home, Tutorial, Input}
+        changes the left hand view, {\it Reset, Interrupt}
+        reset and interrupt the \M2 session on the server, {\it
+        Save} provides both the input and the output of the current
+        session to the user as a text file, and {\it Upload} uploads files
+        that can then be accessed by \M2.}
+\label{fig:home}
+\end{figure*}
+
 
 In Section 2, we describe the basics of using the web application.
-Section 3 details how to create and make available your own tutorials.
+Section 3 details how to create tutorials.
 Providing a program such as \M2 which allows users to
 access system resources presents a number of challenges to keep users
 from naively or mischievously misusing the system.  In Section 4, we
-provide details as to how we structure the application on the server.
-In the last section, we describe some of our wish-list items for
-improving and extending the system.
+provide technical details of the application.
+In the last section we describe future features the web application.
 
-The system is open source, and available on github (see \cite{github}).
+The system is open source, and available on GitHub~\cite{github}.
 If you would like more information on using this in your own courses,
 or if you have suggestions, please contact one of us.
 
-We would like to thank Charles Boyd, Dan Grayson, Greg Smith, and Benjamin Lorenz for
-fruitful discussions on system security and on user interface design.
 
 \section{How to use the website}
-The right hand side provides a shell like environment running
-Macaulay2. You can type into it, as well as use the arrow keys for
-navigating through your command history.
 
-On the left hand side, the user can navigate between {\it Home}, {\it
-  Tutorial}, and {\it Input}. {\it Home} shows the table of contents
-of tutorials. {\it Tutorial} shows the currently selected
+An important
+design decision is to keep the interface as simple as possible.
+Therefore there is no login or registration.
+
+The right hand side provides a shell like environment running
+\M2. You can type into it and use the arrow keys for
+navigating through your command history. You can use the tabulator 
+key for command completion. 
+
+On the left hand side, you can switch between {\it Home}, {\it
+  Tutorial}, and {\it Input}. {\it Home} shows the available
+ tutorials. {\it Tutorial} shows the currently selected
 tutorial. Tutorials are interactive and contain executable pieces of
-Macaulay2 code that are run by clicking on them. {\it Input} shows a
-terminal window in which the user can type {\it Macaulay2} commands and execute them.
+\M2 code that are run by clicking on them. {\it Input} is a
+text area in which you can type \M2 commands and execute them.
 
 All code executed, either by clicking on interactive parts in a
-tutorial or by entering code in the {\it Input} window, appears on the
-right hand side together with the output from Macaulay2 to those
-results.
+tutorial or by entering code in the {\it Input} window, will appear in 
+the terminal on the right hand side together with the \M2 output.
 
-The {\it Reset} button resets a Macaulay2 session, i.e., restarts 
+
+The {\it Reset} button resets a \M2 session, i.e., restarts 
 the \M2 process: it stops any running calculation, deletes all variables, 
 unloads all packages, and then reloads the standard packages.
 
 The {\it Interrupt} button stops a running calculation, without
-resetting the Macaulay2 session.
+resetting the \M2 session. This is useful if you want to stop a long calculation.
 
 \subsection{Features}
-
-The user is free to run all \M2 commands that are available in the
-running version. To find the version of \M2 running on the server,
-enter and evaluate: {\tt version\#"VERSION"}.  Loading packages is
-done using {\tt loadPackage} or {\tt needsPackage}, e.g. {\tt needsPackage "BoijSoederberg"}.  
-New packages can be
-uploaded to the user's session, by clicking the {\it Upload file}
-button. Similarly, any other file, such as text files, that one might
-want to manipulate or read data from with \M2, can be uploaded to
-the user's session.
-
-%Loading packages is possible, too, with commands
-%such as {\tt loadPackage}. If packages are not available, they can be
-%uploaded to the users session, by clicking the {\it Upload file}
-%%nbutton. Similarly, any other file, such as text files, that one might
-%want to manipulate or read data from with Macaulay2 can be uploaded to
-%the user's session.
+You can run any command in the \M2 web application that you can run in the desktop version.
+To find the current version of \M2,
+enter and evaluate: {\tt version}.  You can load a package
+ using {\tt loadPackage} or {\tt needsPackage}, e.g. {\tt needsPackage "BoijSoederberg"}.  
+You can upload a new packages by clicking the {\it Upload file}
+button. Similarly, you can upload any other file that you want to 
+read or manipulate with \M2, e.g., text files with data. 
 
 \begin{figure*}[htb]
     \includegraphics[width=.95\textwidth]{withGraph.jpg}
-    \caption{Screenshot of \tryM2 after the user
-      generated an image. Some Macaulay2 packages can generate
+    \caption{Screenshot after the user
+      generated an image. Some \M2 packages can generate
       graphs. By invoking the command {\tt displayGraph}, the image is
       generated on the server and displayed to the user.}
     \label{fig:graph}
 \end{figure*}
 
 Results from a session can be retrieved by using the {\it Save}
-button, or by using copy and paste. If Macaulay2 generates
+button, or by using copy and paste. If \M2 generates
 images such as graphs, those are presented to the user, see Figure \ref{fig:graph}.
 
-%If the user needs to retrieve
-%files that are stored in his session, those can be retrieved by
-%executing {\tt open} in the user's session. 
 
-Session are usually kept alive for several days, which allows users to
-continue their work next time they access the server, if either they
-have not closed their browser, or set the browser to remember their
-windows.
+Session are usually kept alive for several days. When you start a \M2 session and visit the web app at a later time, 
+you will find your previous session. Occasionally, 
+we have to reboot the server or deploy a new version, this, 
+unfortunately, will delete your session. Also, we have to restrict resources since you are on a shared machine.
 
 \section{Tutorials}
-Instructors and other users can create their own tutorials for use with \tryM2. Instructors can email or otherwise distribute an html file with their tutorial to their students or seminar participants. They then can load it into \tryM2 and use it. 
 
-Since it it cumbersome to write the tutorial in the required html format, we provide the \M2 package {\it DocConverter}. It converts a file i  
-First, you write your tutorial in \M2's {\it SimpleDoc} format, which includes example \M2 code.
-Then, run the \M2 command script {\tt convert} to create an html document. This document has the format required by \tryM2 to be displayed nicely as a tutorial. To load this tutorial into your running {\tt web.macaulay2.com} session use the {\tt Load Tutorial} button at the end of the tutorial list.
-Your tutorial will remain locally on your computer and is not uploaded to any server. You can easily delete it from the list by clicking on the close button next to its title. It will also be removed from the list the next time you start your browser. 
+You can create your own tutorials for the web version. If you teach a course,
+email your tutorial to your students. They can include your tutorial in their web app by clicking
+{\it Load Tutorial} on the website.
+If you want to share a tutorial with the community, we would
+be happy to include them on the website!
 
-Email the html file to your students or provide it on your own website for download. Your students then load this tutorial into their {\tt= web.macaulay2.com} session using the {\tt Load Tutorial} button as well.
-
-The following steps to create a tutorial are also documented in the package {\tt DocConverter}.
-\begin{enumerate}
-\item Create a tutorial in simpledoc format, say {\tt foo.simpledoc}.  For an example, type into \M2, {\tt viewHelp "DocConverter"}.
-\item Use {\tt convert "foo"} to create a file "foo.html".
-\item In the {\it Home} screen in \tryM2, click on the {\it Load Tutorial} button, and select this file.
-\end{enumerate}
-
-In the case that you do not have access to \M2 on your local machine, you can upload the {\it SimpleDoc} file to the server, convert it there and then download it using the \M2 {\tt open} function.
+You can use the \M2 package {\it DocConverter}.
+It converts a file from {\it SimpleDoc} to the tutorial specific HTML. Please see the
+{\it DocConverter} package for instructions and examples.
 
 
 \section{Internal structure}
 
 We choose to implement the server in Node.js
-because of Node.js's event-driven, non-blocking I/O model \cite{nodejs}.
-The Node.js server functions as a bridge between Macaulay2 instances and end user.
+because of Node.js's event-driven, non-blocking I/O model~\cite{nodejs}.
+The Node.js server functions as a bridge between \M2 instances and end users.
 
-For every user, we start a new Macaulay2 process and
-provide them with the underlying linux system. This allows advanced users to
-interact with the file system or run shell commands by using Macaulay2's {\tt get} command.
+For every user we start a new \M2 process and
+provide them with the underlying Linux system in a separate virtual environment.
+This allows advanced users to
+interact with the file system or run shell commands by using \M2's {\tt get} 
+command:
 
-\begin{lstlisting}[breaklines]
--- get information on the underlying operating system
-i8 : get "!uname -ar "
-o8 = Linux 35d4e91d4779 3.13.0-48-generic #80-Ubuntu SMP Thu Mar 12 11:16:15 UTC 2015 x86_64 x86_64
-     x86_64 GNU/Linux
-i9 : "important-results.txt" << "very important results" << close
-o9 = important-results.txt
-o9 : File
--- list all files in the current directory
-i21 : get "!ls -l"
-o21 = total 4 -rw-r--r-- 1 m2user m2user 22 Apr 12 22:37 important-results.txt
--- obtain the file
-i22 : get "!open important-results.txt"
-\end{lstlisting}
+\begin{verbatim}
+i1 : -- get information on the underlying
+     -- operating system
+     get "!uname -mrs" 
+o1 = Linux 3.13.0-49-generic x86_64
 
-Technically, this is achieved by using Docker containers \cite{docker}. Docker implements
-a high-level  API to provide lightweight containers that run processes in isolation.
-We start a new Docker container running Macaulay2 for every user. The Node.js
-server communicates with Docker containers via ssh, which will allow us in the future
+i2 : -- write to a file     
+     "results.txt" << "Hello!" << close
+o2 = results.txt
+o2 : File
+
+i3 : -- list all files in the current
+     -- directory
+     get "!ls"
+o3 = results.txt
+
+i4 : -- obtain the file
+     get "!open results.txt"
+\end{verbatim}
+
+Technically, this is achieved by using Docker containers~\cite{docker}. Docker implements
+a high-level API to provide lightweight containers that run processes in isolation.
+We start a new Docker container running \M2 for every user. The Node.js
+server communicates with Docker containers via {\it ssh}. This allows us to easily
 scale the application as demand grows.
 
 To ease the setup process we provide a virtual machine that contains both the Node.js server
 and Docker. This virtual machine is configured using {\tt vagrant}, a tool to create and
-configure lightweight, reproducible, and portable development environments \cite{vagrant}.
+configure reproducible and portable development environments~\cite{vagrant}.
 
-There are several ways the web app can be used:
-\begin{itemize}
-    \item Using it at web.macaulay2.com from any device, a network connection is necessary.
-    \item Users who need more resources or want to use the app locally, can
-    run an instance of the web version locally, only accessible from their own device.
-    This is easily done by using the vagrant configuration we provide
-    \item Users who want to have control over the Macaulay2 web app can run an
-     instance on their own server or on a cloud
-    service such as AWS or DigitalOcean \cite{AWS,digitalocean}.
-     \item Users who want to contribute can get the project from GitHub \cite{github}.
-     The folder
-     with the source code is symlinked into the Vagrant machine resulting
-     in a smooth development experience.
-\end{itemize}
+\section{Conclusion}
+
+By providing \M2 as a web application, we hope to lower the
+ entry barrier for new users, therefore increasing the number 
+ of users and fostering research in computational algebraic geometry and commutative algebra. 
 
 
-\section{The future}
-
-Some important small enhancements that we envision include command
-line completion and colorization of \M2 code.  However, an important
-design decision is to keep the interface as simple as possible.
-
-The system we have written was designed with \M2 in mind, but 
-the entire structure will work for other command line programs such as Singular \cite{singular},
-and GAP \cite{GAP4}.  We are currently working on creating a similar server for Singular.
-Tutorials for other systems may be created in the same way as \M2 tutorials.
-
-We are excited to receive tutorials that you have developed and would be happy
-to include them on the website, so that others can profit from your work as
-well.
+We are collaborating with several mathematicians to develop more tutorials.
+We plan to substantially increase the number of tutorials in the tutorial database over the next semester.
 
 
+We envision some form of session sharing which allows to use the web app as a tool for collaborative research.
+
+
+The application was designed with \M2 in mind, but
+the entire structure will work for other command line programs such as Singular~\cite{singular},
+and GAP~\cite{GAP4}. A similar web application for Singular is work in progress.
+
+\section{Acknowledgments}
+
+We would like to thank Charles Boyd, Dan Grayson, Greg Smith, and Benjamin Lorenz for
+fruitful discussions on system security and on user interface design.
 
 \bibliographystyle{plain}
 \bibliography{references}
 \end{document}
-
-. What we do?
-  . Provide a web-based M2
-  . Full featured
-  . No creation of accounts needed.
-  . No setup time to use in a class setting.  Students can work immediately, with no setup fuss.
-  . Tutorials to learn M2 provided.
-  . Instructors can create their own tutorials for their students to learn.
-  . Also suitable for advanced users.
-  . The source is open and on github: any user can create a web-based server
-      for others.  Todo: can lock it down to your own self.
-  . This runs acceptably on ipad and android, although having a separate 
-    keyboard is good.  Future: improve experience on tablets.
-
-  section 2: how to use web Macaulay2, an overview of the features.
-  section 3: writing tutorials, making them available.
-  section 4: some details about how the server was written and structured.
-  section 5: wishlist for additional features.
-
-. Why not other solutions, such as the Sage notebook?
-  . need accounts
-  . this solution seems more ``lightweight''

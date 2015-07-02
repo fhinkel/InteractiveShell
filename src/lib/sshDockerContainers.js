@@ -4,8 +4,8 @@ var fs = require('fs');
 var sshDockerManager = function (overrideResources, overrideHostConfig, overrideGuestInstance) {
 
     var resources = {
-        cpus: 1,
-        memory: 512
+        cpus: 2,
+        memory: 1024
     };
 
     var hostConfig = {

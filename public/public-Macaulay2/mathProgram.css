@@ -141,6 +141,15 @@ body {
     }
 }
 
+@media (max-width:848px){
+    #title {
+        display:none;
+    }
+    #uploadBtn {
+        display:none;
+    }
+}
+
 code {
     white-space: pre;    
     background-color: lightyellow;

@@ -4,7 +4,7 @@ var fs = require('fs');
 var sshDockerManager = function (overrideResources, overrideHostConfig, overrideGuestInstance) {
 
     var resources = {
-        cpus: 2,
+        cpuShares: 10, // minimum number is 2
         memory: 1024
     };
 
@@ -46,7 +46,7 @@ var sshDockerManager = function (overrideResources, overrideHostConfig, override
 
     function init() {
         hostConfig.dockerRunCmd = 'sudo docker run -d';
-        hostConfig.dockerRunCmd += ' -c ' + resources.cpus;
+        hostConfig.dockerRunCmd += ' -c ' + resources.cpuShares;
         hostConfig.dockerRunCmd += ' -m ' + resources.memory + 'm';
         hostConfig.dockerRunCmd += ' --name';
     }

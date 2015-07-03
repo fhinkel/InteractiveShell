@@ -141,13 +141,22 @@ body {
     }
 }
 
-@media (max-width:848px){
+@media (max-width:1042px){
     #title {
         display:none;
     }
-    #uploadBtn {
-        display:none;
-    }
+}
+
+@media (max-width:848px){
+   .ui-button, .ui-button-text {
+       font-size: 14px !important;
+   }
+}
+
+@media (max-width:770px){
+   .ui-button, .ui-button-text {
+       font-size: 12px !important;
+   }
 }
 
 @media (max-width:700px){

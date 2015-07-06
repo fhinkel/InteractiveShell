@@ -6,7 +6,7 @@ FROM ubuntu:14.04
 MAINTAINER InteractiveShell Team <trym2@googlegroups.com>
 
 # For ssh server and up-to-date ubuntu.
-RUN apt-get update && apt-get install -y openssh-server wget
+RUN apt-get update && apt-get install -yq openssh-server wget emacs
 RUN apt-get upgrade -y
 
 # Installing M2
@@ -38,6 +38,12 @@ RUN sed -i 's/m2user:!/m2user:*/' /etc/shadow
 # RUN tar xzf BertiniSource_v1.5.tar.gz
 # RUN tar xzf BertiniLinux64_v1.5.tar.gz
 # RUN cd BertiniSource_v1.5; ./configure; /usr/bin/make; sudo /usr/bin/make install
+
+# From Mikes dockerfile.
+RUN wget http://www.math.uic.edu/~jan/x86_64phcv23p.tar.gz
+RUN (tar zxf x86_64phcv23p.tar.gz; mv phc /usr/bin; rm x86_64phcv23p.tar.gz)
+RUN wget https://bertini.nd.edu/BertiniLinux64_v1.5.tar.gz    
+RUN (tar zxf BertiniLinux64_v1.5.tar.gz; ln -s ~/BertiniLinux64_v1.5/bin/bertini /usr/bin/; rm BertiniLinux64_v1.5.tar.gz)
 
 
 RUN mkdir /var/run/sshd

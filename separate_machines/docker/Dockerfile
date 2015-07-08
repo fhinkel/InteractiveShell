@@ -40,11 +40,10 @@ RUN sed -i 's/m2user:!/m2user:*/' /etc/shadow
 # RUN cd BertiniSource_v1.5; ./configure; /usr/bin/make; sudo /usr/bin/make install
 
 # From Mikes dockerfile.
-RUN mkdir /custom
 RUN (cd /custom; wget http://www.math.uic.edu/~jan/x86_64phcv23p.tar.gz)
 RUN (cd /custom; tar zxf x86_64phcv23p.tar.gz; mv phc /usr/bin; rm x86_64phcv23p.tar.gz)
 RUN (cd /custom; wget https://bertini.nd.edu/BertiniLinux64_v1.5.tar.gz)
-RUN (cd /custom; tar zxf BertiniLinux64_v1.5.tar.gz; ln -s /custom/BertiniLinux64_v1.5/bin/bertini /usr/bin/; rm BertiniLinux64_v1.5.tar.gz)
+RUN (cd /custom; tar zxf BertiniLinux64_v1.5.tar.gz; cp /custom/BertiniLinux64_v1.5/bin/bertini /usr/bin/; rm BertiniLinux64_v1.5.tar.gz)
 RUN chown -R m2user:m2user /custom
 
 

@@ -48,10 +48,8 @@ RUN chmod -R 775 /custom
 # This is the only way extracting Bertini gives the right permissions.
 RUN su m2user -c "/bin/bash;\
    cd /custom;\
-   ls -al;\                                                                                                                                     
    wget https://bertini.nd.edu/BertiniLinux64_v1.5.tar.gz;\                                                                                     
-   tar xzf BertiniLinux64_v1.5.tar.gz;\
-   ls -al BertiniLinux64_v1.5;"
+   tar xzf BertiniLinux64_v1.5.tar.gz;"
 RUN ln -s /custom/BertiniLinux64_v1.5/bin/bertini /usr/bin/
 
 

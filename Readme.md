@@ -79,13 +79,22 @@ Docker container.
 ### Without Virtualisation
 
 If you do not want to run the web app within a virtual machine, you can run it locally. You need Macaulay2,
-Node.js, npm, and Git. Start the web app with the following commands:
+Node.js, npm, and Git. Furthermore you need to have a local ssh server running.
+Try whether the following command works without prompting you for a password:
+
+```bash
+ssh -i ~/.ssh/id_rsa localhost
+```
+
+If not, please start an ssh server and include you public key in your authorized keys file.
+
+Start the web app with the following commands:
 
 ```bash
 git clone https://github.com/fhinkel/InteractiveShell.git
 cd InteractiveShell
 npm install
-npm start basic
+npm run-script basic
 ```
 
 This gives you an (unsecured!) Macaulay2 terminal emulator at [http://localhost:8002](http://localhost:8002).

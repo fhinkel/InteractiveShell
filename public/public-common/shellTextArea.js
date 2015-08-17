@@ -44,8 +44,10 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
     var getCurrentCommand = function(){
         var completeText = shell.val().split("\n");
         var lastLine = completeText[completeText.length-2];
+        // Need to set prompt symbol somewhere else.
         lastLine = lastLine.replace(/^i\d+\s*:/,"");
         lastLine = lastLine.replace(/^\s*/,"");
+        lastLine = lastLine.replace(/^> /,"");
         return lastLine;
     };
 

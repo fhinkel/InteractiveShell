@@ -33,6 +33,7 @@
   },
   "scripts": {
     "start": "node src/lib/Macaulay2SudoDocker.js",
+    "start_singular": "node src/lib/SingularSudoDocker.js",
     "basic": "node src/lib/Macaulay2LocalServer.js",
     "ssh": "node src/lib/Macaulay2SshDocker.js",
     "test": "mocha src/tests/ --reporter spec --timeout 6000",

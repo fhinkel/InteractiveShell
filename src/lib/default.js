@@ -19,7 +19,7 @@ var configuration = function (overrideOptions){
             }
         },
         per_container_resources: {
-            cpus: 2,
+            cpuShares: 2,
             memory: 128
         },
         hostConfig: {
@@ -65,11 +65,7 @@ var configuration = function (overrideOptions){
 
     overrideDefaultOptions(overrideOptions, options);
 
-    return {
-        server_config: options.server_config,
-        per_container_resources: options.per_container_resources,
-        container_config: options.container_config
-    };
+    return options;
 };
 
 exports.get_config = configuration;

@@ -45,11 +45,7 @@ var configuration = function (overrideOptions){
     };
 
     var overrideDefaultOptions = function (overrideOptions, defaultOptions) {
-	console.log("Hello.");
         for (var opt in overrideOptions) {
-            console.log(opt);
-            console.log(defaultOptions[opt]);
-            console.log(defaultOptions[opt] instanceof Array);
             if (defaultOptions.hasOwnProperty(opt)) {
                 if(defaultOptions[opt] instanceof Object){
                     overrideDefaultOptions(overrideOptions[opt], defaultOptions[opt]);

@@ -1,48 +1,13 @@
 var ssh2 = require('ssh2');
 var fs = require('fs');
 
-var sshDockerManager = function (overrideResources, overrideHostConfig, overrideGuestInstance) {
+var sshDockerManager = function () {
 
-    var resources = {
-        cpuShares: 10, // minimum number is 2
-        memory: 128
-    };
-
-    var hostConfig = {
-        minContainerAge: 10,
-        maxContainerNumber: 1,
-        containerType: 'm2container',
-        sshdCmd: "/usr/sbin/sshd -D",
-        dockerRunCmd: '',
-        host: '192.168.2.42',
-        username: 'vagrant',
-        port: '22',
-        sshKey: "/home/vagrant/InteractiveShell/separate_machines/host_key"
-    };
+    var resources = OPTIONS.per_container_resources;
+    var guestInstance = OPTIONS.guestInstance;
+    var hostConfig = OPTIONS.hostConfig;
 
     var currentContainers = [];
-
-    var guestInstance = {
-        host: '192.168.2.42',
-        username: 'm2user',
-        port: '5000',
-        sshKey: '/home/vagrant/InteractiveShell/separate_machines/docker_key',
-        containerName: '',
-        lastActiveTime: 0
-    };
-
-    var overrideDefaultOptions = function (overrideOptions, defaultOptions) {
-        for (var opt in overrideOptions) {
-            if (defaultOptions.hasOwnProperty(opt)) {
-                defaultOoptions[opt] = overrideOptions[opt];
-                logExceptOnTest("server option: " + opt + " set to " + defaultOptions[opt]);
-            }
-        }
-    };
-
-    overrideDefaultOptions(overrideResources, resources);
-    overrideDefaultOptions(overrideHostConfig, hostConfig);
-    overrideDefaultOptions(overrideGuestInstance, guestInstance);
 
     function init() {
         hostConfig.dockerRunCmd = 'sudo docker run -d';

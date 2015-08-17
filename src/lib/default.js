@@ -3,7 +3,6 @@ var configuration = function (overrideOptions){
     
     var options = {
         server_config: {
-            port: 8002, // default port number to use
             CONTAINERS: './LocalContainerManager.js',
             MATH_PROGRAM: "Macaulay2",
             MATH_PROGRAM_COMMAND: 'M2'
@@ -22,7 +21,27 @@ var configuration = function (overrideOptions){
         per_container_resources: {
             cpus: 2,
             memory: 128
+        },
+        hostConfig: {
+            minContainerAge: 10,
+            maxContainerNumber: 1,
+            containerType: 'm2container',
+            sshdCmd: "/usr/sbin/sshd -D",
+            dockerRunCmd: '',
+            host: '192.168.2.42',
+            username: 'vagrant',
+            port: '22',
+            sshKey: "/home/vagrant/InteractiveShell/separate_machines/host_key"
+        },
+        guestInstance: {
+            host: '192.168.2.42',
+            username: 'm2user',
+            port: '5000',
+            sshKey: '/home/vagrant/InteractiveShell/separate_machines/docker_key',
+            containerName: '',
+            lastActiveTime: 0
         }
+
     };
 
     var overrideDefaultOptions = function (overrideOptions, defaultOptions) {

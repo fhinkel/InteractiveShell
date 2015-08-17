@@ -35,6 +35,7 @@
     "start": "node src/lib/Macaulay2SudoDocker.js",
     "start_singular": "node src/lib/SingularSudoDocker.js",
     "basic": "node src/lib/Macaulay2LocalServer.js",
+    "basic_singular": "node src/lib/SingularLocalServer.js",
     "ssh": "node src/lib/Macaulay2SshDocker.js",
     "test": "mocha src/tests/ --reporter spec --timeout 6000",
     "stop": "kill `ps ax | grep Server | grep -v monitor | grep node | awk '{print $1}'`",

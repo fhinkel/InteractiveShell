@@ -13,7 +13,7 @@ RUN apt-get upgrade -y
 RUN git clone https://github.com/Singular/Sources.git;\
     cd Sources;\
     ./autogen.sh;\
-    ./configure;\
+    ./configure --enable-gfanlib --enable-polymake;\
     make -j7;\
     make install;\
     Singular -v

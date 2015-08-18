@@ -19,6 +19,19 @@ RUN wget http://www.polymake.org/lib/exe/fetch.php/download/polymake-2.14.tar.bz
    make install
 
 
+# For ssh server and up-to-date ubuntu.
+RUN apt-get update && apt-get install -y openssh-server wget git build-essential autoconf autogen libtool libreadline6-dev libglpk-dev libgmp-dev libmpfr-dev libcdd-dev libntl-dev
+RUN apt-get upgrade -y
+
+# Installing Singular
+RUN git clone https://github.com/Singular/Sources.git;\
+    cd Sources;\
+    ./autogen.sh;\
+    ./configure --enable-gfanlib --enable-polymake;\
+    make -j7;\
+    make install;\
+    Singular -v
+
 # Installing Singular
 # RUN wget ftp://jim.mathematik.uni-kl.de/repo/extra/gpg;\
 #    apt-key add gpg;\

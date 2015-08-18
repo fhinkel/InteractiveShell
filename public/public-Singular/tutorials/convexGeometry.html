@@ -1,0 +1,44 @@
+Singular online<html>
+  <head>
+    <title>Tutorial: convex and tropical geometry</title>
+  </head>
+<body>
+
+<div>
+  <h4>Tutorial: Basic Convex Geometry via Gfanlib</h4>
+
+  <p>Thanks to the integration of Gfanlib, Singular is able to handle basic convex geometry.</p>
+
+  <p>For example, given a polynomial $f\in \QQ[x_1,\ldots,x_n]$, the Newton polytope $\Delta(f)$ is defined to be the convex hull of all its exponent vectors. Consider for example</p>
+
+  <code>LIB "random.lib";</code><br>
+  <code>ring R;</code><br>
+  <code>poly f = sparsepoly(5);</code><br>
+
+  <p>We have created a random homogeneous polynomial of degree $5$ in Singular's default ring, which is $\mathbb{F}_{32003}[x,y,z]$. In order to construct its Newton Polytope, we need to cycle through all monomials of $f$ and write down their exponent vectors, for example in an integer matrix $M$ in which each row corresponds to a monomial of $f$.</p>
+
+  <code>intmat M[size(f)][3]</code><br>
+  <code>intvec expv;</code><br>
+  <code>for (int i=1; i<=size(f); i++)</code><br>
+  <code>{</code><br>
+  <code>  expv = leadexp(f[i]);</code><br>
+  <code>  M[i,1..3] = expv;</code><br>
+  <code>}</code><br>
+  <code>print(M);</code><br>
+
+  <p>For $\Delta(f)$, we construct a polyhedral cone $\delta\subseteq\mathbb{R}^4$ such that
+    $$ \delta \cup \{((x_0,\ldots,x_3)\in\mathbb{R}^4\mid x_0=1\} = \Delta(f). $$
+    This is a classical way to represent polyhedras via cones, in which points on $\{x_0=0\}$ represent points at infinity making the polyhedron unbounded.</p>
+
+  <code>intmat N[size(f)][4];</code><br>
+  <code>for (int i=1; i<=size(f); i++)</code><br>
+  <code>{</code><br>
+  <code>  N[i][2..4] = M[i,1..3];</code><br>
+  <code>}</code><br>
+  <code>print(N);</code><br>
+  <code>cone delta = coneViaPoints(N);</code><br>
+
+</div>
+
+</body>
+</html>

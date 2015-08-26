@@ -10,12 +10,8 @@ var SocketIOFileUpload = require('socketio-file-upload');
 var MathServer = function (overrideOptions) {
     var staticFolder = __dirname + '/../../public/public';
 
-    var options = {
-        port: 8002, // default port number to use
-        CONTAINERS: './LocalContainerManager.js',
-        MATH_PROGRAM: "Macaulay2",
-        MATH_PROGRAM_COMMAND: 'M2'
-    };
+    
+    var options = OPTIONS.server_config;
 
     var logExceptOnTest = function (string) {
         if (process.env.NODE_ENV !== 'test') {

@@ -2,21 +2,9 @@ var exec = require('child_process').exec;
 var waitForSshd;
 
 var dockerManager = function () {
-    var resources = {
-        cpus: 1,
-        memory: 128
-    };
 
-    var options = {
-        sshdCmd: "/usr/sbin/sshd -D",
-        instance: {
-            host: '127.0.0.1',
-            username: 'm2user',
-            port: '123',
-            sshKey: '/home/vagrant/InteractiveShell/id_rsa',
-            containerName: ''
-        }
-    };
+    var resources = OPTIONS.per_container_resources;
+    var options = OPTIONS.container_config;
 
     var removeInstance = function (instance) {
         console.log("Removing container: " + instance.containerName);
@@ -33,8 +21,8 @@ var dockerManager = function () {
         dockerRunCmd += ' -c ' + resources.cpus;
         dockerRunCmd += ' -m ' + resources.memory + 'm';
         dockerRunCmd += ' --name ' + currentInstance.containerName;
-        dockerRunCmd += ' -p ' + currentInstance.port + ':22';
-        dockerRunCmd += ' m2container ' + options.sshdCmd;
+        dockerRunCmd += ' -p ' + currentInstance.port + ':22 ';
+        dockerRunCmd += options.containerType + ' ' + options.sshdCmd;
         return dockerRunCmd;
     };
 

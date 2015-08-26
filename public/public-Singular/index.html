@@ -2,24 +2,57 @@
 <html>
   <head>
     <link rel="stylesheet" href="mathProgram.css" type="text/css" media="screen">
-        <link rel="stylesheet" href="jquery-ui-1.10.2.custom/css/cupertino/jquery-ui-1.10.2.custom.css" type="text/css" media="screen">
-        <script type="text/javascript" src="jquery-ui-1.10.2.custom/js/jquery-1.9.1.js"></script>
-        <script type="text/javascript" src="jquery-ui-1.10.2.custom/js/jquery-ui-1.10.2.custom.min.js"></script>
-        <script type="text/javascript" src="mathProgram.js"></script>
-        <script>
-          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    <link rel="stylesheet" href="jquery-ui-1.10.2.custom/css/cupertino/jquery-ui-1.10.2.custom.css" type="text/css"
+          media="screen">
+    <script type="text/javascript" src="jquery-ui-1.10.2.custom/js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="jquery-ui-1.10.2.custom/js/jquery-ui-1.10.2.custom.min.js"></script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+      MathJax.Hub.Config({
+      TeX: {
+      Macros: {
+      PP: "{\\mathbb{P}}",
+      ZZ: "{\\mathbb{Z}}",
+      QQ: "{\\mathbb{Q}}",
+      RR: "{\\mathbb{R}}",
+      CC: "{\\mathbb{C}}",
+      mac: "{{\\it Macaulay2}}",
+      bold: ["{\\bf #1}",1]
+      }
+      }
+});
+    </script>
+    <script type="text/javascript"
+            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
 
-          ga('create', 'UA-41197228-1', 'cornell.edu');
-          ga('send', 'pageview');
+    <script src="/siofu/client.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="textAreaManipulation.js"></script>
+    <script type="text/javascript" src="shellTextArea.js"></script>
+    <script type="text/javascript" src="tutorials.js"></script>
+    <script type="text/javascript" src="mathProgram.js"></script>
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-        </script>
+        ga('create', 'UA-41197228-1', 'cornell.edu');
+        ga('send', 'pageview');
+
+    </script>
     <title>
       Singular
     </title>
-    
+
   </head>
   <body>
   <!--[if IE]>
@@ -39,9 +72,9 @@
                <button id="nextBtn">Next</button>
             </div>
             <button type="button" id="sendBtn">Evaluate</button>
-           </div>  
-           
-           <div id="title" >Singular  </div> 
+           </div>
+
+           <div id="title" >Singular  </div>
       </div>
       <div class="right halfWidth rel">
           <div class ="left padded">
@@ -49,39 +82,42 @@
           </div>
           <div class="right padded">
               <button type="button" id="saveBtn">Save</button><button type="button" id="uploadBtn">Upload File</button>
-          </div>  
+          </div>
       </div>
       <div class="clear"></div>
-    </div>    
+    </div>
 
-    
+
     <div class="tall rel">
       <div id="home" class="terminal left">
 
         <img class="image-text-wrap" src="frontPageImage.jpg"/>
-            <h3>Welcome to Singular! </h3>
+            <h3>Welcome to Singular online!</h3>
 
-        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-        </p>
+	    <p>This is the official web-interface of Singular based on the InteractiveShell package by Franziska Hinkelmann, Lars Kastner and Mike Stillman.</p>
 
-        <p> At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+	    <p>To learn more about Singular (features and manual, source code and extentions to third party software), please consult the <a href="http://www.singular.uni-kl.de/index.php" target="_blank">official website</a>.</p>
+
+	    <p>To learn how to use Singular and in particular this web interface, please check the tutorials below.</p>
+
+	    <p>For questions, feel free to visit our <a href="http://www.singular.uni-kl.de/forum/" target="_blank">forum</a>.</p>
       </div>
-    
+
       <div id="lesson" class="terminal left "></div>
       <div id="inputarea" class="terminal left">
-        <textarea id="M2In" wrap='off' autocorrect="off" spellcheck="false" autocapitalize="off"> 
+        <textarea id="M2In" wrap='off' autocorrect="off" spellcheck="false" autocapitalize="off">
         </textarea>
       </div>
       <div id="outputarea" class="terminal right">
-        <textarea id="M2Out" wrap='off' autocorrect="off" spellcheck="false" autocapitalize="off"> 
+        <textarea id="M2Out" wrap='off' autocorrect="off" spellcheck="false" autocapitalize="off">
         </textarea>
       </div>
     </div>
-      
+
     <div id="about" class="smallFont">
-      2014. Franziska Hinkelmann, Lars Kastner, Mike Stillman, Yue Ren <a href='mailto:trym2@googlegroups.com'>Email us</a> with any questions or suggestions. Funding provided by At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+      2014. Franziska Hinkelmann, Lars Kastner, Mike Stillman, Yue Ren <a href='mailto:trym2@googlegroups.com'>Email us</a> with any questions or suggestions. Funding provided by the NSF and the DfG.
     </div>
-    
+
     <div style='height: 0px;width: 0px; overflow:hidden;'><input id="upfile" type="file" value="upload"/></div>
     <div style='height: 0px;width: 0px; overflow:hidden;'><input id="uptutorial" type="file" value="upload"/></div>
     <form method="POST" enctype="multipart/form-data" name="myForm">

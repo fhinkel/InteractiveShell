@@ -18,7 +18,7 @@ var dockerManager = function () {
 
     var constructDockerRunCommand = function(resources, currentInstance) {
         var dockerRunCmd = 'sudo docker run -d';
-        dockerRunCmd += ' -c ' + resources.cpus;
+        dockerRunCmd += ' -c ' + resources.cpuShares;
         dockerRunCmd += ' -m ' + resources.memory + 'm';
         dockerRunCmd += ' --name ' + currentInstance.containerName;
         dockerRunCmd += ' -p ' + currentInstance.port + ':22 ';

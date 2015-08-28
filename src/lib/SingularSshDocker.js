@@ -1,6 +1,6 @@
 GLOBAL.OPTIONS = require('./default.js').get_config({
     hostConfig: {
-        dockerRunCmd: '';
+        dockerRunCmd: '',
         maxContainerNumber: 10,
         containerType: 'singular_container',
         sshdCmd: "/usr/sbin/sshd -D",
@@ -14,7 +14,7 @@ GLOBAL.OPTIONS = require('./default.js').get_config({
         MATH_PROGRAM: 'Singular',
         MATH_PROGRAM_COMMAND: 'Singular',
         CONTAINERS: './sshDockerContainers.js'
-    }
+    },
     guestInstance: {
         host: 'localhost',
         username: 'singularUser',

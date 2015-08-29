@@ -41,13 +41,25 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
     });
 
 
+    function stripInputPrompt(lastLine) {
+        return lastLine.replace(/^i\d+\s*:/, "");
+    }
+
+    function stripSpacesAtBeginningOfLine(lastLine) {
+        return lastLine.replace(/^\s*/, "");
+    }
+
+    function stripPrompt(lastLine) {
+        return lastLine.replace(/^> /, "");
+    }
+
     var getCurrentCommand = function(){
         var completeText = shell.val().split("\n");
         var lastLine = completeText[completeText.length-2];
         // Need to set prompt symbol somewhere else.
-        lastLine = lastLine.replace(/^i\d+\s*:/,"");
-        lastLine = lastLine.replace(/^\s*/,"");
-        lastLine = lastLine.replace(/^> /,"");
+        lastLine = stripInputPrompt(lastLine);
+        lastLine = stripSpacesAtBeginningOfLine(lastLine);
+        lastLine = stripPrompt(lastLine);
         return lastLine;
     };
 

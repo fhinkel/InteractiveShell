@@ -1,11 +1,13 @@
-var SingularServer = require('./index.js').MathServer({
-    MATH_PROGRAM: 'Singular',
-    MATH_PROGRAM_COMMAND: 'Singular',
-    CONTAINERS: './LocalContainerManager.js'
+GLOBAL.OPTIONS = require('./default.js').get_config({
+    server_config: {
+        port: 8002,
+        MATH_PROGRAM: 'Singular',
+        MATH_PROGRAM_COMMAND: 'Singular',
+        CONTAINERS: './LocalContainerManager.js'
+    }
 });
-SingularServer.listen();
 
-// Local Variables:
-// indent-tabs-mode: nil
-// tab-width: 4
-// End:
+console.log(OPTIONS);
+
+var SingularServer = require('./index.js').MathServer();
+SingularServer.listen();

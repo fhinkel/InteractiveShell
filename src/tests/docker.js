@@ -2,7 +2,7 @@ var assert = require("assert");
 var spawn = require('child_process').spawn;
 
 
-describe('Start docker container', function () {
+describe.skip('Start docker container', function () {
     before(function () {
         console.testLog = function () {
         };

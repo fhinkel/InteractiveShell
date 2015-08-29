@@ -5,7 +5,7 @@ var containers = rewire('../lib/sudoDockerContainers.js');
 
 process.env.NODE_ENV = 'test';
 
-describe('Docker manager tests', function () {
+describe.skip('Docker manager tests', function () {
 
     var manager;
 

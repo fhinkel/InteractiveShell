@@ -509,7 +509,7 @@ $(document).ready(function () {
         $("#M2Out").trigger("reset");
         trym2.socket.emit('reset')
     });
-    
+
     $("#interruptBtn").click(function () {
         trym2.postMessage(ctrlc, true)
     });

@@ -30,7 +30,7 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
     shell.on("track", function(e, msg) { // add command to history
         //console.log("Tracking message: " + msg);
         if (typeof msg != 'undefined') {
-            input = msg.split("\n");
+            var input = msg.split("\n");
             for (var line in input) {
                 if (input[line].length > 0) {
                     // console.log("Line: " + input[line]);
@@ -65,7 +65,6 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
 
     // On pressing return send last part of M2Out to M2 and remove it.
     shell.keyup(function(e) {
-        var l, msg, input;
         if (e.keyCode == keys.enter) { // Return
             // We trigger the track manually, since we might have used tab.
             shell.trigger('track',getCurrentCommand());
@@ -99,13 +98,13 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
             return;
         }
         if ((e.keyCode == keys.arrowDown) && (cmdHistory.index < cmdHistory.length)) { // DOWN
-            cmdHistory.index++;
+            cmdHistory.index = cmdHistory.index + 1;
         }
         if ((e.keyCode == keys.arrowUp) && (cmdHistory.index > 0)) { // UP
             if (cmdHistory.index == cmdHistory.length) {
                 cmdHistory.current = shell.val().substring(mathProgramOutput.length, shell.val().length);
             }
-            cmdHistory.index--;
+            cmdHistory.index = cmdHistory.index - 1;
         }
         if (cmdHistory.index == cmdHistory.length) {
             shell.val(shell.val().substring(0, mathProgramOutput.length) + cmdHistory.current);

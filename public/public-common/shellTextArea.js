@@ -1,6 +1,6 @@
 // initialize with ID (string) of field that should act like a shell,
 //  i.e., command history, taking input and replacing it with output from server
-var shellObject = function(shellArea, historyArea, shellFunctions) {
+var shellObject = function (shellArea, historyArea, shellFunctions) {
     var keys = {
         arrowUp: 38,
         arrowDown: 40,
@@ -13,7 +13,7 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
         tab: 9,
         enter: 13
     };
-    
+
     var unicodeBell = '\u0007';
     var setCaretPosition = shellFunctions['setCaretPosition'];
     var postMessage = shellFunctions['postMessage'];
@@ -25,9 +25,9 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
     var history = historyArea;
     var cmdHistory = []; // History of M2 commands for shell-like arrow navigation
     cmdHistory.index = 0;
-    
 
-    shell.on("track", function(e, msg) { // add command to history
+
+    shell.on("track", function (e, msg) { // add command to history
         //console.log("Tracking message: " + msg);
         if (typeof msg != 'undefined') {
             var input = msg.split("\n");
@@ -53,9 +53,9 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
         return lastLine.replace(/^> /, "");
     }
 
-    var getCurrentCommand = function(){
+    var getCurrentCommand = function () {
         var completeText = shell.val().split("\n");
-        var lastLine = completeText[completeText.length-2];
+        var lastLine = completeText[completeText.length - 2];
         // Need to set prompt symbol somewhere else.
         lastLine = stripInputPrompt(lastLine);
         lastLine = stripSpacesAtBeginningOfLine(lastLine);
@@ -64,23 +64,23 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
     };
 
     // On pressing return send last part of M2Out to M2 and remove it.
-    shell.keyup(function(e) {
+    shell.keyup(function (e) {
         if (e.keyCode == keys.enter) { // Return
             // We trigger the track manually, since we might have used tab.
-            shell.trigger('track',getCurrentCommand());
+            shell.trigger('track', getCurrentCommand());
             // Disable traking of posted message.
             packageAndSendMessage('', true);
         }
     });
 
-    var packageAndSendMessage = function(tail, notrack){
+    var packageAndSendMessage = function (tail, notrack) {
         setCaretPosition(shell, shell.val().length);
         if (shell.val().length >= mathProgramOutput.length) {
             l = shell.val().length;
             msg = shell.val().substring(mathProgramOutput.length, l) + tail;
-            if(history != undefined){
-               history.val(history.val() + msg);
-               scrollDown(history);
+            if (history != undefined) {
+                history.val(history.val() + msg);
+                scrollDown(history);
             }
             postMessage(msg, notrack);
         } else {
@@ -91,9 +91,9 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
     };
 
 
-    var upDownArrowKeyHandling = function(e){
+    var upDownArrowKeyHandling = function (e) {
         e.preventDefault();
-        if (cmdHistory.length == 0){
+        if (cmdHistory.length == 0) {
             // Maybe we did nothing so far.
             return;
         }
@@ -115,25 +115,25 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
     };
 
     // If something is entered, change to end of textarea, if at wrong position.
-    shell.keydown(function(e) {
+    shell.keydown(function (e) {
         // console.log("Got keydown: " + e.keyCode);
         // The keys 37, 38, 39 and 40 are the arrow keys.
-        if (e.keyCode == keys.enter){
+        if (e.keyCode == keys.enter) {
             setCaretPosition(shell, shell.val().length);
         }
-        
+
         if ((e.keyCode == keys.arrowUp) || (e.keyCode == keys.arrowDown)) {
             upDownArrowKeyHandling(e);
         }
         if (e.keyCode == keys.ctrlKeyCode) { // do not jump to bottom on Ctrl+C or on Ctrl
             return;
         }
-        if (e.ctrlKey && e.keyCode == keys.cKey){
+        if (e.ctrlKey && e.keyCode == keys.cKey) {
             interrupt();
         }
         // for MAC OS
         if ((e.metaKey && e.keyCode == keys.cKey) || (keys.metaKeyCodes.indexOf(e.keyCode) > -
-            1)) { // do not jump to bottom on Command+C or on Command
+                1)) { // do not jump to bottom on Command+C or on Command
             return;
         }
         var pos = shell[0].selectionStart;
@@ -148,25 +148,25 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
             }
         }
         // Forward key for tab completion, but do not track it.
-        if(e.keyCode == keys.tab){
+        if (e.keyCode == keys.tab) {
             packageAndSendMessage("\t", true);
             e.preventDefault();
         }
     });
 
-    shell.on("onmessage", function(e, msgDirty) {
+    shell.on("onmessage", function (e, msgDirty) {
         // console.log("Dirty JSON message: " + JSON.stringify(msgDirty));
-        if(msgDirty == unicodeBell){
+        if (msgDirty == unicodeBell) {
             return;
         }
-        var msg = msgDirty.replace(/\u0007/,"");
-        msg = msg.replace(/\r\n/g,"\n");
-        msg = msg.replace(/\r/g,"\n");
+        var msg = msgDirty.replace(/\u0007/, "");
+        msg = msg.replace(/\r\n/g, "\n");
+        msg = msg.replace(/\r/g, "\n");
         var completeText = shell.val();
         mathProgramOutput += msg;
         var after = completeText.substring(mathProgramOutput.length, completeText.length);
         var commonIndex = 0;
-        while((after[commonIndex] == msg[commonIndex]) && (commonIndex < after.length) && (commonIndex < msg.length)){
+        while ((after[commonIndex] == msg[commonIndex]) && (commonIndex < after.length) && (commonIndex < msg.length)) {
             commonIndex++;
         }
         var nonReturnedInput = after.substring(commonIndex, after.length);
@@ -174,9 +174,9 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
         scrollDown(shell);
     });
 
-    shell.on("reset", function(){
-       //console.log("Received reset event.");
-       shell.val(mathProgramOutput);
+    shell.on("reset", function () {
+        //console.log("Received reset event.");
+        shell.val(mathProgramOutput);
     });
 };
 

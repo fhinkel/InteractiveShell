@@ -1,4 +1,3 @@
-/*global $, alert, console, document, trym2, window */
 
 var trym2 = {
     lessonNr: 0,
@@ -14,14 +13,14 @@ var ctrlc = "\x03";
 
 
 // this global variable changes the content on the left as the users
-// naviges between home, tutorial, and input
+// navigates between home, tutorial, and input
 // tabs are hard coded as home, tutorial, and input
 // the controller assures that always exactly one tab from the tabs list is active. 
 // usage: trym2.navBar.activate("home")
 trym2.navBar = function () {
-    this.activate = function (s) { // string with name of tab
-        console.log("activate tab: " + s);
-        var tab = this.tabs[s];
+    this.activate = function (tabName) { // string with name of tab
+        console.log("activate tab: " + tabName);
+        var tab = this.tabs[tabName];
         $(tab.btn).prop("checked", true).button("refresh"); // set the color of the tab
         tab.show(); // do a few things for this tab
         var i, j;
@@ -41,8 +40,8 @@ trym2.navBar = function () {
 
     var Tab = function (elements, btn, showFunction) {
         this.elements = elements;
-        this.btn = btn,
-            this.show = showFunction;
+        this.btn = btn;
+        this.show = showFunction;
     };
 
     var homeTab = new Tab(["#home"],
@@ -103,12 +102,13 @@ trym2.appendTutorialToAccordion = function (title, lessons, index) {
                     // Needs improvement! Possibly do this synchronously with the slide toggle,
                     // i.e. not as a callback.
                     var y = $(this).position().top;
-                    var height = parseInt($("#home").css('height'), 10);
+                    var home = $("#home");
+                    var height = parseInt(home.css('height'), 10);
                     var total_height = parseInt($(this).css('height'), 10) + 50;
                     if (height - y < total_height) {
                         var scroll = total_height - height + y;
-                        $("#home").animate({
-                            scrollTop: ($("#home").scrollTop() + scroll)
+                        home.animate({
+                            scrollTop: (home.scrollTop() + scroll)
                         }, 400);
                     }
                 });
@@ -122,7 +122,7 @@ trym2.appendTutorialToAccordion = function (title, lessons, index) {
             '<li><a href="#" class="submenuItem" tutorialid=' + index +
             ' lessonid=' + j + '>  ' + lessons[j].title + '</a></li>';
     }
-    ;
+
     content = content + '</ul>';
     if (index > 0) {
         div.append(content).addClass(
@@ -137,8 +137,9 @@ trym2.appendTutorialToAccordion = function (title, lessons, index) {
         div.append(content).addClass(
             "ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom");
     }
-    $("#loadTutorialMenu").before(title);
-    $("#loadTutorialMenu").before(div);
+    var loadTutorialMenu = $("#loadTutorialMenu");
+    loadTutorialMenu.before(title);
+    loadTutorialMenu.before(div);
 };
 
 trym2.appendLoadTutorialMenuToAccordion = function () {
@@ -170,12 +171,13 @@ trym2.addExpandLoadTutorialInstructionsButton = function () {
             // Needs improvement! Possibly do this synchronously with the slide toggle,
             // i.e. not as a callback.
             var y = $(this).position().top;
-            var height = parseInt($("#home").css('height'), 10);
+            var home = $("#home");
+            var height = parseInt(home.css('height'), 10);
             var total_height = parseInt($(this).css('height'), 10) + 50;
             if (height - y < total_height) {
                 var scroll = total_height - height + y;
-                $("#home").animate({
-                    scrollTop: ($("#home").scrollTop() + scroll)
+                home.animate({
+                    scrollTop: (home.scrollTop() + scroll)
                 }, 400);
             }
         });
@@ -332,7 +334,6 @@ trym2.saveInteractions = function () {
 };
 
 trym2.uploadTutorial = function () {
-    var obj = this;
     var files = this.files;
     console.log("number of files in upload tutorial: " + files.length);
     file = files[0];
@@ -404,7 +405,7 @@ $(document).ready(function () {
         } else {
             trym2.socket.oldEmit(event, msg);
         }
-    }
+    };
 
     trym2.socket.on('image', function (imageUrl) {
         if (imageUrl) {
@@ -508,7 +509,7 @@ $(document).ready(function () {
         $("#M2Out").trigger("reset");
         trym2.socket.emit('reset')
     });
-    ;
+    
     $("#interruptBtn").click(function () {
         trym2.postMessage(ctrlc, true)
     });

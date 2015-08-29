@@ -164,8 +164,7 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
         msg = msg.replace(/\r/g,"\n");
         var completeText = shell.val();
         mathProgramOutput += msg;
-        var before = completeText.substring(0, mathProgramOutput.length),
-            after = completeText.substring(mathProgramOutput.length, completeText.length);
+        var after = completeText.substring(mathProgramOutput.length, completeText.length);
         var commonIndex = 0;
         while((after[commonIndex] == msg[commonIndex]) && (commonIndex < after.length) && (commonIndex < msg.length)){
             commonIndex++;
@@ -175,7 +174,7 @@ var shellObject = function(shellArea, historyArea, shellFunctions) {
         scrollDown(shell);
     });
 
-    shell.on("reset", function(e){
+    shell.on("reset", function(){
        //console.log("Received reset event.");
        shell.val(mathProgramOutput);
     });

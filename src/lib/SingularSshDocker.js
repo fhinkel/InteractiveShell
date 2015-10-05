@@ -1,25 +1,26 @@
 GLOBAL.OPTIONS = require('./default.js').get_config({
     hostConfig: {
-        dockerRunCmd: '';
+        dockerRunCmd: '',
         maxContainerNumber: 10,
         containerType: 'singular_container',
         sshdCmd: "/usr/sbin/sshd -D",
         host: 'localhost',
         username: 'user',
         port: '22',
-        sshKey: "/home/vagrant/InteractiveShell/separate_machines/host_key"
+        sshKey: "/home/user/.ssh/id_rsa",
+	dockerCmdPrefix: ""
     },
     server_config: {
         port: 8002,
         MATH_PROGRAM: 'Singular',
         MATH_PROGRAM_COMMAND: 'Singular',
         CONTAINERS: './sshDockerContainers.js'
-    }
+    },
     guestInstance: {
         host: 'localhost',
         username: 'singularUser',
         port: '5000',
-        sshKey: '/home/vagrant/InteractiveShell/separate_machines/docker_key',
+        sshKey: "/home/user/InteractiveShell/Vagrant_singular/id_rsa",
         containerName: 'singularContainer',
         lastActiveTime: 0
     }

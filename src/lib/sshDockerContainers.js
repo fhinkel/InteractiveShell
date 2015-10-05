@@ -10,7 +10,7 @@ var sshDockerManager = function () {
     var currentContainers = [];
 
     function init() {
-        hostConfig.dockerRunCmd += 'docker run -d';
+        hostConfig.dockerRunCmd = hostConfig.dockerCmdPrefix + ' docker run -d';
         hostConfig.dockerRunCmd += ' -c ' + resources.cpuShares;
         hostConfig.dockerRunCmd += ' -m ' + resources.memory + 'm';
         hostConfig.dockerRunCmd += ' --name';
@@ -31,7 +31,7 @@ var sshDockerManager = function () {
         if (instance.killNotify) {
             instance.killNotify();
         }
-        var removalCommand = "sudo docker rm -f " + instance.containerName;
+        var removalCommand = hostConfig.dockerCmdPrefix + " docker rm -f " + instance.containerName;
         connectToHostAndExecCmd(removalCommand, function (stream) {
             stream.on('data', function (dataObject) {
             });
@@ -138,7 +138,7 @@ var sshDockerManager = function () {
     };
 
     var checkForSuccessfulContainerStart = function (instance, next) {
-        var getListOfAllContainers = 'sudo docker ps --no-trunc | grep ' + instance.containerName + ' | wc -l';
+        var getListOfAllContainers = hostConfig.dockerCmdPrefix + ' docker ps --no-trunc | grep ' + instance.containerName + ' | wc -l';
         connectToHostAndExecCmd(getListOfAllContainers, function (stream) {
             stream.on('data', function (dataObject) {
                 var data = dataObject.toString();
@@ -155,7 +155,7 @@ var sshDockerManager = function () {
     };
 
     var checkForRunningSshd = function (instance, next) {
-        var getContainerProcesses = "sudo docker exec " + instance.containerName + " ps aux"
+        var getContainerProcesses = hostConfig.dockerCmdPrefix + " docker exec " + instance.containerName + " ps aux"
         var filterForSshd = "grep \"" + hostConfig.sshdCmd + "\"";
         var excludeGrepAndWc = "grep -v grep | wc -l";
         var sshdCheckCmd = getContainerProcesses + " | " + filterForSshd + " | " + excludeGrepAndWc;

@@ -1,3 +1,19 @@
+2015-10-25
+* Meeting in late April maybe?
+
+Next steps:
+* Ask about JSAG paper
+* Use the cloud in addition to Mike's machine, how expensive is that?
+* Fonts and CSS and Mobile, maybe look at React and Material UI
+* Native App
+* More tutorials
+* Update Docker and Vagrant
+* Update Node and some modules
+* Monitoring/error recovery
+* EcmaScript 6 Syntax
+
+
+
 * getting running on windows 7.
     step 1: Install virtual box: https://www.virtualbox.org/wiki/Downloads
       Selected all of the default options while installing.
@@ -36,7 +52,8 @@
 ** Better error handling
 ** New tutorials and tutorial upload?
 ** Monitoring
-** Paper in JSAG
+** Paper in JSAG (submitted 5/16/15)
+** Paper in AMS Notices
 
 
 

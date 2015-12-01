@@ -41,8 +41,9 @@ RUN sed -i 's/m2user:!/m2user:*/' /etc/shadow
 
 # From Mikes dockerfile.
 RUN mkdir /custom
-RUN (cd /custom; wget http://www.math.uic.edu/~jan/x86_64phcv23p.tar.gz)
-RUN (cd /custom; tar zxf x86_64phcv23p.tar.gz; mv phc /usr/bin; rm x86_64phcv23p.tar.gz)
+ENV PHC_VERSION 24
+RUN (cd /custom; wget http://www.math.uic.edu/~jan/x86_64phcv${PHC_VERSION}p.tar.gz)
+RUN (cd /custom; tar zxf x86_64phcv23p.tar.gz; mv phc /usr/bin; rm x86_64phcv${PHC_VERSION}p.tar.gz)
 RUN chown -R m2user:m2user /custom
 RUN chmod -R 775 /custom
 # This is the only way extracting Bertini gives the right permissions.

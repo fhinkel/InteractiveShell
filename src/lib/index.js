@@ -19,15 +19,6 @@ var MathServer = function (overrideOptions) {
         }
     };
 
-    var overrideDefaultOptions = function (overrideOptions) {
-        for (var opt in overrideOptions) {
-            if (options.hasOwnProperty(opt)) {
-                options[opt] = overrideOptions[opt];
-                logExceptOnTest("server option: " + opt + " set to " + options[opt]);
-            }
-        }
-    };
-
     var sshCredentials = function (instance) {
         return {
             host: instance.host,
@@ -36,8 +27,6 @@ var MathServer = function (overrideOptions) {
             privateKey: fs.readFileSync(instance.sshKey)
         }
     };
-
-    overrideDefaultOptions(overrideOptions);
 
     var cookieName = "try" + options.MATH_PROGRAM;
 

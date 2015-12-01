@@ -11,7 +11,7 @@ var sshDockerManager = function () {
 
     function init() {
         hostConfig.dockerRunCmd = hostConfig.dockerCmdPrefix + ' docker run -d';
-        hostConfig.dockerRunCmd += ' -c ' + resources.cpuShares;
+        hostConfig.dockerRunCmd += ' --cpu-shares ' + resources.cpuShares;
         hostConfig.dockerRunCmd += ' -m ' + resources.memory + 'm';
         hostConfig.dockerRunCmd += ' --name';
     }

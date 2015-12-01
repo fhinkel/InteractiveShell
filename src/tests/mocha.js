@@ -68,7 +68,7 @@ describe('regexsearch', function () {
     });
 });
 
-describe('Http server that echos hello world', function () {
+describe.skip('Http server that echos hello world', function () {
     var server;
     before(function (done) {
         server = http.createServer(function (req, res) {

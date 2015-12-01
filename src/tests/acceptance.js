@@ -7,7 +7,7 @@ var fs = require('fs');
 
 process.env.NODE_ENV = 'test';
 
-describe('Acceptance test', function () {
+describe.skip('Acceptance test', function () {
     var port = 8006;
     var server;
     var jquery;

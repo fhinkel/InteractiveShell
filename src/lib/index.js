@@ -1,4 +1,12 @@
-var app = require('express')();
+var auth = require('http-auth');
+var basic = auth.basic({
+    realm: "Please enter your username and password.",
+    file: __dirname + "/../../public/users.htpasswd" // gevorg:gpass, Sarah:testpass ... 
+});
+
+var express = require('express');
+var app = express();
+app.use(auth.connect(basic));
 var http = require('http').createServer(app);
 var fs = require('fs');
 var Cookies = require('cookies');
@@ -275,7 +283,7 @@ var MathServer = function () {
         io.on('connection', function (socket) {
             console.log("Incoming new connection!");
             var cookies = socket.request.headers.cookie;
-            var clientId = cookies[cookieName];
+            var clientId = socket.request.headers.authorization.substring(6);
             socketSanityCheck(clientId, socket);
             var fileUpload = require('./fileUpload.js')(clients, logExceptOnTest, sshCredentials);
             fileUpload.attachUploadListenerToSocket(clientId, socket);

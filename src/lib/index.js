@@ -7,7 +7,7 @@ var ssh2 = require('ssh2');
 var SocketIOFileUpload = require('socketio-file-upload');
 
 
-var MathServer = function (overrideOptions) {
+var MathServer = function () {
     var staticFolder = __dirname + '/../../public/public';
 
     

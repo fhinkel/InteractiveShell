@@ -115,6 +115,7 @@ var MathServer = function (overrideOptions) {
         return function () {
             console.log("KILL: " + clientID);
             deleteClientData(clientID);
+            optLogCmdToFile(clientID, "Killed.\n");
         };
     };
 
@@ -126,6 +127,7 @@ var MathServer = function (overrideOptions) {
             connection.on('ready', function () {
                 connection.exec(options.MATH_PROGRAM_COMMAND, {pty: true}, function (err, stream) {
                     if (err) throw err;
+                    optLogCmdToFile(clientID, "Starting.\n");
                     stream.on('close', function () {
                         connection.end();
                     });
@@ -299,20 +301,19 @@ var MathServer = function (overrideOptions) {
             if (err) {
                 logClient(clientId, "write failed: " + err);
             }
-			if(options.CMD_LOG_FILE){
-				logCmdToFile(clientId, msg);
-			}
+            optLogCmdToFile(clientId, msg);
             socketSanityCheck(clientId, clients[clientId].socket);
         });
     };
 	
-	var logCmdToFile = function(clientId, msg){
-		fs.appendFile(options.CMD_LOG_FILE, clientId +" -- " + msg, function(err) {
-			if(err) {
-				logClient(clientId, "logging msg failed: " + err);
-			}
-			console.log("Writing: " + err);
-		}); 	
+	var optLogCmdToFile = function(clientId, msg){
+        if(options.CMD_LOG_FOLDER){
+            fs.appendFile(options.CMD_LOG_FOLDER + "/" + clientId + ".log", msg, function(err) {
+                if(err) {
+                    logClient(clientId, "logging msg failed: " + err);
+                }
+            }); 	
+        }
 	};
 
     var checkAndWrite = function (clientId, msg) {
@@ -343,6 +344,7 @@ var MathServer = function (overrideOptions) {
 
     var socketResetAction = function (clientId) {
         return function () {
+            optLogCmdToFile(clientId, "Resetting.\n");
             logExceptOnTest('Received reset.');
             checkStateAndExecuteAction(clientId, function () {
                 var client = clients[clientId];

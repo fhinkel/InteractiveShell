@@ -1,5 +1,5 @@
 var app = require('express')();
-var http = require('http').Server(app);
+var http = require('http').createServer(app);
 var fs = require('fs');
 var Cookies = require('cookies');
 var io = require('socket.io')(http);

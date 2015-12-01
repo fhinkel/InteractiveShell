@@ -299,9 +299,21 @@ var MathServer = function (overrideOptions) {
             if (err) {
                 logClient(clientId, "write failed: " + err);
             }
+			if(options.CMD_LOG_FILE){
+				logCmdToFile(clientId, msg);
+			}
             socketSanityCheck(clientId, clients[clientId].socket);
         });
     };
+	
+	var logCmdToFile = function(clientId, msg){
+		fs.appendFile(options.CMD_LOG_FILE, clientId +" -- " + msg, function(err) {
+			if(err) {
+				logClient(clientId, "logging msg failed: " + err);
+			}
+			console.log("Writing: " + err);
+		}); 	
+	};
 
     var checkAndWrite = function (clientId, msg) {
         if (!clients[clientId].mathProgramInstance || clients[clientId].mathProgramInstance._writableState.ended) {

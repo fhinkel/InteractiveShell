@@ -14,7 +14,8 @@ GLOBAL.OPTIONS = require('./default.js').get_config({
         port: 8002,
         MATH_PROGRAM: 'Singular',
         MATH_PROGRAM_COMMAND: 'Singular',
-        CONTAINERS: './sshDockerContainers.js'
+        CONTAINERS: './sshDockerContainers.js',
+	CMD_LOG_FILE: '/home/user/cmdlog.txt'
     },
     guestInstance: {
         host: 'localhost',
@@ -23,7 +24,7 @@ GLOBAL.OPTIONS = require('./default.js').get_config({
         sshKey: "/home/user/InteractiveShell/Vagrant_singular/id_rsa",
         containerName: 'singularContainer',
         lastActiveTime: 0
-    }
+    },
 });
 
 var Macaulay2Server = require('./index.js').MathServer();

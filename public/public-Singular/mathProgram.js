@@ -493,12 +493,12 @@ $(document).ready(function() {
         "  ideal I = a^2-b*c, a^3-b^3, a^4-b*d^3, a^5-c^2*d^3;\n" +
         "  ideal G = groebner(I);\n" +
         "\n" +
-        "  /* Some examples of rings and orderings */\n" +
+        "  /*  Some examples of rings and orderings  */\n" +
         "  ring r; // ZZ/32003ZZ[x,y,z]\n" +
         "  ring s = 0,x(1..6),lp; // QQ[x(1)..x(6)]\n" +
         "  ring R = (0,t),(x,y,z),dp; // QQ(t)[x,y,z]\n" +
 	"  ring C = (0,i),(x,y,z),dp; minpoly = i2+1;\n"
-        "---------------\n";
+        "  /******************************************/\n";
 
     $('#M2In').val(M2InDefaultText);
     $("#sendBtn").click(trym2.sendCallback('#M2In'));

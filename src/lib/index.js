@@ -1,5 +1,5 @@
 var app = require('express')();
-var http = require('http').Server(app);
+var http = require('http').createServer(app);
 var fs = require('fs');
 var Cookies = require('cookies');
 var io = require('socket.io')(http);
@@ -7,7 +7,7 @@ var ssh2 = require('ssh2');
 var SocketIOFileUpload = require('socketio-file-upload');
 
 
-var MathServer = function (overrideOptions) {
+var MathServer = function () {
     var staticFolder = __dirname + '/../../public/public';
 
     
@@ -19,15 +19,6 @@ var MathServer = function (overrideOptions) {
         }
     };
 
-    var overrideDefaultOptions = function (overrideOptions) {
-        for (var opt in overrideOptions) {
-            if (options.hasOwnProperty(opt)) {
-                options[opt] = overrideOptions[opt];
-                logExceptOnTest("server option: " + opt + " set to " + options[opt]);
-            }
-        }
-    };
-
     var sshCredentials = function (instance) {
         return {
             host: instance.host,
@@ -36,8 +27,6 @@ var MathServer = function (overrideOptions) {
             privateKey: fs.readFileSync(instance.sshKey)
         }
     };
-
-    overrideDefaultOptions(overrideOptions);
 
     var cookieName = "try" + options.MATH_PROGRAM;
 

@@ -27,7 +27,7 @@ var configuration = function (overrideOptions){
             maxContainerNumber: 1,
             containerType: 'm2container',
             sshdCmd: "/usr/sbin/sshd -D",
-            dockerRunCmd: '',
+            dockerCmdPrefix: 'sudo ',
             host: '192.168.2.42',
             username: 'vagrant',
             port: '22',

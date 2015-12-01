@@ -144,6 +144,7 @@ var shellObject = function (shellArea, historyArea, shellFunctions) {
         // We may not shorten the string entered by M2.
         if (e.keyCode == keys.backspace) {
             if (shell.val().length == mathProgramOutput.length) {
+                packageAndSendMessage("\b", true);
                 e.preventDefault();
             }
         }
@@ -159,9 +160,13 @@ var shellObject = function (shellArea, historyArea, shellFunctions) {
         if (msgDirty == unicodeBell) {
             return;
         }
-        var msg = msgDirty.replace(/\u0007/, "");
-        msg = msg.replace(/\r\n/g, "\n");
-        msg = msg.replace(/\r/g, "\n");
+        if(msgDirty == "\b \b"){
+            backspace();
+            return;
+        }
+        var msg = msgDirty.replace(/\u0007/,"");
+        msg = msg.replace(/\r\n/g,"\n");
+        msg = msg.replace(/\r/g,"\n");
         var completeText = shell.val();
         mathProgramOutput += msg;
         var after = completeText.substring(mathProgramOutput.length, completeText.length);
@@ -174,9 +179,18 @@ var shellObject = function (shellArea, historyArea, shellFunctions) {
         scrollDown(shell);
     });
 
-    shell.on("reset", function () {
-        //console.log("Received reset event.");
-        shell.val(mathProgramOutput);
+    var backspace = function(){
+        var completeText = shell.val();
+        var before = completeText.substring(0, mathProgramOutput.length - 1),
+            after = completeText.substring(mathProgramOutput.length, completeText.length);
+        mathProgramOutput = before;
+        shell.val(before + after);
+        scrollDown(shell);
+    }
+
+    shell.on("reset", function(e){
+       //console.log("Received reset event.");
+       shell.val(mathProgramOutput);
     });
 };
 

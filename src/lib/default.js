@@ -5,7 +5,8 @@ var configuration = function (overrideOptions){
         server_config: {
             CONTAINERS: './LocalContainerManager.js',
             MATH_PROGRAM: "Macaulay2",
-            MATH_PROGRAM_COMMAND: 'M2'
+            MATH_PROGRAM_COMMAND: 'M2',
+            resumeString: ''
         },
         container_config: {
             sshdCmd: "/usr/sbin/sshd -D",

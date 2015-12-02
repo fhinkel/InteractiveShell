@@ -76,6 +76,7 @@ var MathServer = function () {
 
     var Client = function () {
         this.saneState = true;
+        this.reconnecting = false;
         this.instance = 0;
     };
 
@@ -265,6 +266,10 @@ var MathServer = function () {
             });
         } else {
             console.log("Has mathProgram instance.");
+            if(clients[clientId].reconnecting){
+                clients[clientId].socket.emit('result', "Session resumed.\n" + options.resumeString);
+                clients[clientId].reconnecting = false;
+            }
             clients[clientId].saneState = true;
         }
     };
@@ -276,6 +281,9 @@ var MathServer = function () {
             console.log("Incoming new connection!");
             var cookies = socket.request.headers.cookie;
             var clientId = cookies[cookieName];
+            if (clients[clientId]) {
+                clients[clientId].reconnecting = true;
+            }
             socketSanityCheck(clientId, socket);
             var fileUpload = require('./fileUpload.js')(clients, logExceptOnTest, sshCredentials);
             fileUpload.attachUploadListenerToSocket(clientId, socket);

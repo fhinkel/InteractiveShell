@@ -42,7 +42,7 @@
     "start_singular": "node src/lib/SingularSudoDocker.js",
     "basic_singular": "node src/lib/SingularLocalServer.js",
     "ssh_singular": "node src/lib/SingularSshDocker.js",
-    "forever_singular": "./node_modules/forever/bin/forever start -l /home/user/logs/forever.log -o /home/user/logs/out.log -e /home/user/logs/err.log --append src/lib/SingularSshDocker.js"
+    "forever_singular": "./node_modules/forever/bin/forever start -l /home/power/logs/forever.log -o /home/power/logs/out.log -e /home/power/logs/err.log --append src/lib/SingularSshDocker.js"
   },
   "repository": {
     "type": "git",

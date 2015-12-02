@@ -38,11 +38,10 @@
     "test": "mocha src/tests/ --reporter spec --timeout 6000",
     "stop": "kill `ps ax | grep Server | grep -v monitor | grep node | awk '{print $1}'`",
     "forever": "./node_modules/forever/bin/forever start -l /home/vagrant/webm2.logs/forever.log -o /home/vagrant/webm2.logs/out.log -e /home/vagrant/webm2.logs/err.log --append src/lib/Macaulay2SshDocker.js",
-    // Singular scripts.
     "start_singular": "node src/lib/SingularSudoDocker.js",
     "basic_singular": "node src/lib/SingularLocalServer.js",
     "ssh_singular": "node src/lib/SingularSshDocker.js",
-    "forever_singular": "./node_modules/forever/bin/forever start -l /home/user/webm2.logs/forever.log -o /home/user/webm2.logs/out.log -e /home/user/webm2.logs/err.log --append src/lib/Singular2SshDocker.js"
+    "forever_singular": "./node_modules/forever/bin/forever start -l /home/user/logs/forever.log -o /home/user/logs/out.log -e /home/user/logs/err.log --append src/lib/SingularSshDocker.js"
   },
   "repository": {
     "type": "git",

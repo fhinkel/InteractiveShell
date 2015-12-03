@@ -500,7 +500,7 @@ $(document).ready(function() {
         console.log("File uploaded successfully!" + filename);
         $("<div class='smallFont'>"
             + filename
-            + " has been uploaded and you can use it by loading it into your Macaulay2 session (use the input terminal).</div>"
+            + " has been uploaded and you can use it by loading it into your " + mathProgramName + " session (use the input terminal).</div>"
         ).dialog({
                 dialogClass: ' alert',
                 title: 'File uploaded'

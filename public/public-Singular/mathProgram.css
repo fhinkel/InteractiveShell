@@ -26,6 +26,7 @@ a {
 }
 
 body {
+   margin: 0px;
     color: #000;
     background-color: #0072AD; /*#D8FFFF;*/
     font-family: Helvetica; /*Trebuche, Lucida Grande, Palatino Georgia,Helvetica;*/
@@ -63,8 +64,18 @@ body {
 }
 
 .rel {
-    background-color: #0072AD; /*#D8FFFF;*/
     position: relative;
+}
+
+.align_bottom {
+    line-height: 40px;
+}
+
+.bg1 {
+    width: 100%;
+    background-size:100%;
+    padding: 5px;
+    background-color: #069;
 }
 
 .red {

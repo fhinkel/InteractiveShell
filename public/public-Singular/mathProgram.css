@@ -63,6 +63,7 @@ body {
 }
 
 .rel {
+    background-color: #0072AD; /*#D8FFFF;*/
     position: relative;
 }
 

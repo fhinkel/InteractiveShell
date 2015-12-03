@@ -1,3 +1,4 @@
+var mathProgramName = "Singular"
 var DefaultText = "" +
     "   /**\n" +
     "    * Welcome to Singular online!\n" +

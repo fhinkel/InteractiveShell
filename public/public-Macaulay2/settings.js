@@ -1,3 +1,4 @@
+var mathProgramName = "Macaulay2";
 var DefaultText = "" +
     "-- Welcome to Macaulay2 !\n" +
     "-- In this window you may type in Macaulay2 commands \n" +

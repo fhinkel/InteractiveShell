@@ -1,5 +1,4 @@
 var imageNo = Math.floor(24 * Math.random());
-document.getElementById("fpi").src="/images/fpi" + imageNo + ".jpg";
 var mathProgramName = "Singular"
 var DefaultText = "" +
     "   /**\n" +
@@ -23,3 +22,8 @@ var DefaultText = "" +
     "  ring C = (0,i),(x,y,z),dp; minpoly = i2+1;\n"
     "  /******************************************/\n";
 
+$(document).ready(function() {
+    $("#fpi").attr('src', "/images/fpi" + imageNo + ".jpg");
+    console.log("Hello.");
+    console.log($("#fpi"));
+});

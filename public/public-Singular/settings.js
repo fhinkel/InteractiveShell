@@ -1,3 +1,5 @@
+var imageNo = Math.floor(24 * Math.random());
+document.getElementById("fpi").src="/images/fpi" + imageNo + ".jpg";
 var mathProgramName = "Singular"
 var DefaultText = "" +
     "   /**\n" +

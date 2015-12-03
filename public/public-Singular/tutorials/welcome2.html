@@ -18,12 +18,12 @@ Singular<html>
   For example</p>
 
   <code>2+2;</code><br>
-    <code>LIB "poly.lib";</code><br>
-    <code>ring r=32003,(a,b,c,d,e,f),lp;</code><br>
-    <code>ideal I=cyclic(6);</code><br>
-    <code>ideal sI=std(I);</code><br>
-    <code>sI;</code><br>
-
+  <code>LIB "poly.lib";</code><br>
+  <code>ring r=0,(a,b,c,d,e,f),lp;</code><br>
+  <code>ideal I=cyclic(6);</code><br>
+  <code>ideal GI=groebner(I);</code><br>
+  <code>GI;</code><br>
+  
   <p>If you are already familiar with Singular and know some commands, you
     can type them directly in the right hand window. </p>
 
@@ -34,41 +34,39 @@ Singular<html>
   <p>Right now, please continue to the next page of the tutorial.</p>
 </div>
 
-<div>
-  <h4>Getting Singular help on a topic</h4>
+<!-- <div> -->
+<!--   <h4>Getting Singular help on a topic</h4> -->
 
-  <p> You can get help on the <a href="http://www.singular.uni-kl.de/index.php/singular-get-help.html" target="_blank">Singular website.</a>
-  </p>
+<!--   <p> You can get help on the <a href="http://www.singular.uni-kl.de/index.php/singular-get-help.html" target="_blank">Singular website.</a> -->
+<!--   </p> -->
 
-</div>
+<!-- </div> -->
 
 <div>
     <h4>Using the <b>Input</b> Window</h4>
 
 
-  <p>When you write Singular functions or long loops, it is often more convenient to write your code
-    in a separate window and execute the code after you wrote it. This allows you to easily modify previous code and
-    move the cursor around freely. </p>
-
+    <p>When you write Singular functions or long loops, it is often more convenient to write your code
+      in a separate window and execute the code after you wrote it. This allows you to easily modify previous code and
+      move the cursor around freely. </p>
+    
     <p>Clicking or tapping the <b>Input</b> button at the top of the page, navigates you to the Input Window.
-  This is where you may type in Singular code and have it evaluated.</p>
+      This is where you may type in Singular code and have it evaluated.
+      Moreover, this window keeps track of everything you type into Singular at the right hand side.</p>
 
     <p>In that window, place your cursor on a line that you wish to evaluate, and either click the
-      <b>Evaluate</b> button, or press Shift-Return (both keys at the same time).</p>
+      <b>Evaluate</b> button, or press Shift-Return (both keys at the same time).
+      Alternatively, you may select several lines, or a part of a line, and have them evaluated.</p>
 
-  <p>Alternatively, you may select several lines, or a part of a line, and clicking
-  <b>Evaluate</b> (or press Shift-Return) will evaluate the selection.</p>
+  <!-- <p>You try it!  Click <b>Input</b>, type in some Singular input, or try out some of the example -->
+  <!-- lines already there.  When you are ready to come back to the tutorial, click or tap on the -->
+  <!-- <b>Tutorial</b> button at the top of the page.  You will end up right here! -->
 
-  <p>You try it!  Click <b>Input</b>, type in some Singular input, or try out some of the example
-  lines already there.  When you are ready to come back to the tutorial, click or tap on the
-  <b>Tutorial</b> button at the top of the page.  You will end up right here!
-
-   <p><b>To save your work:</b>
-  Click on the <b>Save</b> button at the top right of the window.  A dialog will appear
-  where you can save the text in the <b>Input</b> window, or the text in the Singular <b>Output</b> (or both).
-  Alternatively, you can just select the text you wish, and copy it.
-  </p>
-
+    <p><b>To save your work:</b>
+      Click on the <b>Save</b> button at the top right of the window.  A dialog will appear
+      where you can save the text in the <b>Input</b> window, or the text in the Singular <b>Output</b> (or both).
+      Alternatively, you can just select the text you wish, and copy it.
+    </p>
 </div>
 
 <div>

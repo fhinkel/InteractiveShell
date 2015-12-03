@@ -72,56 +72,56 @@ Singular online<html>
 
 </div>
 
-<div>
-  <h4>Tutorial: Hacking the Groebner basis computation</h4>
+<!-- <div> -->
+<!--   <h4>Tutorial: Hacking the Groebner basis computation</h4> -->
 
-  <p>Starting with the next release, Singular will include infrastructure that allows for hacking its Groebner basis computation. How it works: whenever a new Groebner basis element is found, the Groebner basis algorithms calls an injected procedure which is allowed to change anything in the current computation.</p>
+<!--   <p>Starting with the next release, Singular will include infrastructure that allows for hacking its Groebner basis computation. How it works: whenever a new Groebner basis element is found, the Groebner basis algorithms calls an injected procedure which is allowed to change anything in the current computation.</p> -->
 
-  <p>Caveat: to produce a working hack, knowledge in C++ and in Singular's source are needed.</p>
+<!--   <p>Caveat: to produce a working hack, knowledge in C++ and in Singular's source are needed.</p> -->
 
-  <h5>Example 1: printing out each new Groebner basis element as it is found</h5>
+<!--   <h5>Example 1: printing out each new Groebner basis element as it is found</h5> -->
 
-  <code>LIB "std_demo.so";</code><br>
-  <code>ring r = 0,(a,b,c,d),dp;</code><br>
-  <code>ideal I = a+b+c+d,ab+ad+bc+cd,abc+abd+acd+bcd,abcd-1;</code><br>
-  <code>std_with_display(I);</code><br>
+<!--   <code>LIB "std_demo.so";</code><br> -->
+<!--   <code>ring r = 0,(a,b,c,d),dp;</code><br> -->
+<!--   <code>ideal I = a+b+c+d,ab+ad+bc+cd,abc+abd+acd+bcd,abcd-1;</code><br> -->
+<!--   <code>std_with_display(I);</code><br> -->
 
-  <h5>Example 2: dividing each new Groebner basis element by the maximal possible monomial</h5>
+<!--   <h5>Example 2: dividing each new Groebner basis element by the maximal possible monomial</h5> -->
 
-  <p>When computing a Groebner basis with the goal of saturating the ideal with respect to all variables, one my divide any basis element by the maximal possible monomial that divides it. This effectively enlarges the ideal, but not beyond the full saturation.</p>
+<!--   <p>When computing a Groebner basis with the goal of saturating the ideal with respect to all variables, one my divide any basis element by the maximal possible monomial that divides it. This effectively enlarges the ideal, but not beyond the full saturation.</p> -->
 
-  <p>Doing so, the basis elements become simpler and of lower degree, which is favourable for reductions with respect to them and which can lead to significant speedups. As a drawback, this potentially breaks any Hilbert driven strategy.</p>
+<!--   <p>Doing so, the basis elements become simpler and of lower degree, which is favourable for reductions with respect to them and which can lead to significant speedups. As a drawback, this potentially breaks any Hilbert driven strategy.</p> -->
 
 
-  <code>ring r = 0,(x,y,z),dp;</code><br>
-  <code>ideal I = intersect(ideal(x+y,y+z),ideal(z5));</code><br>
-  <code>std(I);</code><br>
-  <code>satstd(I);</code><br>
+<!--   <code>ring r = 0,(x,y,z),dp;</code><br> -->
+<!--   <code>ideal I = intersect(ideal(x+y,y+z),ideal(z5));</code><br> -->
+<!--   <code>std(I);</code><br> -->
+<!--   <code>satstd(I);</code><br> -->
 
-  <h5>Example 3: abort Groebner basis computation when new Groebner basis element has monomial initial form</h5>
+<!--   <h5>Example 3: abort Groebner basis computation when new Groebner basis element has monomial initial form</h5> -->
 
-  <p>If you want to check a specific weight vector for containment in the tropical variety, you need to calculate whether its initial form contains a monomial ideal. Determining the initial ideal requires a Groebner basis computation, which might take long depending on the difficulty of the ideal. </p>
+<!--   <p>If you want to check a specific weight vector for containment in the tropical variety, you need to calculate whether its initial form contains a monomial ideal. Determining the initial ideal requires a Groebner basis computation, which might take long depending on the difficulty of the ideal. </p> -->
 
-  <p>However, if we encounter a basis element whose initial form is a monomial during the computation, it is clear that we have an answer to our problem and may abort the computation.</p>
+<!--   <p>However, if we encounter a basis element whose initial form is a monomial during the computation, it is clear that we have an answer to our problem and may abort the computation.</p> -->
 
-  <p>The following ideal is an example of an ideal, whose (restricted) Groebner fan is not the normal fan of a polytope (see: Anders Jensen, A non-regular Groebner fan, Discrete Comput. Geom. 37 (2007)):</p>
+<!--   <p>The following ideal is an example of an ideal, whose (restricted) Groebner fan is not the normal fan of a polytope (see: Anders Jensen, A non-regular Groebner fan, Discrete Comput. Geom. 37 (2007)):</p> -->
 
-  <code>ring r0 = 0,(a,b,c,d),wp(2,6,4,1);</code><br>
-  <code>ideal I = acd+a2c-ab,ad2-c,ad4+ac;</code><br>
-  <code>satstd(I);</code><br>
-  <code>satstdWithInitialCheck(I);</code><br>
+<!--   <code>ring r0 = 0,(a,b,c,d),wp(2,6,4,1);</code><br> -->
+<!--   <code>ideal I = acd+a2c-ab,ad2-c,ad4+ac;</code><br> -->
+<!--   <code>satstd(I);</code><br> -->
+<!--   <code>satstdWithInitialCheck(I);</code><br> -->
 
-  <code>ring r1 = 0,(a,b,c,d),wp(2,1,2,2);</code><br>
-  <code>ideal I = fetch(r0,I);</code><br>
-  <code>satstdWithInitialCheck(I);</code><br>
+<!--   <code>ring r1 = 0,(a,b,c,d),wp(2,1,2,2);</code><br> -->
+<!--   <code>ideal I = fetch(r0,I);</code><br> -->
+<!--   <code>satstdWithInitialCheck(I);</code><br> -->
 
-  <code>ring r2 = 0,(a,b,c,d),wp(4,1,2,5);</code><br>
-  <code>ideal I = acd+a2c-ab,ad2-c,ad4+ac;</code><br>
-  <code>satstdWithInitialCheck(I);</code><br>
+<!--   <code>ring r2 = 0,(a,b,c,d),wp(4,1,2,5);</code><br> -->
+<!--   <code>ideal I = acd+a2c-ab,ad2-c,ad4+ac;</code><br> -->
+<!--   <code>satstdWithInitialCheck(I);</code><br> -->
 
-  <p>The three weight vectors above generate the three rays of the tropical variety of I, notice how they sum up to a multiple of (1,1,1,1), satisfying the balancing condition.</p>
+<!--   <p>The three weight vectors above generate the three rays of the tropical variety of I, notice how they sum up to a multiple of (1,1,1,1), satisfying the balancing condition.</p> -->
 
-</div>
+<!-- </div> -->
 
 </body>
 </html>

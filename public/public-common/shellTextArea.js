@@ -160,6 +160,14 @@ var shellObject = function (shellArea, historyArea, shellFunctions) {
         if (msgDirty == unicodeBell) {
             return;
         }
+        // If we get a 'Session resumed.' message, we check whether it is
+        // relevant.
+        if(msgDirty.indexOf('Session resumed.') > -1){
+            if(mathProgramOutput.length > 0){
+                return;
+            }
+        }
+        // If we received a backspace.
         if(msgDirty == "\b \b"){
             backspace();
             return;

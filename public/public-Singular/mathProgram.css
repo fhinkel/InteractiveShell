@@ -30,10 +30,10 @@ body {
     background-color: #0072AD; /*#D8FFFF;*/
     font-family: Helvetica; /*Trebuche, Lucida Grande, Palatino Georgia,Helvetica;*/
     height: 96%;
-   background: -webkit-radial-gradient(farthest-side at 10% 10%, mintcream 30%, #0072AD 60%); /* Safari 5.1-6.0 */
-   background: -o-radial-gradient(farthest-side at 10% 10%, mintcream 30%, #0072AD 60%); /* For Opera 11.6-12.0 */
-   background: -moz-radial-gradient(farthest-side at 10% 10%, mintcream 30%, #0072AD 60%); /* For Firefox 3.6-15 */
-   background: radial-gradient(farthest-side at 10% 10%, mintcream 30%, #0072AD 60%); /* Standard syntax */
+   background: -webkit-radial-gradient(farthest-side at 10% 10%, mintcream 30%, #C8C8C8 60%); /* Safari 5.1-6.0 */
+   background: -o-radial-gradient(farthest-side at 10% 10%, mintcream 30%, #C8C8C8 60%); /* For Opera 11.6-12.0 */
+   background: -moz-radial-gradient(farthest-side at 10% 10%, mintcream 30%, #C8C8C8 60%); /* For Firefox 3.6-15 */
+   background: radial-gradient(farthest-side at 10% 10%, mintcream 30%, #C8C8C8 60%); /* Standard syntax */
 }
 
 .halfWidth {

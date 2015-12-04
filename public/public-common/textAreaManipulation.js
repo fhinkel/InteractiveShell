@@ -1,11 +1,11 @@
 
-downloadTextArea = function(textarea, title){
+downloadTextArea = function(textarea, title, filename){
     var msg = textarea.val();
     console.log("Download textarea: " + msg);
     var msgAsHref = 'data:application/octet-stream,' + encodeURIComponent(msg);
     var tmpAnchor = $("<a>");
     tmpAnchor.attr('href', msgAsHref);
-    tmpAnchor.attr('download', textarea.attr("id") + ".txt");
+    tmpAnchor.attr('download', filename + ".txt");
     tmpAnchor.text(title);
     return tmpAnchor;
 };

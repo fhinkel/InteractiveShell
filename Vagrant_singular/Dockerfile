@@ -89,6 +89,7 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
+RUN echo "UseDNS no" >> /etc/ssh/sshd_config
 
 # copy open
 # COPY open /usr/bin/open

@@ -32,7 +32,7 @@ Singular online<html>
   <code>intmat N[size(f)][4];</code><br>
   <code>for (int i=1; i<=size(f); i++)</code><br>
   <code>{</code><br>
-  <code>  N[i][2..4] = M[i,1..3];</code><br>
+  <code>  N[i,2..4] = M[i,1..3];</code><br>
   <code>}</code><br>
   <code>print(N);</code><br>
   <code>cone delta = coneViaPoints(N);</code><br>

@@ -61,12 +61,13 @@ WORKDIR /build
 ENV LD_LIBRARY_PATH $LIBRARY_PATH:/usr/local/lib
 RUN git clone https://github.com/Singular/Sources.git singular_sources
 WORKDIR /build/singular_sources
-RUN ./autogen.sh;\
+RUN export PATH=$PATH:/usr/local/lib; \
+    ./autogen.sh;\
     ./configure CXXFLAGS=-fopenmp --enable-gfanlib --enable-polymake;\
     make -j7;\
     make install;\
     Singular -v
-
+RUN ldconfig
 
 # Userland
 WORKDIR /

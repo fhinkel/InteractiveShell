@@ -1,3 +1,13 @@
+2015-12-04
+* Provide a https version for M2 as well.
+* Rename the tryM2's in mathProgram.js
+* Clean out code.
+* Redesign Singular page.
+* Merge branches singular and master to one branch. Delete singular branch.
+* Sites for mobile devices
+* App?
+
+
 2015-10-25
 * Meeting in late April maybe?
 

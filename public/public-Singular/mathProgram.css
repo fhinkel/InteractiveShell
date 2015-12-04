@@ -234,7 +234,14 @@ ul {
     float: right;
     margin: 10px;
     border-radius: 5px;
+    text-align: center;
 }
 
+.image-in-image-text-wrap {
+    border-radius: 5px;
+}
 
+.imgcontainer {
+    min-height: 280px;
+}
 

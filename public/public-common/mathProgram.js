@@ -320,9 +320,9 @@ trym2.saveInteractions = function() {
     var input = $("#M2In");
     var output = $("#M2Out");
     var inputParagraph = $("<p>");
-    inputParagraph.append(trym2.downloadTextArea(input, "Content of input window"));
+    inputParagraph.append(trym2.downloadTextArea(input, "Content of input window", mathProgramName + "In"));
     var outputParagraph = $("<p>");
-    outputParagraph.append(trym2.downloadTextArea(output, "Content of terminal"));
+    outputParagraph.append(trym2.downloadTextArea(output, "Content of terminal", mathProgramName + "Out"));
     $("<div></div>").append(inputParagraph)
         .append(outputParagraph)
         .append("<span autofocus='autofocus'></span>")

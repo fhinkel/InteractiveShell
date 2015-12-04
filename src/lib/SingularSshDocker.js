@@ -25,7 +25,7 @@ GLOBAL.OPTIONS = require('./default.js').get_config({
     guestInstance: {
         host: 'localhost',
         username: 'singularUser',
-        port: '5000',
+        port: '16000',
         sshKey: "/home/power/InteractiveShell/Vagrant_singular/id_rsa",
         containerName: 'singularContainer',
         lastActiveTime: 0

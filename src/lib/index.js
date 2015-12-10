@@ -290,7 +290,11 @@ var MathServer = function () {
             socket.on('input', socketInputAction(clientId));
             socket.on('reset', socketResetAction(clientId));
         });
-        return http.listen(options.port);
+
+        var listener = http.listen(options.port);
+        console.log("Server runnign on " + listener.address().port);
+        return listener;
+
     };
 
     var writeMsgOnStream = function (clientId, msg) {

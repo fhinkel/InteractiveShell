@@ -1,3 +1,7 @@
+2016-01-07
+* Computeralgebra Rundbrief
+* It takes some time for the Docker container to start. We should always have one ready, i.e. start it before the client connects.
+
 2015-12-04
 * Provide a https version for M2 as well.
 * Rename the tryM2's in mathProgram.js

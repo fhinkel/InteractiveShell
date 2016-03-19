@@ -1,8 +1,8 @@
-var tutorialFunctions = function(loadTutorialMenu, makeAccordion, tutorials){
+var tutorialFunctions = function (makeAccordion, tutorials){
     
-    insertDeleteButtonAtLastTutorial = function() {
-       var lastTitle = loadTutorialMenu.prev().prev();
-       var lastDiv = loadTutorialMenu.prev();
+     var insertDeleteButtonAtLastTutorial = function(tutorialMenu) {
+       var lastTitle = tutorialMenu.prev().prev();
+       var lastDiv = tutorialMenu.prev();
        var deleteButton = $("<span>");
        deleteButton.addClass("close-icon ui-icon ui-icon-close");
        lastTitle.prepend(deleteButton);

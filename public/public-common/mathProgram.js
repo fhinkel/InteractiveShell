@@ -359,13 +359,13 @@ trym2.uploadTutorial = function() {
 
         var lessons = newTutorial.lessons;
         trym2.appendTutorialToAccordion(title, lessons, lastIndex);
-        trym2.insertDeleteButtonAtLastTutorial();
+        trym2.insertDeleteButtonAtLastTutorial($("#loadTutorialMenu"));
     };
     return false;
 };
 
 
-var tf = tutorialFunctions($("#loadTutorialMenu"),trym2.makeAccordion, trym2.tutorials);
+var tf = tutorialFunctions(trym2.makeAccordion, trym2.tutorials);
 trym2.insertDeleteButtonAtLastTutorial = tf.insertDeleteButtonAtLastTutorial;
 trym2.importTutorials = tf.importTutorials;
 trym2.populateTutorialElement = tf.populateTutorialElement;

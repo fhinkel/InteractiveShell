@@ -1,3 +1,17 @@
+
+2016-03-19
+Plan for action
+- clean up old branches (one branch to rule them all)
+- nicer frontend
+- extract shell into npm module
+- mobile site, what keyboard strategy is good? Maybe only show right-hand side?
+- ssl encrypten
+- Tests? 
+- Update node and dependencies
+- Are our Docker containers safe enough?
+- bug when restarting your browser?
+- rule the world
+
 2016-01-07
 * Computeralgebra Rundbrief
 * It takes some time for the Docker container to start. We should always have one ready, i.e. start it before the client connects.

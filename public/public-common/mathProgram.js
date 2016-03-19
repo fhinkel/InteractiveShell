@@ -449,11 +449,8 @@ $(document).ready(function() {
         postMessage: trym2.postMessage,
         interrupt: function(){trym2.postMessage(ctrlc, true)}
     };
-
-    //$.getScript("shellTextArea.js", function(){
-        //alert("Script loaded and executed.");
-        shellObject($("#M2Out"), $("#M2In"), shellFunctions);
-    //});
+    
+    shellObject($("#M2Out"), $("#M2In"), shellFunctions);
 
     $("#navigation").children("input").attr("name", "navbutton");
     $("#navigation").buttonset();

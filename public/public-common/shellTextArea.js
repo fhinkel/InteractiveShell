@@ -2,6 +2,7 @@
 //  i.e., command history, taking input and replacing it with output from server
 var shellObject = function (shellArea, historyArea, shellFunctions) {
     var keys = {
+        // The keys 37, 38, 39 and 40 are the arrow keys.
         arrowUp: 38,
         arrowDown: 40,
         arrowLeft: 37,
@@ -33,7 +34,6 @@ var shellObject = function (shellArea, historyArea, shellFunctions) {
             var input = msg.split("\n");
             for (var line in input) {
                 if (input[line].length > 0) {
-                    // console.log("Line: " + input[line]);
                     cmdHistory.index = cmdHistory.push(input[line]);
                 }
             }
@@ -115,7 +115,6 @@ var shellObject = function (shellArea, historyArea, shellFunctions) {
 
     // If something is entered, change to end of textarea, if at wrong position.
     shell.keydown(function (e) {
-        // The keys 37, 38, 39 and 40 are the arrow keys.
         if (e.keyCode == keys.enter) {
             setCaretPosition(shell, shell.val().length);
         }

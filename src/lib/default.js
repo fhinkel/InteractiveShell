@@ -54,7 +54,6 @@ var configuration = function (overrideOptions){
                 } else {
                     defaultOptions[opt] = overrideOptions[opt];
                 }
-                //logExceptOnTest("server option: " + opt + " set to " + defaultOptions[opt]);
             } else {
                 defaultOptions[opt] = overrideOptions[opt];
             }

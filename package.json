@@ -33,16 +33,16 @@
     "winston": "0.8.3"
   },
   "scripts": {
-    "start": "node src/lib/Macaulay2SudoDocker.js",
+    "start": "webpack ./public-source/mathProgram.js public/public-common/mathProgram.js; node src/lib/Macaulay2SudoDocker.js",
     "basic": "webpack ./public-source/mathProgram.js public/public-common/mathProgram.js; node src/lib/Macaulay2LocalServer.js",
-    "ssh": "node src/lib/Macaulay2SshDocker.js",
+    "ssh": "webpack ./public-source/mathProgram.js public/public-common/mathProgram.js; node src/lib/Macaulay2SshDocker.js",
     "test": "mocha src/tests/ --reporter spec --timeout 6000",
     "stop": "kill `ps ax | grep Server | grep -v monitor | grep node | awk '{print $1}'`",
-    "forever": "./node_modules/forever/bin/forever start -l /home/vagrant/webm2.logs/forever.log -o /home/vagrant/webm2.logs/out.log -e /home/vagrant/webm2.logs/err.log --append src/lib/Macaulay2SshDocker.js",
-    "start_singular": "node src/lib/SingularSudoDocker.js",
-    "basic_singular": "node src/lib/SingularLocalServer.js",
-    "ssh_singular": "node src/lib/SingularSshDocker.js",
-    "forever_singular": "./node_modules/forever/bin/forever start -l /home/user/logs/forever.log -o /home/user/logs/out.log -e /home/user/logs/err.log --append src/lib/SingularSshDocker.js"
+    "forever": "webpack ./public-source/mathProgram.js public/public-common/mathProgram.js; ./node_modules/forever/bin/forever start -l /home/vagrant/webm2.logs/forever.log -o /home/vagrant/webm2.logs/out.log -e /home/vagrant/webm2.logs/err.log --append src/lib/Macaulay2SshDocker.js",
+    "start_singular": "webpack ./public-source/mathProgram.js public/public-common/mathProgram.js; node src/lib/SingularSudoDocker.js",
+    "basic_singular": "webpack ./public-source/mathProgram.js public/public-common/mathProgram.js; node src/lib/SingularLocalServer.js",
+    "ssh_singular": "webpack ./public-source/mathProgram.js public/public-common/mathProgram.js; node src/lib/SingularSshDocker.js",
+    "forever_singular": "webpack ./public-source/mathProgram.js public/public-common/mathProgram.js; ./node_modules/forever/bin/forever start -l /home/user/logs/forever.log -o /home/user/logs/out.log -e /home/user/logs/err.log --append src/lib/SingularSshDocker.js"
   },
   "repository": {
     "type": "git",

@@ -445,8 +445,8 @@ $(document).ready(function() {
     
     var shellFunctions = {
         setCaretPosition: trym2.setCaretPosition,
-        scrollDown: trym2.scrollDown,
         postMessage: trym2.postMessage,
+        scrollDown: trym2.scrollDown,
         interrupt: function(){trym2.postMessage(ctrlc, true)}
     };
     

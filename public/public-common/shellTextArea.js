@@ -15,11 +15,12 @@ var shellObject = function (shellArea, historyArea, shellFunctions) {
     };
 
     var unicodeBell = '\u0007';
+
     var setCaretPosition = shellFunctions['setCaretPosition'];
     var postMessage = shellFunctions['postMessage'];
     var scrollDown = shellFunctions['scrollDown'];
     var interrupt = shellFunctions['interrupt'];
-    var tabPress = shellFunctions['tabPress'];
+
     var mathProgramOutput = "";
     var shell = shellArea;
     var history = historyArea;

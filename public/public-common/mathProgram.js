@@ -350,7 +350,7 @@ trym2.uploadTutorial = function() {
     // Closure to capture the file information.
     reader.onload = function(event) {
         var resultHtml = event.target.result;
-        console.log(resultHtml);
+        //console.log(resultHtml);
         trym2.tutorials.push(trym2.populateTutorialElement(resultHtml));
         var lastIndex = trym2.tutorials.length - 1;
         var newTutorial = trym2.tutorials[lastIndex];

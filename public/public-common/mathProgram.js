@@ -44,7 +44,7 @@ trym2.navBar = function () {
 
     var Tab = function(elements, btn, showFunction) {
         this.elements = elements;
-        this.btn = btn,
+        this.btn = btn;
         this.show = showFunction;
     };
 
@@ -384,7 +384,6 @@ $(document).ready(function() {
 
     trym2.socket.on('result', function(msg) {
         if (msg !== "") {
-            // console.log("The result from the server is " + msg);
             $("#M2Out").trigger("onmessage", msg);
         }
     });
@@ -411,7 +410,7 @@ $(document).ready(function() {
         } else {
             trym2.socket.oldEmit(event, msg);
         }
-    }
+    };
 
     trym2.socket.on('image', function(imageUrl) {
         if (imageUrl) {
@@ -449,7 +448,7 @@ $(document).ready(function() {
         scrollDown: trym2.scrollDown,
         postMessage: trym2.postMessage,
         interrupt: function(){trym2.postMessage(ctrlc, true)}
-    }
+    };
 
     //$.getScript("shellTextArea.js", function(){
         //alert("Script loaded and executed.");

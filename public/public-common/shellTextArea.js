@@ -23,12 +23,11 @@ var shellObject = function (shellArea, historyArea, shellFunctions) {
     var mathProgramOutput = "";
     var shell = shellArea;
     var history = historyArea;
-    var cmdHistory = []; // History of M2 commands for shell-like arrow navigation
+    var cmdHistory = []; // History of commands for shell-like arrow navigation
     cmdHistory.index = 0;
 
 
     shell.on("track", function (e, msg) { // add command to history
-        //console.log("Tracking message: " + msg);
         if (typeof msg != 'undefined') {
             var input = msg.split("\n");
             for (var line in input) {
@@ -68,7 +67,7 @@ var shellObject = function (shellArea, historyArea, shellFunctions) {
         if (e.keyCode == keys.enter) { // Return
             // We trigger the track manually, since we might have used tab.
             shell.trigger('track', getCurrentCommand());
-            // Disable traking of posted message.
+            // Disable tracking of posted message.
             packageAndSendMessage('', true);
         }
     });
@@ -86,7 +85,6 @@ var shellObject = function (shellArea, historyArea, shellFunctions) {
         } else {
             console.log("There must be an error.");
             // We don't want empty lines send to M2 at pressing return twice.
-            //e.preventDefault();
         }
     };
 
@@ -116,7 +114,6 @@ var shellObject = function (shellArea, historyArea, shellFunctions) {
 
     // If something is entered, change to end of textarea, if at wrong position.
     shell.keydown(function (e) {
-        // console.log("Got keydown: " + e.keyCode);
         // The keys 37, 38, 39 and 40 are the arrow keys.
         if (e.keyCode == keys.enter) {
             setCaretPosition(shell, shell.val().length);
@@ -156,7 +153,6 @@ var shellObject = function (shellArea, historyArea, shellFunctions) {
     });
 
     shell.on("onmessage", function (e, msgDirty) {
-        // console.log("Dirty JSON message: " + JSON.stringify(msgDirty));
         if (msgDirty == unicodeBell) {
             return;
         }
@@ -194,10 +190,9 @@ var shellObject = function (shellArea, historyArea, shellFunctions) {
         mathProgramOutput = before;
         shell.val(before + after);
         scrollDown(shell);
-    }
+    };
 
     shell.on("reset", function(e){
-       //console.log("Received reset event.");
        shell.val(mathProgramOutput);
     });
 };

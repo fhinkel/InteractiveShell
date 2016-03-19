@@ -292,7 +292,7 @@ var MathServer = function () {
         });
 
         var listener = http.listen(options.port);
-        console.log("Server runnign on " + listener.address().port);
+        console.log("Server running on " + listener.address().port);
         return listener;
 
     };

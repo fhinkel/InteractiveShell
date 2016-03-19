@@ -1,3 +1,7 @@
+2016-03-19
+* UI: Make tabs on left side visible
+* extract frontend shell part as module
+
 
 2016-03-19
 Plan for action

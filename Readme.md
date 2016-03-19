@@ -100,6 +100,8 @@ npm run-script basic
 This gives you an (unsecured!) Macaulay2 terminal emulator at [http://localhost:8002](http://localhost:8002).
 That means users can access and modify your private data through Macaulay2's `get` command. Make sure you do not
 allow web access to your machine to other users on the same network, i.e., make sure your laptop's firewall is on.
+The port may be different, check the console output where you started the server for
+ `Server runnign on [port]`.
 
 ### Scaling Up (Advanced)
 

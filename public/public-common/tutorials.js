@@ -72,6 +72,6 @@ var tutorialFunctions = function (makeAccordion, tutorials){
     return {
         insertDeleteButtonAtLastTutorial: insertDeleteButtonAtLastTutorial,
         importTutorials: importTutorials,
-        populateTutorialElement: populateTutorialElement,
+        populateTutorialElement: populateTutorialElement
     }
-}
+};

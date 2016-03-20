@@ -376,7 +376,6 @@ trym2.importTutorials = tf.importTutorials;
 trym2.populateTutorialElement = tf.populateTutorialElement;
 $(document).ready(function() {
 
-    trym2.scrollDown = require('scroll-down');
     trym2.getSelected = getSelected;
     trym2.setCaretPosition = setCaretPosition;
 
@@ -528,7 +527,7 @@ $(document).ready(function() {
         var code = $(this).text();
         code = code + "\n";
         $("#M2In").val($("#M2In").val() + code);
-        trym2.scrollDown($("#M2In"));
+        require('scroll-down')($("#M2In"));
         trym2.postMessage(code);
     });
 
@@ -539,7 +538,7 @@ $(document).ready(function() {
         var code = $(this).text();
         code = code + "\n";
         $("#M2In").val($("#M2In").val() + code);
-        trym2.scrollDown($("#M2In"));
+        require('scroll-down')($("#M2In"));
         trym2.postMessage(code);
     });
 

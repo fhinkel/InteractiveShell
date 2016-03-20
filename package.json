@@ -25,7 +25,7 @@
     "forever": "0.14.1",
     "serve-favicon": "2.1.7",
     "serve-static": "1.7.2",
-    "socket.io": "1.2.1",
+    "socket.io": "1.4.5",
     "socket.io-cookie": "0.0.1",
     "socketio-file-upload": "0.2.7",
     "ssh2": "0.4.6",

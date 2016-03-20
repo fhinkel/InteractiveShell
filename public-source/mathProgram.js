@@ -376,7 +376,7 @@ trym2.importTutorials = tf.importTutorials;
 trym2.populateTutorialElement = tf.populateTutorialElement;
 $(document).ready(function() {
 
-    trym2.scrollDown = scrollDown;
+    trym2.scrollDown = require('scroll-down');
     trym2.getSelected = getSelected;
     trym2.setCaretPosition = setCaretPosition;
 
@@ -448,7 +448,6 @@ $(document).ready(function() {
     var shellFunctions = {
         setCaretPosition: trym2.setCaretPosition,
         postMessage: trym2.postMessage,
-        scrollDown: trym2.scrollDown,
         interrupt: function(){trym2.postMessage(ctrlc, true)}
     };
     shellTextArea.create($("#M2Out"), $("#M2In"), shellFunctions);

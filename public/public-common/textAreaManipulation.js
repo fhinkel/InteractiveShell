@@ -10,12 +10,6 @@ downloadTextArea = function(textarea, title, filename){
     return tmpAnchor;
 };
 
-scrollDown = function(area) {
-    area.scrollTop(area[0].scrollHeight);
-    return false;
-    // Return false to cancel the default link action
-};
-
 /* get selected text, or current line, in the textarea #M2In */
 getSelected = function(inputField) {
     var str = $(inputField).val(),

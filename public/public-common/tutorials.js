@@ -73,5 +73,5 @@ var tutorialFunctions = function (makeAccordion, tutorials){
         insertDeleteButtonAtLastTutorial: insertDeleteButtonAtLastTutorial,
         importTutorials: importTutorials,
         populateTutorialElement: populateTutorialElement
-    }
+    };
 };

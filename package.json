@@ -23,10 +23,11 @@
     "express": "4.13.3",
     "express-winston": "0.2.9",
     "forever": "0.14.1",
+    "scroll-down": "2.0.0",
     "serve-favicon": "2.1.7",
     "serve-static": "1.7.2",
+    "shell-emulator": "1.0.1",
     "socket.io": "1.4.5",
-    "shell-emulator": "1.0.0",
     "socket.io-cookie": "0.0.1",
     "socketio-file-upload": "0.2.7",
     "ssh2": "0.4.6",
@@ -44,6 +45,7 @@
     "forever_singular": "webpack && ./node_modules/forever/bin/forever start -l /home/user/logs/forever.log -o /home/user/logs/out.log -e /home/user/logs/err.log --append src/lib/SingularSshDocker.js",
 
     "stop": "kill `ps ax | grep Server | grep -v monitor | grep node | awk '{print $1}'`",
+
     "test": "mocha src/tests/ --reporter spec --timeout 6000"
   },
   "repository": {

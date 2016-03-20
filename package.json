@@ -26,22 +26,25 @@
     "serve-favicon": "2.1.7",
     "serve-static": "1.7.2",
     "socket.io": "1.4.5",
+    "shell-emulator": "1.0.0",
     "socket.io-cookie": "0.0.1",
     "socketio-file-upload": "0.2.7",
     "ssh2": "0.4.6",
     "winston": "0.8.3"
   },
   "scripts": {
-    "start": "node src/lib/Macaulay2SudoDocker.js",
-    "basic": "node src/lib/Macaulay2LocalServer.js",
-    "ssh": "node src/lib/Macaulay2SshDocker.js",
-    "test": "mocha src/tests/ --reporter spec --timeout 6000",
+    "start": "webpack && node src/lib/Macaulay2SudoDocker.js",
+    "basic": "webpack && node src/lib/Macaulay2LocalServer.js",
+    "ssh": "webpack && node src/lib/Macaulay2SshDocker.js",
+    "forever": "webpack && ./node_modules/forever/bin/forever start -l /home/vagrant/webm2.logs/forever.log -o /home/vagrant/webm2.logs/out.log -e /home/vagrant/webm2.logs/err.log --append src/lib/Macaulay2SshDocker.js",
+
+    "start_singular": "webpack && node src/lib/SingularSudoDocker.js",
+    "basic_singular": "webpack && node src/lib/SingularLocalServer.js",
+    "ssh_singular": "webpack && node src/lib/SingularSshDocker.js",
+    "forever_singular": "webpack && ./node_modules/forever/bin/forever start -l /home/user/logs/forever.log -o /home/user/logs/out.log -e /home/user/logs/err.log --append src/lib/SingularSshDocker.js",
+
     "stop": "kill `ps ax | grep Server | grep -v monitor | grep node | awk '{print $1}'`",
-    "forever": "./node_modules/forever/bin/forever start -l /home/vagrant/webm2.logs/forever.log -o /home/vagrant/webm2.logs/out.log -e /home/vagrant/webm2.logs/err.log --append src/lib/Macaulay2SshDocker.js",
-    "start_singular": "node src/lib/SingularSudoDocker.js",
-    "basic_singular": "node src/lib/SingularLocalServer.js",
-    "ssh_singular": "node src/lib/SingularSshDocker.js",
-    "forever_singular": "./node_modules/forever/bin/forever start -l /home/user/logs/forever.log -o /home/user/logs/out.log -e /home/user/logs/err.log --append src/lib/SingularSshDocker.js"
+    "test": "mocha src/tests/ --reporter spec --timeout 6000"
   },
   "repository": {
     "type": "git",
@@ -52,6 +55,7 @@
     "mocha": "2.1.0",
     "rewire": "2.3.1",
     "sinon": "1.14.1",
-    "supertest": "0.15.0"
+    "supertest": "0.15.0",
+    "webpack": "1.12.14"
   }
 }

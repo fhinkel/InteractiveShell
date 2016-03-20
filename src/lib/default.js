@@ -6,7 +6,8 @@ var configuration = function (overrideOptions){
             CONTAINERS: './LocalContainerManager.js',
             MATH_PROGRAM: "Macaulay2",
             MATH_PROGRAM_COMMAND: 'M2',
-            resumeString: ''
+            resumeString: '',
+            port: '8002'
         },
         container_config: {
             sshdCmd: "/usr/sbin/sshd -D",
@@ -53,7 +54,6 @@ var configuration = function (overrideOptions){
                 } else {
                     defaultOptions[opt] = overrideOptions[opt];
                 }
-                //logExceptOnTest("server option: " + opt + " set to " + defaultOptions[opt]);
             } else {
                 defaultOptions[opt] = overrideOptions[opt];
             }

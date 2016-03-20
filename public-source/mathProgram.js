@@ -13,6 +13,7 @@ var trym2 = {
 var ctrlc = "\x03";
 
 
+var shellTextArea = require('shell-emulator');
 
 
 
@@ -44,7 +45,7 @@ trym2.navBar = function () {
 
     var Tab = function(elements, btn, showFunction) {
         this.elements = elements;
-        this.btn = btn,
+        this.btn = btn;
         this.show = showFunction;
     };
 
@@ -124,7 +125,7 @@ trym2.appendTutorialToAccordion = function(title, lessons, index) {
         content = content +
             '<li><a href="#" class="submenuItem" tutorialid=' + index +
             ' lessonid=' + j + '>  ' + lessons[j].title + '</a></li>';
-    };
+    }
     content = content + '</ul>';
     if (index > 0) {
         div.append(content).addClass(
@@ -250,9 +251,9 @@ trym2.loadLesson = function(tutorialid, lessonid ) {
     if (lessonid >= 0 && lessonid < this.tutorials[this.tutorialNr].lessons.length) {
         this.lessonNr = lessonid;
     }
+
     var lessonContent = this.tutorials[this.tutorialNr].lessons[this.lessonNr]
         .html;
-
     if (changedLesson) {
         console.log("Lesson changed");
         var title = this.tutorials[this.tutorialNr].title.text();
@@ -285,6 +286,7 @@ trym2.postMessage = function(msg, notrack) {
     console.log("Posting msg " + msg);
     trym2.socket.emit('input', msg);
     if(!notrack){
+// Closure to capture the file information.
         $("#M2Out").trigger("track", msg);
         console.log("Tracking.");
     }
@@ -345,18 +347,17 @@ trym2.uploadTutorial = function() {
     console.log("Process file for tutorial upload:" + fileName);
 
     var reader = new FileReader();
-    reader.readAsText(file);
 
-    // Closure to capture the file information.
+    reader.readAsText(file);
     reader.onload = function(event) {
         var resultHtml = event.target.result;
-        //console.log(resultHtml);
+        console.log(resultHtml);
         trym2.tutorials.push(trym2.populateTutorialElement(resultHtml));
         var lastIndex = trym2.tutorials.length - 1;
         var newTutorial = trym2.tutorials[lastIndex];
+
         var title = newTutorial.title; //this is an <h3>
         console.log("new title: " + title.html());
-
         var lessons = newTutorial.lessons;
         trym2.appendTutorialToAccordion(title, lessons, lastIndex);
         trym2.insertDeleteButtonAtLastTutorial($("#loadTutorialMenu"));
@@ -368,50 +369,50 @@ trym2.uploadTutorial = function() {
 var tf = tutorialFunctions(trym2.makeAccordion, trym2.tutorials);
 trym2.insertDeleteButtonAtLastTutorial = tf.insertDeleteButtonAtLastTutorial;
 trym2.importTutorials = tf.importTutorials;
+
+
+
+
 trym2.populateTutorialElement = tf.populateTutorialElement;
-
-
-
-
 $(document).ready(function() {
 
     trym2.scrollDown = scrollDown;
     trym2.getSelected = getSelected;
     trym2.setCaretPosition = setCaretPosition;
+
     trym2.downloadTextArea = downloadTextArea;
 
     trym2.socket = io();
 
+
     trym2.socket.on('result', function(msg) {
         if (msg !== "") {
-            // console.log("The result from the server is " + msg);
             $("#M2Out").trigger("onmessage", msg);
         }
     });
-    
 
     trym2.socket.on('serverDisconnect', function(msg) {
         console.log("We got disconnected. " + msg);
         $("#M2Out").trigger("onmessage", " Sorry, your session was disconnected by the server.\n\n");
         trym2.serverDisconnect = true;
     });
-
     trym2.socket.oldEmit = trym2.socket.emit;
     trym2.socket.emit = function(event, msg){
         if(trym2.serverDisconnect){
             var events = ['reset', 'input'];
             console.log("We are disconnected.");
             if(events.indexOf(event) != -1){
+                // console.log("Will not reconnect for " + event);
                 trym2.socket.connect();
                 trym2.serverDisconnect = false;
                 trym2.socket.oldEmit(event, msg);
             } else {
-                // console.log("Will not reconnect for " + event);
             }
         } else {
             trym2.socket.oldEmit(event, msg);
         }
-    }
+    };
+
 
     trym2.socket.on('image', function(imageUrl) {
         if (imageUrl) {
@@ -443,18 +444,14 @@ $(document).ready(function() {
 
     // Init procedures for right hand side.
     $("#M2Out").val("");
-    
+
     var shellFunctions = {
         setCaretPosition: trym2.setCaretPosition,
-        scrollDown: trym2.scrollDown,
         postMessage: trym2.postMessage,
+        scrollDown: trym2.scrollDown,
         interrupt: function(){trym2.postMessage(ctrlc, true)}
-    }
-
-    //$.getScript("shellTextArea.js", function(){
-        //alert("Script loaded and executed.");
-        shellObject($("#M2Out"), $("#M2In"), shellFunctions);
-    //});
+    };
+    shellTextArea.create($("#M2Out"), $("#M2In"), shellFunctions);
 
     $("#navigation").children("input").attr("name", "navbutton");
     $("#navigation").buttonset();

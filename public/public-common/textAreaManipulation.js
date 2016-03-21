@@ -1,13 +1,19 @@
-
+// create link to download content from textarea as file
 downloadTextArea = function(textarea, title, filename){
     var msg = textarea.val();
-    console.log("Download textarea: " + msg);
-    var msgAsHref = 'data:application/octet-stream,' + encodeURIComponent(msg);
-    var tmpAnchor = $("<a>");
-    tmpAnchor.attr('href', msgAsHref);
-    tmpAnchor.attr('download', filename + ".txt");
-    tmpAnchor.text(title);
-    return tmpAnchor;
+    //console.log("Download textarea: " + msg);
+    var anchor = downloadTextAsFile(msg, filename);
+    anchor.text(title);
+    return anchor;
+};
+
+// create link to download text as file
+downloadTextAsFile = function(text, filename) {
+    var link = 'data:application/octet-stream,' + encodeURIComponent(text);
+    var anchor = $("<a>");
+    anchor.attr('href', link);
+    anchor.attr('download', filename + ".txt");
+    return anchor;
 };
 
 /* get selected text, or current line, in the textarea #M2In */

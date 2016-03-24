@@ -318,7 +318,7 @@ trym2.saveInteractions = function () {
     var input = $("#M2In");
     var output = $("#M2Out");
     var inputParagraph = $("<p>");
-    var downloadLink = require('../../npm/create-download-link');
+    var downloadLink = require('create-download-link');
     inputParagraph.append(downloadLink({
         data: input.val(),
         title: "Content of input window",

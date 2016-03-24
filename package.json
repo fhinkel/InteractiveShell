@@ -20,6 +20,7 @@
     "async": "0.9.0",
     "chai": "2.2.0",
     "cookies": "0.5.0",
+    "create-download-link": "1.0.0",
     "express": "4.13.3",
     "express-winston": "0.2.9",
     "forever": "0.14.1",
@@ -38,14 +39,11 @@
     "basic": "webpack && node src/lib/Macaulay2LocalServer.js",
     "ssh": "webpack && node src/lib/Macaulay2SshDocker.js",
     "forever": "webpack && ./node_modules/forever/bin/forever start -l /home/vagrant/webm2.logs/forever.log -o /home/vagrant/webm2.logs/out.log -e /home/vagrant/webm2.logs/err.log --append src/lib/Macaulay2SshDocker.js",
-
     "start_singular": "webpack && node src/lib/SingularSudoDocker.js",
     "basic_singular": "webpack && node src/lib/SingularLocalServer.js",
     "ssh_singular": "webpack && node src/lib/SingularSshDocker.js",
     "forever_singular": "webpack && ./node_modules/forever/bin/forever start -l /home/user/logs/forever.log -o /home/user/logs/out.log -e /home/user/logs/err.log --append src/lib/SingularSshDocker.js",
-
     "stop": "kill `ps ax | grep Server | grep -v monitor | grep node | awk '{print $1}'`",
-
     "test": "mocha src/tests/ --reporter spec --timeout 6000"
   },
   "repository": {

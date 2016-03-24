@@ -1,6 +1,6 @@
 {
   "name": "InteractiveShell",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Build web apps for interactive command-line tools",
   "contributors": [
     {
@@ -24,6 +24,7 @@
     "express": "4.13.3",
     "express-winston": "0.2.9",
     "forever": "0.14.1",
+    "get-selected-text": "1.0.0",
     "scroll-down": "2.0.0",
     "serve-favicon": "2.1.7",
     "serve-static": "1.7.2",

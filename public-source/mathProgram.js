@@ -13,7 +13,7 @@ var trym2 = {
 var ctrlc = "\x03";
 
 
-var shellTextArea = require('../../npm/shell-emulator');
+var shellTextArea = require('shell-emulator');
 
 
 // this global variable changes the content on the left as the users
@@ -379,7 +379,7 @@ trym2.importTutorials = tf.importTutorials;
 trym2.populateTutorialElement = tf.populateTutorialElement;
 $(document).ready(function () {
 
-    trym2.getSelected = require('../../npm/get-selected-text');
+    trym2.getSelected = require('get-selected-text');
 
     trym2.socket = io();
 
@@ -475,13 +475,12 @@ $(document).ready(function () {
 
 
     $('#M2In').val(DefaultText);
-    $("#sendBtn").click(trym2.sendCallback('#M2In'));
-    $('#M2In').keypress(trym2.sendOnEnterCallback('#M2In'));
+    $("#sendBtn").click(trym2.sendCallback('M2In'));
+    $('#M2In').keypress(trym2.sendOnEnterCallback('M2In'));
     $("#resetBtn").click(function () {
         $("#M2Out").trigger("reset");
         trym2.socket.emit('reset')
     });
-    ;
     $("#interruptBtn").click(function () {
         trym2.postMessage(ctrlc, true)
     });

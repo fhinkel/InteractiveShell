@@ -289,20 +289,20 @@ trym2.postMessage = function (msg, notrack) {
     return true;
 };
 
-trym2.sendCallback = function (inputField) {
+trym2.sendCallback = function (id) {
     return function () {
-        var str = trym2.getSelected(inputField);
+        var str = trym2.getSelected(id);
         trym2.postMessage(str);
         return false;
     };
 };
 
-trym2.sendOnEnterCallback = function (inputfield) {
+trym2.sendOnEnterCallback = function (id) {
     return function (e) {
         if (e.which === 13 && e.shiftKey) {
             e.preventDefault();
             // do not make a line break or remove selected text when sending
-            trym2.postMessage(trym2.getSelected(inputfield));
+            trym2.postMessage(trym2.getSelected(id));
         }
     };
 };

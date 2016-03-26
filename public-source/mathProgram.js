@@ -1,5 +1,3 @@
-/*global $, alert, console, document, trym2, window */
-
 var trym2 = {
     lessonNr: 0,
     tutorialNr: 0,
@@ -15,48 +13,9 @@ var ctrlc = "\x03";
 
 var shellTextArea = require('shell-emulator');
 
-
-// this global variable changes the content on the left as the users
-// naviges between home, tutorial, and input
-// tabs are hard coded as home, tutorial, and input
-// the controller assures that always exactly one tab from the tabs list is active. 
-trym2.navBar = function () {
-    var Tab = function (elements, btn, showFunction) {
-        this.elements = elements;
-        this.btn = btn;
-        this.show = showFunction;
-    };
-
-    var homeTab = new Tab(["#home"],
-        "#homeBtn",
-        function () {
-            console.log("home.show()");
-        }
-    );
-
-    var tutorialTab = new Tab(["#lesson", "#previousBtn", "#nextBtn", "#pageIndex"],
-        "#tutorialBtn",
-        function () {
-            console.log("tutorial.show()");
-            var maxLesson = trym2.tutorials[trym2.tutorialNr].lessons.length;
-            $("#pageIndex").button("option", "label", (trym2.lessonNr + 1) + "/" +
-                maxLesson).show().unbind().css('cursor', 'default');
-        }
-    );
-
-    var inputTab = new Tab(["#inputarea", "#sendBtn"],
-        "#inputBtn",
-        function () {
-            console.log("input.show()");
-        }
-    );
-    this.tabs = {
-        "home": homeTab,
-        "tutorial": tutorialTab,
-        "input": inputTab
-    };
-    return this;
-}();
+// missing buttons:
+// tutorial: previous, next
+// input: evaluate
 
 
 ///////////////////

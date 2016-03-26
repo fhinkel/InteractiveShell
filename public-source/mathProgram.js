@@ -228,7 +228,10 @@ trym2.showLesson = function (e) {
     //console.log("LessonID: " + lessonId);
     //console.log("You clicked a submenuItem: " + $(this).html());
     trym2.loadLesson(tutorialIdNr, lessonIdNr);
+
     trym2.navBar.activate("tutorial");
+    $("#tutorialTab").click();
+    $(".mdl-layout__tab:eq(1) span").click ();
     return false;
 };
 
@@ -259,6 +262,7 @@ trym2.loadLesson = function (tutorialid, lessonid) {
 trym2.switchLesson = function (incr) {
     //console.log("Current lessonNr " + trym2.lessonNr);
     this.loadLesson(this.tutorialNr, this.lessonNr + incr);
+    $("#tutorialTab").click();
     trym2.navBar.activate("tutorial");
 };
 
@@ -510,6 +514,7 @@ $(document).ready(function () {
 
     $("#tutorialBtn").click(function () {
         trym2.loadLesson(trym2.tutorialNr, trym2.lessonNr);
+        $("#tutorialTab").click();
         trym2.navBar.activate("tutorial");
     });
 

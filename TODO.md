@@ -1,3 +1,12 @@
+2016-03-26
+* Playing with Google's Material Design light
+* Use fetch instead of $ajax
+* Fix footer
+* Try MDL list layout instead of jquery accordion
+* delete code for tabs, i.e., trym2.navbar
+* push to AWS, so everybody can look at the new design
+
+
 2016-03-19
 * UI: Make tabs on left side visible
 * extract frontend shell part as module

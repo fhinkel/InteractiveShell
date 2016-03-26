@@ -150,6 +150,8 @@ trym2.makeAccordion = function (tutorials) {
 
     $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset");
     $(".menuTitle").on("click", {lessonIdNr: "0"}, trym2.showLesson);
+    trym2.loadLesson(trym2.tutorialNr, trym2.lessonNr);
+
 };
 
 trym2.showLesson = function (e) {
@@ -482,4 +484,5 @@ $(document).ready(function () {
     });
 
     trym2.importTutorials();
+
 });

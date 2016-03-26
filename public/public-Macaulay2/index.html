@@ -34,6 +34,7 @@
 
 
 
+
     </script>
     <script type="text/javascript"
             src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
@@ -81,7 +82,8 @@
             <div class="mdl-layout-spacer"></div>
             <!-- Navigation. We hide it in small screens. -->
             <nav class="mdl-navigation mdl-layout--large-screen-only">
-                <a class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="resetBtn">Reset</a>
+                <a class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+                   id="resetBtn">Reset</a>
                 <a class="mdl-button mdl-js-button mdl-js-ripple-effect" id="interruptBtn">Interrupt</a>
                 <a class="mdl-button mdl-js-button mdl-js-ripple-effect" id="saveBtn">Save</a>
                 <a class="mdl-button mdl-js-button mdl-js-ripple-effect " id="uploadBtn">Upload file</a>
@@ -104,7 +106,7 @@
         </nav>
     </div>
     <main class="mdl-layout__content superhigh">
-        <div class="left halfWidth rel">
+        <div class="left halfWidth rel superhigh">
 
             <section class="mdl-layout__tab-panel is-active" id="scroll-tab-1">
                 <div class="page-content" id="home">
@@ -129,7 +131,7 @@
                 </div>
             </section>
 
-            <section class="mdl-layout__tab-panel" id="scroll-tab-3">
+            <section class="mdl-layout__tab-panel superhigh" id="scroll-tab-3">
                 <div class="page-content" id="inputarea">
         <textarea id="M2In" wrap='off' autocorrect="off" spellcheck="false" autocapitalize="off">
         </textarea>
@@ -147,13 +149,16 @@
     <footer class="mdl-mini-footer">
         <div class="mdl-mini-footer__left-section">
             <div class="mdl-logo">Macaulay2</div>
-            <div>2016. Franziska Hinkelmann, Lars Kastner, Mike Stillman. <a href='mailto:trym2@googlegroups.com'>Email
+            <div><a href='mailto:trym2@googlegroups.com'>Email
                 us</a> with
                 any questions or suggestions. Funding provided by the NSF (
                 <a href="http://www.math.uiuc.edu/Macaulay2/Funding/" target='_blank'>see here</a>
                 and through Award 0635561).
             </div>
+        </div>
 
+        <div class="mdl-mini-footer__right-section">
+            2016. Franziska Hinkelmann, Lars Kastner, Mike Stillman.
         </div>
     </footer>
 

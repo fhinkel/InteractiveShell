@@ -20,28 +20,7 @@ var shellTextArea = require('shell-emulator');
 // naviges between home, tutorial, and input
 // tabs are hard coded as home, tutorial, and input
 // the controller assures that always exactly one tab from the tabs list is active. 
-// usage: trym2.navBar.activate("home")
 trym2.navBar = function () {
-    this.activate = function (s) { // string with name of tab
-        console.log("activate tab: " + s);
-        var tab = this.tabs[s];
-        $(tab.btn).prop("checked", true).button("refresh"); // set the color of the tab
-        tab.show(); // do a few things for this tab
-        var i, j;
-        for (j in this.tabs) { // hide all other tabs' elements
-            var otherTab = this.tabs[j];
-            if (otherTab != tab) {
-                for (i in otherTab.elements) {
-                    console.log(otherTab.elements[i]);
-                    $(otherTab.elements[i]).hide();
-                }
-            }
-        }
-        for (i in tab.elements) { // show this tab's elements
-            $(tab.elements[i]).show();
-        }
-    };
-
     var Tab = function (elements, btn, showFunction) {
         this.elements = elements;
         this.btn = btn;
@@ -229,8 +208,6 @@ trym2.showLesson = function (e) {
     //console.log("You clicked a submenuItem: " + $(this).html());
     trym2.loadLesson(tutorialIdNr, lessonIdNr);
 
-    trym2.navBar.activate("tutorial");
-    $("#tutorialTab").click();
     $(".mdl-layout__tab:eq(1) span").click ();
     return false;
 };
@@ -262,8 +239,8 @@ trym2.loadLesson = function (tutorialid, lessonid) {
 trym2.switchLesson = function (incr) {
     //console.log("Current lessonNr " + trym2.lessonNr);
     this.loadLesson(this.tutorialNr, this.lessonNr + incr);
-    $("#tutorialTab").click();
-    trym2.navBar.activate("tutorial");
+    $(".mdl-layout__tab:eq(1) span").click ();
+
 };
 
 
@@ -483,7 +460,7 @@ $(document).ready(function () {
         trym2.postMessage(ctrlc, true)
     });
     $("#inputBtn").click(function () {
-        trym2.navBar.activate("input");
+        $(".mdl-layout__tab:eq(2) span").click ();
     });
     $("#saveBtn").click(trym2.saveInteractions);
 
@@ -514,12 +491,11 @@ $(document).ready(function () {
 
     $("#tutorialBtn").click(function () {
         trym2.loadLesson(trym2.tutorialNr, trym2.lessonNr);
-        $("#tutorialTab").click();
-        trym2.navBar.activate("tutorial");
+        $(".mdl-layout__tab:eq(1) span").click ();
     });
 
     $("#homeBtn").click(function () {
-        trym2.navBar.activate("home");
+        $(".mdl-layout__tab:eq(0) span").click ();
     });
 
     $(document).on("click", ".submenuItem", trym2.showLesson);
@@ -547,6 +523,4 @@ $(document).ready(function () {
     });
 
     trym2.importTutorials();
-
-    trym2.navBar.activate("home");
 });

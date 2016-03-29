@@ -9,6 +9,9 @@
 * delete code for tabs, i.e., trym2.navbar
 * push to AWS, so everybody can look at the new design
 
+2016-03-29
+* AWS CodeDeploy fixen, mit Travis CI verknüpfen
+* Add buttons on left side back in, see missing buttons
 
 2016-03-19
 * UI: Make tabs on left side visible

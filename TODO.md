@@ -10,7 +10,7 @@
 * push to AWS, so everybody can look at the new design
 
 2016-03-29
-* AWS CodeDeploy fixen, mit Travis CI verknüpfen
+* Fix AWS CodeDeploy fixen, use with TravisCI
 * Add buttons on left side back in, see missing buttons
 
 2016-03-19
@@ -24,7 +24,7 @@ Plan for action
 - nicer frontend
 - extract shell into npm module
 - mobile site, what keyboard strategy is good? Maybe only show right-hand side?
-- ssl encrypten
+- ssl encryption
 - Tests? 
 - Update node and dependencies
 - Are our Docker containers safe enough?

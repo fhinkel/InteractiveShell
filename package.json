@@ -34,7 +34,7 @@
     "socketio-file-upload": "0.2.7",
     "ssh2": "0.4.6",
     "winston": "0.8.3",
-    "http-auth": "~2.3.1"
+    "http-auth": "2.3.1"
   },
   "scripts": {
     "start": "webpack && node src/lib/Macaulay2SudoDocker.js",

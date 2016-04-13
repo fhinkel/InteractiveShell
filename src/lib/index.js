@@ -3,23 +3,23 @@
 var express = require('express');
 var app = express();
 
-if(OPTIONS.authentification == "basic"){
-    var auth = require('http-auth');
-    var basic = auth.basic({
-        realm: "Please enter your username and password.",
-        file: __dirname + "/../../public/users.htpasswd" // gevorg:gpass, Sarah:testpass ... 
-    });
-    app.use(auth.connect(basic));
-    var getClientIdFromSocket = function(socket){
-        var clientId = socket.request.headers.authorization.substring(6);
-        return clientId;
-    }
+if (OPTIONS.authentification === "basic") {
+  var auth = require('http-auth');
+  var basic = auth.basic({
+    realm: "Please enter your username and password.",
+    file: __dirname + "/../../public/users.htpasswd"
+  });
+  app.use(auth.connect(basic));
+  var getClientIdFromSocket = function(socket) {
+    var clientId = socket.request.headers.authorization.substring(6);
+    return clientId;
+  };
 } else {
-    var getClientIdFromSocket = function(socket){
-        var cookies = socket.request.headers.cookie;
-        var clientId = cookies[OPTIONS.cookieName];
-        return clientId;
-    }
+  var getClientIdFromSocket = function(socket) {
+    var cookies = socket.request.headers.cookie;
+    var clientId = cookies[OPTIONS.cookieName];
+    return clientId;
+  };
 }
 
 var http = require('http').createServer(app);

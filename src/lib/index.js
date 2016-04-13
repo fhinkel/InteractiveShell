@@ -1,3 +1,5 @@
+/* global OPTIONS */
+
 var app = require('express')();
 var http = require('http').createServer(app);
 var fs = require('fs');

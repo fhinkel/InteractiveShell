@@ -49,7 +49,6 @@ var MathServer = function() {
     };
   };
 
-
   // Global array of all Client objects.  Each has a math program process.
   var clients = {
     totalUsers: 0
@@ -118,6 +117,18 @@ var MathServer = function() {
     }
   };
 
+  var optLogCmdToFile = function(clientId, msg) {
+    if (options.CMD_LOG_FOLDER) {
+      fs.appendFile(options.CMD_LOG_FOLDER + "/" + clientId + ".log",
+          msg,
+          function(err) {
+            if (err) {
+              logClient(clientId, "logging msg failed: " + err);
+            }
+          });
+    }
+  };
+
   var killNotify = function(clientID) {
     return function() {
       console.log("KILL: " + clientID);
@@ -153,18 +164,8 @@ var MathServer = function() {
     });
   };
 
-  var mathProgramStart = function(clientID, next) {
-    logClient(clientID, "Spawning new MathProgram process...");
-    spawnMathProgramInSecureContainer(clientID, function(stream) {
-      stream.setEncoding("utf8");
-      clients[clientID].mathProgramInstance = stream;
-      attachListenersToOutput(clientID);
-      setTimeout(function() {
-        if (next) {
-          next(clientID);
-        }
-      }, 2000); // Always need a little time before start is done.
-    });
+  var updateLastActiveTime = function(clientID) {
+    instanceManager.updateLastActiveTime(clients[clientID].instance);
   };
 
   var sendDataToClient = function(clientID) {
@@ -204,8 +205,18 @@ var MathServer = function() {
     }
   };
 
-  var updateLastActiveTime = function(clientID) {
-    instanceManager.updateLastActiveTime(clients[clientID].instance);
+  var mathProgramStart = function(clientID, next) {
+    logClient(clientID, "Spawning new MathProgram process...");
+    spawnMathProgramInSecureContainer(clientID, function(stream) {
+      stream.setEncoding("utf8");
+      clients[clientID].mathProgramInstance = stream;
+      attachListenersToOutput(clientID);
+      setTimeout(function() {
+        if (next) {
+          next(clientID);
+        }
+      }, 2000); // Always need a little time before start is done.
+    });
   };
 
   var killMathProgram = function(stream, clientID) {
@@ -296,6 +307,60 @@ var MathServer = function() {
     }
   };
 
+  var writeMsgOnStream = function(clientId, msg) {
+    clients[clientId].mathProgramInstance.stdin.write(msg, function(err) {
+      if (err) {
+        logClient(clientId, "write failed: " + err);
+      }
+      optLogCmdToFile(clientId, msg);
+      socketSanityCheck(clientId, clients[clientId].socket);
+    });
+  };
+
+  var checkAndWrite = function(clientId, msg) {
+    if (!clients[clientId].mathProgramInstance ||
+        clients[clientId].mathProgramInstance._writableState.ended) {
+      socketSanityCheck(clientId, clients[clientId].socket);
+    } else {
+      writeMsgOnStream(clientId, msg);
+    }
+  };
+
+  var checkStateAndExecuteAction = function(clientId, next) {
+    if (!clients[clientId] || !clients[clientId].saneState) {
+      console.log(clientId + " not accepting events.");
+    } else {
+      next();
+    }
+  };
+
+  var socketInputAction = function(clientId) {
+    return function(msg) {
+      console.log("Have clientId: " + clientId);
+      updateLastActiveTime(clientId);
+      checkStateAndExecuteAction(clientId, function() {
+        checkAndWrite(clientId, msg);
+      });
+    };
+  };
+
+  var socketResetAction = function(clientId) {
+    return function() {
+      optLogCmdToFile(clientId, "Resetting.\n");
+      logExceptOnTest('Received reset.');
+      checkStateAndExecuteAction(clientId, function() {
+        var client = clients[clientId];
+        client.saneState = false;
+        if (client.mathProgramInstance) {
+          killMathProgram(client.mathProgramInstance, clientId);
+        }
+        mathProgramStart(clientId, function() {
+          client.saneState = true;
+        });
+      });
+    };
+  };
+
   var listen = function() {
     var cookieParser = require('socket.io-cookie');
     io.use(cookieParser);
@@ -317,72 +382,6 @@ var MathServer = function() {
     var listener = http.listen(options.port);
     console.log("Server running on " + listener.address().port);
     return listener;
-  };
-
-  var writeMsgOnStream = function(clientId, msg) {
-    clients[clientId].mathProgramInstance.stdin.write(msg, function(err) {
-      if (err) {
-        logClient(clientId, "write failed: " + err);
-      }
-      optLogCmdToFile(clientId, msg);
-      socketSanityCheck(clientId, clients[clientId].socket);
-    });
-  };
-
-  var optLogCmdToFile = function(clientId, msg) {
-    if (options.CMD_LOG_FOLDER) {
-      fs.appendFile(options.CMD_LOG_FOLDER + "/" + clientId + ".log",
-          msg,
-          function(err) {
-            if (err) {
-              logClient(clientId, "logging msg failed: " + err);
-            }
-          });
-    }
-  };
-
-  var checkAndWrite = function(clientId, msg) {
-    if (!clients[clientId].mathProgramInstance ||
-        clients[clientId].mathProgramInstance._writableState.ended) {
-      socketSanityCheck(clientId, clients[clientId].socket);
-    } else {
-      writeMsgOnStream(clientId, msg);
-    }
-  };
-
-  var socketInputAction = function(clientId) {
-    return function(msg) {
-      console.log("Have clientId: " + clientId);
-      updateLastActiveTime(clientId);
-      checkStateAndExecuteAction(clientId, function() {
-        checkAndWrite(clientId, msg);
-      });
-    };
-  };
-
-  var checkStateAndExecuteAction = function(clientId, next) {
-    if (!clients[clientId] || !clients[clientId].saneState) {
-      console.log(clientId + " not accepting events.");
-    } else {
-      next();
-    }
-  };
-
-  var socketResetAction = function(clientId) {
-    return function() {
-      optLogCmdToFile(clientId, "Resetting.\n");
-      logExceptOnTest('Received reset.');
-      checkStateAndExecuteAction(clientId, function() {
-        var client = clients[clientId];
-        client.saneState = false;
-        if (client.mathProgramInstance) {
-          killMathProgram(client.mathProgramInstance, clientId);
-        }
-        mathProgramStart(clientId, function() {
-          client.saneState = true;
-        });
-      });
-    };
   };
 
   initializeServer();

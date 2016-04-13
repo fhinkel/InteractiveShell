@@ -6,7 +6,7 @@ GLOBAL.OPTIONS = require('./default.js').get_config({
   }
 });
 
-console.log(OPTIONS);
+console.log(GLOBAL.OPTIONS);
 
 var Macaulay2Server = require('./index.js').mathServer();
 Macaulay2Server.listen();

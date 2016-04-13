@@ -1,3 +1,5 @@
+/* global OPTIONS */
+
 var exec = require('child_process').exec;
 var waitForSshd;
 

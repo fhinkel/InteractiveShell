@@ -15,7 +15,7 @@ GLOBAL.OPTIONS = require('./default.js').get_config({
   }
 });
 
-console.log(OPTIONS);
+console.log(GLOBAL.OPTIONS);
 
 var SingularServer = require('./index.js').mathServer();
 SingularServer.listen();

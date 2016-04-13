@@ -33,11 +33,13 @@
     "socket.io-cookie": "0.0.1",
     "socketio-file-upload": "0.2.7",
     "ssh2": "0.4.6",
-    "winston": "0.8.3"
+    "winston": "0.8.3",
+    "http-auth": "~2.3.1"
   },
   "scripts": {
     "start": "webpack && node src/lib/Macaulay2SudoDocker.js",
     "basic": "webpack && node src/lib/Macaulay2LocalServer.js",
+    "basicAuth": "webpack && node src/lib/Macaulay2BasicAuth.js",
     "ssh": "webpack && node src/lib/Macaulay2SshDocker.js",
     "forever": "webpack && ./node_modules/forever/bin/forever start -l /home/vagrant/webm2.logs/forever.log -o /home/vagrant/webm2.logs/out.log -e /home/vagrant/webm2.logs/err.log --append src/lib/Macaulay2SshDocker.js",
     "start_singular": "webpack && node src/lib/SingularSudoDocker.js",

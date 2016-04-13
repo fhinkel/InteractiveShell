@@ -1,6 +1,8 @@
 
 var configuration = function(overrideOptions) {
   var options = {
+    cookieName: "tryM2",
+    authentification: "none",
     server_config: {
       CONTAINERS: './LocalContainerManager.js',
       MATH_PROGRAM: "Macaulay2",

@@ -1,6 +1,12 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# Settings:
+mathProgram = "M2"
+npmCmd = "npm start"
+logfilePath = "/home/vagrant/web" + mathProgram + ".log"
+cronString = "@reboot until [ -d /home/vagrant/InteractiveShell/public ]; do sleep 1; done; cd /home/vagrant/InteractiveShell; " + npmCmd + " 2>&1 > " + logfilePath
+
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
@@ -66,7 +72,7 @@ Vagrant.configure(2) do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  config.vm.provision "shell", privileged:false, inline: <<-SHELL
+  config.vm.provision "basic", type:"shell", privileged:false, inline: <<-SHELL
     sudo apt-get update && apt-get upgrade -y
     sudo apt-get install -y nodejs npm wget
     wget -qO- https://get.docker.com/ | sh
@@ -79,5 +85,10 @@ Vagrant.configure(2) do |config|
     ssh-keygen -b 1024 -f id_rsa -P ''
     sudo docker build -t m2container .
   SHELL
+   
+
+  config.vm.provision "cron", type:"shell", privileged:false do |cron|
+      cron.inline = "echo \"" + cronString + "\" > tmpcron; crontab tmpcron; rm tmpcron"
+  end
 
 end

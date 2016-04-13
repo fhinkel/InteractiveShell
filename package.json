@@ -46,7 +46,7 @@
     "forever_singular": "webpack && ./node_modules/forever/bin/forever start -l /home/user/logs/forever.log -o /home/user/logs/out.log -e /home/user/logs/err.log --append src/lib/SingularSshDocker.js",
     "stop": "kill `ps ax | grep Server | grep -v monitor | grep node | awk '{print $1}'`",
     "test": "mocha src/tests/ --reporter spec --timeout 6000",
-    "lint": "eslint ."
+    "lint": "eslint ./src/"
   },
   "repository": {
     "type": "git",

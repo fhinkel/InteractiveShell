@@ -1,6 +1,5 @@
 
 var configuration = function(overrideOptions) {
-
   var options = {
     server_config: {
       CONTAINERS: './LocalContainerManager.js',
@@ -50,10 +49,10 @@ var configuration = function(overrideOptions) {
     for (var opt in overrideOptions) {
       if (defaultOptions.hasOwnProperty(opt)) {
         if (defaultOptions[opt] instanceof Object) {
-            overrideDefaultOptions(overrideOptions[opt], defaultOptions[opt]);
-          } else {
-            defaultOptions[opt] = overrideOptions[opt];
-          }
+          overrideDefaultOptions(overrideOptions[opt], defaultOptions[opt]);
+        } else {
+          defaultOptions[opt] = overrideOptions[opt];
+        }
       } else {
         defaultOptions[opt] = overrideOptions[opt];
       }

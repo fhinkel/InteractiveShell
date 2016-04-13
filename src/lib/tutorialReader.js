@@ -36,11 +36,11 @@ module.exports = function(prefix, fs) {
     async.filter(folderList, prefixedFsExists, function(existingFolders) {
       async.concat(existingFolders, prefixedFsReaddir, function(err, files) {
         var tutorials = files.filter(function(filename) {
-            return filename.match(/\.html$/);
-          });
+          return filename.match(/\.html$/);
+        });
         response.writeHead(200, {
-            "Content-Type": "text/html"
-          });
+          "Content-Type": "text/html"
+        });
         tutorials = moveWelcomeTutorialToBeginning(tutorials, "tutorials/welcome2.html");
         response.end(JSON.stringify(tutorials));
       });
@@ -52,5 +52,3 @@ module.exports = function(prefix, fs) {
     sortTutorials: moveWelcomeTutorialToBeginning
   };
 };
-
-

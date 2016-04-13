@@ -1,5 +1,4 @@
 var multiMachineManager = function() {
-
   var Machine = function() {
     this.name = '';
     this.containerManager = '';
@@ -25,24 +24,24 @@ var multiMachineManager = function() {
       this.maxContainerNumber = maxContainerNumber;
       this.getNewInstance = function(next) {
         this.containerManager.getNewInstance(function(err, instance) {
-            if (err) {
-                next(err);
-              } else {
-                this.currentContainerNumber++;
-                this.updateLoad();
-                instance.machine = this;
-                next(instance);
-              }
-          });
+          if (err) {
+            next(err);
+          } else {
+            this.currentContainerNumber++;
+            this.updateLoad();
+            instance.machine = this;
+            next(instance);
+          }
+        });
       };
       this.removeInstance = function(instance, next) {
         this.containerManager.removeInstance(instance, function() {
-            this.currentContainerNumber--;
-            this.updateLoad();
-            if (next) {
-                next();
-              }
-          });
+          this.currentContainerNumber--;
+          this.updateLoad();
+          if (next) {
+            next();
+          }
+        });
       };
       this.updateLastActiveTime = function(instance) {
         this.containerManager.updateLastActiveTime(instance);
@@ -72,5 +71,4 @@ var multiMachineManager = function() {
     getNewInstance: getNewInstance,
     removeInstance: removeInstance
   };
-
 };

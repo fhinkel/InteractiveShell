@@ -2,14 +2,13 @@ var exec = require('child_process').exec;
 var waitForSshd;
 
 var dockerManager = function() {
-
   var resources = OPTIONS.per_container_resources;
   var options = OPTIONS.container_config;
 
   var removeInstance = function(instance) {
     console.log("Removing container: " + instance.containerName);
     var removeDockerContainer = 'sudo docker rm -f ' + instance.containerName;
-    exec(removeDockerContainer, function(error, stdout, stderr) {
+    exec(removeDockerContainer, function(error) {
       if (error) {
         console.error("Error removing container " + instance.containerName + ' with error:' + error);
       }
@@ -30,15 +29,15 @@ var dockerManager = function() {
     var currentInstance = JSON.parse(JSON.stringify(options.instance));
     options.instance.port++;
     currentInstance.containerName = "m2Port" + currentInstance.port;
-    exec(constructDockerRunCommand(resources, currentInstance), function(error, stdout, stderr) {
+    exec(constructDockerRunCommand(resources, currentInstance), function(error) {
       if (error) {
         var containerAlreadyStarted = error.message.match(/Conflict. The name/);
         if (containerAlreadyStarted) {
-            getNewInstance(next);
-          } else {
-            console.error("There was an error starting the docker container: " + error.message);
-            throw error;
-          }
+          getNewInstance(next);
+        } else {
+          console.error("There was an error starting the docker container: " + error.message);
+          throw error;
+        }
       } else {
         waitForSshd(next, currentInstance);
       }
@@ -71,10 +70,9 @@ var dockerManager = function() {
   return {
     getNewInstance: getNewInstance,
     removeInstance: removeInstance,
-    updateLastActiveTime: function(instance) {
+    updateLastActiveTime: function() {
     }
   };
-
 };
 
 exports.manager = dockerManager;

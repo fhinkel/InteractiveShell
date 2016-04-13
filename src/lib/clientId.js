@@ -9,8 +9,9 @@ module.exports = function(clients, logExceptOnTest) {
   return {
     getNewId: function() {
       clients.totalUsers += 1;
+      var clientId;
       do {
-        var clientId = Math.random() * 1000000;
+        clientId = Math.random() * 1000000;
         clientId = Math.floor(clientId);
       } while (exists(clientId));
       clientId = "user" + clientId.toString(10);

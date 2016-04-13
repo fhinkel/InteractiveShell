@@ -2,19 +2,18 @@ var ssh2 = require('ssh2');
 var fs = require('fs');
 
 var sshDockerManager = function() {
-
   var resources = OPTIONS.per_container_resources;
   var guestInstance = OPTIONS.guestInstance;
   var hostConfig = OPTIONS.hostConfig;
 
   var currentContainers = [];
 
-  function init() {
+  var init = function() {
     hostConfig.dockerRunCmd = hostConfig.dockerCmdPrefix + ' docker run -d';
     hostConfig.dockerRunCmd += ' --cpu-shares ' + resources.cpuShares;
     hostConfig.dockerRunCmd += ' -m ' + resources.memory + 'm';
     hostConfig.dockerRunCmd += ' --name';
-  }
+  };
 
   init();
 
@@ -65,7 +64,7 @@ var sshDockerManager = function() {
         getNewInstance(next);
       });
     } else {
-      throw "Too many active users.";
+      throw new Error("Too many active users.");
     }
   };
 
@@ -97,9 +96,9 @@ var sshDockerManager = function() {
                 // afraid of data.
         var data = dataObject.toString();
         if (data.match(/ERROR/i)) {
-            getNewInstance(next);
-            stream.end();
-          }
+          getNewInstance(next);
+          stream.end();
+        }
       });
     }, next);
   };
@@ -109,32 +108,32 @@ var sshDockerManager = function() {
     connection.on('ready', function() {
       connection.exec(cmd, function(err, stream) {
         if (err) {
-            throw err;
-          }
+          throw err;
+        }
         stream.on('close', function() {
-            connection.end();
-          });
+          connection.end();
+        });
         stream.on('end', function() {
-            stream.close();
+          stream.close();
                     // console.log('I ended.');
-            connection.end();
-          });
+          connection.end();
+        });
         stream.on('Error', function(err) {
-            console.log("Error in stream: " + err);
-          });
+          console.log("Error in stream: " + err);
+        });
         next(stream);
       });
     }).on('error', function(error) {
       console.log("Error while sshing: " + error + "\nTried to do: " + cmd);
       if (errorHandler) {
-          errorHandler(error);
-        }
+        errorHandler(error);
+      }
     }).connect({
-        host: hostConfig.host,
-        port: hostConfig.port,
-        username: hostConfig.username,
-        privateKey: fs.readFileSync(hostConfig.sshKey)
-      });
+      host: hostConfig.host,
+      port: hostConfig.port,
+      username: hostConfig.username,
+      privateKey: fs.readFileSync(hostConfig.sshKey)
+    });
   };
 
   var checkForSuccessfulContainerStart = function(instance, next) {
@@ -143,13 +142,13 @@ var sshDockerManager = function() {
       stream.on('data', function(dataObject) {
         var data = dataObject.toString();
         if (data == 0) {
-            getNewInstance(next);
-          } else {
-            checkForRunningSshd(instance, next);
-          }
+          getNewInstance(next);
+        } else {
+          checkForRunningSshd(instance, next);
+        }
       });
 
-      stream.stderr.on('data', function(dataObject) {
+      stream.stderr.on('data', function() {
       });
     }, next);
   };
@@ -163,15 +162,15 @@ var sshDockerManager = function() {
       stream.on('data', function(dataObject) {
         var data = dataObject.toString();
         if (data == 0) {
-            checkForRunningSshd(instance, next);
-          } else {
-            instance.lastActiveTime = Date.now();
-            addInstanceToArray(instance);
-            next(null, instance);
-          }
+          checkForRunningSshd(instance, next);
+        } else {
+          instance.lastActiveTime = Date.now();
+          addInstanceToArray(instance);
+          next(null, instance);
+        }
       });
 
-      stream.stderr.on('data', function(dataObject) {
+      stream.stderr.on('data', function() {
       });
     }, next);
   };

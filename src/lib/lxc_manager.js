@@ -1,12 +1,12 @@
 var lxc_manager = function() {
   var options = {
-      NEW_CONTAINERS_FILE: "lib/new_containers",
-      OLD_CONTAINERS_FILE: "lib/old_containers",
-      CONTAINER_SPLIT_SYMBOL: " *** ",
-      ISOLATED_LEASES_FILE: "/var/lib/libvirt/dnsmasq/isolated.leases"
-    },
-    linuxContainerCollection = {},
-    ipCollection = [];
+    NEW_CONTAINERS_FILE: "lib/new_containers",
+    OLD_CONTAINERS_FILE: "lib/old_containers",
+    CONTAINER_SPLIT_SYMBOL: " *** ",
+    ISOLATED_LEASES_FILE: "/var/lib/libvirt/dnsmasq/isolated.leases"
+  };
+  var linuxContainerCollection = {};
+  var ipCollection = [];
 
   var removeIp = function(ip) {
     var split = options.CONTAINER_SPLIT_SYMBOL;
@@ -25,8 +25,9 @@ var lxc_manager = function() {
   };
 
   var getNewIp = function(next) {
+    var ip;
     if (ipCollection.length > 5) {
-      var ip = ipCollection.pop();
+      ip = ipCollection.pop();
       next(ip);
     } else if (ipCollection.length > 1) {
       ip = ipCollection.pop();
@@ -44,20 +45,16 @@ var lxc_manager = function() {
       if (error) {
         console.log("Something went wrong while reading container list.");
       }
-            // TODO: Catch error
       var fs = require('fs');
       fs.readFile(options.ISOLATED_LEASES_FILE, function(err, rawIpAddressTable) {
         var ipAddressTable = {};
         var lines = rawIpAddressTable.toString().split("\n");
         for (var index in lines) {
-            var words = lines[index].split(" ");
-            var macAddress = words[1];
-            var ip = words[2];
-            ipAddressTable[macAddress] = ip;
-//                    if(ip){
-//                        ipCollection.push(ip);
-//                    }
-          }
+          var words = lines[index].split(" ");
+          var macAddress = words[1];
+          var ip = words[2];
+          ipAddressTable[macAddress] = ip;
+        }
         addNewContainersToContainerCollection(containerList, ipAddressTable);
       });
     });
@@ -72,11 +69,11 @@ var lxc_manager = function() {
       var macAddress = containerData[1];
       var addingFunction = function(uuid, macAddress) {
         return function(ip) {
-            if (ip) {
-                ipCollection.push(ip);
-                linuxContainerCollection[ip] = [uuid, macAddress, ip];
-              }
-          };
+          if (ip) {
+            ipCollection.push(ip);
+            linuxContainerCollection[ip] = [uuid, macAddress, ip];
+          }
+        };
       };
       getIPFromMacAddress(macAddress, ipAddressTable, addingFunction(uuid, macAddress));
     }
@@ -92,25 +89,24 @@ var lxc_manager = function() {
       setTimeout(function() {
         var ipAddressTableFile = options.ISOLATED_LEASES_FILE;
         fs.readFile(ipAddressTableFile, function(err, rawIpAddressTable) {
-            var ipAddressTable = {};
-            var lines = rawIpAddressTable.split("\n");
-            for (var line in lines) {
-                var words = line.split(" ");
-                var macAddress = words[1];
-                ip = words[2];
-                ipAddressTable[macAddress] = ip;
-              }
-            getIPFromMacAddress(macAddress, ipAddressTable, next);
-          });
+          var ipAddressTable = {};
+          var lines = rawIpAddressTable.split("\n");
+          for (var line in lines) {
+            var words = line.split(" ");
+            var macAddress = words[1];
+            ip = words[2];
+            ipAddressTable[macAddress] = ip;
+          }
+          getIPFromMacAddress(macAddress, ipAddressTable, next);
+        });
       }, 10000);
     }
   };
 
   return {
-    getNewIp : getNewIp,
-    removeIp : removeIp
+    getNewIp: getNewIp,
+    removeIp: removeIp
   };
-
 };
 
 exports.manager = lxc_manager;

@@ -14,12 +14,12 @@ describe('GetListOfTutorials Module test', function() {
     it('should get the list with welcome tutorials', function(done) {
       var response = {
         writeHead: function() {
-          },
+        },
         end: function() {
-            assert(spy.calledOnce);
-            assert.include(spy.getCall(0).args[0], "welcome2.html");
-            done();
-          }
+          assert(spy.calledOnce);
+          assert.include(spy.getCall(0).args[0], "welcome2.html");
+          done();
+        }
       };
       var spy = sinon.spy(response, "end");
       directoryReader.getList(null, response);
@@ -44,16 +44,16 @@ describe('GetListOfTutorials Module test', function() {
     it('should get the list from mocked file system with shared tutorials', function(done) {
       var response = {
         writeHead: function() {
-          },
+        },
         end: function() {
-            var expected = JSON.stringify([
-                "tutorials/mock.html",
-                "shared-tutorials/mock.html"
-              ]);
-            assert.equal(spy.args, expected);
-            assert(spy.calledOnce);
-            done();
-          }
+          var expected = JSON.stringify([
+              "tutorials/mock.html",
+              "shared-tutorials/mock.html"
+            ]);
+          assert.equal(spy.args, expected);
+          assert(spy.calledOnce);
+          done();
+        }
       };
       var spy = sinon.spy(response, "end");
 
@@ -67,13 +67,13 @@ describe('GetListOfTutorials Module test', function() {
     it('should get the list from mocked file system without shared tutorials', function(done) {
       var response = {
         writeHead: function() {
-          },
+        },
         end: function() {
-            var expected = JSON.stringify(["tutorials/mock.html"]);
-            assert.equal(spy.args, expected);
-            assert(spy.calledOnce);
-            done();
-          }
+          var expected = JSON.stringify(["tutorials/mock.html"]);
+          assert.equal(spy.args, expected);
+          assert(spy.calledOnce);
+          done();
+        }
       };
       var spy = sinon.spy(response, "end");
 

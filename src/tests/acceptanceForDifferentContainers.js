@@ -33,7 +33,7 @@ describe.skip('Acceptance test for all containers', function() {
     describe('As basic behavior for container ' + containers[container], function() {
       it('should show the title', function(done) {
         request.get('/').expect(200).end(function(error, result) {
-            jsdom.env(
+          jsdom.env(
                         result.text,
                         {src: [jquery]},
                         function(errors, window) {
@@ -42,7 +42,7 @@ describe.skip('Acceptance test for all containers', function() {
                           done();
                         }
                     );
-          });
+        });
       });
     });
   }

@@ -12,16 +12,16 @@ module.exports = function(clients, logExceptOnTest, sshCredentials) {
 
       connection.on('ready', function() {
         connection.sftp(function(err, sftp) {
-            if (err) {
-                console.log("There was an error while connecting via sftp: " + err);
-              }
-            var stream = sftp.createWriteStream(event.file.name);
-            stream.write(clients[clientId].fileUploadBuffer.toString());
-            stream.end(function() {
-                connection.end();
-              });
-            clients[clientId].fileUploadBuffer = "";
+          if (err) {
+            console.log("There was an error while connecting via sftp: " + err);
+          }
+          var stream = sftp.createWriteStream(event.file.name);
+          stream.write(clients[clientId].fileUploadBuffer.toString());
+          stream.end(function() {
+            connection.end();
           });
+          clients[clientId].fileUploadBuffer = "";
+        });
       });
 
       connection.connect(credentials);
@@ -43,7 +43,6 @@ module.exports = function(clients, logExceptOnTest, sshCredentials) {
       });
 
       uploader.on("progress", function(event) {
-                // TODO: Limit size.
         clients[clientId].fileUploadBuffer += event.buffer;
       });
 

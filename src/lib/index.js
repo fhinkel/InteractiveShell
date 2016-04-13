@@ -6,11 +6,8 @@ var io = require('socket.io')(http);
 var ssh2 = require('ssh2');
 var SocketIOFileUpload = require('socketio-file-upload');
 
-
 var MathServer = function() {
   var staticFolder = __dirname + '/../../public/public';
-
-
   var options = OPTIONS.server_config;
 
   var logExceptOnTest = function(string) {
@@ -30,14 +27,13 @@ var MathServer = function() {
 
   var cookieName = "try" + options.MATH_PROGRAM;
 
-
-    // Global array of all Client objects.  Each has a math program process.
+  // Global array of all Client objects.  Each has a math program process.
   var clients = {
     totalUsers: 0
   };
   if (!options.CONTAINERS) {
     console.error("error, no container management given.");
-    throw ("No CONTAINERS!");
+    throw new Error("No CONTAINERS!");
   }
 
   var instanceManager = require(options.CONTAINERS).manager();
@@ -50,11 +46,6 @@ var MathServer = function() {
 
   var userSpecificPath = function(clientId) {
     return "/" + clientId + "-files/";
-  };
-
-  var deleteClient = function(clientID) {
-    instanceManager.removeInstance(clients[clientID].instance);
-    deleteClientData(clientID);
   };
 
   var deleteClientData = function(clientID) {
@@ -92,11 +83,11 @@ var MathServer = function() {
     } else {
       instanceManager.getNewInstance(function(err, instance) {
         if (err) {
-            clients[clientID].socket.emit('result', "Sorry, there was an error. Please come back later.\n" + err + "\n\n");
-            deleteClientData(clientID);
-          } else {
-            next(instance);
-          }
+          clients[clientID].socket.emit('result', "Sorry, there was an error. Please come back later.\n" + err + "\n\n");
+          deleteClientData(clientID);
+        } else {
+          next(instance);
+        }
       });
     }
   };
@@ -116,18 +107,20 @@ var MathServer = function() {
       var connection = new ssh2.Client();
       connection.on('ready', function() {
         connection.exec(options.MATH_PROGRAM_COMMAND, {pty: true}, function(err, stream) {
-            if (err) throw err;
-            optLogCmdToFile(clientID, "Starting.\n");
-            stream.on('close', function() {
-                connection.end();
-              });
-            stream.on('end', function() {
-                stream.close();
-                logExceptOnTest('I ended.');
-                connection.end();
-              });
-            next(stream);
+          if (err) {
+            throw err;
+          }
+          optLogCmdToFile(clientID, "Starting.\n");
+          stream.on('close', function() {
+            connection.end();
           });
+          stream.on('end', function() {
+            stream.close();
+            logExceptOnTest('I ended.');
+            connection.end();
+          });
+          next(stream);
+        });
       }).connect(sshCredentials(instance));
     });
   };
@@ -140,8 +133,8 @@ var MathServer = function() {
       attachListenersToOutput(clientID);
       setTimeout(function() {
         if (next) {
-            next(clientID);
-          }
+          next(clientID);
+        }
       }, 2000); // Always need a little time before start is done.
     });
   };
@@ -156,12 +149,12 @@ var MathServer = function() {
       }
       updateLastActiveTime(clientID);
       var specialUrlEmitter = require('./specialUrlEmitter')(clients,
-                options,
-                staticFolder,
-                userSpecificPath,
-                sshCredentials,
-                logExceptOnTest
-            );
+          options,
+          staticFolder,
+          userSpecificPath,
+          sshCredentials,
+          logExceptOnTest
+      );
       var specialData = specialUrlEmitter.isSpecial(data);
       if (specialData) {
         specialUrlEmitter.emitEventUrlToClient(clientID, specialData, data);
@@ -178,8 +171,8 @@ var MathServer = function() {
     }
     if (client.mathProgramInstance) {
       clients[clientID].mathProgramInstance
-                .removeAllListeners('data')
-                .on('data', sendDataToClient(clientID));
+          .removeAllListeners('data')
+          .on('data', sendDataToClient(clientID));
     }
   };
 
@@ -191,7 +184,6 @@ var MathServer = function() {
     logClient(clientID, "killMathProgramClient.");
     stream.close();
   };
-
 
   var checkCookie = function(request, response, next) {
     var cookies = new Cookies(request, response);
@@ -210,7 +202,6 @@ var MathServer = function() {
   };
 
   var unhandled = function(request, response) {
-    var url = require('url').parse(request.url).pathname;
     logExceptOnTest("Request for something we don't serve: " + request.url);
     response.writeHead(404, "Request for something we don't serve.");
     response.write("404");
@@ -220,16 +211,16 @@ var MathServer = function() {
   var initializeServer = function() {
     var favicon = require('serve-favicon');
     var serveStatic = require('serve-static');
-    var winston = require('winston'),
-      expressWinston = require('express-winston');
+    var winston = require('winston');
+    var expressWinston = require('express-winston');
 
     var loggerSettings = {
       transports: [
         new winston.transports.Console({
-            level: 'error',
-            json: true,
-            colorize: true
-          })
+          level: 'error',
+          json: true,
+          colorize: true
+        })
       ]
     };
     var prefix = staticFolder + "-" + options.MATH_PROGRAM + "/";
@@ -242,8 +233,8 @@ var MathServer = function() {
     app.use(serveStatic(staticFolder + '-common'));
     app.use(expressWinston.logger(loggerSettings));
     app.use('/admin', admin.stats)
-            .use('/getListOfTutorials', tutorialReader.getList)
-            .use(unhandled);
+        .use('/getListOfTutorials', tutorialReader.getList)
+        .use(unhandled);
   };
 
   var socketSanityCheck = function(clientId, socket) {
@@ -294,7 +285,6 @@ var MathServer = function() {
     var listener = http.listen(options.port);
     console.log("Server running on " + listener.address().port);
     return listener;
-
   };
 
   var writeMsgOnStream = function(clientId, msg) {
@@ -307,15 +297,15 @@ var MathServer = function() {
     });
   };
 
-	        var optLogCmdToFile = function(clientId, msg) {
-  if (options.CMD_LOG_FOLDER) {
-    fs.appendFile(options.CMD_LOG_FOLDER + "/" + clientId + ".log", msg, function(err) {
-      if (err) {
-        logClient(clientId, "logging msg failed: " + err);
-      }
-    });
-  }
-	};
+  var optLogCmdToFile = function(clientId, msg) {
+    if (options.CMD_LOG_FOLDER) {
+      fs.appendFile(options.CMD_LOG_FOLDER + "/" + clientId + ".log", msg, function(err) {
+        if (err) {
+          logClient(clientId, "logging msg failed: " + err);
+        }
+      });
+    }
+  };
 
   var checkAndWrite = function(clientId, msg) {
     if (!clients[clientId].mathProgramInstance || clients[clientId].mathProgramInstance._writableState.ended) {
@@ -351,18 +341,18 @@ var MathServer = function() {
         var client = clients[clientId];
         client.saneState = false;
         if (client.mathProgramInstance) {
-            killMathProgram(client.mathProgramInstance, clientId);
-          }
+          killMathProgram(client.mathProgramInstance, clientId);
+        }
         mathProgramStart(clientId, function() {
-            client.saneState = true;
-          });
+          client.saneState = true;
+        });
       });
     };
   };
 
   initializeServer();
 
-    // These are the methods available from the outside:
+  // These are the methods available from the outside:
   return {
     listen: listen,
     close: function() {

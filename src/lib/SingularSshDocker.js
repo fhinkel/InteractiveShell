@@ -15,7 +15,6 @@ GLOBAL.OPTIONS = require('./default.js').get_config({
     MATH_PROGRAM: 'Singular',
     MATH_PROGRAM_COMMAND: 'Singular',
     CONTAINERS: './sshDockerContainers.js',
-	                      CMD_LOG_FOLDER: '/home/user/cmd_logs',
     resumeString: 'Type \'listvar();\' to print the list of existing variables.\nType \'basering;\' to print the currently active ring.\n> '
   },
   guestInstance: {
@@ -25,7 +24,7 @@ GLOBAL.OPTIONS = require('./default.js').get_config({
     sshKey: "/home/user/InteractiveShell/Vagrant_singular/id_rsa",
     containerName: 'singularContainer',
     lastActiveTime: 0
-  },
+  }
 });
 
 var Macaulay2Server = require('./index.js').MathServer();

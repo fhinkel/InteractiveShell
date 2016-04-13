@@ -16,8 +16,7 @@ var localContainerManager = function() {
     options.credentials.sshKey = homedir.trim() + '/.ssh/id_rsa';
   });
 
-
-  var removeInstance = function(ip) {
+  var removeInstance = function() {
     return;
   };
 
@@ -25,13 +24,11 @@ var localContainerManager = function() {
     next(false, options.credentials);
   };
 
-
   return {
     getNewInstance: getNewInstance,
     removeInstance: removeInstance,
     updateLastActiveTime: function() {}
   };
-
 };
 
 exports.manager = localContainerManager;

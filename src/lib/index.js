@@ -72,7 +72,8 @@ var MathServer = function() {
   };
 
   var deleteClientData = function(clientID) {
-    logExceptOnTest("deleting folder " + staticFolder + userSpecificPath(clientID));
+    logExceptOnTest("deleting folder " +
+        staticFolder + userSpecificPath(clientID));
     try {
       clients[clientID].socket.emit('serverDisconnect');
       console.log("Sending disconnect. " + clientID);
@@ -106,7 +107,9 @@ var MathServer = function() {
     } else {
       instanceManager.getNewInstance(function(err, instance) {
         if (err) {
-          clients[clientID].socket.emit('result', "Sorry, there was an error. Please come back later.\n" + err + "\n\n");
+          clients[clientID].socket.emit('result',
+              "Sorry, there was an error. Please come back later.\n" +
+              err + "\n\n");
           deleteClientData(clientID);
         } else {
           next(instance);
@@ -129,21 +132,23 @@ var MathServer = function() {
       clients[clientID].instance = instance;
       var connection = new ssh2.Client();
       connection.on('ready', function() {
-        connection.exec(options.MATH_PROGRAM_COMMAND, {pty: true}, function(err, stream) {
-          if (err) {
-            throw err;
-          }
-          optLogCmdToFile(clientID, "Starting.\n");
-          stream.on('close', function() {
-            connection.end();
-          });
-          stream.on('end', function() {
-            stream.close();
-            logExceptOnTest('I ended.');
-            connection.end();
-          });
-          next(stream);
-        });
+        connection.exec(options.MATH_PROGRAM_COMMAND,
+            {pty: true},
+            function(err, stream) {
+              if (err) {
+                throw err;
+              }
+              optLogCmdToFile(clientID, "Starting.\n");
+              stream.on('close', function() {
+                connection.end();
+              });
+              stream.on('end', function() {
+                stream.close();
+                logExceptOnTest('I ended.');
+                connection.end();
+              });
+              next(stream);
+            });
       }).connect(sshCredentials(instance));
     });
   };
@@ -249,7 +254,8 @@ var MathServer = function() {
     var prefix = staticFolder + "-" + options.MATH_PROGRAM + "/";
     var tutorialReader = require('./tutorialReader')(prefix, fs);
     var admin = require('./admin')(clients, options);
-    app.use(favicon(staticFolder + '-' + options.MATH_PROGRAM + '/favicon.ico'));
+    app.use(favicon(staticFolder + '-' +
+        options.MATH_PROGRAM + '/favicon.ico'));
     app.use(SocketIOFileUpload.router);
     app.use(checkCookie);
     app.use(serveStatic(staticFolder + '-' + options.MATH_PROGRAM));
@@ -273,7 +279,8 @@ var MathServer = function() {
     clients[clientId].saneState = false;
     clients[clientId].socket = socket;
 
-    if (!clients[clientId].mathProgramInstance || clients[clientId].mathProgramInstance._writableState.ended) {
+    if (!clients[clientId].mathProgramInstance ||
+        clients[clientId].mathProgramInstance._writableState.ended) {
       console.log("Starting new mathProgram instance.");
       mathProgramStart(clientId, function() {
         clients[clientId].saneState = true;
@@ -281,7 +288,8 @@ var MathServer = function() {
     } else {
       console.log("Has mathProgram instance.");
       if (clients[clientId].reconnecting) {
-        clients[clientId].socket.emit('result', "Session resumed.\n" + options.resumeString);
+        clients[clientId].socket.emit('result',
+            "Session resumed.\n" + options.resumeString);
         clients[clientId].reconnecting = false;
       }
       clients[clientId].saneState = true;
@@ -298,7 +306,9 @@ var MathServer = function() {
         clients[clientId].reconnecting = true;
       }
       socketSanityCheck(clientId, socket);
-      var fileUpload = require('./fileUpload.js')(clients, logExceptOnTest, sshCredentials);
+      var fileUpload = require('./fileUpload.js')(clients,
+          logExceptOnTest,
+          sshCredentials);
       fileUpload.attachUploadListenerToSocket(clientId, socket);
       socket.on('input', socketInputAction(clientId));
       socket.on('reset', socketResetAction(clientId));
@@ -321,16 +331,19 @@ var MathServer = function() {
 
   var optLogCmdToFile = function(clientId, msg) {
     if (options.CMD_LOG_FOLDER) {
-      fs.appendFile(options.CMD_LOG_FOLDER + "/" + clientId + ".log", msg, function(err) {
-        if (err) {
-          logClient(clientId, "logging msg failed: " + err);
-        }
-      });
+      fs.appendFile(options.CMD_LOG_FOLDER + "/" + clientId + ".log",
+          msg,
+          function(err) {
+            if (err) {
+              logClient(clientId, "logging msg failed: " + err);
+            }
+          });
     }
   };
 
   var checkAndWrite = function(clientId, msg) {
-    if (!clients[clientId].mathProgramInstance || clients[clientId].mathProgramInstance._writableState.ended) {
+    if (!clients[clientId].mathProgramInstance ||
+        clients[clientId].mathProgramInstance._writableState.ended) {
       socketSanityCheck(clientId, clients[clientId].socket);
     } else {
       writeMsgOnStream(clientId, msg);

@@ -15,7 +15,9 @@ GLOBAL.OPTIONS = require('./default.js').get_config({
     MATH_PROGRAM: 'Singular',
     MATH_PROGRAM_COMMAND: 'Singular',
     CONTAINERS: './sshDockerContainers.js',
-    resumeString: 'Type \'listvar();\' to print the list of existing variables.\nType \'basering;\' to print the currently active ring.\n> '
+    resumeString: 'Type \'listvar();\' to print the list of ' +
+    'existing variables.\n' +
+    'Type \'basering;\' to print the currently active ring.\n> '
   },
   guestInstance: {
     host: 'localhost',

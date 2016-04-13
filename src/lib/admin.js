@@ -12,7 +12,10 @@ module.exports = function(clients, options) {
         }
       }
       response.write(
-          '<head><link rel="stylesheet" href="mathProgram.css" type="text/css" media="screen"></head>');
+          '<head>' +
+          '<link rel="stylesheet" href="mathProgram.css" ' +
+          'type="text/css" media="screen">' +
+          '</head>');
       response.write('<h1>' + options.MATH_PROGRAM + ' User Statistics</h1>');
       response.write('There are currently ' + currentUsers +
           ' users using ' + options.MATH_PROGRAM + '.<br>');

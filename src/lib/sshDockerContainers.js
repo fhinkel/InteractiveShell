@@ -31,7 +31,8 @@ var sshDockerManager = function() {
     if (instance.killNotify) {
       instance.killNotify();
     }
-    var removalCommand = hostConfig.dockerCmdPrefix + " docker rm -f " + instance.containerName;
+    var removalCommand = hostConfig.dockerCmdPrefix + " docker rm -f " +
+        instance.containerName;
     connectToHostAndExecCmd(removalCommand, function(stream) {
       stream.on('data', function() {
       });
@@ -158,10 +159,12 @@ var sshDockerManager = function() {
   };
 
   var checkForRunningSshd = function(instance, next) {
-    var getContainerProcesses = hostConfig.dockerCmdPrefix + " docker exec " + instance.containerName + " ps aux";
+    var getContainerProcesses = hostConfig.dockerCmdPrefix + " docker exec " +
+        instance.containerName + " ps aux";
     var filterForSshd = "grep \"" + hostConfig.sshdCmd + "\"";
     var excludeGrepAndWc = "grep -v grep | wc -l";
-    var sshdCheckCmd = getContainerProcesses + " | " + filterForSshd + " | " + excludeGrepAndWc;
+    var sshdCheckCmd = getContainerProcesses + " | " + filterForSshd + " | " +
+        excludeGrepAndWc;
     connectToHostAndExecCmd(sshdCheckCmd, function(stream) {
       stream.on('data', function(dataObject) {
         var data = dataObject.toString();

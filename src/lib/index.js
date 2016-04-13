@@ -7,7 +7,8 @@ var ssh2 = require('ssh2');
 var SocketIOFileUpload = require('socketio-file-upload');
 
 var MathServer = function() {
-  var staticFolder = __dirname + '/../../public/public';
+  var path = require('path');
+  var staticFolder = path.join(__dirname, '../../public/public');
   var options = OPTIONS.server_config;
 
   var logExceptOnTest = function(string) {

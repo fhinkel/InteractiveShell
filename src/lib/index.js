@@ -364,4 +364,4 @@ var MathServer = function() {
   };
 };
 
-exports.MathServer = MathServer;
+exports.mathServer = MathServer;

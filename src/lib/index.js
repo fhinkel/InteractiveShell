@@ -11,27 +11,26 @@ var ssh2 = require('ssh2');
 var SocketIOFileUpload = require('socketio-file-upload');
 
 var MathServer = function() {
-
+  var path = require('path');
   var getClientIdFromSocket;
   if (OPTIONS.authentification === "basic") {
-      var basic = auth.basic({
-        realm: "Please enter your username and password.",
-        file: __dirname + "/../../public/users.htpasswd"
-      });
-      app.use(auth.connect(basic));
-      getClientIdFromSocket = function(socket) {
-        var clientId = socket.request.headers.authorization.substring(6);
-        return clientId;
-      };
-    } else {
-      getClientIdFromSocket = function(socket) {
-        var cookies = socket.request.headers.cookie;
-        var clientId = cookies[OPTIONS.cookieName];
-        return clientId;
-      };
-    }
+    var basic = auth.basic({
+      realm: "Please enter your username and password.",
+      file: path.join(__dirname, "/../../public/users.htpasswd")
+    });
+    app.use(auth.connect(basic));
+    getClientIdFromSocket = function(socket) {
+      var clientId = socket.request.headers.authorization.substring(6);
+      return clientId;
+    };
+  } else {
+    getClientIdFromSocket = function(socket) {
+      var cookies = socket.request.headers.cookie;
+      var clientId = cookies[OPTIONS.cookieName];
+      return clientId;
+    };
+  }
 
-  var path = require('path');
   var staticFolder = path.join(__dirname, '../../public/public');
   var options = OPTIONS.serverConfig;
 

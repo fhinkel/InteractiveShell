@@ -24,7 +24,8 @@ module.exports = function(clients,
       return function() {
         fs.unlink(completePath, function(err) {
           if (err) {
-            console.error("Error unlinking user generated file " + completePath);
+            console.error("Error unlinking user generated file " +
+                completePath);
             console.error(err);
           }
         });
@@ -32,7 +33,8 @@ module.exports = function(clients,
     };
 
     var handleUserGeneratedFile = function(err, sftp) {
-      var targetPath = staticFolder + '-' + options.MATH_PROGRAM + userSpecificPath(clientId);
+      var targetPath = staticFolder + '-' + options.MATH_PROGRAM +
+          userSpecificPath(clientId);
       // console.log('Path: ' + targetPath);
       fs.mkdir(targetPath, function(err) {
         if (err) {
@@ -42,7 +44,8 @@ module.exports = function(clients,
         var completePath = targetPath + fileName;
         sftp.fastGet(path, completePath, function(error) {
           if (error) {
-            console.error("Error while downloading image. PATH: " + path + ", ERROR: " + error);
+            console.error("Error while downloading image. PATH: " +
+                path + ", ERROR: " + error);
           } else {
             setTimeout(unlink(completePath), 1000 * 60 * 10);
             // console.log("Emitting path.");
@@ -91,7 +94,8 @@ module.exports = function(clients,
       outputData = outputData.replace(/<<SPECIAL_EVENT_END<</, "");
     },
     isSpecial: function(data) {
-      var eventData = data.match(/>>SPECIAL_EVENT_START>>(.*)<<SPECIAL_EVENT_END/);
+      var eventData = data.match(
+          />>SPECIAL_EVENT_START>>(.*)<<SPECIAL_EVENT_END/);
       if (eventData) {
         return eventData[1];
       }

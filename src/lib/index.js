@@ -2,26 +2,7 @@
 
 var express = require('express');
 var app = express();
-
-if (OPTIONS.authentification === "basic") {
-  var auth = require('http-auth');
-  var basic = auth.basic({
-    realm: "Please enter your username and password.",
-    file: __dirname + "/../../public/users.htpasswd"
-  });
-  app.use(auth.connect(basic));
-  var getClientIdFromSocket = function(socket) {
-    var clientId = socket.request.headers.authorization.substring(6);
-    return clientId;
-  };
-} else {
-  var getClientIdFromSocket = function(socket) {
-    var cookies = socket.request.headers.cookie;
-    var clientId = cookies[OPTIONS.cookieName];
-    return clientId;
-  };
-}
-
+var auth = require('http-auth');
 var http = require('http').createServer(app);
 var fs = require('fs');
 var Cookies = require('cookies');
@@ -30,6 +11,26 @@ var ssh2 = require('ssh2');
 var SocketIOFileUpload = require('socketio-file-upload');
 
 var MathServer = function() {
+
+  var getClientIdFromSocket;
+  if (OPTIONS.authentification === "basic") {
+      var basic = auth.basic({
+        realm: "Please enter your username and password.",
+        file: __dirname + "/../../public/users.htpasswd"
+      });
+      app.use(auth.connect(basic));
+      getClientIdFromSocket = function(socket) {
+        var clientId = socket.request.headers.authorization.substring(6);
+        return clientId;
+      };
+    } else {
+      getClientIdFromSocket = function(socket) {
+        var cookies = socket.request.headers.cookie;
+        var clientId = cookies[OPTIONS.cookieName];
+        return clientId;
+      };
+    }
+
   var path = require('path');
   var staticFolder = path.join(__dirname, '../../public/public');
   var options = OPTIONS.serverConfig;

@@ -3,14 +3,14 @@ var configuration = function(overrideOptions) {
   var options = {
     cookieName: "tryM2",
     authentification: "none",
-    server_config: {
+    serverConfig: {
       CONTAINERS: './LocalContainerManager.js',
       MATH_PROGRAM: "Macaulay2",
       MATH_PROGRAM_COMMAND: 'M2',
       resumeString: '',
       port: '8002'
     },
-    container_config: {
+    containerConfig: {
       sshdCmd: "/usr/sbin/sshd -D",
       containerType: "m2container",
       instance: {
@@ -21,7 +21,7 @@ var configuration = function(overrideOptions) {
         containerName: ''
       }
     },
-    per_container_resources: {
+    perContainerResources: {
       cpuShares: 2,
       memory: 128
     },
@@ -66,5 +66,5 @@ var configuration = function(overrideOptions) {
   return options;
 };
 
-exports.get_config = configuration;
+exports.getConfig = configuration;
 

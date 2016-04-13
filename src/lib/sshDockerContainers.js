@@ -3,7 +3,7 @@ var ssh2 = require('ssh2');
 var fs = require('fs');
 
 var sshDockerManager = function() {
-  var resources = OPTIONS.per_container_resources;
+  var resources = OPTIONS.perContainerResources;
   var guestInstance = OPTIONS.guestInstance;
   var hostConfig = OPTIONS.hostConfig;
 

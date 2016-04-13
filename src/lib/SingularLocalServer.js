@@ -1,5 +1,5 @@
-GLOBAL.OPTIONS = require('./default.js').get_config({
-  server_config: {
+GLOBAL.OPTIONS = require('./default.js').getConfig({
+  serverConfig: {
     port: 8002,
     MATH_PROGRAM: 'Singular',
     MATH_PROGRAM_COMMAND: 'Singular',

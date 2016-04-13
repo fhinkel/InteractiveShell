@@ -1,4 +1,4 @@
-GLOBAL.OPTIONS = require('./default.js').get_config({
+GLOBAL.OPTIONS = require('./default.js').getConfig({
   hostConfig: {
     dockerRunCmd: '',
     maxContainerNumber: 10,
@@ -10,7 +10,7 @@ GLOBAL.OPTIONS = require('./default.js').get_config({
     sshKey: "/home/user/.ssh/id_rsa",
     dockerCmdPrefix: ""
   },
-  server_config: {
+  serverConfig: {
     port: 8002,
     MATH_PROGRAM: 'Singular',
     MATH_PROGRAM_COMMAND: 'Singular',

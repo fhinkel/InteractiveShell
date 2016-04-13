@@ -32,7 +32,7 @@ var SocketIOFileUpload = require('socketio-file-upload');
 var MathServer = function() {
   var path = require('path');
   var staticFolder = path.join(__dirname, '../../public/public');
-  var options = OPTIONS.server_config;
+  var options = OPTIONS.serverConfig;
 
   var logExceptOnTest = function(string) {
     if (process.env.NODE_ENV !== 'test') {

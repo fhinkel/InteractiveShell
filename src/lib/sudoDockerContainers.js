@@ -4,8 +4,8 @@ var exec = require('child_process').exec;
 var waitForSshd;
 
 var dockerManager = function() {
-  var resources = OPTIONS.per_container_resources;
-  var options = OPTIONS.container_config;
+  var resources = OPTIONS.perContainerResources;
+  var options = OPTIONS.containerConfig;
 
   var removeInstance = function(instance) {
     console.log("Removing container: " + instance.containerName);

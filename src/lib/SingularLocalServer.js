@@ -9,5 +9,5 @@ GLOBAL.OPTIONS = require('./default.js').get_config({
 
 console.log(OPTIONS);
 
-var SingularServer = require('./index.js').MathServer();
+var SingularServer = require('./index.js').mathServer();
 SingularServer.listen();

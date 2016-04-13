@@ -7,7 +7,7 @@ var multiMachineManager = function() {
     this.currentContainerNumber = 0;
     this.load = 0;
     this.updateLoad = function() {
-      if (this.maxContainerNumber == 0) {
+      if (this.maxContainerNumber === 0) {
         console.log("Why are you even considering machines that don't allow users?");
         this.load = 1;
       } else {

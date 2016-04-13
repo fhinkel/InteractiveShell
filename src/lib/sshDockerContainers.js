@@ -1,3 +1,4 @@
+/* global OPTIONS */
 var ssh2 = require('ssh2');
 var fs = require('fs');
 
@@ -32,9 +33,9 @@ var sshDockerManager = function() {
     }
     var removalCommand = hostConfig.dockerCmdPrefix + " docker rm -f " + instance.containerName;
     connectToHostAndExecCmd(removalCommand, function(stream) {
-      stream.on('data', function(dataObject) {
+      stream.on('data', function() {
       });
-      stream.stderr.on('data', function(dataObject) {
+      stream.stderr.on('data', function() {
       });
       removeInstanceFromArray(instance);
       if (next) {
@@ -92,8 +93,8 @@ var sshDockerManager = function() {
       });
 
       stream.stderr.on('data', function(dataObject) {
-                // If we get stderr, there will not come an id, so don't be
-                // afraid of data.
+        // If we get stderr, there will not come an id, so don't be
+        // afraid of data.
         var data = dataObject.toString();
         if (data.match(/ERROR/i)) {
           getNewInstance(next);
@@ -115,7 +116,7 @@ var sshDockerManager = function() {
         });
         stream.on('end', function() {
           stream.close();
-                    // console.log('I ended.');
+          // console.log('I ended.');
           connection.end();
         });
         stream.on('Error', function(err) {
@@ -137,11 +138,14 @@ var sshDockerManager = function() {
   };
 
   var checkForSuccessfulContainerStart = function(instance, next) {
-    var getListOfAllContainers = hostConfig.dockerCmdPrefix + ' docker ps --no-trunc | grep ' + instance.containerName + ' | wc -l';
+    var getListOfAllContainers = hostConfig.dockerCmdPrefix +
+        ' docker ps --no-trunc | grep ' +
+        instance.containerName +
+        ' | wc -l';
     connectToHostAndExecCmd(getListOfAllContainers, function(stream) {
       stream.on('data', function(dataObject) {
         var data = dataObject.toString();
-        if (data == 0) {
+        if (data === "") {
           getNewInstance(next);
         } else {
           checkForRunningSshd(instance, next);
@@ -161,7 +165,7 @@ var sshDockerManager = function() {
     connectToHostAndExecCmd(sshdCheckCmd, function(stream) {
       stream.on('data', function(dataObject) {
         var data = dataObject.toString();
-        if (data == 0) {
+        if (data === "") {
           checkForRunningSshd(instance, next);
         } else {
           instance.lastActiveTime = Date.now();

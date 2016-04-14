@@ -49,7 +49,7 @@ var MathServer = function() {
     };
   };
 
-  // Global array of all Client objects.  Each has a math program process.
+  //  object of all client objects.  Each has a math program process.
   var clients = {
     totalUsers: 0
   };
@@ -264,7 +264,7 @@ var MathServer = function() {
     };
     var prefix = staticFolder + "-" + options.MATH_PROGRAM + "/";
     var tutorialReader = require('./tutorialReader')(prefix, fs);
-    var admin = require('./admin')(clients, options);
+    var admin = require('./admin');
     app.use(favicon(staticFolder + '-' +
         options.MATH_PROGRAM + '/favicon.ico'));
     app.use(SocketIOFileUpload.router);
@@ -272,7 +272,7 @@ var MathServer = function() {
     app.use(serveStatic(staticFolder + '-' + options.MATH_PROGRAM));
     app.use(serveStatic(staticFolder + '-common'));
     app.use(expressWinston.logger(loggerSettings));
-    app.use('/admin', admin.stats)
+    app.use('/admin', admin(clients, options).stats)
         .use('/getListOfTutorials', tutorialReader.getList)
         .use(unhandled);
   };

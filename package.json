@@ -62,7 +62,7 @@
     "eslint-config-google": "^0.5.0",
     "jsdom": "4.3.0",
     "mocha": "2.1.0",
-    "rewire": "2.3.1",
+    "rewire": "^2.5.1",
     "sinon": "1.14.1",
     "supertest": "0.15.0",
     "webpack": "1.12.14"

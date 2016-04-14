@@ -8,7 +8,6 @@ module.exports = function(clients, logExceptOnTest) {
   };
   return {
     getNewId: function() {
-      clients.totalUsers += 1;
       var clientId;
       do {
         var randomId = Math.random() * 1000000;

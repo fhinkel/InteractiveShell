@@ -236,6 +236,7 @@ var MathServer = function() {
 
     if (!clients[clientID]) {
       clients[clientID] = new Client();
+      clients.totalUsers += 1;
     }
     next();
   };
@@ -282,6 +283,7 @@ var MathServer = function() {
     if (!clients[clientId]) {
       console.log("No client, yet.");
       clients[clientId] = new Client();
+      clients.totalUsers += 1;
       clients[clientId].clientID = clientId;
     } else if (!clients[clientId].saneState) {
       console.log("Have client " + clientId + ", but he is not sane.");

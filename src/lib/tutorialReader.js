@@ -35,6 +35,9 @@ module.exports = function(prefix, fs) {
     var folderList = [pathForTutorials, pathForUserTutorials];
     async.filter(folderList, prefixedFsExists, function(existingFolders) {
       async.concat(existingFolders, prefixedFsReaddir, function(err, files) {
+        if (err) {
+          throw new Error("async.concat() failed: " + err);
+        }
         var tutorials = files.filter(function(filename) {
           return filename.match(/\.html$/);
         });

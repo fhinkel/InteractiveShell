@@ -33,6 +33,9 @@ module.exports = function(clients,
     };
 
     var handleUserGeneratedFile = function(err, sftp) {
+      if (err) {
+        throw new Error('ssh2.sftp() failed: ' + err);
+      }
       var targetPath = staticFolder + '-' + options.MATH_PROGRAM +
           userSpecificPath(clientId);
       // console.log('Path: ' + targetPath);

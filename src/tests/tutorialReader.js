@@ -7,7 +7,8 @@ describe('GetListOfTutorials Module test', function() {
 
   before(function() {
     fs = require('fs');
-    directoryReader = require('../lib/tutorialReader.js')("public/public-Macaulay2/", fs);
+    directoryReader = require('../lib/tutorialReader.js')(
+        "public/public-Macaulay2/", fs);
   });
 
   describe('When we call getTutorialList on the real file system', function() {
@@ -27,9 +28,9 @@ describe('GetListOfTutorials Module test', function() {
   });
 
   describe('When we call getTutorialList with a stubbed file system', function() {
-    var readDirStub,
-        existsStub,
-        tutorials;
+    var readDirStub;
+    var existsStub;
+    var tutorials;
 
     beforeEach(function() {
       readDirStub = sinon.stub(fs, 'readdir');
@@ -61,7 +62,6 @@ describe('GetListOfTutorials Module test', function() {
       existsStub.yields(true);
 
       directoryReader.getList(null, response);
-
     });
 
     it('should get the list from mocked file system without shared tutorials', function(done) {
@@ -91,11 +91,12 @@ describe('GetListOfTutorials Module test', function() {
       var sorted = directoryReader.sortTutorials(tutorials, 'b');
       assert.deepEqual(sorted, ['b', 'a', 'c']);
     });
-    it('should move the tutorial to the beginning and keep the others', function() {
-      var tutorials = ['c', 'b', 'a'];
-      var sorted = directoryReader.sortTutorials(tutorials, 'b');
-      assert.deepEqual(sorted, ['b', 'c', 'a']);
-    });
+    it('should move the tutorial to the beginning and keep the others',
+        function() {
+          var tutorials = ['c', 'b', 'a'];
+          var sorted = directoryReader.sortTutorials(tutorials, 'b');
+          assert.deepEqual(sorted, ['b', 'c', 'a']);
+        });
     it('should move do nothing it index not found', function() {
       var tutorials = ['c', 'b', 'a'];
       var sorted = directoryReader.sortTutorials(tutorials, 'x');

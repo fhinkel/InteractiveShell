@@ -1,3 +1,4 @@
+/* eslint "no-unused-vars": "off" */
 var multiMachineManager = function() {
   var Machine = function() {
     this.name = '';

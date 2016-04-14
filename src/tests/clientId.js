@@ -2,7 +2,7 @@ var sinon = require('sinon');
 var assert = require('chai').assert;
 var rewire = require('rewire');
 
-describe('Admin Module:', function() {
+describe('ClientId Module:', function() {
   var clientId;
   var clients;
   var clientIdModule;

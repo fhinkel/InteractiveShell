@@ -265,7 +265,7 @@ var MathServer = function() {
     };
     var prefix = staticFolder + "-" + options.MATH_PROGRAM + "/";
     var tutorialReader = require('./tutorialReader')(prefix, fs);
-    var admin = require('./admin');
+    var admin = require('./admin')(clients, options);
     app.use(favicon(staticFolder + '-' +
         options.MATH_PROGRAM + '/favicon.ico'));
     app.use(SocketIOFileUpload.router);
@@ -273,9 +273,9 @@ var MathServer = function() {
     app.use(serveStatic(staticFolder + '-' + options.MATH_PROGRAM));
     app.use(serveStatic(staticFolder + '-common'));
     app.use(expressWinston.logger(loggerSettings));
-    app.use('/admin', admin(clients, options).stats)
-        .use('/getListOfTutorials', tutorialReader.getList)
-        .use(unhandled);
+    app.use('/admin', admin.stats);
+    app.use('/getListOfTutorials', tutorialReader.getList);
+    app.use(unhandled);
   };
 
   var socketSanityCheck = function(clientId, socket) {

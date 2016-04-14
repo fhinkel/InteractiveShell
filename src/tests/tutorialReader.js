@@ -1,7 +1,7 @@
 var sinon = require('sinon');
 var assert = require('chai').assert;
 
-describe('GetListOfTutorials Module test', function() {
+describe('GetListOfTutorials Module:', function() {
   var fs;
   var directoryReader;
 

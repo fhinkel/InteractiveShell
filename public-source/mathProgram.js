@@ -87,22 +87,28 @@ trym2.navBar = function () {
 
 trym2.tutorials = [];
 
+trym2.accordionCssClasses = {
+    titleSymbol: "ui-icon ui-accordion-header-icon ui-icon-triangle-1-e",
+    title: "ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons",
+    titleHover: "ui-state-hover",
+    titleToggleClass: "ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top",
+    titleSymbolToggleClass: "ui-icon-triangle-1-e ui-icon-triangle-1-s",
+    content: "ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom"
+};
+
 trym2.appendTutorialToAccordion = function (title, lessons, index) {
     title.wrapInner("<a href='#' class='menuTitle' tutorialid=" + index + "/>")
-        .addClass(
-            "ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons")
+        .addClass(trym2.accordionCssClasses.title)
         .prepend(
-            '<span class="ui-icon ui-accordion-header-icon ui-icon-triangle-1-e"></span>')
+            '<span class="' + trym2.accordionCssClasses.titleSymbol + '"></span>')
         .hover(function () {
-            $(this).toggleClass("ui-state-hover");
+            $(this).toggleClass(trym2.accordionCssClasses.titleHover);
         })
         .click(function () {
-            $(this)
-                .toggleClass(
-                    "ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top")
+            $(this).toggleClass(trym2.accordionCssClasses.titleToggleClass)
                 .find("> .ui-icon").toggleClass(
-                "ui-icon-triangle-1-e ui-icon-triangle-1-s").end()
-                .next().slideToggle();
+                trym2.accordionCssClasses.titleSymbolToggleClass).end()
+                .next().slideToggle(trym2.scrollDownUntilTutorialVisible);
             return false;
         })
         .next();
@@ -116,16 +122,16 @@ trym2.appendTutorialToAccordion = function (title, lessons, index) {
     content = content + '</ul>';
     if (index > 0) {
         div.append(content).addClass(
-            "ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom")
+            trym2.accordionCssClasses.content)
             .hide();
     } else {
         // Expand the first tutorial:
         title.toggleClass(
-            "ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top")
+            trym2.accordionCssClasses.titleToggleClass)
             .find("> .ui-icon").toggleClass(
-            "ui-icon-triangle-1-e ui-icon-triangle-1-s");
+            trym2.accordionCssClasses.titleSymbolToggleClass);
         div.append(content).addClass(
-            "ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom");
+            trym2.accordionCssClasses.content);
     }
     $("#loadTutorialMenu").before(title);
     $("#loadTutorialMenu").before(div);
@@ -149,17 +155,29 @@ trym2.addLoadTutorialButton = function () {
 
 trym2.addExpandLoadTutorialInstructionsButton = function () {
     var expandButton = $("<span>");
-    expandButton.addClass("ui-icon ui-accordion-header-icon ui-icon-triangle-1-e");
+    expandButton.addClass(trym2.accordionCssClasses.titleSymbol);
     expandButton.click(function () {
         var title = $("#loadTutorialMenu");
         var instructions = $("#loadTutorialInstructions");
-        expandButton.toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s");
+        expandButton.toggleClass(trym2.accordionCssClasses.titleSymbolToggleClass);
         title.toggleClass(
-            "ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top");
-        instructions.slideToggle();
+            trym2.accordionCssClasses.titleToggleClass);
+        instructions.slideToggle(trym2.scrollDownUntilTutorialVisible);
     });
     $("#loadTutorialMenu").append(expandButton);
 
+};
+
+trym2.scrollDownUntilTutorialVisible = function(){
+    var y = $(this).position().top;
+    var height = parseInt($("#home").css('height'), 10);
+    var total_height = parseInt($(this).css('height'), 10) + 50;
+    if (height - y < total_height) {
+        var scroll = total_height - height + y;
+        $("#home").animate({
+            scrollTop: ($("#home").scrollTop() + scroll)
+        }, 400);
+    }
 };
 
 trym2.appendLoadTutorialTitleToAccordion = function () {
@@ -167,7 +185,7 @@ trym2.appendLoadTutorialTitleToAccordion = function () {
     var title = $("<h3>");
     title.prop("id", "loadTutorialMenu");
     title.addClass(
-        "ui-accordion-header ui-helper-reset ui-state-default ui-corner-all ui-accordion-icons");
+        trym2.accordionCssClasses.title);
     $("#accordion").append(title);
 };
 
@@ -179,7 +197,7 @@ trym2.appendInstructionsToAccordion = function () {
     });
     instructions.prop("id", "loadTutorialInstructions");
     instructions.addClass(
-        "ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom").hide();
+        trym2.accordionCssClasses.content).hide();
     $("#accordion").append(instructions);
 };
 

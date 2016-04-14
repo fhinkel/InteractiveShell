@@ -148,7 +148,7 @@ var sshDockerManager = function() {
     }, next);
   };
 
-  var getNewInstance = function(next) {
+  function getNewInstance(next) {
     if (currentContainers.length >= hostConfig.maxContainerNumber) {
       killOldestContainer(next);
     } else {
@@ -157,13 +157,13 @@ var sshDockerManager = function() {
       currentInstance.containerName = "m2Port" + currentInstance.port;
       connectWithSshAndCreateContainer(currentInstance, next);
     }
-  };
+  }
 
   process.on('uncaughtException', function(err) {
     console.error('Caught exception in cm process object: ' + err);
   });
 
-  var checkForRunningSshd = function(instance, next) {
+  function checkForRunningSshd(instance, next) {
     var getContainerProcesses = hostConfig.dockerCmdPrefix + " docker exec " +
         instance.containerName + " ps aux";
     var filterForSshd = "grep \"" + hostConfig.sshdCmd + "\"";
@@ -185,7 +185,7 @@ var sshDockerManager = function() {
       stream.stderr.on('data', function() {
       });
     }, next);
-  };
+  }
 
   var updateLastActiveTime = function(instance) {
     instance.lastActiveTime = Date.now();

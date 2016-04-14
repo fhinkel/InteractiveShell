@@ -108,44 +108,46 @@
             <a class="mdl-navigation__link" href="">Help</a>
         </nav>
     </div>
-    <main class="mdl-layout__content superhigh">
-        <div class="left halfWidth rel superhigh">
+    <main class="mdl-layout__content" id="content">
+      <div class="mdl-grid superhigh">
+         <div class="mdl-cell mdl-cell--6-col mdl-cell--stretch" id="left-half">
 
             <section class="mdl-layout__tab-panel is-active" id="scroll-tab-1">
-                <div class="page-content" id="home">
-                    <img class="image-text-wrap" src="frontPageImage.jpg"/>
+               <div class="page-content" id="home">
+               <img class="image-text-wrap" src="frontPageImage.jpg"/>
 
-                    <h3>Welcome to Macaulay2</h3>
+               <h3>Welcome to Macaulay2</h3>
 
-                    <p>This web site allows you to try, learn, and use Macaulay2, without the need to
-                        install it.
-                        Get started by selecting a tutorial below. To learn how to use this site effectively,
-                        try the <b>Welcome</b> tutorial. Have fun!
-                    </p>
+               <p>This web site allows you to try, learn, and use Macaulay2, without the need to
+               install it.
+               Get started by selecting a tutorial below. To learn how to use this site effectively,
+               try the <b>Welcome</b> tutorial. Have fun!
+               </p>
 
-                    <p><a href='http://macaulay2.com' target='_blank'>Macaulay2</a> is an open source software
-                        system devoted to supporting research in algebraic geometry and commutative
-                        algebra, and related field in mathematics or applications. </p>
-                </div>
+               <p><a href='http://macaulay2.com' target='_blank'>Macaulay2</a> is an open source software
+               system devoted to supporting research in algebraic geometry and commutative
+               algebra, and related field in mathematics or applications. </p>
+               </div>
+               </section>
+
+               <section class="mdl-layout__tab-panel" id="scroll-tab-2">
+               <div class="page-content" id="lesson">
+               </div>
             </section>
 
-            <section class="mdl-layout__tab-panel" id="scroll-tab-2">
-                <div class="page-content" id="lesson">
-                </div>
+            <section class="mdl-layout__tab-panel mdl-cell--stretch superhigh overflow-y:hidden;" id="scroll-tab-3">
+               <div class="page-content mdl-cell--stretch superhigh" id="inputarea">
+                  <textarea id="M2In" wrap='off' autocorrect="off" spellcheck="false" autocapitalize="off" class="mdl-cell--stretch">
+                  </textarea>
+               </div>
             </section>
+         </div>
 
-            <section class="mdl-layout__tab-panel superhigh" id="scroll-tab-3">
-                <div class="page-content" id="inputarea">
-        <textarea id="M2In" wrap='off' autocorrect="off" spellcheck="false" autocapitalize="off">
-        </textarea>
-                </div>
-            </section>
-        </div>
-
-        <div class="page-content right halfWidth rel" id="outputarea">
-        <textarea id="M2Out" wrap='off' autocorrect="off" spellcheck="false" autocapitalize="off">
-        </textarea>
-        </div>
+         <div class="mdl-cell mdl-cell--stretch mdl-cell--6-col" id="outputarea">
+            <textarea id="M2Out" wrap='off' class="mdl-cell--stretch" autocorrect="off" spellcheck="false" autocapitalize="off">
+            </textarea>
+         </div>
+      </div>
     </main>
 
 

@@ -32,7 +32,6 @@ trym2.accordionCssClasses = {
     title: "mdl-button mdl-js-button mdl-button--raised mdl-list__item",
     titleHover: "mdl-button--colored",
     titleToggleClass: "mdl-button--accent",
-    titleSymbolToggleClass: "ui-icon-triangle-1-e ui-icon-triangle-1-s",
     content: "mdl-list__item-text-body mdl-list__item",
     titleHref: "menuTitle mdl-button mdl-js-button mdl-button-raised",
     submenuHref: "submenuItem"
@@ -48,7 +47,8 @@ toggleText: function(text) {
     }
 });
 
-trym2.appendTutorialToAccordion = function (title, lessons, index) {
+trym2.appendTutorialToAccordion = function (tmptitle, lessons, index) {
+    var title = tmptitle.clone();
     title.wrapInner("<a href='#' class='" + trym2.accordionCssClasses.titleHref + "' tutorialid=" + index + "/>")
         .addClass(trym2.accordionCssClasses.title)
         .prepend(
@@ -107,12 +107,13 @@ trym2.addLoadTutorialButton = function () {
 };
 
 trym2.addExpandLoadTutorialInstructionsButton = function () {
-    var expandButton = $("<span>");
-    expandButton.addClass(trym2.accordionCssClasses.titleSymbol);
+    var expandButton = $("<i>");
+    expandButton.addClass(trym2.accordionCssClasses.titleSymbolClass);
+    expandButton.text(trym2.accordionCssClasses.titleSymbolActive);
     expandButton.click(function () {
         var title = $("#loadTutorialMenu");
         var instructions = $("#loadTutorialInstructions");
-        expandButton.toggleClass(trym2.accordionCssClasses.titleSymbolToggleClass);
+        expandButton.toggleText(trym2.accordionCssClasses.titleSymbolInactive + " " + trym2.accordionCssClasses.titleSymbolActive);
         title.toggleClass(
             trym2.accordionCssClasses.titleToggleClass);
         instructions.slideToggle(trym2.scrollDownUntilTutorialVisible);
@@ -123,12 +124,12 @@ trym2.addExpandLoadTutorialInstructionsButton = function () {
 
 trym2.scrollDownUntilTutorialVisible = function(){
     var y = $(this).position().top;
-    var height = parseInt($("#home").css('height'), 10);
+    var height = parseInt($("#scroll-tab-1").css('height'), 10);
     var total_height = parseInt($(this).css('height'), 10) + 50;
     if (height - y < total_height) {
         var scroll = total_height - height + y;
-        $("#home").animate({
-            scrollTop: ($("#home").scrollTop() + scroll)
+        $("#scroll-tab-1").animate({
+            scrollTop: ($("#scroll-tab-1").scrollTop() + scroll)
         }, 400);
     }
 };
@@ -163,7 +164,6 @@ trym2.makeAccordion = function (tutorials) {
         trym2.appendTutorialToAccordion(title, lessons, i);
     }
 
-    $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset");
     $(".menuTitle").on("click", {lessonIdNr: "0"}, trym2.showLesson);
     trym2.loadLesson(trym2.tutorialNr, trym2.lessonNr);
 
@@ -205,6 +205,7 @@ trym2.loadLesson = function (tutorialid, lessonid) {
         .html;
     if (changedLesson) {
         console.log("Lesson changed");
+        console.log(this.tutorials[this.tutorialNr].title);
         var title = this.tutorials[this.tutorialNr].title.text();
         $("#lesson").html(lessonContent).prepend("<h3>" + title + "</h3>").show();
         $("#lesson").scrollTop(0); //scroll to the top of a new lesson

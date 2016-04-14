@@ -76,24 +76,33 @@ body {
     padding: 0px 4px;
 }
 
-#inputarea, #lesson, #home, #outputarea {
+#content{
+   height:100%;
+   overflow-y: hidden;
+}
+
+#inputarea, #lesson, #outputarea {
     height: 100%;
     min-height: 100%;
 }
 
-.superhigh {
+.superhigh{
     height: 100%;
 }
 
+#left-half{
+   overflow-y: hidden;
+}
+
+
+
 #lesson, #home {
     border-radius: 5px;
-    overflow-y: auto;
     font-family: Lucida Grande;
-    padding: 20px 50px;
+    padding: 10px 30px;
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
-
 }
 
 #M2In, #M2Out {
@@ -134,6 +143,15 @@ body {
     .ui-button, .ui-button-text {
         font-size: 10px !important;
     }
+}
+
+#scroll-tab-3 {
+   overflow-y: hidden;
+}
+
+#scroll-tab-1, #scroll-tab-2 {
+   overflow-y: scroll;
+    height: 100%;
 }
 
 code {

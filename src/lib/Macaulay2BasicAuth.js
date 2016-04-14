@@ -10,5 +10,5 @@ GLOBAL.OPTIONS = require('./default.js').getConfig({
 
 console.log(GLOBAL.OPTIONS);
 
-var Macaulay2Server = require('./index.js').MathServer();
+var Macaulay2Server = require('./index.js').mathServer();
 Macaulay2Server.listen();

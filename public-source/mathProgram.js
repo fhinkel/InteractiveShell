@@ -102,19 +102,7 @@ trym2.appendTutorialToAccordion = function (title, lessons, index) {
                     "ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top")
                 .find("> .ui-icon").toggleClass(
                 "ui-icon-triangle-1-e ui-icon-triangle-1-s").end()
-                .next().slideToggle(function () {
-                // Needs improvement! Possibly do this synchronously with the slide toggle,
-                // i.e. not as a callback.
-                var y = $(this).position().top;
-                var height = parseInt($("#home").css('height'), 10);
-                var total_height = parseInt($(this).css('height'), 10) + 50;
-                if (height - y < total_height) {
-                    var scroll = total_height - height + y;
-                    $("#home").animate({
-                        scrollTop: ($("#home").scrollTop() + scroll)
-                    }, 400);
-                }
-            });
+                .next().slideToggle();
             return false;
         })
         .next();
@@ -168,19 +156,7 @@ trym2.addExpandLoadTutorialInstructionsButton = function () {
         expandButton.toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s");
         title.toggleClass(
             "ui-accordion-header-active ui-state-active ui-corner-all ui-corner-top");
-        instructions.slideToggle(function () {
-            // Needs improvement! Possibly do this synchronously with the slide toggle,
-            // i.e. not as a callback.
-            var y = $(this).position().top;
-            var height = parseInt($("#home").css('height'), 10);
-            var total_height = parseInt($(this).css('height'), 10) + 50;
-            if (height - y < total_height) {
-                var scroll = total_height - height + y;
-                $("#home").animate({
-                    scrollTop: ($("#home").scrollTop() + scroll)
-                }, 400);
-            }
-        });
+        instructions.slideToggle();
     });
     $("#loadTutorialMenu").append(expandButton);
 

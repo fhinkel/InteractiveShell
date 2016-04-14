@@ -1,3 +1,6 @@
+2016-04-14
+* Clean up logging concept with environments
+
 2016-03-26
 * Playing with Google's Material Design light
 * Use fetch instead of $ajax

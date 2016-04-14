@@ -26,85 +26,6 @@ var sshDockerManager = function() {
     return result;
   };
 
-  var removeInstance = function(instance, next) {
-    console.log("Removing container: " + instance.containerName);
-    if (instance.killNotify) {
-      instance.killNotify();
-    }
-    var removalCommand = hostConfig.dockerCmdPrefix + " docker rm -f " +
-        instance.containerName;
-    connectToHostAndExecCmd(removalCommand, function(stream) {
-      stream.on('data', function() {
-      });
-      stream.stderr.on('data', function() {
-      });
-      removeInstanceFromArray(instance);
-      if (next) {
-        next();
-      }
-    });
-  };
-
-  var addInstanceToArray = function(instance) {
-    currentContainers.push(instance);
-  };
-
-  var removeInstanceFromArray = function(instance) {
-    var position = currentContainers.indexOf(instance);
-    currentContainers.splice(position, 1);
-  };
-
-  var isLegal = function(instance) {
-    var age = Date.now() - instance.lastActiveTime;
-    return age > hostConfig.minContainerAge;
-  };
-
-  var killOldestContainer = function(next) {
-    sortInstancesByAge();
-    if (isLegal(currentContainers[0])) {
-      removeInstance(currentContainers[0], function() {
-        getNewInstance(next);
-      });
-    } else {
-      throw new Error("Too many active users.");
-    }
-  };
-
-  var getNewInstance = function(next) {
-    if (currentContainers.length >= hostConfig.maxContainerNumber) {
-      killOldestContainer(next);
-    } else {
-      var currentInstance = JSON.parse(JSON.stringify(guestInstance));
-      guestInstance.port++;
-      currentInstance.containerName = "m2Port" + currentInstance.port;
-      connectWithSshAndCreateContainer(currentInstance, next);
-    }
-  };
-
-  process.on('uncaughtException', function(err) {
-    console.error('Caught exception in cm process object: ' + err);
-  });
-
-  var connectWithSshAndCreateContainer = function(instance, next) {
-    var dockerRunCmd = getDockerStartCmd(instance);
-    connectToHostAndExecCmd(dockerRunCmd, function(stream) {
-      stream.on('data', function(dataObject) {
-        instance.containerId = dataObject.toString();
-        checkForSuccessfulContainerStart(instance, next);
-      });
-
-      stream.stderr.on('data', function(dataObject) {
-        // If we get stderr, there will not come an id, so don't be
-        // afraid of data.
-        var data = dataObject.toString();
-        if (data.match(/ERROR/i)) {
-          getNewInstance(next);
-          stream.end();
-        }
-      });
-    }, next);
-  };
-
   var connectToHostAndExecCmd = function(cmd, next, errorHandler) {
     var connection = new ssh2.Client();
     connection.on('ready', function() {
@@ -138,6 +59,56 @@ var sshDockerManager = function() {
     });
   };
 
+  var removeInstanceFromArray = function(instance) {
+    var position = currentContainers.indexOf(instance);
+    currentContainers.splice(position, 1);
+  };
+
+  var removeInstance = function(instance, next) {
+    console.log("Removing container: " + instance.containerName);
+    if (instance.killNotify) {
+      instance.killNotify();
+    }
+    var removalCommand = hostConfig.dockerCmdPrefix + " docker rm -f " +
+        instance.containerName;
+    connectToHostAndExecCmd(removalCommand, function(stream) {
+      stream.on('data', function() {
+      });
+      stream.stderr.on('data', function() {
+      });
+      removeInstanceFromArray(instance);
+      if (next) {
+        next();
+      }
+    });
+  };
+
+  var addInstanceToArray = function(instance) {
+    currentContainers.push(instance);
+  };
+
+  var isLegal = function(instance) {
+    var age = Date.now() - instance.lastActiveTime;
+    return age > hostConfig.minContainerAge;
+  };
+
+  var sortInstancesByAge = function() {
+    currentContainers.sort(function(a, b) {
+      return a.lastActiveTime - b.lastActiveTime;
+    });
+  };
+
+  var killOldestContainer = function(next) {
+    sortInstancesByAge();
+    if (isLegal(currentContainers[0])) {
+      removeInstance(currentContainers[0], function() {
+        getNewInstance(next);
+      });
+    } else {
+      throw new Error("Too many active users.");
+    }
+  };
+
   var checkForSuccessfulContainerStart = function(instance, next) {
     var getListOfAllContainers = hostConfig.dockerCmdPrefix +
         ' docker ps --no-trunc | grep ' +
@@ -157,6 +128,40 @@ var sshDockerManager = function() {
       });
     }, next);
   };
+
+  var connectWithSshAndCreateContainer = function(instance, next) {
+    var dockerRunCmd = getDockerStartCmd(instance);
+    connectToHostAndExecCmd(dockerRunCmd, function(stream) {
+      stream.on('data', function(dataObject) {
+        instance.containerId = dataObject.toString();
+        checkForSuccessfulContainerStart(instance, next);
+      });
+      stream.stderr.on('data', function(dataObject) {
+        // If we get stderr, there will not come an id, so don't be
+        // afraid of data.
+        var data = dataObject.toString();
+        if (data.match(/ERROR/i)) {
+          getNewInstance(next);
+          stream.end();
+        }
+      });
+    }, next);
+  };
+
+  var getNewInstance = function(next) {
+    if (currentContainers.length >= hostConfig.maxContainerNumber) {
+      killOldestContainer(next);
+    } else {
+      var currentInstance = JSON.parse(JSON.stringify(guestInstance));
+      guestInstance.port++;
+      currentInstance.containerName = "m2Port" + currentInstance.port;
+      connectWithSshAndCreateContainer(currentInstance, next);
+    }
+  };
+
+  process.on('uncaughtException', function(err) {
+    console.error('Caught exception in cm process object: ' + err);
+  });
 
   var checkForRunningSshd = function(instance, next) {
     var getContainerProcesses = hostConfig.dockerCmdPrefix + " docker exec " +
@@ -180,12 +185,6 @@ var sshDockerManager = function() {
       stream.stderr.on('data', function() {
       });
     }, next);
-  };
-
-  var sortInstancesByAge = function() {
-    currentContainers.sort(function(a, b) {
-      return a.lastActiveTime - b.lastActiveTime;
-    });
   };
 
   var updateLastActiveTime = function(instance) {

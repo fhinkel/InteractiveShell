@@ -64,12 +64,32 @@ describe('Admin Module:', function() {
       assert.equal(currentUsers(clients), 2);
     });
   });
+  describe('Number of total users', function() {
+    it('should be correct', function() {
+      var totalUsers = adminModule.__get__("totalUsers");
+      assert.equal(totalUsers(clients), 17);
+    });
+  });
   describe('Adding new users', function() {
     it('should change the stats', function() {
       var newUserId = 'user100';
       clients[newUserId] = {};
       var currentUsers = adminModule.__get__("currentUsers");
       assert.equal(currentUsers(clients), 3);
+    });
+  });
+  describe('Deleting users', function() {
+    it('should change the stats', function() {
+      delete clients.user12;
+      var currentUsers = adminModule.__get__("currentUsers");
+      assert.equal(currentUsers(clients), 2);
+    });
+  });
+  describe('Deleting users', function() {
+    it('should not change total users', function() {
+      delete clients.user12;
+      var totalUsers = adminModule.__get__("totalUsers");
+      assert.equal(totalUsers(clients), 17);
     });
   });
 });

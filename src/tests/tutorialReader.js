@@ -13,6 +13,7 @@ describe('GetListOfTutorials Module test', function() {
 
   describe('When we call getTutorialList on the real file system', function() {
     it('should get the list with welcome tutorials', function(done) {
+      var spy;
       var response = {
         writeHead: function() {
         },
@@ -22,15 +23,14 @@ describe('GetListOfTutorials Module test', function() {
           done();
         }
       };
-      var spy = sinon.spy(response, "end");
+      spy = sinon.spy(response, "end");
       directoryReader.getList(null, response);
     });
   });
 
-  describe('When we call getTutorialList with a stubbed file system', function() {
+  describe('GetTutorialList with a stubbed file system', function() {
     var readDirStub;
     var existsStub;
-    var tutorials;
 
     beforeEach(function() {
       readDirStub = sinon.stub(fs, 'readdir');
@@ -42,7 +42,8 @@ describe('GetListOfTutorials Module test', function() {
       existsStub.restore();
     });
 
-    it('should get the list from mocked file system with shared tutorials', function(done) {
+    it('should get the list with shared tutorials', function(done) {
+      var spy;
       var response = {
         writeHead: function() {
         },
@@ -56,7 +57,7 @@ describe('GetListOfTutorials Module test', function() {
           done();
         }
       };
-      var spy = sinon.spy(response, "end");
+      spy = sinon.spy(response, "end");
 
       readDirStub.yields(null, ['mock.html', 'nothtml.foo']);
       existsStub.yields(true);
@@ -64,7 +65,8 @@ describe('GetListOfTutorials Module test', function() {
       directoryReader.getList(null, response);
     });
 
-    it('should get the list from mocked file system without shared tutorials', function(done) {
+    it('should get the list without shared tutorials', function(done) {
+      var spy;
       var response = {
         writeHead: function() {
         },
@@ -75,7 +77,7 @@ describe('GetListOfTutorials Module test', function() {
           done();
         }
       };
-      var spy = sinon.spy(response, "end");
+      spy = sinon.spy(response, "end");
 
       readDirStub.yields(null, ['mock.html', 'nothtml.foo']);
       existsStub.onFirstCall().yields(true);

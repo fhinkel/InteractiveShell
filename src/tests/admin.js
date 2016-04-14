@@ -2,7 +2,7 @@ var sinon = require('sinon');
 var assert = require('chai').assert;
 var rewire = require('rewire');
 
-describe('Admin Module test', function() {
+describe('Admin Module:', function() {
   var admin;
   var clients;
   var options;
@@ -58,10 +58,18 @@ describe('Admin Module test', function() {
       admin.stats(null, response);
     });
   });
-  describe('Current users', function() {
-    it('should be 2', function() {
+  describe('Number of current users', function() {
+    it('should be correct', function() {
       var currentUsers = adminModule.__get__("currentUsers");
       assert.equal(currentUsers(clients), 2);
+    });
+  });
+  describe('Adding new users', function() {
+    it('should change the stats', function() {
+      var newUserId = 'user100';
+      clients[newUserId] = {};
+      var currentUsers = adminModule.__get__("currentUsers");
+      assert.equal(currentUsers(clients), 3);
     });
   });
 });

@@ -2,8 +2,8 @@ var sinon = require('sinon');
 var assert = require('chai').assert;
 
 describe('GetListOfTutorials Module test', function() {
-  var fs,
-    directoryReader;
+  var fs;
+  var directoryReader;
 
   before(function() {
     fs = require('fs');
@@ -28,8 +28,8 @@ describe('GetListOfTutorials Module test', function() {
 
   describe('When we call getTutorialList with a stubbed file system', function() {
     var readDirStub,
-      existsStub,
-      tutorials;
+        existsStub,
+        tutorials;
 
     beforeEach(function() {
       readDirStub = sinon.stub(fs, 'readdir');
@@ -47,9 +47,9 @@ describe('GetListOfTutorials Module test', function() {
         },
         end: function() {
           var expected = JSON.stringify([
-              "tutorials/mock.html",
-              "shared-tutorials/mock.html"
-            ]);
+            "tutorials/mock.html",
+            "shared-tutorials/mock.html"
+          ]);
           assert.equal(spy.args, expected);
           assert(spy.calledOnce);
           done();
@@ -100,19 +100,6 @@ describe('GetListOfTutorials Module test', function() {
       var tutorials = ['c', 'b', 'a'];
       var sorted = directoryReader.sortTutorials(tutorials, 'x');
       assert.deepEqual(sorted, ['c', 'b', 'a']);
-    });
-  });
-
-  describe('Stringify', function() {
-    it('should stringify an array to a string', function() {
-      var tutorials = ["a", "b"];
-      var message = JSON.stringify(tutorials);
-      assert.equal(message, "[\"a\",\"b\"]");
-    });
-    it('should compare arrays', function() {
-      var tutorials = ["a", "b"];
-      assert.deepEqual(tutorials, ["a", "b"]);
-      assert.notDeepEqual(tutorials, ["b", "a"]);
     });
   });
 });

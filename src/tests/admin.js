@@ -9,15 +9,18 @@ describe('Admin Module:', function() {
   var adminModule;
 
   before(function() {
+    options = {
+      MATH_PROGRAM: "MyProgram"
+    };
+    adminModule = rewire('../lib/admin.js');
+  });
+
+  beforeEach(function() {
     clients = {
       totalUsers: 17,
       user16: {},
       user12: {}
     };
-    options = {
-      MATH_PROGRAM: "MyProgram"
-    };
-    adminModule = rewire('../lib/admin.js');
     admin = adminModule(clients, options);
   });
 
@@ -82,7 +85,7 @@ describe('Admin Module:', function() {
     it('should change the stats', function() {
       delete clients.user12;
       var currentUsers = adminModule.__get__("currentUsers");
-      assert.equal(currentUsers(clients), 2);
+      assert.equal(currentUsers(clients), 1);
     });
   });
   describe('Deleting users', function() {

@@ -35,24 +35,14 @@ describe('Admin Module:', function() {
         write: function() {
         },
         end: function() {
-          assert.equal(spy.callCount, 5);
+          var arg = '<head>\n    <link rel="stylesheet" ' +
+              'href="mathProgram.css" type="text/css"\n        ' +
+              'media="screen">\n</head>\n<h1>\n    MyProgram User ' +
+              'Statistics\n</h1>\nThere are currently 2 users using ' +
+              'MyProgram.\n<br>\nIn total, there were 17 new users ' +
+              'since\n the server started.\n<br>\nEnjoy MyProgram!';
 
-          var firstArgument = "<head><link rel=\"stylesheet\" " +
-              "href=\"mathProgram.css\" " +
-              "type=\"text/css\" " +
-              "media=\"screen\"></head>";
-          assert.equal(spy.firstCall.args[0], firstArgument);
-
-          var secondArgument = "<h1>MyProgram User Statistics</h1>";
-          assert.equal(spy.secondCall.args[0], secondArgument);
-
-          var thirdArgument = "There are currently 2 users " +
-              "using MyProgram.<br>";
-          assert.equal(spy.thirdCall.args[0], thirdArgument);
-
-          var fourthArgument = "In total, there were 17 new " +
-              "users since the server started.<br>";
-          assert.equal(spy.getCall(3).args[0], fourthArgument);
+          assert.equal(spy.firstCall.args[0], arg);
 
           done();
         }

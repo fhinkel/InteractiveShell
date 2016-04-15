@@ -2,15 +2,22 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.indigo-pink.min.css">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet"
+          href="https://code.getmdl.io/1.1.3/material.indigo-pink.min.css">
     <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
 
-    <link rel="stylesheet" href="mathProgram.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="jquery-ui-1.10.2.custom/css/cupertino/jquery-ui-1.10.2.custom.css" type="text/css"
+    <link rel="stylesheet" href="mathProgram.css" type="text/css"
           media="screen">
-    <script type="text/javascript" src="jquery-ui-1.10.2.custom/js/jquery-1.9.1.js"></script>
-    <script type="text/javascript" src="jquery-ui-1.10.2.custom/js/jquery-ui-1.10.2.custom.min.js"></script>
+    <link rel="stylesheet"
+          href="jquery-ui-1.10.2.custom/css/cupertino/jquery-ui-1.10.2.custom.css"
+          type="text/css"
+          media="screen">
+    <script type="text/javascript"
+            src="jquery-ui-1.10.2.custom/js/jquery-1.9.1.js"></script>
+    <script type="text/javascript"
+            src="jquery-ui-1.10.2.custom/js/jquery-ui-1.10.2.custom.min.js"></script>
     <script type="text/x-mathjax-config">
       MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
       MathJax.Hub.Config({
@@ -27,17 +34,6 @@
       }
 });
 
-
-
-
-
-
-
-
-
-
-
-
     </script>
     <script type="text/javascript"
             src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
@@ -49,9 +45,9 @@
     <script type="text/javascript" src="settings.js"></script>
     <script type="text/javascript" src="mathProgram.js"></script>
     <script>
-        (function (i, s, o, g, r, a, m) {
+        (function(i, s, o, g, r, a, m) {
             i['GoogleAnalyticsObject'] = r;
-            i[r] = i[r] || function () {
+            i[r] = i[r] || function() {
                         (i[r].q = i[r].q || []).push(arguments)
                     }, i[r].l = 1 * new Date();
             a = s.createElement(o),
@@ -72,7 +68,8 @@
 </head>
 <body>
 <!--[if IE]>
-<p> Internet Explorer is currently not supported. Please use a different browser. </p>
+<p> Internet Explorer is currently not supported. Please use a different
+    browser. </p>
 <![endif]-->
 
 <!-- Always shows a header, even in smaller screens. -->
@@ -87,9 +84,12 @@
             <nav class="mdl-navigation">
                 <a class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
                    id="resetBtn">Reset</a>
-                <a class="mdl-button mdl-js-button mdl-js-ripple-effect" id="interruptBtn">Interrupt</a>
-                <a class="mdl-button mdl-js-button mdl-js-ripple-effect" id="saveBtn">Save</a>
-                <a class="mdl-button mdl-js-button mdl-js-ripple-effect " id="uploadBtn">Upload file</a>
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect"
+                   id="interruptBtn">Interrupt</a>
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect"
+                   id="saveBtn">Save</a>
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect "
+                   id="uploadBtn">Upload file</a>
             </nav>
         </div>
         <!-- Tabs -->
@@ -109,45 +109,53 @@
         </nav>
     </div>
     <main class="mdl-layout__content" id="content">
-      <div class="mdl-grid">
-         <div class="mdl-cell mdl-cell--6-col" id="left-half">
+        <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--6-col" id="left-half">
 
-            <section class="mdl-layout__tab-panel is-active" id="scroll-tab-1">
-               <div class="page-content" id="home">
-               <img class="image-text-wrap" src="frontPageImage.jpg"/>
+                <section class="mdl-layout__tab-panel is-active"
+                         id="scroll-tab-1">
+                    <div class="page-content" id="home">
+                        <img class="image-text-wrap" src="frontPageImage.jpg"/>
 
-               <h3>Welcome to Macaulay2</h3>
+                        <h3>Welcome to Macaulay2</h3>
 
-               <p>This web site allows you to try, learn, and use Macaulay2, without the need to
-               install it.
-               Get started by selecting a tutorial below. To learn how to use this site effectively,
-               try the <b>Welcome</b> tutorial. Have fun!
-               </p>
+                        <p>This web site allows you to try, learn, and use
+                            Macaulay2, without the need to
+                            install it.
+                            Get started by selecting a tutorial below. To learn
+                            how to use this site effectively,
+                            try the <b>Welcome</b> tutorial. Have fun!
+                        </p>
 
-               <p><a href='http://macaulay2.com' target='_blank'>Macaulay2</a> is an open source software
-               system devoted to supporting research in algebraic geometry and commutative
-               algebra, and related field in mathematics or applications. </p>
-               </div>
-               </section>
+                        <p><a href='http://macaulay2.com' target='_blank'>Macaulay2</a>
+                            is an open source software
+                            system devoted to supporting research in algebraic
+                            geometry and commutative
+                            algebra, and related field in mathematics or
+                            applications. </p>
+                    </div>
+                </section>
 
-               <section class="mdl-layout__tab-panel" id="scroll-tab-2">
-               <div class="page-content" id="lesson">
-               </div>
-            </section>
+                <section class="mdl-layout__tab-panel" id="scroll-tab-2">
+                    <div class="page-content" id="lesson">
+                    </div>
+                </section>
 
-            <section class="mdl-layout__tab-panel" id="scroll-tab-3">
-               <div class="page-content" id="editor">
-                  <textarea id="M2In" wrap='off' autocorrect="off" spellcheck="false" autocapitalize="off" >
+                <section class="mdl-layout__tab-panel" id="scroll-tab-3">
+                    <div class="page-content" id="editor">
+                  <textarea id="M2In" wrap='off' autocorrect="off"
+                            spellcheck="false" autocapitalize="off">
                   </textarea>
-               </div>
-            </section>
-         </div>
+                    </div>
+                </section>
+            </div>
 
-         <div class="mdl-cell mdl-cell--6-col" id="right-half">
-            <textarea id="M2Out" wrap='off' autocorrect="off" spellcheck="false" autocapitalize="off">
+            <div class="mdl-cell mdl-cell--6-col" id="right-half">
+            <textarea id="M2Out" wrap='off' autocorrect="off" spellcheck="false"
+                      autocapitalize="off">
             </textarea>
-         </div>
-      </div>
+            </div>
+        </div>
     </main>
 
 
@@ -174,8 +182,14 @@
 </div>
 
 
-<div style='height: 0px;width: 0px; overflow:hidden;'><input id="upfile" type="file" value="upload"/></div>
-<div style='height: 0px;width: 0px; overflow:hidden;'><input id="uptutorial" type="file" value="upload"/></div>
+<div style='height: 0px;width: 0px; overflow:hidden;'><input id="upfile"
+                                                             type="file"
+                                                             value="upload"/>
+</div>
+<div style='height: 0px;width: 0px; overflow:hidden;'><input id="uptutorial"
+                                                             type="file"
+                                                             value="upload"/>
+</div>
 <form method="POST" enctype="multipart/form-data" name="myForm">
 </form>
 </body>

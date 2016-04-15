@@ -53,12 +53,27 @@ body {
     height: 100%;
 }
 
-#scroll-tab-1, #scroll-tab-2{
+#scroll-tab-1{
     overflow-y: auto;
     height: 100%;
 }
 
-#scroll-tab-3 {
+#lesson {
+    height: 90%;
+    overflow-y: auto;
+   position: relative;
+   z-index: 1;
+}
+
+.buttonset {
+   position: relative;
+   z-index: 2;
+   float: right;
+   margin-right: 10px;
+}
+
+
+#scroll-tab-3, #scroll-tab-2 {
     height: 100%;
 }
 
@@ -81,7 +96,16 @@ body {
 
 #sendBtn {
    position: relative;
+   z-index: 2;
+   float: right;
 }
+
+#M2In {
+   position: relative;
+   z-index: 1;
+   margin-top: -36px;
+}
+
 
 code {
     white-space: pre;

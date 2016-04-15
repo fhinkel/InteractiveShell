@@ -78,6 +78,7 @@ Vagrant.configure(2) do |config|
     wget -qO- https://get.docker.com/ | sh
     sudo ln -s /usr/bin/nodejs /usr/bin/node
     sudo chown -R vagrant:vagrant /home/vagrant/InteractiveShell
+    curl https://raw.githubusercontent.com/creationix/nvm/v0.25.0/install.sh | bash
     cd InteractiveShell
     npm install
     git pull

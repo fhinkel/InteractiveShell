@@ -4,11 +4,11 @@ GLOBAL.OPTIONS = require('./default.js').getConfig({
     MATH_PROGRAM_COMMAND: 'export WWWBROWSER=/usr/bin/open; ' +
     'export PATH=/usr/bin:$PATH; ' +
     'M2 --print-width 100',
-    CONTAINERS: './sudoDockerContainers.js'
+    CONTAINERS: '../lib/sudoDockerContainers.js'
   }
 });
 
 console.log(GLOBAL.OPTIONS);
 
-var Macaulay2Server = require('./index.js').mathServer();
+var Macaulay2Server = require('../lib/index.js').mathServer();
 Macaulay2Server.listen();

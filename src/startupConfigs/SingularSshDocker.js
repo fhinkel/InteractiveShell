@@ -14,7 +14,7 @@ GLOBAL.OPTIONS = require('./default.js').getConfig({
     port: 8002,
     MATH_PROGRAM: 'Singular',
     MATH_PROGRAM_COMMAND: 'Singular',
-    CONTAINERS: './sshDockerContainers.js',
+    CONTAINERS: '../lib/sshDockerContainers.js',
     resumeString: 'Type \'listvar();\' to print the list of ' +
     'existing variables.\n' +
     'Type \'basering;\' to print the currently active ring.\n> '
@@ -29,5 +29,5 @@ GLOBAL.OPTIONS = require('./default.js').getConfig({
   }
 });
 
-var Macaulay2Server = require('./index.js').mathServer();
+var Macaulay2Server = require('../lib/index.js').mathServer();
 Macaulay2Server.listen();

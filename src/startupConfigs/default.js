@@ -4,7 +4,7 @@ var configuration = function(overrideOptions) {
     cookieName: "tryM2",
     authentification: "none",
     serverConfig: {
-      CONTAINERS: './LocalContainerManager.js',
+      CONTAINERS: '../lib/LocalContainerManager.js',
       MATH_PROGRAM: "Macaulay2",
       MATH_PROGRAM_COMMAND: 'M2',
       resumeString: '',

@@ -3,7 +3,7 @@ GLOBAL.OPTIONS = require('./default.js').getConfig({
     port: 8002,
     MATH_PROGRAM: 'Singular',
     MATH_PROGRAM_COMMAND: 'Singular',
-    CONTAINERS: './sudoDockerContainers.js'
+    CONTAINERS: '../lib/sudoDockerContainers.js'
   },
   containerConfig: {
     containerType: "singular_container",
@@ -17,5 +17,5 @@ GLOBAL.OPTIONS = require('./default.js').getConfig({
 
 console.log(GLOBAL.OPTIONS);
 
-var SingularServer = require('./index.js').mathServer();
+var SingularServer = require('../lib/index.js').mathServer();
 SingularServer.listen();

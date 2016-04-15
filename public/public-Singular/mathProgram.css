@@ -96,7 +96,7 @@ body {
     height: 90%;
 }
 
-#inputarea, #lesson, #home, #right-half {
+#editor, #lesson, #home, #right-half {
     width: 49.6%;
     height: 100%;
 }

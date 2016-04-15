@@ -49,7 +49,7 @@ body {
     height: calc(100% - 16px);
 }
 
-#inputarea{
+#editor{
     height: 100%;
 }
 

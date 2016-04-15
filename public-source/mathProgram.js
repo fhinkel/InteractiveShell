@@ -477,7 +477,7 @@ $(document).ready(function () {
 
     $(document).on("click", ".submenuItem", trym2.showLesson);
 
-    $(document).on("click", "code", function () {
+    var codeClickAction = function(){
         $(this).effect("highlight", {
             color: 'red'
         }, 300);
@@ -486,18 +486,11 @@ $(document).ready(function () {
         $("#M2In").val($("#M2In").val() + code);
         require('scroll-down')($("#M2In"));
         trym2.postMessage(code);
-    });
+    };
 
-    $(document).on("click", "code2", function () {
-        $(this).effect("highlight", {
-            color: 'red'
-        }, 300);
-        var code = $(this).text();
-        code = code + "\n";
-        $("#M2In").val($("#M2In").val() + code);
-        require('scroll-down')($("#M2In"));
-        trym2.postMessage(code);
-    });
+    $(document).on("click", "code", codeClickAction);
+    $(document).on("click", "code2", codeClickAction);
+
 
     trym2.importTutorials();
 

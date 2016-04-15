@@ -1,42 +1,40 @@
 /* global $ */
 /* eslint "max-len": "off" */
 /* eslint "no-unused-vars": "off" */
+var removeTutorial = function(title, div, button) {
+  return function() {
+    button.remove();
+    div.remove();
+    title.remove();
+  };
+};
+
+var insertDeleteButtonAtLastTutorial = function(tutorialMenu) {
+  var lastTitle = tutorialMenu.prev().prev();
+  var lastDiv = tutorialMenu.prev();
+  var deleteButton = $("<span>");
+  deleteButton.addClass("close-icon ui-icon ui-icon-close");
+  lastTitle.prepend(deleteButton);
+  deleteButton.click(removeTutorial(lastTitle, lastDiv, deleteButton));
+};
+
+var populateTutorialElement = function(theHtml) {
+  var theLessons = [];
+  var tutorial = $("<div>").html(theHtml);
+  $("div", tutorial).each(function() {
+    theLessons.push({
+      title: $("h4:first", $(this)).text(),
+      html: $(this)
+    });
+  });
+  return { // class Tutorial
+    title: $("<h3>").append($("title", tutorial).text()),
+    current: 0,
+    lessons: theLessons
+  };
+};
 
 var tutorialFunctions = function(makeAccordion, tutorials) {
-  var removeTutorial = function(title, div, button) {
-    return function() {
-      button.remove();
-      div.remove();
-      title.remove();
-    };
-  };
-
-  var insertDeleteButtonAtLastTutorial = function(tutorialMenu) {
-    var lastTitle = tutorialMenu.prev().prev();
-    var lastDiv = tutorialMenu.prev();
-    var deleteButton = $("<span>");
-    deleteButton.addClass("close-icon ui-icon ui-icon-close");
-    lastTitle.prepend(deleteButton);
-    deleteButton.click(removeTutorial(lastTitle, lastDiv, deleteButton));
-  };
-
-  var populateTutorialElement = function(theHtml) {
-    // populate a Tutorial element, and return it
-    var theLessons = [];
-    var tutorial = $("<div>").html(theHtml);
-    $("div", tutorial).each(function() {
-      theLessons.push({
-        title: $("h4:first", $(this)).text(),
-        html: $(this)
-      });
-    });
-    return { // class Tutorial
-      title: $("<h3>").append($("title", tutorial).text()),
-      current: 0,
-      lessons: theLessons
-    };
-  };
-
   var makeTutorialsList = function(i, tutorialNames, callback) {
     if (i < tutorialNames.length) {
       $.get(tutorialNames[i], function(resultHtml) {

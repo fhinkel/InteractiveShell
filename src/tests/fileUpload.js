@@ -43,7 +43,7 @@ describe('FileUpload module:', function() {
       };
 
       completeFileUpload(client, sshCredentials)();
-      assert(spy.called, "connection.connect() has never been called");
+      assert(spy.called, "connection.connect() was never called");
 
       revert();
     });

@@ -79,6 +79,10 @@ body {
     right: 0.5em;
 }
 
+#sendBtn {
+   position: relative;
+}
+
 code {
     white-space: pre;
     background-color: lightyellow;

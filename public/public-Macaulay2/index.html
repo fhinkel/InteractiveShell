@@ -109,42 +109,40 @@
         </nav>
     </div>
     <main class="mdl-layout__content" id="content">
-        <div class="mdl-grid">
-            <div class="mdl-cell mdl-cell--6-col" id="left-half">
+      <div class="mdl-grid">
+         <div class="mdl-cell mdl-cell--6-col" id="left-half">
 
-                <section class="mdl-layout__tab-panel is-active"
-                         id="scroll-tab-1">
-                    <div class="page-content" id="home">
-                        <img class="image-text-wrap" src="frontPageImage.jpg"/>
+            <section class="mdl-layout__tab-panel is-active" id="scroll-tab-1">
+               <div class="page-content" id="home">
+               <img class="image-text-wrap" src="frontPageImage.jpg"/>
 
-                        <h3>Welcome to Macaulay2</h3>
+               <h3>Welcome to Macaulay2</h3>
 
-                        <p>This web site allows you to try, learn, and use
-                            Macaulay2, without the need to
-                            install it.
-                            Get started by selecting a tutorial below. To learn
-                            how to use this site effectively,
-                            try the <b>Welcome</b> tutorial. Have fun!
-                        </p>
+               <p>This web site allows you to try, learn, and use Macaulay2, without the need to
+               install it.
+               Get started by selecting a tutorial below. To learn how to use this site effectively,
+               try the <b>Welcome</b> tutorial. Have fun!
+               </p>
 
-                        <p><a href='http://macaulay2.com' target='_blank'>Macaulay2</a>
-                            is an open source software
-                            system devoted to supporting research in algebraic
-                            geometry and commutative
-                            algebra, and related field in mathematics or
-                            applications. </p>
-                    </div>
-                </section>
+               <p><a href='http://macaulay2.com' target='_blank'>Macaulay2</a> is an open source software
+               system devoted to supporting research in algebraic geometry and commutative
+               algebra, and related field in mathematics or applications. </p>
+               </div>
+               </section>
 
-                <section class="mdl-layout__tab-panel" id="scroll-tab-2">
-                    <div class="page-content" id="lesson">
-                    </div>
-                </section>
+               <section class="mdl-layout__tab-panel" id="scroll-tab-2">
+						<div class="buttonset">
+							 <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colores" id="previousBtn"><i class="material-icons">chevron_left</i></button>
+							 <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colores" id="nextBtn"><i class="material-icons">chevron_right</i></button>
+						</div>
+               <div class="page-content" id="lesson">
+               </div>
+            </section>
 
-                <section class="mdl-layout__tab-panel" id="scroll-tab-3">
-                    <div class="page-content" id="editor">
-                  <textarea id="M2In" wrap='off' autocorrect="off"
-                            spellcheck="false" autocapitalize="off">
+            <section class="mdl-layout__tab-panel" id="scroll-tab-3">
+               <div class="page-content" id="editor">
+						<button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="sendBtn">Evaluate</button>
+                  <textarea id="M2In" wrap='off' autocorrect="off" spellcheck="false" autocapitalize="off" >
                   </textarea>
                     </div>
                 </section>

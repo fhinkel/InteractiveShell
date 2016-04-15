@@ -25,16 +25,18 @@ var shellTextArea = require('shell-emulator');
 
 trym2.tutorials = [];
 
-trym2.accordionCssClasses = {
-    titleSymbolClass: "material-icons titleSymbol",
-    titleSymbolActive: "expand_more",
-    titleSymbolInactive: "expand_less",
-    title: "mdl-button mdl-js-button mdl-button--raised mdl-list__item",
-    titleHover: "mdl-button--colored",
-    titleToggleClass: "mdl-button--accent",
-    content: "mdl-list__item-text-body mdl-list__item",
-    titleHref: "menuTitle mdl-button mdl-js-button mdl-button-raised",
-    submenuHref: "submenuItem"
+trym2.CssClasses = {
+    accordion: {
+        titleSymbolClass: "material-icons titleSymbol",
+        titleSymbolActive: "expand_more",
+        titleSymbolInactive: "expand_less",
+        title: "mdl-button mdl-js-button mdl-button--raised mdl-list__item",
+        titleHover: "mdl-button--colored",
+        titleToggleClass: "mdl-button--accent",
+        content: "mdl-list__item-text-body mdl-list__item",
+        titleHref: "menuTitle mdl-button mdl-js-button mdl-button-raised",
+        submenuHref: "submenuItem"
+    }
 };
 
 jQuery.fn.extend({
@@ -49,17 +51,17 @@ toggleText: function(text) {
 
 trym2.appendTutorialToAccordion = function (tmptitle, lessons, index) {
     var title = tmptitle.clone();
-    title.wrapInner("<a href='#' class='" + trym2.accordionCssClasses.titleHref + "' tutorialid=" + index + "/>")
-        .addClass(trym2.accordionCssClasses.title)
+    title.wrapInner("<a href='#' class='" + trym2.CssClasses.accordion.titleHref + "' tutorialid=" + index + "/>")
+        .addClass(trym2.CssClasses.accordion.title)
         .prepend(
-            '<i class="' + trym2.accordionCssClasses.titleSymbolClass + '">' + trym2.accordionCssClasses.titleSymbolActive + '</i>')
+            '<i class="' + trym2.CssClasses.accordion.titleSymbolClass + '">' + trym2.CssClasses.accordion.titleSymbolActive + '</i>')
         .hover(function () {
-            $(this).toggleClass(trym2.accordionCssClasses.titleHover);
+            $(this).toggleClass(trym2.CssClasses.accordion.titleHover);
         })
         .click(function () {
-            $(this).toggleClass(trym2.accordionCssClasses.titleToggleClass)
+            $(this).toggleClass(trym2.CssClasses.accordion.titleToggleClass)
                 .find("> .titleSymbol").toggleText(
-                trym2.accordionCssClasses.titleSymbolActive + " " + trym2.accordionCssClasses.titleSymbolInactive).end()
+                trym2.CssClasses.accordion.titleSymbolActive + " " + trym2.CssClasses.accordion.titleSymbolInactive).end()
                 .next().slideToggle(trym2.scrollDownUntilTutorialVisible);
             return false;
         })
@@ -68,22 +70,22 @@ trym2.appendTutorialToAccordion = function (tmptitle, lessons, index) {
     var content = '<ul>';
     for (var j = 0; j < lessons.length; j++) {
         content = content +
-            '<li><a href="#" class="' + trym2.accordionCssClasses.submenuHref + '" tutorialid=' + index +
+            '<li><a href="#" class="' + trym2.CssClasses.accordion.submenuHref + '" tutorialid=' + index +
             ' lessonid=' + j + '>  ' + lessons[j].title + '</a></li>';
     }
     content = content + '</ul>';
     if (index > 0) {
         div.append(content).addClass(
-            trym2.accordionCssClasses.content)
+            trym2.CssClasses.accordion.content)
             .hide();
     } else {
         // Expand the first tutorial:
         title.toggleClass(
-            trym2.accordionCssClasses.titleToggleClass)
+            trym2.CssClasses.accordion.titleToggleClass)
             .find("> .titleSymbol").toggleText(
-            trym2.accordionCssClasses.titleSymbolActive + " " + trym2.accordionCssClasses.titleSymbolInactive);
+            trym2.CssClasses.accordion.titleSymbolActive + " " + trym2.CssClasses.accordion.titleSymbolInactive);
         div.append(content).addClass(
-            trym2.accordionCssClasses.content);
+            trym2.CssClasses.accordion.content);
     }
     $("#loadTutorialMenu").before(title);
     $("#loadTutorialMenu").before(div);
@@ -101,21 +103,21 @@ trym2.addLoadTutorialButton = function () {
     var loadTutorialButton = $("<a>");
     loadTutorialButton.prop("id", "loadTutorialButton");
     loadTutorialButton.html("Load Tutorial");
-    loadTutorialButton.addClass(trym2.accordionCssClasses.titleHref);
+    loadTutorialButton.addClass(trym2.CssClasses.accordion.titleHref);
     $("#loadTutorialMenu").append(loadTutorialButton);
     $("#loadTutorialButton").click(trym2.doUptutorialClick);
 };
 
 trym2.addExpandLoadTutorialInstructionsButton = function () {
     var expandButton = $("<i>");
-    expandButton.addClass(trym2.accordionCssClasses.titleSymbolClass);
-    expandButton.text(trym2.accordionCssClasses.titleSymbolActive);
+    expandButton.addClass(trym2.CssClasses.accordion.titleSymbolClass);
+    expandButton.text(trym2.CssClasses.accordion.titleSymbolActive);
     expandButton.click(function () {
         var title = $("#loadTutorialMenu");
         var instructions = $("#loadTutorialInstructions");
-        expandButton.toggleText(trym2.accordionCssClasses.titleSymbolInactive + " " + trym2.accordionCssClasses.titleSymbolActive);
+        expandButton.toggleText(trym2.CssClasses.accordion.titleSymbolInactive + " " + trym2.CssClasses.accordion.titleSymbolActive);
         title.toggleClass(
-            trym2.accordionCssClasses.titleToggleClass);
+            trym2.CssClasses.accordion.titleToggleClass);
         instructions.slideToggle(trym2.scrollDownUntilTutorialVisible);
     });
     $("#loadTutorialMenu").append(expandButton);
@@ -139,7 +141,7 @@ trym2.appendLoadTutorialTitleToAccordion = function () {
     var title = $("<h3>");
     title.prop("id", "loadTutorialMenu");
     title.addClass(
-        trym2.accordionCssClasses.title);
+        trym2.CssClasses.accordion.title);
     $("#accordion").append(title);
 };
 
@@ -151,7 +153,7 @@ trym2.appendInstructionsToAccordion = function () {
     });
     instructions.prop("id", "loadTutorialInstructions");
     instructions.addClass(
-        trym2.accordionCssClasses.content).hide();
+        trym2.CssClasses.accordion.content).hide();
     $("#accordion").append(instructions);
 };
 
@@ -404,23 +406,17 @@ $(document).ready(function () {
     };
     shellTextArea.create($("#M2Out"), $("#M2In"), shellFunctions);
 
-    $("#navigation").children("input").attr("name", "navbutton");
-    $("#navigation").buttonset();
-    $(".buttonset").buttonset();
+    //$("#navigation").children("input").attr("name", "navbutton");
+    //$("#navigation").buttonset();
+    // $(".buttonset").buttonset();
 
-    $("button").button();
-    $("#previousBtn").button({
-        icons: {primary: "ui-icon-arrowthick-1-w"},
-        text: false
-    }).click(function () {
+    // $("button").button();
+    $("#previousBtn").click(function () {
         trym2.switchLesson(-1);
         $(this).removeClass("ui-state-focus");
     });
 
-    $("#nextBtn").button({
-        icons: {primary: "ui-icon-arrowthick-1-e"},
-        text: false
-    }).click(function () {
+    $("#nextBtn").click(function () {
         trym2.switchLesson(1);
         $(this).removeClass("ui-state-focus");
     });

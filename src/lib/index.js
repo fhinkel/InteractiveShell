@@ -373,10 +373,10 @@ var MathServer = function() {
         clients[clientId].reconnecting = true;
       }
       socketSanityCheck(clientId, socket);
-      var fileUpload = require('./fileUpload.js')(clients,
+      var fileUpload = require('./fileUpload.js')(
           logExceptOnTest,
           sshCredentials);
-      fileUpload.attachUploadListenerToSocket(clientId, socket);
+      fileUpload.attachUploadListenerToSocket(clients[clientId], socket);
       socket.on('input', socketInputAction(clientId));
       socket.on('reset', socketResetAction(clientId));
     });

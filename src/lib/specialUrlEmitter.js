@@ -102,6 +102,7 @@ module.exports = function(clients,
       if (eventData) {
         return eventData[1];
       }
+      return false;
     }
   };
 };

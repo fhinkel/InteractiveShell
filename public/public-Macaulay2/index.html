@@ -71,8 +71,7 @@
 <body>
 
 <dialog id="fullScreenOutput" class="">
-            <i id="downsizeOutput" class="material-icons icon-with-action">fullscreen_exit</i>
-
+   <i id="downsizeOutput" class="material-icons icon-with-action">fullscreen_exit</i>
 </dialog>
 
 <dialog id="saveDialog" class="mdl-dialog">
@@ -80,20 +79,38 @@
       <i id="saveDialogClose" class="material-icons icon-with-action">close</i>
    </h4>
    <div class="mdl-dialog__content">
-	<p> 
-      <a id="inputContent" class="sdbutton mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" href="">
-      <i class="material-icons">file_download</i>
-      Content of input window
-      </a>
-   </p>
-	<p>
-      <a id="outputContent" class="sdbutton mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" href="">
-      <i class="material-icons">file_download</i>
-      Content of output window
-      </a>
-   </p>
-    </div>
-  </dialog>
+      <p> 
+         <a id="inputContent" class="sdbutton mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" href="">
+            <i class="material-icons">file_download</i>
+            Content of input window
+         </a>
+      </p>
+      <p>
+         <a id="outputContent" class="sdbutton mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" href="">
+            <i class="material-icons">file_download</i>
+            Content of output window
+         </a>
+      </p>
+   </div>
+</dialog>
+
+<dialog id="uploadSuccessDialog" class="mdl-dialog">
+   <h4 class="mdl-dialog__title">Upload successful
+      <i id="uploadSuccessDialogClose" class="material-icons icon-with-action">close</i>
+   </h4>
+   <div class="mdl-dialog__content" id="uploadSuccessDialogContent">
+   </div>
+</dialog>
+
+<dialog id="showImageDialog" class="mdl-dialog">
+   <h4 class="mdl-dialog__title">Image received
+      <i id="showImageDialogClose" class="material-icons icon-with-action">close</i>
+   </h4>
+   <div class="mdl-dialog__content" id="showImageDialogContent">
+      <a id="showImageDialogBtn" class="sdbutton mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"></a>
+   </div>
+</dialog>
+
 <!--[if IE]>
 <p> Internet Explorer is currently not supported. Please use a different
     browser. </p>

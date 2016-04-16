@@ -358,6 +358,40 @@ var attachCtrlBtnActions = function(){
 
 trym2.populateTutorialElement = tf.populateTutorialElement;
 
+var showUploadSuccessDialog = function(event){
+    dialog = document.querySelector("#uploadSuccessDialog");
+    if(!dialog.showModal){
+        dialogPolyfill.registerDialog(dialog);
+    }
+    console.log('we uploaded the file: ' + event.success);
+    console.log(event.file);
+    var filename = event.file.name;
+    console.log("File uploaded successfully!" + filename);
+    var successSentence = filename 
+        + " has been uploaded and you can use it by loading it into your " 
+        + mathProgramName + " session (use the input terminal).";
+    document.querySelector("#uploadSuccessDialogContent").innerText = successSentence;
+    dialog.showModal();
+};
+
+var showImageDialog = function(imageUrl){
+    if (imageUrl) {
+        var dialog = document.querySelector("#showImageDialog");
+        if(! dialog.showModal){
+            dialogPolyfill.registerDialog(dialog);
+        }
+      console.log("We received an image: " + imageUrl);
+      var a = document.querySelector("#showImageDialogBtn");
+      a.setAttribute("href", "#");
+      a.innerText = imageUrl.split('/').pop();
+      a.addEventListener("click", function(){
+            window.open(imageUrl, '_blank',
+                'height=200,width=200,toolbar=0,location=0,menubar=0');
+            dialog.close();
+      });
+    dialog.showModal();
+    }
+};
 
 $(document).ready(function() {
   trym2.getSelected = require('get-selected-text');
@@ -376,6 +410,14 @@ $(document).ready(function() {
 
   document.querySelector("#saveDialogClose").addEventListener('click', function(){
     document.querySelector("#saveDialog").close();
+  });
+  
+  document.querySelector("#uploadSuccessDialogClose").addEventListener('click', function(){
+    document.querySelector("#uploadSuccessDialog").close();
+  });
+  
+  document.querySelector("#showImageDialogClose").addEventListener('click', function(){
+    document.querySelector("#showImageDialog").close();
   });
 
   trym2.socket.on('serverDisconnect', function(msg) {
@@ -399,26 +441,7 @@ $(document).ready(function() {
   };
 
 
-  trym2.socket.on('image', function(imageUrl) {
-    if (imageUrl) {
-      console.log("We received an image: " + imageUrl);
-      var graphBtn = $('<a href="#">').html(imageUrl.split('/').pop())
-          .button({
-            icons: {
-              primary: "ui-icon-document"
-            }
-          }).on('click', function() {
-            window.open(imageUrl, '_blank',
-                'height=200,width=200,toolbar=0,location=0,menubar=0');
-            $(".graph-dialog").dialog("close");
-            return false;
-          });
-      $("<div></div>").html(graphBtn).dialog({
-        title: 'Image',
-        dialogClass: 'alert'
-      }).addClass('graph-dialog');
-    }
-  });
+  trym2.socket.on('image', showImageDialog);
 
   trym2.socket.on('viewHelp', function(helpUrl) {
     if (helpUrl) {
@@ -452,19 +475,7 @@ $(document).ready(function() {
 
   document.getElementById("uploadBtn").addEventListener('click', siofu.prompt, false);
 
-  siofu.addEventListener("complete", function(event) {
-    console.log('we uploaded the file: ' + event.success);
-    console.log(event.file);
-    var filename = event.file.name;
-    console.log("File uploaded successfully!" + filename);
-    $("<div class='smallFont'>" +
-        filename +
-        " has been uploaded and you can use it by loading it into your " + mathProgramName + " session (use the input terminal).</div>"
-    ).dialog({
-      dialogClass: ' alert',
-      title: 'File uploaded'
-    });
-  });
+  siofu.addEventListener("complete", showUploadSuccessDialog);
 
 
   siofu.addEventListener("complete", function(event) {

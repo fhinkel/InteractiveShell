@@ -9,7 +9,8 @@
 * upload multiple files, or even a directory
 * button colors?  think it through?
 * save menu needs better CSS
-* dialog after upload is wrong style
+* ~~dialog after upload is wrong style~~
+* ~~dialog for showing images done~~
 * picture is in the wrong place on the home screen
 * hover over buttons should be visible
 * evaluate button: make it somewhat transparent

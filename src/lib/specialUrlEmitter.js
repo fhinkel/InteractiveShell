@@ -1,19 +1,35 @@
 var ssh2 = require('ssh2');
 var fs = require('fs');
 
-var emitUrlForUserGeneratedFileToClient = function(clientId,
+var getFilename = function(path) {
+  var partAfterLastSlash = /([^\/]*)$/;
+  var filename = path.match(partAfterLastSlash);
+  if (filename) {
+    return filename[0];
+  }
+  return null;
+};
+
+var unlink = function(completePath) {
+  return function() {
+    fs.unlink(completePath, function(err) {
+      if (err) {
+        console.error("Error unlinking user generated file " +
+            completePath);
+        console.error(err);
+      }
+    });
+  };
+};
+
+var emitUrlForUserGeneratedFileToClient = function(client,
                                                    path,
-                                                   clients,
-                                                   mathProgram,
-                                                   staticFolder,
-                                                   userSpecificPath,
+                                                   pathPrefix,
+                                                   pathPostfix,
                                                    sshCredentials,
                                                    logFunction) {
-  var partAfterLastSlash = /([^\/]*)$/;
-  var fileName = path.match(partAfterLastSlash);
-  if (fileName) {
-    fileName = fileName[0];
-  } else {
+  var fileName = getFilename(path);
+  if (!fileName) {
     return;
   }
   var sshConnection = ssh2();
@@ -21,24 +37,11 @@ var emitUrlForUserGeneratedFileToClient = function(clientId,
     logFunction("Image action ended.");
   });
 
-  var unlink = function(completePath) {
-    return function() {
-      fs.unlink(completePath, function(err) {
-        if (err) {
-          console.error("Error unlinking user generated file " +
-              completePath);
-          console.error(err);
-        }
-      });
-    };
-  };
-
   var handleUserGeneratedFile = function(err, sftp) {
     if (err) {
       throw new Error('ssh2.sftp() failed: ' + err);
     }
-    var targetPath = staticFolder + '-' + mathProgram +
-        userSpecificPath(clientId);
+    var targetPath = pathPrefix + pathPostfix;
     // console.log('Path: ' + targetPath);
     fs.mkdir(targetPath, function(err) {
       if (err) {
@@ -53,8 +56,8 @@ var emitUrlForUserGeneratedFileToClient = function(clientId,
         } else {
           setTimeout(unlink(completePath), 1000 * 60 * 10);
           // console.log("Emitting path.");
-          clients[clientId].socket.emit(
-              "image", userSpecificPath(clientId) + fileName
+          client.socket.emit(
+              "image", pathPostfix + fileName
           );
         }
       });
@@ -67,10 +70,10 @@ var emitUrlForUserGeneratedFileToClient = function(clientId,
   });
   // console.log(sshCredentials(clients[clientId].instance));
 
-  sshConnection.connect(sshCredentials(clients[clientId].instance));
+  sshConnection.connect(sshCredentials(client.instance));
 };
 
-var emitHelpUrlToClient = function(clientID, viewHelp, clients, logFunction) {
+var emitHelpUrlToClient = function(client, viewHelp, logFunction) {
   logFunction("Look at " + viewHelp);
   var helpPath = viewHelp.match(/(\/Macaulay2Doc.*)$/);
   if (helpPath) {
@@ -81,28 +84,29 @@ var emitHelpUrlToClient = function(clientID, viewHelp, clients, logFunction) {
   helpPath = "http://www.math.uiuc.edu/Macaulay2/doc/Macaulay2-1.7/" +
       "share/doc/Macaulay2" + helpPath;
   logFunction(helpPath);
-  clients[clientID].socket.emit("viewHelp", helpPath);
+  client.socket.emit("viewHelp", helpPath);
 };
 
 var isViewHelpEvent = function(eventData) {
   return eventData.match(/^file:.*/) !== null;
 };
 
-module.exports = function(clients,
-                          options,
-                          staticFolder,
-                          userSpecificPath,
+module.exports = function(pathPrefix,
                           sshCredentials,
-                          logExceptOnTest) {
+                          logFunction) {
   return {
-    emitEventUrlToClient: function(clientID, eventType) {
-      if (isViewHelpEvent(eventType)) {
-        emitHelpUrlToClient(clientID, eventType, clients, logExceptOnTest);
+    emitEventUrlToClient: function(client, url, pathPostfix) {
+      if (isViewHelpEvent(url)) {
+        emitHelpUrlToClient(client, url, logFunction);
         return;
       }
-      emitUrlForUserGeneratedFileToClient(clientID, eventType,
-          clients, options.MATH_PROGRAM, staticFolder, userSpecificPath,
-          sshCredentials, logExceptOnTest);
+      emitUrlForUserGeneratedFileToClient(
+          client,
+          url,
+          pathPrefix,
+          pathPostfix,
+          sshCredentials,
+          logFunction);
     },
     isSpecial: function(data) {
       var eventData = data.match(

@@ -6,22 +6,16 @@ var specialUrlEmitterModule = rewire('../lib/specialUrlEmitter');
 
 describe('SpecialUrlEmitter module:', function() {
   var specialUrlEmitter;
-  var clients = {};
   before(function() {
-    clients.user12 = {};
-    var options = {};
-    var staticFolder;
-    var userSpecificPath;
+    var pathPrefix;
     var sshCredentials = function() {
     };
-    var logExceptOnTest;
+    var logFunction = function() {
+    };
     specialUrlEmitter = specialUrlEmitterModule(
-        clients,
-        options,
-        staticFolder,
-        userSpecificPath,
+        pathPrefix,
         sshCredentials,
-        logExceptOnTest);
+        logFunction);
   });
 
   describe('emitEventUrlToClient()', function() {
@@ -43,7 +37,7 @@ describe('SpecialUrlEmitter module:', function() {
       revert();
     });
 
-    it('can be called with user generated file', function() {
+    it('should call emit for file', function() {
       var spy = sinon.spy();
       var revert = specialUrlEmitterModule
           .__set__("emitUrlForUserGeneratedFileToClient", spy);
@@ -53,6 +47,31 @@ describe('SpecialUrlEmitter module:', function() {
 
       revert();
     });
+
+    it('can be called with vieHelp', function() {
+      var connection = {
+        on: function() {
+        },
+        connect: function() {
+        }
+      };
+      var ssh2 = function() {
+        return connection;
+      };
+
+      var revert = specialUrlEmitterModule.__set__("ssh2", ssh2);
+
+      var revertIsViewHelpEvent = specialUrlEmitterModule
+          .__set__("isViewHelpEvent", function() {
+            return true;
+          });
+
+      specialUrlEmitter.emitEventUrlToClient("user12", "eventType");
+
+      revert();
+      revertIsViewHelpEvent();
+    });
+
     it('emits correct URL for viewHelp', function() {
       var spy = sinon.spy();
       var revert = specialUrlEmitterModule

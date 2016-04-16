@@ -177,16 +177,18 @@ var MathServer = function() {
         return;
       }
       updateLastActiveTime(clientID);
-      var specialUrlEmitter = require('./specialUrlEmitter')(clients,
-          options,
-          staticFolder,
-          userSpecificPath,
+      var pathPrefix = staticFolder + '-' + options.MATH_PROGRAM;
+      var specialUrlEmitter = require('./specialUrlEmitter')(
+          pathPrefix,
           sshCredentials,
           logExceptOnTest
       );
-      var specialData = specialUrlEmitter.isSpecial(data);
-      if (specialData) {
-        specialUrlEmitter.emitEventUrlToClient(clientID, specialData);
+      var dataMarkedAsSpecial = specialUrlEmitter.isSpecial(data);
+      if (dataMarkedAsSpecial) {
+        specialUrlEmitter.emitEventUrlToClient(
+            clients[clientID],
+            dataMarkedAsSpecial,
+            userSpecificPath(clientID));
         return;
       }
       socket.emit('result', data);

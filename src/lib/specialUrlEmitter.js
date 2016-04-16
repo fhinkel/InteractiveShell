@@ -70,33 +70,34 @@ var emitUrlForUserGeneratedFileToClient = function(clientId,
   sshConnection.connect(sshCredentials(clients[clientId].instance));
 };
 
+var emitHelpUrlToClient = function(clientID, viewHelp, clients, logFunction) {
+  logFunction("Look at " + viewHelp);
+  var helpPath = viewHelp.match(/(\/Macaulay2Doc.*)$/);
+  if (helpPath) {
+    helpPath = helpPath[0];
+  } else {
+    return;
+  }
+  helpPath = "http://www.math.uiuc.edu/Macaulay2/doc/Macaulay2-1.7/" +
+      "share/doc/Macaulay2" + helpPath;
+  logFunction(helpPath);
+  clients[clientID].socket.emit("viewHelp", helpPath);
+};
+
+var isViewHelpEvent = function(eventData) {
+  return eventData.match(/^file:.*/) !== null;
+};
+
 module.exports = function(clients,
                           options,
                           staticFolder,
                           userSpecificPath,
                           sshCredentials,
                           logExceptOnTest) {
-  var emitHelpUrlToClient = function(clientID, viewHelp) {
-    logExceptOnTest("Look at " + viewHelp);
-    var helpPath = viewHelp.match(/(\/Macaulay2Doc.*)$/);
-    if (helpPath) {
-      helpPath = helpPath[0];
-    } else {
-      return;
-    }
-    helpPath = "http://www.math.uiuc.edu/Macaulay2/doc/Macaulay2-1.7/share/doc/Macaulay2" + helpPath;
-    logExceptOnTest(helpPath);
-    clients[clientID].socket.emit("viewHelp", helpPath);
-  };
-
-  var isViewHelpEvent = function(eventData) {
-    return eventData.match(/^file:.*/);
-  };
-
   return {
     emitEventUrlToClient: function(clientID, eventType, data) {
       if (isViewHelpEvent(eventType)) {
-        emitHelpUrlToClient(clientID, eventType);
+        emitHelpUrlToClient(clientID, eventType, clients, logExceptOnTest);
         return;
       }
       emitUrlForUserGeneratedFileToClient(clientID, eventType,

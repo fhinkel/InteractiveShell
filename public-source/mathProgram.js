@@ -268,16 +268,16 @@ var saveInteractions = function() {
   var dialog = document.querySelector('#saveDialog');
   var inputLink = 'data:application/octet-stream,' + encodeURIComponent(input.val());
   var inputParagraph = document.querySelector("#inputContent");
-  inputParagraph.setAttribute('href',inputLink);
+  inputParagraph.setAttribute('href', inputLink);
   inputParagraph.setAttribute('download', 'input.txt');
   var outputLink = 'data:application/octet-stream,' + encodeURIComponent(output.val());
   var outputParagraph = document.querySelector("#outputContent");
-  outputParagraph.setAttribute('href',outputLink);
-  outputParagraph.setAttribute('download','output.txt');
-    if(!dialog.showModal){
-      dialogPolyfill.registerDialog(dialog);
-    }
-    dialog.showModal();
+  outputParagraph.setAttribute('href', outputLink);
+  outputParagraph.setAttribute('download', 'output.txt');
+  if (!dialog.showModal) {
+    dialogPolyfill.registerDialog(dialog);
+  }
+  dialog.showModal();
 };
 
 trym2.uploadTutorial = function() {
@@ -310,26 +310,26 @@ var tf = tutorialFunctions(trym2.makeAccordion, trym2.tutorials);
 trym2.insertDeleteButtonAtLastTutorial = tf.insertDeleteButtonAtLastTutorial;
 trym2.importTutorials = tf.importTutorials;
 
-var attachMinMaxBtnActions = function(){
-  document.querySelector("#maximizeOutput").addEventListener("click",function(){
+var attachMinMaxBtnActions = function() {
+  document.querySelector("#maximizeOutput").addEventListener("click", function() {
     var dialog = document.querySelector("#fullScreenOutput");
-    if(!dialog.showModal){
-        dialogPolyfill.registerDialog(dialog);
+    if (!dialog.showModal) {
+      dialogPolyfill.registerDialog(dialog);
     }
     var output = document.querySelector("#M2Out");
     dialog.appendChild(output);
     dialog.showModal();
   });
-  document.querySelector("#downsizeOutput").addEventListener("click",function(){
+  document.querySelector("#downsizeOutput").addEventListener("click", function() {
     var dialog = document.querySelector("#fullScreenOutput");
-    var old_position = document.querySelector("#right-half");
+    var oldPosition = document.querySelector("#right-half");
     var output = document.querySelector("#M2Out");
-    old_position.appendChild(output);
+    oldPosition.appendChild(output);
     dialog.close();
   });
 };
 
-var attachTutorialNavBtnActions = function(){
+var attachTutorialNavBtnActions = function() {
   $("#previousBtn").click(function() {
     trym2.switchLesson(-1);
     $(this).removeClass("ui-state-focus");
@@ -340,8 +340,8 @@ var attachTutorialNavBtnActions = function(){
     $(this).removeClass("ui-state-focus");
   });
 };
-  
-var attachCtrlBtnActions = function(){
+
+var attachCtrlBtnActions = function() {
   $("#sendBtn").click(trym2.sendCallback('M2In'));
   $("#resetBtn").click(function() {
     $("#M2Out").trigger("reset");
@@ -358,39 +358,39 @@ var attachCtrlBtnActions = function(){
 
 trym2.populateTutorialElement = tf.populateTutorialElement;
 
-var showUploadSuccessDialog = function(event){
-    dialog = document.querySelector("#uploadSuccessDialog");
-    if(!dialog.showModal){
-        dialogPolyfill.registerDialog(dialog);
-    }
-    console.log('we uploaded the file: ' + event.success);
-    console.log(event.file);
-    var filename = event.file.name;
-    console.log("File uploaded successfully!" + filename);
-    var successSentence = filename 
-        + " has been uploaded and you can use it by loading it into your " 
-        + mathProgramName + " session (use the input terminal).";
-    document.querySelector("#uploadSuccessDialogContent").innerText = successSentence;
-    dialog.showModal();
+var showUploadSuccessDialog = function(event) {
+  var dialog = document.querySelector("#uploadSuccessDialog");
+  if (!dialog.showModal) {
+    dialogPolyfill.registerDialog(dialog);
+  }
+  console.log('we uploaded the file: ' + event.success);
+  console.log(event.file);
+  var filename = event.file.name;
+  console.log("File uploaded successfully!" + filename);
+  var successSentence = filename +
+        " has been uploaded and you can use it by loading it into your " +
+        mathProgramName + " session (use the input terminal).";
+  document.querySelector("#uploadSuccessDialogContent").innerText = successSentence;
+  dialog.showModal();
 };
 
-var showImageDialog = function(imageUrl){
-    if (imageUrl) {
-        var dialog = document.querySelector("#showImageDialog");
-        if(! dialog.showModal){
-            dialogPolyfill.registerDialog(dialog);
-        }
-      console.log("We received an image: " + imageUrl);
-      var a = document.querySelector("#showImageDialogBtn");
-      a.setAttribute("href", "#");
-      a.innerText = imageUrl.split('/').pop();
-      a.addEventListener("click", function(){
-            window.open(imageUrl, '_blank',
-                'height=200,width=200,toolbar=0,location=0,menubar=0');
-            dialog.close();
-      });
-    dialog.showModal();
+var showImageDialog = function(imageUrl) {
+  if (imageUrl) {
+    var dialog = document.querySelector("#showImageDialog");
+    if (!dialog.showModal) {
+      dialogPolyfill.registerDialog(dialog);
     }
+    console.log("We received an image: " + imageUrl);
+    var a = document.querySelector("#showImageDialogBtn");
+    a.setAttribute("href", "#");
+    a.innerText = imageUrl.split('/').pop();
+    a.addEventListener("click", function() {
+      window.open(imageUrl, '_blank',
+                'height=200,width=200,toolbar=0,location=0,menubar=0');
+      dialog.close();
+    });
+    dialog.showModal();
+  }
 };
 
 $(document).ready(function() {
@@ -408,15 +408,15 @@ $(document).ready(function() {
   attachMinMaxBtnActions();
   attachCtrlBtnActions();
 
-  document.querySelector("#saveDialogClose").addEventListener('click', function(){
+  document.querySelector("#saveDialogClose").addEventListener('click', function() {
     document.querySelector("#saveDialog").close();
   });
-  
-  document.querySelector("#uploadSuccessDialogClose").addEventListener('click', function(){
+
+  document.querySelector("#uploadSuccessDialogClose").addEventListener('click', function() {
     document.querySelector("#uploadSuccessDialog").close();
   });
-  
-  document.querySelector("#showImageDialogClose").addEventListener('click', function(){
+
+  document.querySelector("#showImageDialogClose").addEventListener('click', function() {
     document.querySelector("#showImageDialog").close();
   });
 
@@ -439,7 +439,6 @@ $(document).ready(function() {
       trym2.socket.oldEmit(event, msg);
     }
   };
-
 
   trym2.socket.on('image', showImageDialog);
 
@@ -470,13 +469,11 @@ $(document).ready(function() {
   $('#M2In').val(DefaultText);
   $('#M2In').keypress(trym2.sendOnEnterCallback('M2In'));
 
-
   var siofu = new SocketIOFileUpload(trym2.socket);
 
   document.getElementById("uploadBtn").addEventListener('click', siofu.prompt, false);
 
   siofu.addEventListener("complete", showUploadSuccessDialog);
-
 
   siofu.addEventListener("complete", function(event) {
     console.log('we uploaded the file: ' + event.success);

@@ -131,6 +131,10 @@ body {
    margin-top: -24px;
 }
 
+.icon-with-action {
+   cursor: default;
+}
+
 .sdbutton {
    width: 220px;
    color: blue;

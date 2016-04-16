@@ -98,12 +98,14 @@ body {
    position: relative;
    z-index: 2;
    float: right;
+   margin-top: 8px;
+   margin-right: 24px;
 }
 
 #M2In {
    position: relative;
    z-index: 1;
-   margin-top: -36px;
+   margin-top: -44px;
 }
 
 

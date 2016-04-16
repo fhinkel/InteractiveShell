@@ -263,25 +263,26 @@ trym2.doUptutorialClick = function() {
 trym2.saveInteractions = function() {
   var input = $("#M2In");
   var output = $("#M2Out");
-  var inputParagraph = $("<p>");
+  var dialog = document.querySelector('#saveDialog');
+  var inputParagraph = document.querySelector("#inputContent");
+	inputParagraph.removeChild(inputParagraph.firstChild);
   var downloadLink = require('create-download-link');
-  inputParagraph.append(downloadLink({
+  inputParagraph.appendChild(downloadLink({
     data: input.val(),
     title: "Content of input window",
     filename: mathProgramName + "In.txt"
   }));
-  var outputParagraph = $("<p>");
-  outputParagraph.append(downloadLink({
+  var outputParagraph = document.querySelector("#outputContent");
+	outputParagraph.removeChild(outputParagraph.firstChild);
+  outputParagraph.appendChild(downloadLink({
     data: output.val(),
     title: "Content of terminal",
     filename: mathProgramName + "Out.txt"
   }));
-  $("<div></div>").append(inputParagraph)
-      .append(outputParagraph)
-      .append("<span autofocus='autofocus'></span>")
-      .dialog({
-        title: "Download"
-      }).attr('id', 'save-dialog');
+	  
+      dialogPolyfill.registerDialog(dialog);
+    // Now dialog acts like a native <dialog>.
+    dialog.showModal();
   $("#save-dialog a").button({
     icons: {
       primary: "ui-icon-document"

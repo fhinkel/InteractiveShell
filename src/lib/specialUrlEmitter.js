@@ -95,7 +95,7 @@ module.exports = function(clients,
                           sshCredentials,
                           logExceptOnTest) {
   return {
-    emitEventUrlToClient: function(clientID, eventType, data) {
+    emitEventUrlToClient: function(clientID, eventType) {
       if (isViewHelpEvent(eventType)) {
         emitHelpUrlToClient(clientID, eventType, clients, logExceptOnTest);
         return;
@@ -103,8 +103,6 @@ module.exports = function(clients,
       emitUrlForUserGeneratedFileToClient(clientID, eventType,
           clients, options.MATH_PROGRAM, staticFolder, userSpecificPath,
           sshCredentials, logExceptOnTest);
-      var outputData = data.replace(/>>SPECIAL_EVENT_START>>/, "opening ");
-      outputData = outputData.replace(/<<SPECIAL_EVENT_END<</, "");
     },
     isSpecial: function(data) {
       var eventData = data.match(

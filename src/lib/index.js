@@ -186,7 +186,7 @@ var MathServer = function() {
       );
       var specialData = specialUrlEmitter.isSpecial(data);
       if (specialData) {
-        specialUrlEmitter.emitEventUrlToClient(clientID, specialData, data);
+        specialUrlEmitter.emitEventUrlToClient(clientID, specialData);
         return;
       }
       socket.emit('result', data);

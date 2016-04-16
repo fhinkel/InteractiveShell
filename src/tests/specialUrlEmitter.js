@@ -38,7 +38,7 @@ describe('SpecialUrlEmitter module:', function() {
 
       var revert = specialUrlEmitterModule.__set__("ssh2", ssh2);
 
-      specialUrlEmitter.emitEventUrlToClient("user12", "eventType", "data");
+      specialUrlEmitter.emitEventUrlToClient("user12", "eventType");
 
       revert();
     });
@@ -48,7 +48,7 @@ describe('SpecialUrlEmitter module:', function() {
       var revert = specialUrlEmitterModule
           .__set__("emitUrlForUserGeneratedFileToClient", spy);
 
-      specialUrlEmitter.emitEventUrlToClient("user12", "eventType", "data");
+      specialUrlEmitter.emitEventUrlToClient("user12", "eventType");
       assert(spy.called, "emitUrlForUserGeneratedFile was never called");
 
       revert();
@@ -63,7 +63,7 @@ describe('SpecialUrlEmitter module:', function() {
             return true;
           });
 
-      specialUrlEmitter.emitEventUrlToClient("user12", "eventType", "data");
+      specialUrlEmitter.emitEventUrlToClient("user12", "eventType");
       assert(spy.called, "emitHelpUrlToClient was never called");
 
       revert();

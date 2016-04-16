@@ -436,6 +436,24 @@ $(document).ready(function() {
     });
   });
 
+  document.querySelector("#maximizeOutput").addEventListener("click",function(){
+    var dialog = document.querySelector("#fullScreenOutput");
+    if(!dialog.showModal){
+        dialogPolyfill.registerDialog(dialog);
+    }
+    var output = document.querySelector("#M2Out");
+    dialog.appendChild(output);
+    dialog.showModal();
+  });
+  
+  document.querySelector("#downsizeOutput").addEventListener("click",function(){
+    var dialog = document.querySelector("#fullScreenOutput");
+    var old_position = document.querySelector("#right-half");
+    var output = document.querySelector("#M2Out");
+    old_position.appendChild(output);
+    dialog.close();
+  });
+
   siofu.addEventListener("complete", function(event) {
     console.log('we uploaded the file: ' + event.success);
     console.log(event.file);

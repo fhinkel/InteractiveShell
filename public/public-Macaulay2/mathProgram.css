@@ -181,3 +181,8 @@ code2 {
     padding: 3px 6px;
     text-decoration: none;
 }
+
+.mdl-mini-footer {
+    padding-top: 1px;
+    padding-bottom: 1px;
+}

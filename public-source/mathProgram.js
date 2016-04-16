@@ -15,6 +15,8 @@ var trym2 = {
 
 var ctrlc = "\x03";
 
+var dialogPolyfill = require('dialog-polyfill');
+
 var shellTextArea = require('shell-emulator');
 
 // /////////////////
@@ -260,7 +262,7 @@ trym2.doUptutorialClick = function() {
   $("#uptutorial").click();
 };
 
-trym2.saveInteractions = function() {
+var saveInteractions = function() {
   var input = $("#M2In");
   var output = $("#M2Out");
   var dialog = document.querySelector('#saveDialog');
@@ -272,15 +274,10 @@ trym2.saveInteractions = function() {
   var outputParagraph = document.querySelector("#outputContent");
   outputParagraph.setAttribute('href',outputLink);
   outputParagraph.setAttribute('download','output.txt');
-	  
+    if(!dialog.showModal){
       dialogPolyfill.registerDialog(dialog);
-    // Now dialog acts like a native <dialog>.
-    dialog.showModal();
-  $("#save-dialog a").button({
-    icons: {
-      primary: "ui-icon-document"
     }
-  });
+    dialog.showModal();
 };
 
 trym2.uploadTutorial = function() {
@@ -313,7 +310,55 @@ var tf = tutorialFunctions(trym2.makeAccordion, trym2.tutorials);
 trym2.insertDeleteButtonAtLastTutorial = tf.insertDeleteButtonAtLastTutorial;
 trym2.importTutorials = tf.importTutorials;
 
+var attachMinMaxBtnActions = function(){
+  document.querySelector("#maximizeOutput").addEventListener("click",function(){
+    var dialog = document.querySelector("#fullScreenOutput");
+    if(!dialog.showModal){
+        dialogPolyfill.registerDialog(dialog);
+    }
+    var output = document.querySelector("#M2Out");
+    dialog.appendChild(output);
+    dialog.showModal();
+  });
+  document.querySelector("#downsizeOutput").addEventListener("click",function(){
+    var dialog = document.querySelector("#fullScreenOutput");
+    var old_position = document.querySelector("#right-half");
+    var output = document.querySelector("#M2Out");
+    old_position.appendChild(output);
+    dialog.close();
+  });
+};
+
+var attachTutorialNavBtnActions = function(){
+  $("#previousBtn").click(function() {
+    trym2.switchLesson(-1);
+    $(this).removeClass("ui-state-focus");
+  });
+
+  $("#nextBtn").click(function() {
+    trym2.switchLesson(1);
+    $(this).removeClass("ui-state-focus");
+  });
+};
+  
+var attachCtrlBtnActions = function(){
+  $("#sendBtn").click(trym2.sendCallback('M2In'));
+  $("#resetBtn").click(function() {
+    $("#M2Out").trigger("reset");
+    trym2.socket.emit('reset');
+  });
+  $("#interruptBtn").click(function() {
+    trym2.postMessage(ctrlc, true);
+  });
+  $("#inputBtn").click(function() {
+    $(".mdl-layout__tab:eq(2) span").click();
+  });
+  $("#saveBtn").click(saveInteractions);
+};
+
 trym2.populateTutorialElement = tf.populateTutorialElement;
+
+
 $(document).ready(function() {
   trym2.getSelected = require('get-selected-text');
 
@@ -324,6 +369,10 @@ $(document).ready(function() {
       $("#M2Out").trigger("onmessage", msg);
     }
   });
+
+  attachTutorialNavBtnActions();
+  attachMinMaxBtnActions();
+  attachCtrlBtnActions();
 
   document.querySelector("#saveDialogClose").addEventListener('click', function(){
     document.querySelector("#saveDialog").close();
@@ -348,6 +397,7 @@ $(document).ready(function() {
       trym2.socket.oldEmit(event, msg);
     }
   };
+
 
   trym2.socket.on('image', function(imageUrl) {
     if (imageUrl) {
@@ -393,30 +443,10 @@ $(document).ready(function() {
   // $(".buttonset").buttonset();
 
   // $("button").button();
-  $("#previousBtn").click(function() {
-    trym2.switchLesson(-1);
-    $(this).removeClass("ui-state-focus");
-  });
-
-  $("#nextBtn").click(function() {
-    trym2.switchLesson(1);
-    $(this).removeClass("ui-state-focus");
-  });
 
   $('#M2In').val(DefaultText);
-  $("#sendBtn").click(trym2.sendCallback('M2In'));
   $('#M2In').keypress(trym2.sendOnEnterCallback('M2In'));
-  $("#resetBtn").click(function() {
-    $("#M2Out").trigger("reset");
-    trym2.socket.emit('reset');
-  });
-  $("#interruptBtn").click(function() {
-    trym2.postMessage(ctrlc, true);
-  });
-  $("#inputBtn").click(function() {
-    $(".mdl-layout__tab:eq(2) span").click();
-  });
-  $("#saveBtn").click(trym2.saveInteractions);
+
 
   var siofu = new SocketIOFileUpload(trym2.socket);
 
@@ -436,23 +466,6 @@ $(document).ready(function() {
     });
   });
 
-  document.querySelector("#maximizeOutput").addEventListener("click",function(){
-    var dialog = document.querySelector("#fullScreenOutput");
-    if(!dialog.showModal){
-        dialogPolyfill.registerDialog(dialog);
-    }
-    var output = document.querySelector("#M2Out");
-    dialog.appendChild(output);
-    dialog.showModal();
-  });
-  
-  document.querySelector("#downsizeOutput").addEventListener("click",function(){
-    var dialog = document.querySelector("#fullScreenOutput");
-    var old_position = document.querySelector("#right-half");
-    var output = document.querySelector("#M2Out");
-    old_position.appendChild(output);
-    dialog.close();
-  });
 
   siofu.addEventListener("complete", function(event) {
     console.log('we uploaded the file: ' + event.success);

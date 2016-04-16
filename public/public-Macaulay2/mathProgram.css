@@ -134,6 +134,7 @@ body {
 .sdbutton {
    width: 220px;
    color: blue;
+   float: right;
 }
 
 #M2In {

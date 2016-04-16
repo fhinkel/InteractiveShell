@@ -2,7 +2,7 @@
 * keypress to expand/contract M2 window
 * bug: tutorials: scroll bar appears too far to the left sometimes
 * command+- changes font size in the current window.
-* hovering over maximize/minimize button
+* ~~hovering over maximize/minimize button~~
 * put the About into the hamburger menu?
 * in drawer, a close button?  or bind it to Macaulay2 at top.
 * Make footer smaller, and header too, if possible.
@@ -13,7 +13,7 @@
 * picture is in the wrong place on the home screen
 * hover over buttons should be visible
 * evaluate button: make it somewhat transparent
-* polyfill should be a client side dependency
+* ~~polyfill should be a client side dependency~~
 * possible: can buttons easily be wrapped if they are too long?
   or should they be even?
 

@@ -11,7 +11,7 @@
 * save menu needs better CSS
 * ~~dialog after upload is wrong style~~
 * ~~dialog for showing images done~~
-* picture is in the wrong place on the home screen
+* ~~picture is in the wrong place on the home screen~~
 * hover over buttons should be visible
 * evaluate button: make it somewhat transparent
 * ~~polyfill should be a client side dependency~~

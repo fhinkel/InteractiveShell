@@ -135,6 +135,12 @@ body {
    cursor: default;
 }
 
+.image-text-wrap {
+   float: right;
+   margin: 10px;
+   border-radius: 5px;
+}
+
 .sdbutton {
    width: 220px;
    color: blue;

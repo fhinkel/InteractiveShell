@@ -72,11 +72,17 @@
 <body>
 
 <dialog id="saveDialog" class="mdl-dialog">
-	<p id="inputContent"> </p>
-	<p id="outputContent"> </p>
-    <form method="dialog">
-      <input type="submit" value="Close" />
-    </form>
+   <h4 class="mdl-dialog__title">Download
+      <i id="saveDialogClose" class="material-icons">close</i>
+   </h4>
+   <div class="mdl-dialog__content">
+	<p> 
+      <a id="inputContent" class="sdbutton mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" href="">Content of input window</a>
+   </p>
+	<p>
+      <a id="outputContent" class="sdbutton mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" href="">Content of output window</a>
+   </p>
+    </div>
   </dialog>
 <!--[if IE]>
 <p> Internet Explorer is currently not supported. Please use a different

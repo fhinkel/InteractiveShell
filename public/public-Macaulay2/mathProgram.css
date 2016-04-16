@@ -102,6 +102,19 @@ body {
    margin-right: 24px;
 }
 
+#saveDialog {
+   width: 300px;
+}
+
+#saveDialogClose {
+   float: right;
+}
+
+.sdbutton {
+   width: 220px;
+   color: blue;
+}
+
 #M2In {
    position: relative;
    z-index: 1;

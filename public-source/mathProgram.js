@@ -264,21 +264,14 @@ trym2.saveInteractions = function() {
   var input = $("#M2In");
   var output = $("#M2Out");
   var dialog = document.querySelector('#saveDialog');
+  var inputLink = 'data:application/octet-stream,' + encodeURIComponent(input.val());
   var inputParagraph = document.querySelector("#inputContent");
-	inputParagraph.removeChild(inputParagraph.firstChild);
-  var downloadLink = require('create-download-link');
-  inputParagraph.appendChild(downloadLink({
-    data: input.val(),
-    title: "Content of input window",
-    filename: mathProgramName + "In.txt"
-  }));
+  inputParagraph.setAttribute('href',inputLink);
+  inputParagraph.setAttribute('download', 'input.txt');
+  var outputLink = 'data:application/octet-stream,' + encodeURIComponent(output.val());
   var outputParagraph = document.querySelector("#outputContent");
-	outputParagraph.removeChild(outputParagraph.firstChild);
-  outputParagraph.appendChild(downloadLink({
-    data: output.val(),
-    title: "Content of terminal",
-    filename: mathProgramName + "Out.txt"
-  }));
+  outputParagraph.setAttribute('href',outputLink);
+  outputParagraph.setAttribute('download','output.txt');
 	  
       dialogPolyfill.registerDialog(dialog);
     // Now dialog acts like a native <dialog>.
@@ -330,6 +323,10 @@ $(document).ready(function() {
     if (msg !== "") {
       $("#M2Out").trigger("onmessage", msg);
     }
+  });
+
+  document.querySelector("#saveDialogClose").addEventListener('click', function(){
+    document.querySelector("#saveDialog").close();
   });
 
   trym2.socket.on('serverDisconnect', function(msg) {

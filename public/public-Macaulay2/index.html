@@ -123,7 +123,7 @@
 <![endif]-->
 
 <!-- Always shows a header, even in smaller screens. -->
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--no-desktop-drawer-button">
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
             <!-- Title -->
@@ -147,9 +147,11 @@
             <a href="#scroll-tab-1" class="mdl-layout__tab is-active">Home</a>
             <a href="#scroll-tab-2" class="mdl-layout__tab">Tutorial</a>
             <a href="#scroll-tab-3" class="mdl-layout__tab">Input</a>
+            <a href="#scroll-tab-4" class="mdl-layout__tab">FAQ</a>
+
         </div>
     </header>
-    <div class="mdl-layout__drawer">
+    <div class="mdl-layout__drawer mdl-layout--small-screen-only">
         <span class="mdl-layout-title">Macaulay2</span>
         <nav class="mdl-navigation">
             <a class="mdl-navigation__link" href="">Home</a>
@@ -209,6 +211,15 @@
                   <textarea id="M2In" wrap='off' autocorrect="off"
                             spellcheck="false" autocapitalize="off">
                   </textarea>
+                    </div>
+                </section>
+
+                <section class="mdl-layout__tab-panel" id="scroll-tab-4">
+                    <div class="page-content" id="help">
+                        Help is on the way. <br>
+                        <i class="material-icons">sentiment_very_satisfied</i>
+                        <i class="material-icons">mood</i>
+                        <i class="material-icons">mood_bad</i>
                     </div>
                 </section>
             </div>

@@ -333,12 +333,10 @@ var attachMinMaxBtnActions = function() {
 var attachTutorialNavBtnActions = function() {
   $("#previousBtn").click(function() {
     trym2.switchLesson(-1);
-    $(this).removeClass("ui-state-focus");
   });
 
   $("#nextBtn").click(function() {
     trym2.switchLesson(1);
-    $(this).removeClass("ui-state-focus");
   });
 };
 
@@ -482,9 +480,9 @@ $(document).ready(function() {
   $(document).on("click", ".submenuItem", trym2.showLesson);
 
   var codeClickAction = function() {
-    $(this).effect("highlight", {
+   /* $(this).effect("highlight", {
       color: 'red'
-    }, 300);
+    }, 300);*/
     var code = $(this).text();
     code += "\n";
     $("#M2In").val($("#M2In").val() + code);

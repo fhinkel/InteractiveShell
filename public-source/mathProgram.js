@@ -184,7 +184,8 @@ trym2.showLesson = function(e) {
   // console.log("You clicked a submenuItem: " + $(this).html());
   trym2.loadLesson(tutorialIdNr, lessonIdNr);
 
-  $(".mdl-layout__tab:eq(1) span").click();
+  // $(".mdl-layout__tab:eq(1) span").click();
+  document.getElementById("lessonTabTitle").click();
   return false;
 };
 
@@ -210,8 +211,8 @@ trym2.loadLesson = function(tutorialid, lessonid) {
     $("#lesson").html(lessonContent).prepend("<h3>" + title + "</h3>");
     $("#lesson").scrollTop(0); // scroll to the top of a new lesson
     MathJax.Hub.Queue(["Typeset", MathJax.Hub, "#lesson"]);
+    // document.getElementById("lessonTabTitle").click();
   }
-  document.getElementById("lessonTabTitle").click();
 };
 
 trym2.switchLesson = function(incr) {
@@ -350,9 +351,6 @@ var attachCtrlBtnActions = function() {
   $("#interruptBtn").click(function() {
     trym2.postMessage(ctrlc, true);
   });
-  $("#inputBtn").click(function() {
-    $(".mdl-layout__tab:eq(2) span").click();
-  });
   $("#saveBtn").click(saveInteractions);
 };
 
@@ -481,16 +479,6 @@ $(document).ready(function() {
   });
 
   $("#uptutorial").on('change', trym2.uploadTutorial);
-
-  $("#tutorialBtn").click(function() {
-    trym2.loadLesson(trym2.tutorialNr, trym2.lessonNr);
-    $(".mdl-layout__tab:eq(1) span").click();
-  });
-
-  $("#homeBtn").click(function() {
-    $(".mdl-layout__tab:eq(0) span").click();
-  });
-
   $(document).on("click", ".submenuItem", trym2.showLesson);
 
   var codeClickAction = function() {

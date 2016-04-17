@@ -71,7 +71,6 @@ body {
 }
 
 #sendBtn {
-    opacity: 0.3;
     position: absolute;
     z-index: 2;
     top: 8px;
@@ -94,7 +93,7 @@ body {
     box-sizing: border-box;
 }
 
-#maximizeOutput:hover, #downsizeOutput:hover, #sendBtn:hover {
+#maximizeOutput:hover, #downsizeOutput:hover {
     opacity: 1.0;
 }
 

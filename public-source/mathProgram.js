@@ -215,7 +215,7 @@ trym2.loadLesson = function(tutorialid, lessonid) {
 };
 
 trym2.switchLesson = function(incr) {
-   console.log("Current lessonNr " + trym2.lessonNr);
+  console.log("Current lessonNr " + trym2.lessonNr);
   this.loadLesson(this.tutorialNr, this.lessonNr + incr);
 };
 

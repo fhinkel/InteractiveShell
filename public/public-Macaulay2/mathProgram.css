@@ -175,7 +175,7 @@ code {
     border-radius: 5px;
     box-shadow: 1px 1px 2px #000;
     transition: background-color 300ms;
-    webkit-transition: background-color 300ms;
+    -webkit-transition: background-color 300ms;
 }
 
 code:active {
@@ -193,11 +193,11 @@ code2 {
     border-radius: 10px;
     display: inline-block;
     cursor: pointer;
-    font-family: courier new;
+    font-family: monospace;
     padding: 3px 6px;
     text-decoration: none;
     transition: background-color 300ms;
-    webkit-transition: background-color 300ms;
+    -webkit-transition: background-color 300ms;
 }
 
 .mdl-mini-footer {

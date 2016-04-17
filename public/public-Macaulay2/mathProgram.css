@@ -169,7 +169,6 @@ code {
     padding: 1px 3px;
     line-height: 1.5;
     cursor: pointer;
-    /*font-size: 140%;*/
     margin-left: 20px;
     font-family: monospace;
     border-radius: 5px;
@@ -185,7 +184,6 @@ code:active {
 code2 {
     white-space: pre;
     background-color: lightyellow;
-    /*padding: 1px 3px;*/
     box-shadow: 1px 1px 2px #000;
     margin-left: 20px;
     -moz-border-radius: 10px;

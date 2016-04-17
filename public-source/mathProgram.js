@@ -211,12 +211,12 @@ trym2.loadLesson = function(tutorialid, lessonid) {
     $("#lesson").scrollTop(0); // scroll to the top of a new lesson
     MathJax.Hub.Queue(["Typeset", MathJax.Hub, "#lesson"]);
   }
+  document.getElementById("lessonTabTitle").click();
 };
 
 trym2.switchLesson = function(incr) {
-  // console.log("Current lessonNr " + trym2.lessonNr);
+   console.log("Current lessonNr " + trym2.lessonNr);
   this.loadLesson(this.tutorialNr, this.lessonNr + incr);
-  $(".mdl-layout__tab:eq(1) span").click();
 };
 
 trym2.inspect = function(obj) {

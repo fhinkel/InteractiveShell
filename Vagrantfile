@@ -5,7 +5,8 @@
 mathProgram = "M2"
 npmCmd = "npm start"
 logfilePath = "/home/vagrant/web" + mathProgram + ".log"
-cronString = "@reboot until [ -d /home/vagrant/InteractiveShell/public ]; do sleep 1; done; cd /home/vagrant/InteractiveShell; " + npmCmd + " 2>&1 > " + logfilePath
+cronString = "SHELL=/bin/bash\n";
+cronString += "@reboot source ~/.nvm/nvm.sh; until [ -d /home/vagrant/InteractiveShell/public ]; do sleep 1; done; cd /home/vagrant/InteractiveShell; " + npmCmd + " 2>&1 > " + logfilePath
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
@@ -72,15 +73,28 @@ Vagrant.configure(2) do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  config.vm.provision "basic", type:"shell", privileged:false, inline: <<-SHELL
-    sudo apt-get update && apt-get upgrade -y
-    sudo apt-get install -y nodejs npm wget
+  config.vm.provision "sudo", type:"shell", privileged:true, inline: <<-SHELL
+    apt-get update && apt-get upgrade -y
+    apt-get install -y nodejs npm wget
     wget -qO- https://get.docker.com/ | sh
-    sudo ln -s /usr/bin/nodejs /usr/bin/node
-    sudo chown -R vagrant:vagrant /home/vagrant/InteractiveShell
-    curl https://raw.githubusercontent.com/creationix/nvm/v0.25.0/install.sh | bash
+    ln -s /usr/bin/nodejs /usr/bin/node
+    chown -R vagrant:vagrant /home/vagrant/InteractiveShell
+  SHELL
+
+  config.vm.provision "nvm", type:"shell", privileged:false, inline: <<-SHELL
+    curl https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
+    source ~/.nvm/nvm.sh; 
+    nvm install stable
+    nvm use stable
+   SHELL
+
+  config.vm.provision "node-modules", type:"shell", privileged:false, inline: <<-SHELL
     cd InteractiveShell
     npm install
+   SHELL
+
+  config.vm.provision "docker", type:"shell", privileged:false, inline: <<-SHELL
+    cd InteractiveShell
     git pull
     rm id_rsa*
     ssh-keygen -b 1024 -f id_rsa -P ''

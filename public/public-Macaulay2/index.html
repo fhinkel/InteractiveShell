@@ -35,6 +35,7 @@
       }
 });
 
+
     </script>
     <script type="text/javascript"
             src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
@@ -117,20 +118,12 @@
     </div>
 </dialog>
 
-<!--[if IE]>
-<p> Internet Explorer is currently not supported. Please use a different
-    browser. </p>
-<![endif]-->
-
-<!-- Always shows a header, even in smaller screens. -->
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--no-desktop-drawer-button">
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
             <!-- Title -->
             <span class="mdl-layout-title">Macaulay2</span>
-            <!-- Add spacer, to align navigation to the right -->
             <div class="mdl-layout-spacer"></div>
-            <!-- Navigation. We hide it in small screens. -->
             <nav class="mdl-navigation">
                 <a class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
                    id="resetBtn">Reset</a>
@@ -143,15 +136,14 @@
             </nav>
         </div>
         <!-- Tabs -->
-        <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+        <div class="mdl-layout__tab-bar mdl-js-ripple-effect mdl-layout__tab-bar-container">
             <a href="#scroll-tab-1" class="mdl-layout__tab is-active">Home</a>
             <a href="#scroll-tab-2" class="mdl-layout__tab">Tutorial</a>
             <a href="#scroll-tab-3" class="mdl-layout__tab">Input</a>
             <a href="#scroll-tab-4" class="mdl-layout__tab">FAQ</a>
-
         </div>
     </header>
-    <div class="mdl-layout__drawer mdl-layout--small-screen-only">
+    <div class="mdl-layout__drawer">
         <span class="mdl-layout-title">Macaulay2</span>
         <nav class="mdl-navigation">
             <a class="mdl-navigation__link" href="">Home</a>
@@ -160,6 +152,7 @@
             <a class="mdl-navigation__link" href="">Help</a>
         </nav>
     </div>
+
     <main class="mdl-layout__content" id="content">
         <div class="mdl-grid">
             <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-cell--4-col-phone"

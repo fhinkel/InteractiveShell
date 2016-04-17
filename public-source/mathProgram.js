@@ -184,7 +184,6 @@ trym2.showLesson = function(e) {
   // console.log("You clicked a submenuItem: " + $(this).html());
   trym2.loadLesson(tutorialIdNr, lessonIdNr);
 
-  // $(".mdl-layout__tab:eq(1) span").click();
   document.getElementById("lessonTabTitle").click();
   return false;
 };
@@ -364,8 +363,8 @@ var showUploadSuccessDialog = function(event) {
   var filename = event.file.name;
   console.log("File uploaded successfully!" + filename);
   var successSentence = filename +
-        " has been uploaded and you can use it by loading it into your " +
-        mathProgramName + " session (use the input terminal).";
+      " has been uploaded and you can use it by loading it into your " +
+      mathProgramName + " session (use the input terminal).";
   document.querySelector("#uploadSuccessDialogContent").innerText = successSentence;
   dialog.showModal();
 };
@@ -382,7 +381,7 @@ var showImageDialog = function(imageUrl) {
     a.innerText = imageUrl.split('/').pop();
     a.addEventListener("click", function() {
       window.open(imageUrl, '_blank',
-                'height=200,width=200,toolbar=0,location=0,menubar=0');
+          'height=200,width=200,toolbar=0,location=0,menubar=0');
       dialog.close();
     });
     dialog.showModal();

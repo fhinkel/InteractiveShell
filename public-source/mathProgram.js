@@ -207,7 +207,7 @@ trym2.loadLesson = function(tutorialid, lessonid) {
     console.log("Lesson changed");
     console.log(this.tutorials[this.tutorialNr].title);
     var title = this.tutorials[this.tutorialNr].title.text();
-    $("#lesson").html(lessonContent).prepend("<h3>" + title + "</h3>").show();
+    $("#lesson").html(lessonContent).prepend("<h3>" + title + "</h3>");
     $("#lesson").scrollTop(0); // scroll to the top of a new lesson
     MathJax.Hub.Queue(["Typeset", MathJax.Hub, "#lesson"]);
   }

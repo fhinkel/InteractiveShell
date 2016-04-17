@@ -36,6 +36,13 @@
 });
 
 
+
+
+
+
+
+
+
     </script>
     <script type="text/javascript"
             src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
@@ -135,21 +142,15 @@
                    id="uploadBtn">Upload file</a>
             </nav>
         </div>
-        <!-- Tabs -->
-        <div class="mdl-layout__tab-bar mdl-js-ripple-effect mdl-layout__tab-bar-container">
-            <a href="#scroll-tab-1" class="mdl-layout__tab is-active">Home</a>
-            <a href="#scroll-tab-2" class="mdl-layout__tab">Tutorial</a>
-            <a href="#scroll-tab-3" class="mdl-layout__tab">Input</a>
-            <a href="#scroll-tab-4" class="mdl-layout__tab">FAQ</a>
-        </div>
+
     </header>
     <div class="mdl-layout__drawer">
         <span class="mdl-layout-title">Macaulay2</span>
         <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="">Home</a>
-            <a class="mdl-navigation__link" href="">Tutorial</a>
-            <a class="mdl-navigation__link" href="">Input</a>
-            <a class="mdl-navigation__link" href="">Help</a>
+            <a class="mdl-navigation__link" href="#home">Home</a>
+            <a class="mdl-navigation__link" href="#lesson">Tutorial</a>
+            <a class="mdl-navigation__link" href="#editor">Input</a>
+            <a class="mdl-navigation__link" href="#help">Help</a>
         </nav>
     </div>
 
@@ -158,9 +159,15 @@
             <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-cell--4-col-phone"
                  id="left-half">
 
-                <section class="mdl-layout__tab-panel is-active"
-                         id="scroll-tab-1">
-                    <div class="page-content" id="home">
+                <div class="mdl-tabs mdl-js-tabs ">
+                    <div class="mdl-tabs__tab-bar mdl mdl-layout--large-screen-only">
+                        <a href="#home" class="mdl-tabs__tab">Home</a>
+                        <a href="#lessonTab" class="mdl-tabs__tab">Tutorials</a>
+                        <a href="#editor" class="mdl-tabs__tab">Editor</a>
+                        <a href="#help" class="mdl-tabs__tab">FAQ</a>
+
+                    </div>
+                    <div class="mdl-tabs__panel is-active" id="home">
                         <img class="image-text-wrap" src="frontPageImage.jpg"/>
 
                         <h3>Welcome to Macaulay2</h3>
@@ -180,23 +187,22 @@
                             algebra, and related field in mathematics or
                             applications. </p>
                     </div>
-                </section>
+                    <div class="mdl-tabs__panel" id="lessonTab">
+                        <div id="lesson">
 
-                <section class="mdl-layout__tab-panel" id="scroll-tab-2">
-                    <div class="page-content" id="lesson">
-                    </div>
-                    <div class="buttonset">
-                        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colores"
-                                id="previousBtn"><i class="material-icons">chevron_left</i>
-                        </button>
-                        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colores"
-                                id="nextBtn"><i class="material-icons">chevron_right</i>
-                        </button>
-                    </div>
-                </section>
+                        </div>
+                        <div>
+                            <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored navigationButton"
+                                    id="nextBtn"><i class="material-icons">chevron_right</i>
+                            <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored navigationButton"
+                                    id="previousBtn"><i class="material-icons">chevron_left</i>
+                            </button>
 
-                <section class="mdl-layout__tab-panel" id="scroll-tab-3">
-                    <div class="page-content" id="editor">
+                            </button>
+                        </div>
+
+                    </div>
+                    <div class="mdl-tabs__panel" id="editor">
                         <button type="button"
                                 class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
                                 id="sendBtn">Evaluate
@@ -205,16 +211,14 @@
                             spellcheck="false" autocapitalize="off">
                   </textarea>
                     </div>
-                </section>
-
-                <section class="mdl-layout__tab-panel" id="scroll-tab-4">
-                    <div class="page-content" id="help">
-                        Help is on the way. <br>
-                        <i class="material-icons">sentiment_very_satisfied</i>
-                        <i class="material-icons">mood</i>
-                        <i class="material-icons">mood_bad</i>
+                    <div class="mdl-tabs__panel" id="help">
+                        <p>Help is on the way. <br>
+                            <i class="material-icons">sentiment_very_satisfied</i>
+                            <i class="material-icons">mood</i>
+                            <i class="material-icons">mood_bad</i>
+                        </p>
                     </div>
-                </section>
+                </div>
             </div>
 
             <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-cell--4-col-phone"

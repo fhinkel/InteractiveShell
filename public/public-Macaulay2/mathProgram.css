@@ -174,6 +174,11 @@ code {
     font-family: monospace;
     border-radius: 5px;
     box-shadow: 1px 1px 2px #000;
+    transition: background-color 300ms;
+}
+
+code:active {
+    background-color: red;
 }
 
 code2 {

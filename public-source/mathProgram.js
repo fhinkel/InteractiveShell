@@ -489,5 +489,11 @@ $(document).ready(function() {
   $(document).on("click", "code", codeClickAction);
   $(document).on("click", "code2", codeClickAction);
 
+  $(document).on("click", ".tabPanelActivator", function(event) {
+    var panelId = $(this).attr('href');
+    document.getElementById(panelId).click();
+    $('.mdl-layout__drawer').toggleClass('is-visible');
+    event.preventDefault();
+  });
   trym2.importTutorials();
 });

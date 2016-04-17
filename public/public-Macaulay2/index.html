@@ -132,10 +132,10 @@
     <div class="mdl-layout__drawer">
         <span class="mdl-layout-title">Macaulay2</span>
         <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="#home">Home</a>
-            <a class="mdl-navigation__link" href="#lesson">Tutorial</a>
-            <a class="mdl-navigation__link" href="#editor">Input</a>
-            <a class="mdl-navigation__link" href="#help">Help</a>
+            <a class="mdl-navigation__link tabPanelActivator" href="homeTitle">Home</a>
+            <a class="mdl-navigation__link tabPanelActivator" href="lessonTabTitle">Tutorial</a>
+            <a class="mdl-navigation__link tabPanelActivator" href="editorTitle">Input</a>
+            <a class="mdl-navigation__link tabPanelActivator" href="helpTitle">Help</a>
         </nav>
     </div>
 
@@ -146,10 +146,10 @@
 
                 <div class="mdl-tabs mdl-js-tabs ">
                     <div class="mdl-tabs__tab-bar mdl mdl-layout--large-screen-only">
-                        <a href="#home" class="mdl-tabs__tab">Home</a>
+                        <a href="#home" id="homeTitle" class="mdl-tabs__tab">Home</a>
                         <a href="#lessonTab" id="lessonTabTitle" class="mdl-tabs__tab">Tutorials</a>
-                        <a href="#editor" class="mdl-tabs__tab">Editor</a>
-                        <a href="#help" class="mdl-tabs__tab">FAQ</a>
+                        <a href="#editor" id="editorTitle" class="mdl-tabs__tab">Editor</a>
+                        <a href="#help" id="helpTitle" class="mdl-tabs__tab">FAQ</a>
 
                     </div>
                     <div class="mdl-tabs__panel mdl-layout--fixed-header is-active" id="home">

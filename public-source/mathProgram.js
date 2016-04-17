@@ -125,12 +125,12 @@ trym2.addExpandLoadTutorialInstructionsButton = function() {
 
 trym2.scrollDownUntilTutorialVisible = function() {
   var y = $(this).position().top;
-  var height = parseInt($("#scroll-tab-1").css('height'), 10);
+  var height = parseInt($("#lesson").css('height'), 10);
   var totalHeight = parseInt($(this).css('height'), 10) + 50;
   if (height - y < totalHeight) {
     var scroll = totalHeight - height + y;
-    $("#scroll-tab-1").animate({
-      scrollTop: ($("#scroll-tab-1").scrollTop() + scroll)
+    $("#lesson").animate({
+      scrollTop: ($("#lesson").scrollTop() + scroll)
     }, 400);
   }
 };

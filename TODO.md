@@ -12,10 +12,10 @@
 * ~~dialog after upload is wrong style~~
 * ~~dialog for showing images done~~
 * ~~picture is in the wrong place on the home screen~~
-* hover over buttons should be visible
-* evaluate button: make it somewhat transparent
+* ~~hover over buttons should be visible~~
+* ~~evaluate button: make it somewhat transparent~~
 * ~~polyfill should be a client side dependency~~
-* possible: can buttons easily be wrapped if they are too long?
+* possible: can code-buttons easily be wrapped if they are too long?
   or should they be even?
 
 2016-04-14

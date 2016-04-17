@@ -102,8 +102,14 @@ Vagrant.configure(2) do |config|
   SHELL
    
 
-  config.vm.provision "cron", type:"shell", privileged:false do |cron|
-      cron.inline = "echo \"" + cronString + "\" > tmpcron; crontab tmpcron; rm tmpcron"
-  end
+  # config.vm.provision "cron", type:"shell", privileged:false do |cron|
+  #     cron.inline = "echo \"" + cronString + "\" > tmpcron; crontab tmpcron; rm tmpcron"
+  # end
+
+  config.vm.provision "startup_server", type:"shell", privileged:false, run: "always", inline: <<-SHELL
+       source ~/.nvm/nvm.sh 
+      cd InteractiveShell
+      npm start 2>&1 > ../webm2.log &
+  SHELL
 
 end

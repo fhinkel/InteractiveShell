@@ -93,12 +93,16 @@ body {
     box-sizing: border-box;
 }
 
-#maximizeOutput:hover, #downsizeOutput:hover {
-    opacity: 1.0;
+
+#M2OutZoomBtns {
+    z-index: 2;
+    position: absolute;
+    top: 16px;
+    right: 40px;
 }
 
 #maximizeOutput, #downsizeOutput {
-    opacity: 0.3;
+    /*opacity: 0.3;*/
     z-index: 2;
     position: absolute;
     top: 16px;

@@ -267,11 +267,11 @@ var saveInteractions = function() {
   var output = $("#M2Out");
   var dialog = document.querySelector('#saveDialog');
   var inputLink = 'data:application/octet-stream,' + encodeURIComponent(input.val());
-  var inputParagraph = document.querySelector("#inputContent");
+  var inputParagraph = document.getElementById("inputContent");
   inputParagraph.setAttribute('href', inputLink);
   inputParagraph.setAttribute('download', 'input.txt');
   var outputLink = 'data:application/octet-stream,' + encodeURIComponent(output.val());
-  var outputParagraph = document.querySelector("#outputContent");
+  var outputParagraph = document.getElementById("outputContent");
   outputParagraph.setAttribute('href', outputLink);
   outputParagraph.setAttribute('download', 'output.txt');
   if (!dialog.showModal) {
@@ -311,20 +311,27 @@ trym2.insertDeleteButtonAtLastTutorial = tf.insertDeleteButtonAtLastTutorial;
 trym2.importTutorials = tf.importTutorials;
 
 var attachMinMaxBtnActions = function() {
-  document.querySelector("#maximizeOutput").addEventListener("click", function() {
-    var dialog = document.querySelector("#fullScreenOutput");
+  var maximize = document.getElementById("maximizeOutput");
+  var downsize = document.getElementById("downsizeOutput");
+  var zoomBtns = document.getElementById("M2OutZoomBtns");
+  maximize.addEventListener("click", function() {
+    var dialog = document.getElementById("fullScreenOutput");
+    var maxCtrl = document.getElementById("M2OutCtrlBtnsMax");
     if (!dialog.showModal) {
       dialogPolyfill.registerDialog(dialog);
     }
-    var output = document.querySelector("#M2Out");
+    var output = document.getElementById("M2Out");
     dialog.appendChild(output);
+    maxCtrl.insertBefore(zoomBtns, downsize);
     dialog.showModal();
   });
-  document.querySelector("#downsizeOutput").addEventListener("click", function() {
-    var dialog = document.querySelector("#fullScreenOutput");
-    var oldPosition = document.querySelector("#right-half");
-    var output = document.querySelector("#M2Out");
+  downsize.addEventListener("click", function() {
+    var dialog = document.getElementById("fullScreenOutput");
+    var oldPosition = document.getElementById("right-half");
+    var output = document.getElementById("M2Out");
+    var ctrl = document.getElementById("M2OutCtrlBtns");
     oldPosition.appendChild(output);
+    ctrl.insertBefore(zoomBtns, maximize);
     dialog.close();
   });
 };
@@ -354,7 +361,7 @@ var attachCtrlBtnActions = function() {
 trym2.populateTutorialElement = tf.populateTutorialElement;
 
 var showUploadSuccessDialog = function(event) {
-  var dialog = document.querySelector("#uploadSuccessDialog");
+  var dialog = document.getElementById("uploadSuccessDialog");
   if (!dialog.showModal) {
     dialogPolyfill.registerDialog(dialog);
   }
@@ -365,18 +372,18 @@ var showUploadSuccessDialog = function(event) {
   var successSentence = filename +
       " has been uploaded and you can use it by loading it into your " +
       mathProgramName + " session (use the input terminal).";
-  document.querySelector("#uploadSuccessDialogContent").innerText = successSentence;
+  document.getElementById("uploadSuccessDialogContent").innerText = successSentence;
   dialog.showModal();
 };
 
 var showImageDialog = function(imageUrl) {
   if (imageUrl) {
-    var dialog = document.querySelector("#showImageDialog");
+    var dialog = document.getElementById("showImageDialog");
     if (!dialog.showModal) {
       dialogPolyfill.registerDialog(dialog);
     }
     console.log("We received an image: " + imageUrl);
-    var a = document.querySelector("#showImageDialogBtn");
+    var a = document.getElementById("showImageDialogBtn");
     a.setAttribute("href", "#");
     a.innerText = imageUrl.split('/').pop();
     a.addEventListener("click", function() {
@@ -388,8 +395,23 @@ var showImageDialog = function(imageUrl) {
   }
 };
 
+var attachCloseDialogBtns = function() {
+  document.getElementById("saveDialogClose").addEventListener('click', function() {
+    document.getElementById("saveDialog").close();
+  });
+  document.getElementById("uploadSuccessDialogClose").addEventListener('click', function() {
+    document.getElementById("uploadSuccessDialog").close();
+  });
+  document.getElementById("showImageDialogClose").addEventListener('click', function() {
+    document.getElementById("showImageDialog").close();
+  });
+};
+
 $(document).ready(function() {
   trym2.getSelected = require('get-selected-text');
+
+  var zoom = require('../src/frontend/zooming');
+  zoom.attachZoomButtons("M2Out", "M2OutZoomIn", "M2OutResetZoom", "M2OutZoomOut");
 
   trym2.socket = io();
 
@@ -402,18 +424,7 @@ $(document).ready(function() {
   attachTutorialNavBtnActions();
   attachMinMaxBtnActions();
   attachCtrlBtnActions();
-
-  document.querySelector("#saveDialogClose").addEventListener('click', function() {
-    document.querySelector("#saveDialog").close();
-  });
-
-  document.querySelector("#uploadSuccessDialogClose").addEventListener('click', function() {
-    document.querySelector("#uploadSuccessDialog").close();
-  });
-
-  document.querySelector("#showImageDialogClose").addEventListener('click', function() {
-    document.querySelector("#showImageDialog").close();
-  });
+  attachCloseDialogBtns();
 
   trym2.socket.on('serverDisconnect', function(msg) {
     console.log("We got disconnected. " + msg);

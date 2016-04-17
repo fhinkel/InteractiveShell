@@ -63,7 +63,9 @@
 <body>
 
 <dialog id="fullScreenOutput" class="">
+  <div id="M2OutCtrlBtnsMax">
     <i id="downsizeOutput" class="material-icons icon-with-action">fullscreen_exit</i>
+   </div>
 </dialog>
 
 <dialog id="saveDialog" class="mdl-dialog">
@@ -208,7 +210,14 @@
 
             <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-cell--4-col-phone"
                  id="right-half">
-                <i id="maximizeOutput" class="material-icons icon-with-action">fullscreen</i>
+                 <div id="M2OutCtrlBtns">
+                    <div id="M2OutZoomBtns">
+                      <i id="M2OutZoomIn" class="material-icons icon-with-action">zoom_in</i>
+                      <i id="M2OutResetZoom" class="material-icons icon-with-action">find_replace</i>
+                      <i id="M2OutZoomOut" class="material-icons icon-with-action">zoom_out</i>
+                     </div>
+                   <i id="maximizeOutput" class="material-icons icon-with-action">fullscreen</i>
+                </div>
             <textarea id="M2Out" wrap='off' autocorrect="off" spellcheck="false"
                       autocapitalize="off">
             </textarea>

@@ -6,12 +6,12 @@ GLOBAL.OPTIONS = require('./default.js').getConfig({
     CONTAINERS: '../lib/sudoDockerContainers.js'
   },
   containerConfig: {
-    containerType: "singular_container",
-    instance: {
-      host: '127.0.0.1',
-      sshKey: '/home/vagrant/InteractiveShell/Vagrant_singular/id_rsa',
-      username: 'singularUser'
-    }
+    containerType: "singular_container"
+  },
+  startInstance: {
+    host: '127.0.0.1',
+    sshKey: '/home/vagrant/InteractiveShell/Vagrant_singular/id_rsa',
+    username: 'singularUser'
   }
 });
 

@@ -12,14 +12,14 @@ var configuration = function(overrideOptions) {
     },
     containerConfig: {
       sshdCmd: "/usr/sbin/sshd -D",
-      containerType: "m2container",
-      instance: {
-        host: '127.0.0.1',
-        username: 'm2user',
-        port: '123',
-        sshKey: '/home/vagrant/InteractiveShell/id_rsa',
-        containerName: ''
-      }
+      containerType: "m2container"
+    },
+    startInstance: {
+      host: '127.0.0.1',
+      username: 'm2user',
+      port: '123',
+      sshKey: '/home/vagrant/InteractiveShell/id_rsa',
+      containerName: ''
     },
     perContainerResources: {
       cpuShares: 2,
@@ -35,16 +35,7 @@ var configuration = function(overrideOptions) {
       username: 'vagrant',
       port: '22',
       sshKey: "/home/vagrant/InteractiveShell/separate_machines/host_key"
-    },
-    guestInstance: {
-      host: '192.168.2.42',
-      username: 'm2user',
-      port: '5000',
-      sshKey: '/home/vagrant/InteractiveShell/separate_machines/docker_key',
-      containerName: '',
-      lastActiveTime: 0
     }
-
   };
 
   var overrideDefaultOptions = function(overrideOptions, defaultOptions) {

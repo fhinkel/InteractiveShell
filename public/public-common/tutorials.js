@@ -52,36 +52,16 @@ var tutorialFunctions = function(makeAccordion, tutorials) {
     console.log("Import tutorials.");
 
     fetch('/getListOfTutorials')
-        .then(function(tutorialData) {
-          return tutorialData.json();
+        .then(function(data) {
+          return data.json();
         }).then(function(tutorialPaths) {
           console.log("Obtaining list of tutorials successful: " + tutorialPaths);
-      // var tutorialPaths = JSON.parse(tutorialData);
           makeTutorialsList(0, tutorialPaths, function() {
         makeAccordion(tutorials);
       });
         }).catch(function(error) {
       console.log("There was an error obtaining the list of tutorial files: " + error);
-      return;
     });
-
-    /* $.ajax({
-     url: '/getListOfTutorials',
-     type: 'GET',
-     statusCode: {
-     500: function(error) {
-     console.log("There was an error obtaining the list of tutorial files: " + error);
-     }
-     },
-     success: function(tutorialData) {
-     console.log("Obtaining list of tutorials successful: " + tutorialData);
-     var tutorialPaths = JSON.parse(tutorialData);
-     makeTutorialsList(0, tutorialPaths, function() {
-     makeAccordion(tutorials);
-     });
-     }
-     });*/
-    return false;
   };
 
   return {

@@ -23,7 +23,7 @@ body {
 }
 
 #left-half, #right-half {
-    
+    position: relative;
     /* grid has margin 8px, which is not subtracked by
     box-sizing, so we subtract it manually */
     /* Firefox */

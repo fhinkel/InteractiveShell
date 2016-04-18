@@ -502,8 +502,11 @@ $(document).ready(function() {
 
   $(document).on("click", ".tabPanelActivator", function(event) {
     var panelId = $(this).attr('href');
+    // show tab panel
     document.getElementById(panelId).click();
-    $('.mdl-layout__drawer').toggleClass('is-visible');
+    // close drawer menu
+    document.body.querySelector('.mdl-layout__obfuscator.is-visible').click();
+    // do not follow link
     event.preventDefault();
   });
   trym2.importTutorials();

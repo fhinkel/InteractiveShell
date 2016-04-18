@@ -151,7 +151,7 @@ body {
     box-sizing: border-box;
 }
 
-.sdbutton {
+.saveDialogButton {
     width: 220px;
     color: blue;
     float: right;

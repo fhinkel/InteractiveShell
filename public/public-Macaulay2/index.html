@@ -28,6 +28,10 @@
       }
       }
 });
+
+
+
+
     </script>
     <script type="text/javascript"
             src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
@@ -63,9 +67,9 @@
 <body>
 
 <dialog id="fullScreenOutput" class="">
-  <div id="M2OutCtrlBtnsMax">
-    <i id="downsizeOutput" class="material-icons icon-with-action">fullscreen_exit</i>
-   </div>
+    <div id="M2OutCtrlBtnsMax">
+        <i id="downsizeOutput" class="material-icons icon-with-action">fullscreen_exit</i>
+    </div>
 </dialog>
 
 <dialog id="saveDialog" class="mdl-dialog">
@@ -118,16 +122,30 @@
             <!-- Title -->
             <span class="mdl-layout-title">Macaulay2</span>
             <div class="mdl-layout-spacer"></div>
-            <nav class="mdl-navigation">
+            <nav class="mdl-navigation ">
                 <a class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
                    id="resetBtn">Reset</a>
                 <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent"
                    id="interruptBtn">Interrupt</a>
-                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent"
-                   id="saveBtn">Save</a>
-                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent"
-                   id="uploadBtn">Upload file</a>
+                <div id="saveBtnd">
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent mdl-layout--large-screen-only">
+                        Save
+                    </button>
+                    <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--accent mdl-layout--small-screen-only">
+                        <i class="material-icons">file_download</i>
+                    </button>
+                </div>
+                <div id="uploadBtn">
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent mdl-layout--large-screen-only">
+                        Upload file
+                    </button>
+                    <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--accent mdl-layout--small-screen-only">
+                        <i class="material-icons">file_upload</i>
+                    </button>
+                </div>
+
             </nav>
+
         </div>
 
     </header>
@@ -135,8 +153,10 @@
         <span class="mdl-layout-title">Macaulay2</span>
         <nav class="mdl-navigation">
             <a class="mdl-navigation__link tabPanelActivator" href="homeTitle">Home</a>
-            <a class="mdl-navigation__link tabPanelActivator" href="lessonTabTitle">Tutorial</a>
-            <a class="mdl-navigation__link tabPanelActivator" href="editorTitle">Input</a>
+            <a class="mdl-navigation__link tabPanelActivator"
+               href="lessonTabTitle">Tutorial</a>
+            <a class="mdl-navigation__link tabPanelActivator"
+               href="editorTitle">Input</a>
             <a class="mdl-navigation__link tabPanelActivator" href="helpTitle">Help</a>
         </nav>
     </div>
@@ -149,12 +169,16 @@
                 <div class="mdl-tabs mdl-js-tabs ">
                     <div class="mdl-tabs__tab-bar mdl mdl-layout--large-screen-only">
                         <a href="#home" id="homeTitle" class="mdl-tabs__tab">Home</a>
-                        <a href="#lessonTab" id="lessonTabTitle" class="mdl-tabs__tab">Tutorials</a>
-                        <a href="#editor" id="editorTitle" class="mdl-tabs__tab">Editor</a>
-                        <a href="#help" id="helpTitle" class="mdl-tabs__tab">FAQ</a>
+                        <a href="#lessonTab" id="lessonTabTitle"
+                           class="mdl-tabs__tab">Tutorials</a>
+                        <a href="#editor" id="editorTitle"
+                           class="mdl-tabs__tab">Editor</a>
+                        <a href="#help" id="helpTitle"
+                           class="mdl-tabs__tab">FAQ</a>
 
                     </div>
-                    <div class="mdl-tabs__panel mdl-layout--fixed-header is-active" id="home">
+                    <div class="mdl-tabs__panel mdl-layout--fixed-header is-active"
+                         id="home">
                         <img class="image-text-wrap" src="frontPageImage.jpg"/>
 
                         <h3>Welcome to Macaulay2</h3>
@@ -181,9 +205,10 @@
                         <div>
                             <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored navigationButton"
                                     id="nextBtn"><i class="material-icons">chevron_right</i>
-                            <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored navigationButton"
-                                    id="previousBtn"><i class="material-icons">chevron_left</i>
-                            </button>
+                                <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored navigationButton"
+                                        id="previousBtn"><i
+                                        class="material-icons">chevron_left</i>
+                                </button>
 
                             </button>
                         </div>
@@ -210,13 +235,17 @@
 
             <div class="mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-cell--4-col-phone"
                  id="right-half">
-                 <div id="M2OutCtrlBtns">
+                <div id="M2OutCtrlBtns">
                     <div id="M2OutZoomBtns">
-                      <i id="M2OutZoomIn" class="material-icons icon-with-action">zoom_in</i>
-                      <i id="M2OutResetZoom" class="material-icons icon-with-action">find_replace</i>
-                      <i id="M2OutZoomOut" class="material-icons icon-with-action">zoom_out</i>
-                     </div>
-                   <i id="maximizeOutput" class="material-icons icon-with-action">fullscreen</i>
+                        <i id="M2OutZoomIn"
+                           class="material-icons icon-with-action">zoom_in</i>
+                        <i id="M2OutResetZoom"
+                           class="material-icons icon-with-action">find_replace</i>
+                        <i id="M2OutZoomOut"
+                           class="material-icons icon-with-action">zoom_out</i>
+                    </div>
+                    <i id="maximizeOutput"
+                       class="material-icons icon-with-action">fullscreen</i>
                 </div>
             <textarea id="M2Out" wrap='off' autocorrect="off" spellcheck="false"
                       autocapitalize="off">

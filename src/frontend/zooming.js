@@ -36,7 +36,11 @@ function sanitizeFactor(factor) {
 }
 
 exports.attachZoomButtons = function(textareaID,
-        zoominID, resetID, zoomoutID, inputFactor = 1.1) {
+                                     zoominID, resetID, zoomoutID,
+                                     inputFactorOrDefault) {
+  var inputFactor = typeof inputFactorOrDefault === 'undefined' ?
+      1.1 :
+      inputFactorOrDefault;
   var sizes = {
     factor: 1.1,
     currentSize: 1.0

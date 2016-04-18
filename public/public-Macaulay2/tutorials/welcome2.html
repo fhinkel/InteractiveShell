@@ -19,9 +19,9 @@
     given polynomial.
   </p>
 
-  <code>R = QQ[x,y,z]</code><br>
-  <code>F = (x-1)^3 - (y-1)^3</code><br>
-  <code>factor F</code><br>
+  <p><code>R = QQ[x,y,z]</code></p>
+  <p><code>F = (x-1)^3 - (y-1)^3</code></p>
+  <p><code>factor F</code></p>
 
     <p>
   This code is evaluated by Macaulay2 on the server.  This means that
@@ -42,14 +42,14 @@
 
   <p>There are two main ways of getting help on a topic in Macaulay2.  The first method gives you
   text help in the Macaulay2 output window.  For example,</p>
-  <code>help determinant</code><br>
+  <p><code>help determinant</code></p>
   <p>This displays in the Macaulay2 output window how to use the function "determinant".
   <b>Note!</b> In many browsers, you will have scroll bars to go back, but in some, notably most versions
   of Safari, the scrollbars are there but hidden!
   </p>
 
   <p>Alternatively, and more usefully, you may obtain the web version by using:</p>
-  <code>viewHelp determinant</code><br>
+  <p><code>viewHelp determinant</code></p>
 
   <p>This opens the documentation page in another browser window or tab.  You can surf through the links
   there to see other Macaulay2 documentation.</p>
@@ -137,13 +137,13 @@
   You may then load this file into Macaulay2 using either:
   </p>
   
-  <code>load "foo.m2"</code><br>
+  <p><code>load "foo.m2"</code></p>
 
   <p>
   or, if you wish to see all of the lines executed one by one:
   </p>
   
-  <code>input "foo.m2"</code><br>
+  <p><code>input "foo.m2"</code></p>
 
   
   <p><b>Note</b>: these lines will likely give errors now, as the file
@@ -153,16 +153,16 @@
 
   <p>It is possible to run shell commands from within Macaulay2, although many operations are restricted.
   For example, to see what files you have in your home directory on the server, try:</p>
-  <code>get "!ls -a"</code><br>
+  <p><code>get "!ls -a"</code></p>
 
   <h4>Macaulay2 and image files</h4>
 
   <p>Sometimes Macaulay2 or one of its packages generates image files.
   For example, the displayGraph function below creates a jpeg file.
   </p>
-    <code> needsPackage "Graphs"</code><br>
-    <code>A = graph({{v_1,v_3},{v_2,v_4},{v_1,v_4}})</code><br>
-    <code>displayGraph A</code><br>
+    <p><code> needsPackage "Graphs"</code></p>
+    <p><code>A = graph({{v_1,v_3},{v_2,v_4},{v_1,v_4}})</code></p>
+    <p><code>displayGraph A</code></p>
 
   <h4>Getting files back to your machine</h4>
 
@@ -177,7 +177,7 @@
   <p>The next line will present a download dialog for you to obtain the file on your machine.
   </p>
   
-  <code>get "!open important-results.txt"</code><br>
+  <p><code>get "!open important-results.txt"</code></p>
 
   <h4>Restrictions in place for the Macaulay2 server</h4>
 

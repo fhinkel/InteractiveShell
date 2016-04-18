@@ -5,8 +5,6 @@
 mathProgram = "M2"
 npmCmd = "npm start"
 logfilePath = "/home/vagrant/web" + mathProgram + ".log"
-cronString = "SHELL=/bin/bash\n";
-cronString += "@reboot source ~/.nvm/nvm.sh; until [ -d /home/vagrant/InteractiveShell/public ]; do sleep 1; done; cd /home/vagrant/InteractiveShell; " + npmCmd + " 2>&1 > " + logfilePath
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for

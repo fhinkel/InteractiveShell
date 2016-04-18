@@ -10,6 +10,12 @@
 #
 # https://github.com/mitchellh/vagrant-aws
 #
+
+# Settings:
+mathProgram = "M2"
+npmCmd = "npm start"
+logfilePath = "/home/vagrant/web" + mathProgram + ".log"
+
 Vagrant.configure(2) do |config|
   
   # Use a dummy box, since aws-provider will just copy an already existing AMI.
@@ -50,21 +56,49 @@ Vagrant.configure(2) do |config|
     override.ssh.username = "ubuntu"
   end
 
-  #
-  # Third line since username is already given by aim.
-  config.vm.provision "shell", privileged:false, inline: <<-SHELL
-    sudo apt-get update && apt-get upgrade -y
-    sudo apt-get install -y nodejs npm wget
-    sudo ln -s /home/ubuntu /home/vagrant
+  config.vm.provision "sudo", type:"shell", privileged:true, inline: <<-SHELL
+    apt-get update && apt-get upgrade -y
+    apt-get install -y nodejs npm wget
     wget -qO- https://get.docker.com/ | sh
-    sudo ln -s /usr/bin/nodejs /usr/bin/node
+    ln -s /usr/bin/nodejs /usr/bin/node
+    ln -s /home/ubuntu /home/vagrant
+  SHELL
+
+  config.vm.provision "gitclone", type:"shell", privileged:false, inline: <<-SHELL
     git clone https://github.com/fhinkel/InteractiveShell.git
+  SHELL
+
+  config.vm.provision "nvm", type:"shell", privileged:false, inline: <<-SHELL
+    curl https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
+    source ~/.nvm/nvm.sh;
+    nvm install stable
+    nvm use stable
+   SHELL
+
+  config.vm.provision "node-modules", type:"shell", privileged:false, inline: <<-SHELL
     cd InteractiveShell
     npm install
-    git pull --no-verify
+   SHELL
+
+  config.vm.provision "docker", type:"shell", privileged:false, inline: <<-SHELL
+    cd InteractiveShell
+    git pull
     rm id_rsa*
     ssh-keygen -b 1024 -f id_rsa -P ''
     sudo docker build -t m2container .
+  SHELL
+
+
+  # config.vm.provision "cron", type:"shell", privileged:false do |cron|
+  #     cron.inline = "echo \"" + cronString + "\" > tmpcron; crontab tmpcron; rm tmpcron"
+  # end
+
+  config.vm.provision "startup_server", type:"shell", privileged:false, run: "always", inline: <<-SHELL
+       source ~/.nvm/nvm.sh
+      cd InteractiveShell
+      git pull --no-verify
+
+      npm start 2>&1 > ../webm2.log &
   SHELL
 
 end

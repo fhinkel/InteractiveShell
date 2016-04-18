@@ -23,7 +23,7 @@ var configuration = function(overrideOptions) {
     },
     perContainerResources: {
       cpuShares: 2,
-      memory: 128
+      memory: 256
     },
     hostConfig: {
       minContainerAge: 10,

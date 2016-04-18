@@ -6,9 +6,7 @@ body {
 }
 
 .mdl-grid {
-    height: 100%;
     position: absolute;
-    width: 100%;
 
     /* Firefox */
     width: -moz-calc(100% - 16px);
@@ -25,7 +23,7 @@ body {
 }
 
 #left-half, #right-half {
-    height: 100%;
+    
     /* grid has margin 8px, which is not subtracked by
     box-sizing, so we subtract it manually */
     /* Firefox */

@@ -31,7 +31,7 @@ trym2.CssClasses = {
     titleSymbolActive: "expand_more",
     titleSymbolInactive: "expand_less",
     title: "mdl-button mdl-js-button mdl-button--raised mdl-list__item",
-    titleHover: "mdl-button--accent",
+    titleHover: "mdl-button--colored",
     titleToggleClass: "",
     content: "mdl-list__item-text-body mdl-list__item",
     innerListItem: "unstyled",

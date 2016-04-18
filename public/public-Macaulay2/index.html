@@ -4,10 +4,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.indigo-deep_orange.min.css" />
+    <link rel="stylesheet"
+          href="https://code.getmdl.io/1.1.3/material.indigo-deep_orange.min.css"/>
     <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
     <link rel="stylesheet" type="text/css" href="dialog-polyfill.css"/>
-    <link href='https://fonts.googleapis.com/css?family=Roboto+Mono' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Mono'
+          rel='stylesheet' type='text/css'>
 
     <link rel="stylesheet" href="mathProgram.css" type="text/css"
           media="screen">
@@ -36,7 +38,8 @@
       bold: ["{\\bf #1}",1]
       }
       }
-}); </script>
+});
+    </script>
     <script type="text/javascript"
             src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
@@ -135,6 +138,9 @@
                         <i class="material-icons">replay</i>
                     </button>
                 </div>
+                <div class="mdl-tooltip" for="resetBtn">
+                    Restart M2
+                </div>
                 <div id="interruptBtn">
                     <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-layout--large-screen-only">
                         Interrupt
@@ -142,6 +148,9 @@
                     <button class="mdl-button mdl-js-button mdl-button--icon  mdl-layout--small-screen-only">
                         <i class="material-icons">pause</i>
                     </button>
+                </div>
+                <div class="mdl-tooltip" for="interruptBtn">
+                    Send Ctrl-c to M2
                 </div>
                 <div id="saveBtn">
                     <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-layout--large-screen-only">
@@ -172,7 +181,7 @@
             <a class="mdl-navigation__link tabPanelActivator"
                href="lessonTabTitle">Tutorial</a>
             <a class="mdl-navigation__link tabPanelActivator"
-               href="editorTitle">Input</a>
+               href="editorTitle">Editor</a>
             <a class="mdl-navigation__link tabPanelActivator" href="helpTitle">About</a>
         </nav>
     </div>
@@ -195,25 +204,26 @@
                     </div>
                     <div class="mdl-tabs__panel mdl-layout--fixed-header is-active"
                          id="home">
-                        <img class="image-text-wrap mdl-layout--large-screen-only" src="frontPageImage.jpg"/>
-                        <img class="image-text-wrap mdl-layout--small-screen-only small-image" src="frontPageImage.jpg"/>
+                        <img class="image-text-wrap mdl-layout--large-screen-only"
+                             src="frontPageImage.jpg"/>
+                        <img class="image-text-wrap mdl-layout--small-screen-only small-image"
+                             src="frontPageImage.jpg"/>
 
 
                         <h3>Welcome to Macaulay2</h3>
 
-                        <p>This web site allows you to try, learn, and use
-                            Macaulay2, without the need to
-                            install it.
-                            Get started by selecting a tutorial below. To learn
-                            how to use this site effectively,
+                        <p>Learn and use
+                            Macaulay2.
+                            Get started by selecting a tutorial below. To use
+                            this site effectively,
                             try the <b>Welcome</b> tutorial. Have fun!
                         </p>
 
                         <p><a href='http://macaulay2.com' target='_blank'>Macaulay2</a>
                             is an open source software
-                            system devoted to supporting research in algebraic
-                            geometry and commutative
-                            algebra, and related field in mathematics or
+                            system devoted to supporting research in <b>algebraic
+                                geometry and commutative
+                                algebra</b>, and related field in mathematics or
                             applications. </p>
                     </div>
                     <div class="mdl-tabs__panel" id="lessonTab">
@@ -243,11 +253,18 @@
                     </div>
                     <div class="mdl-tabs__panel" id="help">
                         <h4>Questions?</h4>
+                        <p>Email the M2 group
+                            if you have questions about Macaulay2 and related
+                            mathematics:
+                            <a
+                                    href='mailto:macaulay2@googlegroups.com'><br>macaulay2@googlegroups.com</a>.<br>
+                        </p>
                         <p>Email the TryM2 group
                             with any questions or suggestions for this website:
                             <a
-                                    href='mailto:trym2@googlegroups.com'><br>trym2@googlegroups.com</a><br>
+                                    href='mailto:trym2@googlegroups.com'><br>trym2@googlegroups.com</a>.<br>
                         </p>
+
 
                         <h4>Contributing</h4>
 
@@ -267,7 +284,9 @@
                             the NSF, <a
                                 href="http://www.math.uiuc.edu/Macaulay2/Funding/"
                                 target='_blank'>see here</a> and through
-                            Award 0635561. <br> <br>
+                            Award 0635561, and DFG grant <a
+                                href="http://www.computeralgebra.de">SPP1489</a>.
+                            <br> <br>
                         </p>
 
                         <h4>Authors</h4>

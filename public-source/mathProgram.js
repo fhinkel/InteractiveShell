@@ -512,5 +512,13 @@ $(document).ready(function() {
     // do not follow link
     event.preventDefault();
   });
+
+  $(document).on("click", "#about", function(event) {
+    document.getElementById("helpTitle").click();
+    // show tab panel
+    // do not follow link
+    event.preventDefault();
+  });
+
   trym2.importTutorials();
 });

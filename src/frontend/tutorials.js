@@ -1,6 +1,7 @@
 var lessonNr = 0;
 var tutorialNr = 0;
 var tutorials = [];
+var firstLoadFlag = true; // true until we show tutorial for the first time. Needed because we need to load lesson 0
 
 var cssClasses = {
     titleSymbolClass: "material-icons titleSymbol",
@@ -76,12 +77,10 @@ var appendLoadTutorialMenuToAccordion = function() {
 
 var doUptutorialClick = function() {
   $("#uptutorial").val("");
-  // console.log("Click tutorial: " + typeof ($("#uptutorial")));
   $("#uptutorial").click();
 };
 
 var addLoadTutorialButton = function() {
-  // console.log("Adding buttons.");
   var loadTutorialButton = $("<a>");
   loadTutorialButton.prop("id", "loadTutorialButton");
   loadTutorialButton.html("Load Your Own Tutorial");
@@ -118,7 +117,6 @@ var scrollDownUntilTutorialVisible = function() {
 };
 
 var appendLoadTutorialTitleToAccordion = function() {
-  // console.log("Adding Title.");
   var title = $("<h3>");
   title.prop("id", "loadTutorialMenu");
   title.addClass(
@@ -127,7 +125,6 @@ var appendLoadTutorialTitleToAccordion = function() {
 };
 
 var appendInstructionsToAccordion = function() {
-  // console.log("Adding Instructions.");
   var instructions = $("<div>");
   $.get("uploadTutorialHelp.txt", function(content) {
     instructions.append(content);
@@ -162,8 +159,6 @@ var showLesson = function(e) {
     lessonId = $(this).attr('lessonid');
     lessonIdNr = parseInt(lessonId.match(/\d/g), 10);
   }
-  // console.log("LessonID: " + lessonId);
-  // console.log("You clicked a submenuItem: " + $(this).html());
   loadLesson(tutorialIdNr, lessonIdNr);
   document.getElementById("lessonTabTitle").click();
   return false;
@@ -173,7 +168,7 @@ var loadLesson = function(tutorialid, lessonid) {
   console.log(tutorialNr + "==" + tutorialid + " or " + lessonNr + "==" +
       lessonid);
   var changedLesson = (tutorialNr !== tutorialid || lessonNr !==
-  lessonid || this.firstLoadFlag);
+  lessonid || firstLoadFlag);
   firstLoadFlag = false;
   if (tutorialid >= 0 && tutorialid < tutorials.length) {
     tutorialNr = tutorialid;
@@ -184,13 +179,10 @@ var loadLesson = function(tutorialid, lessonid) {
   var lessonContent = tutorials[tutorialNr].lessons[lessonNr]
       .html;
   if (changedLesson) {
-    // console.log("Lesson changed");
-    // console.log(tutorials[tutorialNr].title);
     var title = tutorials[tutorialNr].title.text();
     $("#lesson").html(lessonContent).prepend("<h3>" + title + "</h3>");
     $("#lesson").scrollTop(0); // scroll to the top of a new lesson
     MathJax.Hub.Queue(["Typeset", MathJax.Hub, "#lesson"]);
-    // document.getElementById("lessonTabTitle").click();
   }
 };
 
@@ -202,23 +194,16 @@ var switchLesson = function(incr) {
 var uploadTutorial = function(insertDeleteButtonAtLastTutorial, populateTutorialElement) {
     return function(){
       var files = this.files;
-      // console.log("number of files in upload tutorial: " + files.length);
       var file = files[0];
       var fileName = file.name;
-      // console.log("Process file for tutorial upload:" + fileName);
-
       var reader = new FileReader();
-
       reader.readAsText(file);
       reader.onload = function(event) {
         var resultHtml = event.target.result;
-        // console.log(resultHtml);
         tutorials.push(populateTutorialElement(resultHtml));
         var lastIndex = tutorials.length - 1;
         var newTutorial = tutorials[lastIndex];
-
         var title = newTutorial.title; // this is an <h3>
-        // console.log("new title: " + title.html());
         var lessons = newTutorial.lessons;
         appendTutorialToAccordion(title, lessons, lastIndex);
         insertDeleteButtonAtLastTutorial($("#loadTutorialMenu"));
@@ -229,7 +214,6 @@ var uploadTutorial = function(insertDeleteButtonAtLastTutorial, populateTutorial
 
 module.exports = function(){
     
-
     return {
         showLesson: showLesson,
         makeAccordion: makeAccordion,

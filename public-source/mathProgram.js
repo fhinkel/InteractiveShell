@@ -3,47 +3,38 @@
 /* eslint "max-len": "off" */
 /* eslint "new-cap": "off" */
 
-var trym2 = {
-  firstLoadFlag: true, // true until we show tutorial for the first time. Needed because we need to load lesson 0
-  MAXFILESIZE: 500000, // max size in bytes for file uploads
-  socket: null,
-  serverDisconnect: false
-};
 
+// var MAXFILESIZE = 500000; // max size in bytes for file uploads
+var socket = null;
+var serverDisconnect = false;
 var ctrlc = "\x03";
-
 var dialogPolyfill = require('dialog-polyfill');
-
 var shellTextArea = require('shell-emulator');
+var getSelected = require('get-selected-text');
 
-
-
-
-trym2.postMessage = function(msg, notrack) {
-  // console.log("Posting msg " + msg);
-  trym2.socket.emit('input', msg);
+var postMessage = function(msg, notrack) {
+  socket.emit('input', msg);
   if (!notrack) {
 // Closure to capture the file information.
     $("#M2Out").trigger("track", msg);
-    // console.log("Tracking.");
   }
   return true;
 };
 
-trym2.sendCallback = function(id) {
+var sendCallback = function(id) {
   return function() {
-    var str = trym2.getSelected(id);
-    trym2.postMessage(str);
+    var str = getSelected(id);
+    postMessage(str);
     return false;
   };
 };
 
-trym2.sendOnEnterCallback = function(id) {
+var sendOnEnterCallback = function(id) {
   return function(e) {
     if (e.which === 13 && e.shiftKey) {
       e.preventDefault();
       // do not make a line break or remove selected text when sending
-      trym2.postMessage(trym2.getSelected(id));
+      postMessage(getSelected(id));
     }
   };
 };
@@ -103,13 +94,13 @@ var attachTutorialNavBtnActions = function(switchLesson) {
 };
 
 var attachCtrlBtnActions = function() {
-  $("#sendBtn").click(trym2.sendCallback('M2In'));
+  $("#sendBtn").click(sendCallback('M2In'));
   $("#resetBtn").click(function() {
     $("#M2Out").trigger("reset");
-    trym2.socket.emit('reset');
+    socket.emit('reset');
   });
   $("#interruptBtn").click(function() {
-    trym2.postMessage(ctrlc, true);
+    postMessage(ctrlc, true);
   });
   $("#saveBtn").click(saveInteractions);
 };
@@ -165,23 +156,59 @@ var attachCloseDialogBtns = function() {
   });
 };
 
+var socketDisconnect = function(msg) {
+    console.log("We got disconnected. " + msg);
+    $("#M2Out").trigger("onmessage", " Sorry, your session was disconnected by the server.\n\n");
+    serverDisconnect = true;
+};
+
+var wrapEmitForDisconnect = function(event, msg) {
+    if (serverDisconnect) {
+      var events = ['reset', 'input'];
+      console.log("We are disconnected.");
+      if (events.indexOf(event) !== -1) {
+        socket.connect();
+        serverDisconnect = false;
+        socket.oldEmit(event, msg);
+      }
+    } else {
+      socket.oldEmit(event, msg);
+    }
+};
+
+var displayUrlInNewWindow = function(url){
+    if (url) {
+      window.open(url, "M2 Help");
+    }
+};
+  
+var codeClickAction = function() {
+    $(this).effect("highlight", {
+      color: 'red'
+    }, 300);
+    var code = $(this).text();
+    code += "\n";
+    $("#M2In").val($("#M2In").val() + code);
+    require('scroll-down')($("#M2In"));
+    postMessage(code);
+};
+
 $(document).ready(function() {
-  trym2.getSelected = require('get-selected-text');
 
   var zoom = require('../src/frontend/zooming');
   zoom.attachZoomButtons("M2Out", "M2OutZoomIn", "M2OutResetZoom", "M2OutZoomOut");
 
-  trym2.socket = io();
+  socket = io();
 
-  trym2.socket.on('result', function(msg) {
+  socket.on('result', function(msg) {
     if (msg !== "") {
       $("#M2Out").trigger("onmessage", msg);
     }
   });
+
   var tutorialManager = require('../src/frontend/tutorials.js')();
     var tf = tutorialFunctions(tutorialManager.makeAccordion, tutorialManager.tutorials);
   tf.importTutorials();
-
     var uploadAction = tutorialManager.uploadTutorial(tf.insertDeleteButtonAtLastTutorial, tf.populateTutorialElement);
   $("#uptutorial").on('change', uploadAction);
   $(document).on("click", ".submenuItem", tutorialManager.showLesson);
@@ -191,50 +218,27 @@ $(document).ready(function() {
   attachCtrlBtnActions();
   attachCloseDialogBtns();
 
-  trym2.socket.on('serverDisconnect', function(msg) {
-    console.log("We got disconnected. " + msg);
-    $("#M2Out").trigger("onmessage", " Sorry, your session was disconnected by the server.\n\n");
-    trym2.serverDisconnect = true;
-  });
-  trym2.socket.oldEmit = trym2.socket.emit;
-  trym2.socket.emit = function(event, msg) {
-    if (trym2.serverDisconnect) {
-      var events = ['reset', 'input'];
-      console.log("We are disconnected.");
-      if (events.indexOf(event) !== -1) {
-        trym2.socket.connect();
-        trym2.serverDisconnect = false;
-        trym2.socket.oldEmit(event, msg);
-      }
-    } else {
-      trym2.socket.oldEmit(event, msg);
-    }
-  };
-
-  trym2.socket.on('image', showImageDialog);
-
-  trym2.socket.on('viewHelp', function(helpUrl) {
-    if (helpUrl) {
-      // console.log("We got a viewHelp! " + helpUrl);
-      window.open(helpUrl, "M2 Help");
-    }
-  });
+  socket.on('serverDisconnect', socketDisconnect);
+  socket.oldEmit = socket.emit;
+  socket.emit = wrapEmitForDisconnect;
+  socket.on('image', showImageDialog);
+  socket.on('viewHelp', displayUrlInNewWindow);
 
   // Init procedures for right hand side.
   $("#M2Out").val("");
 
   var shellFunctions = {
-    postMessage: trym2.postMessage,
+    postMessage: postMessage,
     interrupt: function() {
-      trym2.postMessage(ctrlc, true);
+      postMessage(ctrlc, true);
     }
   };
   shellTextArea.create($("#M2Out"), $("#M2In"), shellFunctions);
 
   $('#M2In').val(DefaultText);
-  $('#M2In').keypress(trym2.sendOnEnterCallback('M2In'));
+  $('#M2In').keypress(sendOnEnterCallback('M2In'));
 
-  var siofu = new SocketIOFileUpload(trym2.socket);
+  var siofu = new SocketIOFileUpload(socket);
 
   document.getElementById("uploadBtn").addEventListener('click', siofu.prompt, false);
 
@@ -246,16 +250,6 @@ $(document).ready(function() {
   });
 
 
-  var codeClickAction = function() {
-    $(this).effect("highlight", {
-      color: 'red'
-    }, 300);
-    var code = $(this).text();
-    code += "\n";
-    $("#M2In").val($("#M2In").val() + code);
-    require('scroll-down')($("#M2In"));
-    trym2.postMessage(code);
-  };
 
   $(document).on("click", "code", codeClickAction);
   $(document).on("click", "codeblock", codeClickAction);

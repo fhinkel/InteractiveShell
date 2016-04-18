@@ -467,12 +467,6 @@ $(document).ready(function() {
   };
   shellTextArea.create($("#M2Out"), $("#M2In"), shellFunctions);
 
-  // $("#navigation").children("input").attr("name", "navbutton");
-  // $("#navigation").buttonset();
-  // $(".buttonset").buttonset();
-
-  // $("button").button();
-
   $('#M2In').val(DefaultText);
   $('#M2In').keypress(trym2.sendOnEnterCallback('M2In'));
 

@@ -1,8 +1,7 @@
-/* global $, MathJax, io, SocketIOFileUpload, mathProgramName, tutorialFunctions, DefaultText */
+/* global $, io, SocketIOFileUpload, mathProgramName, tutorialFunctions, DefaultText */
 /* eslint-env browser */
 /* eslint "max-len": "off" */
 /* eslint "new-cap": "off" */
-
 
 // var MAXFILESIZE = 500000; // max size in bytes for file uploads
 var socket = null;
@@ -157,75 +156,91 @@ var attachCloseDialogBtns = function() {
 };
 
 var socketDisconnect = function(msg) {
-    console.log("We got disconnected. " + msg);
-    $("#M2Out").trigger("onmessage", " Sorry, your session was disconnected by the server.\n\n");
-    serverDisconnect = true;
+  console.log("We got disconnected. " + msg);
+  $("#M2Out").trigger("onmessage", " Sorry, your session was disconnected by the server.\n\n");
+  serverDisconnect = true;
 };
 
 var wrapEmitForDisconnect = function(event, msg) {
-    if (serverDisconnect) {
-      var events = ['reset', 'input'];
-      console.log("We are disconnected.");
-      if (events.indexOf(event) !== -1) {
-        socket.connect();
-        serverDisconnect = false;
-        socket.oldEmit(event, msg);
-      }
-    } else {
+  if (serverDisconnect) {
+    var events = ['reset', 'input'];
+    console.log("We are disconnected.");
+    if (events.indexOf(event) !== -1) {
+      socket.connect();
+      serverDisconnect = false;
       socket.oldEmit(event, msg);
     }
+  } else {
+    socket.oldEmit(event, msg);
+  }
 };
 
-var displayUrlInNewWindow = function(url){
-    if (url) {
-      window.open(url, "M2 Help");
-    }
+var displayUrlInNewWindow = function(url) {
+  if (url) {
+    window.open(url, "M2 Help");
+  }
 };
-  
+
 var codeClickAction = function() {
-    $(this).effect("highlight", {
-      color: 'red'
-    }, 300);
-    var code = $(this).text();
-    code += "\n";
-    $("#M2In").val($("#M2In").val() + code);
-    require('scroll-down')($("#M2In"));
-    postMessage(code);
+  $(this).effect("highlight", {
+    color: 'red'
+  }, 300);
+  var code = $(this).text();
+  code += "\n";
+  $("#M2In").val($("#M2In").val() + code);
+  require('scroll-down')($("#M2In"));
+  postMessage(code);
+};
+
+var openTabCloseDrawer = function(event) {
+  var panelId = $(this).attr('href');
+    // show tab panel
+  document.getElementById(panelId).click();
+    // close drawer menu
+  document.body.querySelector('.mdl-layout__obfuscator.is-visible').click();
+    // do not follow link
+  event.preventDefault();
+};
+
+var openAboutTab = function(event) {
+  document.getElementById("helpTitle").click();
+    // show tab panel
+    // do not follow link
+  event.preventDefault();
+};
+
+var socketOnMessage = function(msg) {
+  if (msg !== "") {
+    $("#M2Out").trigger("onmessage", msg);
+  }
 };
 
 $(document).ready(function() {
-
   var zoom = require('../src/frontend/zooming');
   zoom.attachZoomButtons("M2Out", "M2OutZoomIn", "M2OutResetZoom", "M2OutZoomOut");
 
   socket = io();
-
-  socket.on('result', function(msg) {
-    if (msg !== "") {
-      $("#M2Out").trigger("onmessage", msg);
-    }
-  });
-
-  var tutorialManager = require('../src/frontend/tutorials.js')();
-    var tf = tutorialFunctions(tutorialManager.makeAccordion, tutorialManager.tutorials);
-  tf.importTutorials();
-    var uploadAction = tutorialManager.uploadTutorial(tf.insertDeleteButtonAtLastTutorial, tf.populateTutorialElement);
-  $("#uptutorial").on('change', uploadAction);
-  $(document).on("click", ".submenuItem", tutorialManager.showLesson);
-  
-  attachTutorialNavBtnActions(tutorialManager.switchLesson);
-  attachMinMaxBtnActions();
-  attachCtrlBtnActions();
-  attachCloseDialogBtns();
-
+  socket.on('result', socketOnMessage);
   socket.on('serverDisconnect', socketDisconnect);
   socket.oldEmit = socket.emit;
   socket.emit = wrapEmitForDisconnect;
   socket.on('image', showImageDialog);
   socket.on('viewHelp', displayUrlInNewWindow);
 
-  // Init procedures for right hand side.
+  var tutorialManager = require('../src/frontend/tutorials.js')();
+  var tf = tutorialFunctions(tutorialManager.makeAccordion, tutorialManager.tutorials);
+  tf.importTutorials();
+  var uploadAction = tutorialManager.uploadTutorial(tf.insertDeleteButtonAtLastTutorial, tf.populateTutorialElement);
+  $("#uptutorial").on('change', uploadAction);
+  $(document).on("click", ".submenuItem", tutorialManager.showLesson);
+
+  attachTutorialNavBtnActions(tutorialManager.switchLesson);
+  attachMinMaxBtnActions();
+  attachCtrlBtnActions();
+  attachCloseDialogBtns();
+
   $("#M2Out").val("");
+  $('#M2In').val(DefaultText);
 
   var shellFunctions = {
     postMessage: postMessage,
@@ -234,41 +249,14 @@ $(document).ready(function() {
     }
   };
   shellTextArea.create($("#M2Out"), $("#M2In"), shellFunctions);
-
-  $('#M2In').val(DefaultText);
   $('#M2In').keypress(sendOnEnterCallback('M2In'));
 
   var siofu = new SocketIOFileUpload(socket);
-
   document.getElementById("uploadBtn").addEventListener('click', siofu.prompt, false);
-
   siofu.addEventListener("complete", showUploadSuccessDialog);
-
-  siofu.addEventListener("complete", function(event) {
-    console.log('we uploaded the file: ' + event.success);
-    // console.log(event.file);
-  });
-
-
 
   $(document).on("click", "code", codeClickAction);
   $(document).on("click", "codeblock", codeClickAction);
-
-  $(document).on("click", ".tabPanelActivator", function(event) {
-    var panelId = $(this).attr('href');
-    // show tab panel
-    document.getElementById(panelId).click();
-    // close drawer menu
-    document.body.querySelector('.mdl-layout__obfuscator.is-visible').click();
-    // do not follow link
-    event.preventDefault();
-  });
-
-  $(document).on("click", "#about", function(event) {
-    document.getElementById("helpTitle").click();
-    // show tab panel
-    // do not follow link
-    event.preventDefault();
-  });
-
+  $(document).on("click", ".tabPanelActivator", openTabCloseDrawer);
+  $(document).on("click", "#about", openAboutTab);
 });

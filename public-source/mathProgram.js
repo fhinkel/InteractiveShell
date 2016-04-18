@@ -194,18 +194,18 @@ var codeClickAction = function() {
 
 var openTabCloseDrawer = function(event) {
   var panelId = $(this).attr('href');
-    // show tab panel
+  // show tab panel
   document.getElementById(panelId).click();
-    // close drawer menu
+  // close drawer menu
   document.body.querySelector('.mdl-layout__obfuscator.is-visible').click();
-    // do not follow link
+  // do not follow link
   event.preventDefault();
 };
 
 var openAboutTab = function(event) {
   document.getElementById("helpTitle").click();
-    // show tab panel
-    // do not follow link
+  // show tab panel
+  // do not follow link
   event.preventDefault();
 };
 
@@ -229,7 +229,9 @@ $(document).ready(function() {
 
   var tutorialManager = require('../src/frontend/tutorials.js')();
   var tf = tutorialFunctions(tutorialManager.makeAccordion, tutorialManager.tutorials);
-  tf.importTutorials();
+
+  // pass fetch until webpack is responsible for public-common/tutorials.js file
+  tf.importTutorials(fetch);
   var uploadAction = tutorialManager.uploadTutorial(tf.insertDeleteButtonAtLastTutorial, tf.populateTutorialElement);
   $("#uptutorial").on('change', uploadAction);
   $(document).on("click", ".submenuItem", tutorialManager.showLesson);

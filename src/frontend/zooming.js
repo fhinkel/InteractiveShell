@@ -56,14 +56,14 @@ exports.attachZoomButtons = function(textareaID,
 
   var attachListeners = function(sizes) {
     zoominBtn.addEventListener("click", function() {
-        zoomin(textarea, sizes);
-      });
+      zoomin(textarea, sizes);
+    });
     zoomoutBtn.addEventListener("click", function() {
-        zoomout(textarea, sizes);
-      });
+      zoomout(textarea, sizes);
+    });
     resetBtn.addEventListener("click", function() {
-        reset(textarea, sizes);
-      });
+      reset(textarea, sizes);
+    });
   };
 
   init();

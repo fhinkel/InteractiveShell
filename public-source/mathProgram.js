@@ -384,14 +384,18 @@ var showImageDialog = function(imageUrl) {
       dialogPolyfill.registerDialog(dialog);
     }
     console.log("We received an image: " + imageUrl);
-    var a = document.getElementById("showImageDialogBtn");
-    a.setAttribute("href", "#");
-    a.innerText = imageUrl.split('/').pop();
-    a.addEventListener("click", function() {
+    var btn = document.getElementById("showImageDialogBtn");
+    // Get rid of old click event listeners.
+    var btnClone = btn.cloneNode(true);
+    var content = document.getElementById("showImageDialogContent");
+    content.innerText = "";
+    content.appendChild(btnClone);
+    btnClone.addEventListener("click", function() {
       window.open(imageUrl, '_blank',
           'height=200,width=200,toolbar=0,location=0,menubar=0');
       dialog.close();
     });
+    content.appendChild(document.createTextNode(imageUrl.split('/').pop()));
     dialog.showModal();
   }
 };

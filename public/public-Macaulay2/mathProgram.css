@@ -75,11 +75,9 @@ body {
     right: 24px;
 }
 
-#saveDialog {
-    width: 300px;
-}
 
-#saveDialogClose {
+/* Select all buttons within a class="mdl-dialog" element */
+.mdl-dialog > button {
     float: right;
 }
 
@@ -149,12 +147,6 @@ body {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-}
-
-.saveDialogButton {
-    width: 220px;
-    color: blue;
-    float: right;
 }
 
 #M2In {

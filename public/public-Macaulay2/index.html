@@ -80,46 +80,52 @@
 </dialog>
 
 <dialog id="saveDialog" class="mdl-dialog">
-    <h4 class="mdl-dialog__title">Download
-        <i id="saveDialogClose"
-           class="material-icons icon-with-action">close</i>
-    </h4>
+        <button id="saveDialogClose"
+            class="saveDialogButton mdl-button mdl-js-button mdl-button--icon">
+         <i class="material-icons">close</i>
+         </button>
     <div class="mdl-dialog__content">
         <p>
-            <a id="inputContent"
-               class="saveDialogButton mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+            <button id="inputContent"
+               class="saveDialogButton mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
                href="">
                 <i class="material-icons">file_download</i>
+            </button>
                 Content of input window
-            </a>
         </p>
         <p>
-            <a id="outputContent"
-               class="saveDialogButton mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+            <button id="outputContent"
+               class="saveDialogButton mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
                href="">
                 <i class="material-icons">file_download</i>
+            </button>
                 Content of output window
-            </a>
         </p>
     </div>
 </dialog>
 
 <dialog id="uploadSuccessDialog" class="mdl-dialog">
-    <h4 class="mdl-dialog__title">Upload successful
-        <i id="uploadSuccessDialogClose"
-           class="material-icons icon-with-action">close</i>
-    </h4>
+        <button id="uploadSuccessDialogClose"
+            class="saveDialogButton mdl-button mdl-js-button mdl-button--icon">
+         <i class="material-icons">close</i>
+         </button>
     <div class="mdl-dialog__content" id="uploadSuccessDialogContent">
     </div>
 </dialog>
 
 <dialog id="showImageDialog" class="mdl-dialog">
-    <h4 class="mdl-dialog__title">Image received
-        <i id="showImageDialogClose" class="material-icons icon-with-action">close</i>
-    </h4>
-    <div class="mdl-dialog__content" id="showImageDialogContent">
-        <a id="showImageDialogBtn"
-           class="saveDialogButton mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"></a>
+        <button id="showImageDialogClose"
+            class="saveDialogButton mdl-button mdl-js-button mdl-button--icon">
+        <i class="material-icons icon-with-action">close</i>
+         </button>
+    <div class="mdl-dialog__content">
+      <p id="showImageDialogContent">
+           <button id="showImageDialogBtn"
+               class="saveDialogButton mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+               href="">
+                <i class="material-icons">file_download</i>
+            </button>
+         </p>
     </div>
 </dialog>
 

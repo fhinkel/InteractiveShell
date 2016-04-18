@@ -165,6 +165,10 @@ body {
     position: absolute;
 }
 
+.small-image {
+    width: 20vw;
+}
+
 code, codeblock {
     white-space: pre;
     background-color: lightyellow;

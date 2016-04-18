@@ -490,8 +490,8 @@ $(document).ready(function() {
   $(document).on("click", ".submenuItem", trym2.showLesson);
 
   var codeClickAction = function() {
-     $(this).effect("highlight", {
-     color: 'red'
+    $(this).effect("highlight", {
+       color: 'red'
      }, 300);
     var code = $(this).text();
     code += "\n";

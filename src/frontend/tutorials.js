@@ -128,7 +128,8 @@ var addLoadTutorialButton = function() {
   var loadTutorialButton = $("<a>");
   loadTutorialButton.prop("id", "loadTutorialButton");
   loadTutorialButton.html("Load Your Own Tutorial");
-  loadTutorialButton.addClass(cssClasses.titleHref);
+  // loadTutorialButton has no tutorial attached, that can be loaded on click.
+  loadTutorialButton.addClass(cssClasses.titleHref.replace("menuTitle", ""));
   $("#loadTutorialMenu").append(loadTutorialButton);
   $("#loadTutorialButton").click(doUptutorialClick);
 };
@@ -166,6 +167,7 @@ var showLesson = function(e) {
   var lessonId;
   var lessonIdNr;
   console.log("Showing lesson. " + $(this).toString());
+  console.log("Showing lesson. " + $(this).attr('tutorialid'));
   var tutorialId = $(this).attr('tutorialid');
   var tutorialIdNr = parseInt(tutorialId.match(/\d/g), 10);
   if (e.data && e.data.lessonIdNr) {

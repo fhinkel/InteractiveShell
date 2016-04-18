@@ -12,9 +12,10 @@ var removeTutorial = function(title, div, button) {
 var insertDeleteButtonAtLastTutorial = function(tutorialMenu) {
   var lastTitle = tutorialMenu.prev().prev();
   var lastDiv = tutorialMenu.prev();
-  var deleteButton = $("<span>");
-  deleteButton.addClass("close-icon ui-icon ui-icon-close");
-  lastTitle.prepend(deleteButton);
+  var deleteButton = $("<i>");
+  deleteButton.addClass("material-icons icon-with-action saveDialogClose");
+  deleteButton.text("close");
+  lastTitle.append(deleteButton);
   deleteButton.click(removeTutorial(lastTitle, lastDiv, deleteButton));
 };
 

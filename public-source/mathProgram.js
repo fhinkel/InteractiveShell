@@ -31,9 +31,10 @@ trym2.CssClasses = {
     titleSymbolActive: "expand_more",
     titleSymbolInactive: "expand_less",
     title: "mdl-button mdl-js-button mdl-button--raised mdl-list__item",
-    titleHover: "mdl-button--colored",
-    titleToggleClass: "mdl-button--accent",
+    titleHover: "mdl-button--accent",
+    titleToggleClass: "",
     content: "mdl-list__item-text-body mdl-list__item",
+    innerListItem: "unstyled",
     titleHref: "menuTitle mdl-button mdl-js-button mdl-button-raised",
     submenuHref: "submenuItem"
   }
@@ -70,7 +71,7 @@ trym2.appendTutorialToAccordion = function(tmptitle, lessons, index) {
   var content = '<ul>';
   for (var j = 0; j < lessons.length; j++) {
     content = content +
-        '<li><a href="#" class="' + trym2.CssClasses.accordion.submenuHref + '" tutorialid=' + index +
+        '<li class="' + trym2.CssClasses.accordion.innerListItem + '"><a href="#" class="' + trym2.CssClasses.accordion.submenuHref + '" tutorialid=' + index +
         ' lessonid=' + j + '>  ' + lessons[j].title + '</a></li>';
   }
   content += '</ul>';
@@ -491,8 +492,8 @@ $(document).ready(function() {
 
   var codeClickAction = function() {
     $(this).effect("highlight", {
-       color: 'red'
-     }, 300);
+      color: 'red'
+    }, 300);
     var code = $(this).text();
     code += "\n";
     $("#M2In").val($("#M2In").val() + code);

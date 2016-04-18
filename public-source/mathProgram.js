@@ -502,7 +502,7 @@ $(document).ready(function() {
   };
 
   $(document).on("click", "code", codeClickAction);
-  $(document).on("click", "code2", codeClickAction);
+  $(document).on("click", "codeblock", codeClickAction);
 
   $(document).on("click", ".tabPanelActivator", function(event) {
     var panelId = $(this).attr('href');

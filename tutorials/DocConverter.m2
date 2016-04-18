@@ -169,11 +169,11 @@ processExampleSection = (lines) -> (
           first := pos#i;
           last := pos#(i+1)-1;
           if first == last then (
-               "<code>" | lines#first | "</code><br/>\n"
+               "<p><code>" | lines#first | "</code></p>\n"
           ) else (
-               "<p><code2>" | 
+               "<p><codeblock>" | 
                concatenate (for j from first to last-1 list (lines#j | "\n"))
-               | lines#last | "</code2></p>\n"
+               | lines#last | "</codeblock></p>\n"
                )
           )
      )

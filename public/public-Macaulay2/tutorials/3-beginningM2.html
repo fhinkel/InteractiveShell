@@ -468,8 +468,8 @@
     performs the Hailstone procedure again and again,
     producing a list of the intermediate results.
 </p>
-<p><code2>Collatz = n ->
-    while n != 1 list if n%2 == 0 then n=n//2 else n=3*n+1</code2></p>
+<p><codeblock>Collatz = n ->
+    while n != 1 list if n%2 == 0 then n=n//2 else n=3*n+1</codeblock></p>
 <p>
     For example:
 </p>
@@ -497,11 +497,11 @@
     number before them, we might try:
 </p>
 <p><code>record = length Collatz 1</code></p>
-<p><code2>L = for n from 2 to 1000 list (
+<p><codeblock>L = for n from 2 to 1000 list (
         l := length Collatz n;
         if l > record 
           then (record = l; (n,l))
-          else continue)</code2></p>
+          else continue)</codeblock></p>
 <p>
     If you want to see a list of just the successive records, 
     you can apply the 
@@ -555,9 +555,9 @@
     on 10 vertices having only 4 edges.
 </p>
 <p><code>R = ZZ/2[vars(0..10)]</code></p>
-<p><code2>L=for j from 1 to 100 list(
+<p><codeblock>L=for j from 1 to 100 list(
     I = edgeIdeal randomGraph (R,5);
-    (codim I, degree I, betti res I));</code2></p>
+    (codim I, degree I, betti res I));</codeblock></p>
 <p>
     We can use \({\tt tally}\) to find out how many examples
     were found with each combination of codimension and degree and Betti table.

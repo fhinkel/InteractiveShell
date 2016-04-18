@@ -88,7 +88,7 @@ Now you are finally ready build the Macaulay2 Amazon instance.
   * From a browser (Chrome is best, Firefox is generally fine, Safari has problems,
   and Internet Explorer is not supported), go to port 8002 of that
   instance, e.g.:
-  ```ec2-54-152-50-235.compute-1.amazonaws.com:8000```
+  `ec2-54-152-50-235.compute-1.amazonaws.com:8000`
   You should see a web based Macaulay2 appear!
   * Enjoy!
 
@@ -102,7 +102,7 @@ Now you are finally ready build the Macaulay2 Amazon instance.
   * To manage the instance, you can ssh into that system.  In the
   same directory on your machine do `vagrant ssh`.  This will
   log you into a command line in the amazon instance.
-  
+
 
 
 

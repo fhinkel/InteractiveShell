@@ -103,7 +103,7 @@ trym2.addLoadTutorialButton = function() {
   console.log("Adding buttons.");
   var loadTutorialButton = $("<a>");
   loadTutorialButton.prop("id", "loadTutorialButton");
-  loadTutorialButton.html("Load Tutorial");
+  loadTutorialButton.html("Load Your Own Tutorial");
   loadTutorialButton.addClass(trym2.CssClasses.accordion.titleHref);
   $("#loadTutorialMenu").append(loadTutorialButton);
   $("#loadTutorialButton").click(trym2.doUptutorialClick);

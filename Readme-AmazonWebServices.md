@@ -65,9 +65,9 @@ and that you have downloaded the **Vagrantfile_aws** mentioned above.
 * Edit this file, changing the following information:
   * change the use of ACCESS_KEY_ID and SECRET_ACCESS_KEY to match
    what you have in your credentials.csv file.
-  * change KEYPAIR_NAME to the name you gave the KeyPair above
+  * Change KEYPAIR_NAME to the name you gave the KeyPair above
   (don't include the .pem part).
-  * change "PRIVATE_KEY_PATH" to e.g. "keypair.pem" (or whatever
+  * Change "PRIVATE_KEY_PATH" to e.g. "keypair.pem" (or whatever
   you called that file).
   * You need to set aws.region depending on the information
   visible on the **EC2 Dashboard** page.  For instance, I have
@@ -120,7 +120,8 @@ Doing basic authorization
 
   * Copy this file to the AWS instance.  Assuming the IP address is 54.236.196.49, and the pem file is keypair.pem, do:
       * `scp -i keypair.pem users.htpasswd ubuntu@54.236.196.49:~/InteractiveShell/public/`
-  * Restart the server by doing:
+  * Restart the server using the basic authorization method:
       * `ssh -i keypair.pem ubuntu@54.236.196.49 killall node`
-  * and then restart the server using the basic authorization method:
+
+      and then
       * `ssh -i keypair.pem ubuntu@54.236.196.49 'cd InteractiveShell; npm start forever_basicAuth'`

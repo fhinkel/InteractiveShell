@@ -144,7 +144,7 @@ var wrapEmitForDisconnect = function(event, msg) {
     var events = ['reset', 'input'];
     console.log("We are disconnected.");
     if (events.indexOf(event) !== -1) {
-      socket.connect({'reconnectionAttempts': 5});
+      socket.connect({reconnectionAttempts: 5});
       serverDisconnect = false;
       socket.oldEmit(event, msg);
     }
@@ -191,9 +191,9 @@ var socketOnMessage = function(msg) {
   }
 };
 
-var socketOnError = function(error){
-    console.log("We got an error. " + error);
-}
+var socketOnError = function(error) {
+  console.log("We got an error. " + error);
+};
 
 var fadeBackToOriginalColor = function() {
   $(this).removeClass("redWithShortTransition");

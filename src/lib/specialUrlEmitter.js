@@ -27,7 +27,8 @@ var emitUrlForUserGeneratedFileToClient = function(client,
                                                    pathPrefix,
                                                    pathPostfix,
                                                    sshCredentials,
-                                                   logFunction) {
+                                                   logFunction,
+                                                   emitDataViaSockets) {
   var fileName = getFilename(path);
   if (!fileName) {
     return;
@@ -56,7 +57,7 @@ var emitUrlForUserGeneratedFileToClient = function(client,
         } else {
           setTimeout(unlink(completePath), 1000 * 60 * 10);
           // console.log("Emitting path.");
-          client.socket.emit(
+          emitDataViaSockets(client.socketArray,
               "image", pathPostfix + fileName
           );
         }
@@ -73,7 +74,10 @@ var emitUrlForUserGeneratedFileToClient = function(client,
   sshConnection.connect(sshCredentials(client.instance));
 };
 
-var emitHelpUrlToClient = function(client, viewHelp, logFunction) {
+var emitHelpUrlToClient = function(client,
+                                    viewHelp,
+                                    logFunction,
+                                    emitDataViaSockets) {
   logFunction("Look at " + viewHelp);
   var helpPath = viewHelp.match(/(\/Macaulay2Doc.*)$/);
   if (helpPath) {
@@ -84,7 +88,7 @@ var emitHelpUrlToClient = function(client, viewHelp, logFunction) {
   helpPath = "http://www.math.uiuc.edu/Macaulay2/doc/Macaulay2-1.7/" +
       "share/doc/Macaulay2" + helpPath;
   logFunction(helpPath);
-  client.socket.emit("viewHelp", helpPath);
+  emitDataViaSockets(client.socketArray, "viewHelp", helpPath);
 };
 
 var isViewHelpEvent = function(eventData) {
@@ -93,11 +97,13 @@ var isViewHelpEvent = function(eventData) {
 
 module.exports = function(pathPrefix,
                           sshCredentials,
-                          logFunction) {
+                          logFunction,
+                          emitDataViaSockets
+                          ) {
   return {
     emitEventUrlToClient: function(client, url, pathPostfix) {
       if (isViewHelpEvent(url)) {
-        emitHelpUrlToClient(client, url, logFunction);
+        emitHelpUrlToClient(client, url, logFunction, emitDataViaSockets);
         return;
       }
       emitUrlForUserGeneratedFileToClient(
@@ -106,7 +112,8 @@ module.exports = function(pathPrefix,
           pathPrefix,
           pathPostfix,
           sshCredentials,
-          logFunction);
+          logFunction,
+          emitDataViaSockets);
     },
     isSpecial: function(data) {
       var eventData = data.match(

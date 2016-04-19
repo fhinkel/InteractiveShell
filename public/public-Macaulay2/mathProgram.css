@@ -196,3 +196,7 @@ codeblock {
 a.submenuItem {
     text-decoration:none;
 }
+
+.material-icons {
+    vertical-align: middle;
+}

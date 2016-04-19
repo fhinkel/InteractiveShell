@@ -7,8 +7,8 @@ var dialogPolyfill = require('dialog-polyfill');
 var shell = require('../src/frontend/shell-emulator')();
 
 var saveInteractions = function() {
-  var input = $("#M2In");
-  var output = $("#M2Out");
+  var input = document.getElementById("M2In");
+  var output = document.getElementById("M2Out");
   var dialog = document.querySelector('#saveDialog');
   var inputLink = 'data:application/octet-stream,' +
       encodeURIComponent(input.val());

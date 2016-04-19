@@ -1,7 +1,6 @@
-/* global $ */
 /* eslint-env browser */
 
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
   var init = require('../src/frontend/mathProgram');
   init();
-});
+}, false);

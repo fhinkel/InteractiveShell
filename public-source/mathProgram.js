@@ -3,36 +3,8 @@
 
 var socket = null;
 var serverDisconnect = false;
-var ctrlc = "\x03";
 var dialogPolyfill = require('dialog-polyfill');
-var shellTextArea = require('../src/frontend/shell-emulator');
-var getSelected = require('get-selected-text');
-
-var postMessage = function(msg, notrack) {
-  socket.emit('input', msg);
-  if (!notrack) {
-    $("#M2Out").trigger("track", msg);
-  }
-  return true;
-};
-
-var sendCallback = function(id) {
-  return function() {
-    var str = getSelected(id);
-    postMessage(str);
-    return false;
-  };
-};
-
-var sendOnEnterCallback = function(id) {
-  return function(e) {
-    if (e.which === 13 && e.shiftKey) {
-      e.preventDefault();
-      // do not make a line break or remove selected text when sending
-      postMessage(getSelected(id));
-    }
-  };
-};
+var shell = require('../src/frontend/shell-emulator')();
 
 var saveInteractions = function() {
   var input = $("#M2In");
@@ -90,15 +62,15 @@ var attachTutorialNavBtnActions = function(switchLesson) {
   });
 };
 
+var emitReset = function() {
+  $("#M2Out").trigger("reset");
+  socket.emit('reset');
+};
+
 var attachCtrlBtnActions = function() {
-  $("#sendBtn").click(sendCallback('M2In'));
-  $("#resetBtn").click(function() {
-    $("#M2Out").trigger("reset");
-    socket.emit('reset');
-  });
-  $("#interruptBtn").click(function() {
-    postMessage(ctrlc, true);
-  });
+  $("#sendBtn").click(shell.sendCallback('M2In', socket));
+  $("#resetBtn").click(emitReset);
+  $("#interruptBtn").click(shell.interrupt(socket));
   $("#saveBtn").click(saveInteractions);
 };
 
@@ -192,7 +164,7 @@ var codeClickAction = function() {
   code += "\n";
   $("#M2In").val($("#M2In").val() + code);
   require('scroll-down')($("#M2In"));
-  postMessage(code);
+  shell.postMessage(code, false, socket);
 };
 
 var openTabCloseDrawer = function(event) {
@@ -245,14 +217,7 @@ $(document).ready(function() {
   $("#M2Out").val("");
   $('#M2In').val(DefaultText);
 
-  var shellFunctions = {
-    postMessage: postMessage,
-    interrupt: function() {
-      postMessage(ctrlc, true);
-    }
-  };
-  shellTextArea.create($("#M2Out"), $("#M2In"), shellFunctions);
-  $('#M2In').keypress(sendOnEnterCallback('M2In'));
+  shell.create($("#M2Out"), $("#M2In"), socket);
 
   var siofu = new SocketIOFileUpload(socket);
   document.getElementById("uploadBtn").addEventListener('click', siofu.prompt,

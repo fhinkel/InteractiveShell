@@ -288,7 +288,7 @@ var MathServer = function() {
       clients.totalUsers += 1;
       clients[clientId].clientID = clientId;
     } else if (!clients[clientId].saneState) {
-      console.log("Have client " + clientId + ", but he is not sane.");
+      console.log("Have client " + clientId + ", but they are not sane.");
       return;
     }
     clients[clientId].saneState = false;

@@ -31,7 +31,7 @@ specifics might change, but it will likely be essentially the same.
   new user you just created. Click on **Attach Policy**, and choose
   **AdministratorAccess**.
 
-* Create a keypair (this is a file that you will download).
+* Create a keypair (This is a file that you will download. It is used by ssh).
   * From the AWS console, click on the **EC2** button (this places you on the EC2
   dashboard.
   * Click on **Key Pairs** (under **Network and Security** on the

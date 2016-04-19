@@ -217,30 +217,56 @@ var switchLesson = function(incr) {
   loadLesson(tutorialNr, lessonNr + incr);
 };
 
-var uploadTutorial = function(populateTutorialElement) {
-  return function() {
-    var files = this.files;
-    var file = files[0];
-    var reader = new FileReader();
-    reader.readAsText(file);
-    reader.onload = function(event) {
-      var resultHtml = event.target.result;
-      tutorials.push(populateTutorialElement(resultHtml));
-      var lastIndex = tutorials.length - 1;
-      var newTutorial = tutorials[lastIndex];
-      var title = newTutorial.title; // this is an <h3>
-      var lessons = newTutorial.lessons;
-      appendTutorialToAccordion(title, lessons, lastIndex);
-      insertDeleteButtonAtLastTutorial($("#loadTutorialMenu"));
-    };
-    return false;
+var populateTutorialElement = function(theHtml) {
+  var theLessons = [];
+  var tutorial = $("<div>").html(theHtml);
+  $("div", tutorial).each(function() {
+    theLessons.push({
+      title: $("h4:first", $(this)).text(),
+      html: $(this)
+    });
+  });
+  return { // class Tutorial
+    title: $("<h3>").append($("title", tutorial).text()),
+    current: 0,
+    lessons: theLessons
   };
+};
+
+var makeTutorialsList = function(i, tutorialNames) {
+  if (i < tutorialNames.length) {
+    $.get(tutorialNames[i], function(resultHtml) {
+      tutorials[i] = populateTutorialElement(resultHtml);
+      console.log(tutorials[i].title);
+      makeTutorialsList(i + 1, tutorialNames);
+    });
+  } else {
+    makeAccordion(tutorials);
+  }
+};
+
+var uploadTutorial = function() {
+  var files = this.files;
+  var file = files[0];
+  var reader = new FileReader();
+  reader.readAsText(file);
+  reader.onload = function(event) {
+    var resultHtml = event.target.result;
+    tutorials.push(populateTutorialElement(resultHtml));
+    var lastIndex = tutorials.length - 1;
+    var newTutorial = tutorials[lastIndex];
+    var title = newTutorial.title; // this is an <h3>
+    var lessons = newTutorial.lessons;
+    appendTutorialToAccordion(title, lessons, lastIndex);
+    insertDeleteButtonAtLastTutorial($("#loadTutorialMenu"));
+  };
+  return false;
 };
 
 module.exports = function() {
   return {
     showLesson: showLesson,
-    makeAccordion: makeAccordion,
+    makeTutorialList: makeTutorialsList,
     tutorials: tutorials,
     uploadTutorial: uploadTutorial,
     switchLesson: switchLesson

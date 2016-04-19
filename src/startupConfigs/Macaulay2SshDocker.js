@@ -8,13 +8,13 @@ GLOBAL.OPTIONS = require('./default.js').getConfig({
     CONTAINERS: '../lib/sshDockerContainers.js'
   },
   guestInstance: {
-      host: '192.168.2.42',
-      username: 'm2user',
-      port: '5000',
-      sshKey: '/home/vagrant/InteractiveShell/separate_machines/docker_key',
-      containerName: '',
-      lastActiveTime: 0
-    }
+    host: '192.168.2.42',
+    username: 'm2user',
+    port: '5000',
+    sshKey: '/home/vagrant/InteractiveShell/separate_machines/docker_key',
+    containerName: '',
+    lastActiveTime: 0
+  }
 });
 
 var Macaulay2Server = require('../lib/index.js').mathServer();

@@ -127,8 +127,8 @@ module.exports = function() {
         var input = msg.split("\n");
         for (var line in input) {
           if (input[line].length > 0) {
-          cmdHistory.index = cmdHistory.push(input[line]);
-        }
+            cmdHistory.index = cmdHistory.push(input[line]);
+          }
         }
       }
     });

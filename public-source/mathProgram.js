@@ -1,9 +1,6 @@
 /* global $, io, SocketIOFileUpload, mathProgramName, DefaultText */
 /* eslint-env browser */
-/* eslint "max-len": "off" */
-/* eslint "new-cap": "off" */
 
-// var MAXFILESIZE = 500000; // max size in bytes for file uploads
 var socket = null;
 var serverDisconnect = false;
 var ctrlc = "\x03";
@@ -14,7 +11,6 @@ var getSelected = require('get-selected-text');
 var postMessage = function(msg, notrack) {
   socket.emit('input', msg);
   if (!notrack) {
-// Closure to capture the file information.
     $("#M2Out").trigger("track", msg);
   }
   return true;
@@ -42,11 +38,13 @@ var saveInteractions = function() {
   var input = $("#M2In");
   var output = $("#M2Out");
   var dialog = document.querySelector('#saveDialog');
-  var inputLink = 'data:application/octet-stream,' + encodeURIComponent(input.val());
+  var inputLink = 'data:application/octet-stream,' +
+      encodeURIComponent(input.val());
   var inputParagraph = document.getElementById("inputContent");
   inputParagraph.setAttribute('href', inputLink);
   inputParagraph.setAttribute('download', 'input.txt');
-  var outputLink = 'data:application/octet-stream,' + encodeURIComponent(output.val());
+  var outputLink = 'data:application/octet-stream,' +
+      encodeURIComponent(output.val());
   var outputParagraph = document.getElementById("outputContent");
   outputParagraph.setAttribute('href', outputLink);
   outputParagraph.setAttribute('download', 'output.txt');
@@ -116,7 +114,8 @@ var showUploadSuccessDialog = function(event) {
   var successSentence = filename +
       " has been uploaded and you can use it by loading it into your " +
       mathProgramName + " session (use the input terminal).";
-  document.getElementById("uploadSuccessDialogContent").innerText = successSentence;
+  document.getElementById("uploadSuccessDialogContent").innerText =
+      successSentence;
   dialog.showModal();
 };
 
@@ -144,20 +143,24 @@ var showImageDialog = function(imageUrl) {
 };
 
 var attachCloseDialogBtns = function() {
-  document.getElementById("saveDialogClose").addEventListener('click', function() {
-    document.getElementById("saveDialog").close();
-  });
-  document.getElementById("uploadSuccessDialogClose").addEventListener('click', function() {
-    document.getElementById("uploadSuccessDialog").close();
-  });
-  document.getElementById("showImageDialogClose").addEventListener('click', function() {
-    document.getElementById("showImageDialog").close();
-  });
+  document.getElementById("saveDialogClose").addEventListener('click',
+      function() {
+        document.getElementById("saveDialog").close();
+      });
+  document.getElementById("uploadSuccessDialogClose").addEventListener('click',
+      function() {
+        document.getElementById("uploadSuccessDialog").close();
+      });
+  document.getElementById("showImageDialogClose").addEventListener('click',
+      function() {
+        document.getElementById("showImageDialog").close();
+      });
 };
 
 var socketDisconnect = function(msg) {
   console.log("We got disconnected. " + msg);
-  $("#M2Out").trigger("onmessage", " Sorry, your session was disconnected by the server.\n\n");
+  $("#M2Out").trigger("onmessage", " Sorry, your session was disconnected" +
+      " by the server.\n\n");
   serverDisconnect = true;
 };
 
@@ -217,7 +220,8 @@ var socketOnMessage = function(msg) {
 
 $(document).ready(function() {
   var zoom = require('../src/frontend/zooming');
-  zoom.attachZoomButtons("M2Out", "M2OutZoomIn", "M2OutResetZoom", "M2OutZoomOut");
+  zoom.attachZoomButtons("M2Out", "M2OutZoomIn", "M2OutResetZoom",
+      "M2OutZoomOut");
 
   socket = io();
   socket.on('result', socketOnMessage);
@@ -251,7 +255,8 @@ $(document).ready(function() {
   $('#M2In').keypress(sendOnEnterCallback('M2In'));
 
   var siofu = new SocketIOFileUpload(socket);
-  document.getElementById("uploadBtn").addEventListener('click', siofu.prompt, false);
+  document.getElementById("uploadBtn").addEventListener('click', siofu.prompt,
+      false);
   siofu.addEventListener("complete", showUploadSuccessDialog);
 
   $(document).on("click", "code", codeClickAction);

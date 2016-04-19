@@ -1,4 +1,4 @@
-/* global $, io, SocketIOFileUpload, mathProgramName, tutorialFunctions, DefaultText */
+/* global $, io, SocketIOFileUpload, mathProgramName, DefaultText */
 /* eslint-env browser */
 /* eslint "max-len": "off" */
 /* eslint "new-cap": "off" */
@@ -227,11 +227,9 @@ $(document).ready(function() {
   socket.on('image', showImageDialog);
   socket.on('viewHelp', displayUrlInNewWindow);
 
-  var tutorialManager = require('../src/frontend/tutorials.js')();
-  var tf = tutorialFunctions(tutorialManager.makeTutorialList);
-
-  // pass fetch until webpack is responsible for public-common/tutorials.js file
-  tf.importTutorials(fetch);
+  var tutorialManager = require('../src/frontend/tutorials')();
+  var fetchTutorials = require('../src/frontend/fetchTutorials');
+  fetchTutorials(tutorialManager.makeTutorialList);
   $("#uptutorial").on('change', tutorialManager.uploadTutorial);
   $(document).on("click", ".submenuItem", tutorialManager.showLesson);
 

@@ -10,11 +10,6 @@ var firstLoadFlag = true; // true until we show tutorial for the first time. Nee
 var accordion = require('./accordion')();
 
 var loadLesson = function(tutorialid, lessonid) {
-  console.log(tutorialNr + "==" + tutorialid + " or " + lessonNr + "==" +
-      lessonid);
-  var changedLesson = (tutorialNr !== tutorialid || lessonNr !==
-  lessonid || firstLoadFlag);
-  firstLoadFlag = false;
   if (tutorialid >= 0 && tutorialid < tutorials.length) {
     tutorialNr = tutorialid;
   }
@@ -23,11 +18,20 @@ var loadLesson = function(tutorialid, lessonid) {
   }
   var lessonContent = tutorials[tutorialNr].lessons[lessonNr]
       .html;
+  var title = tutorials[tutorialNr].title.text();
+  $("#lesson").html(lessonContent).prepend("<h3>" + title + "</h3>");
+  $("#lesson").scrollTop(0); // scroll to the top of a new lesson
+  MathJax.Hub.Queue(["Typeset", MathJax.Hub, "#lesson"]);
+};
+
+var loadLessonIfChanged = function(tutorialid, lessonid) {
+  console.log(tutorialNr + "==" + tutorialid + " or " + lessonNr + "==" +
+      lessonid);
+  var changedLesson = (tutorialNr !== tutorialid || lessonNr !==
+  lessonid || firstLoadFlag);
+  firstLoadFlag = false;
   if (changedLesson) {
-    var title = tutorials[tutorialNr].title.text();
-    $("#lesson").html(lessonContent).prepend("<h3>" + title + "</h3>");
-    $("#lesson").scrollTop(0); // scroll to the top of a new lesson
-    MathJax.Hub.Queue(["Typeset", MathJax.Hub, "#lesson"]);
+    loadLesson(tutorialid, lessonid);
   }
 };
 
@@ -44,14 +48,14 @@ var showLesson = function(e) {
     lessonId = $(this).attr('lessonid');
     lessonIdNr = parseInt(lessonId.match(/\d/g), 10);
   }
-  loadLesson(tutorialIdNr, lessonIdNr);
+  loadLessonIfChanged(tutorialIdNr, lessonIdNr);
   document.getElementById("lessonTabTitle").click();
   return false;
 };
 
 var switchLesson = function(incr) {
   // console.log("Current lessonNr " + lessonNr);
-  loadLesson(tutorialNr, lessonNr + incr);
+  loadLessonIfChanged(tutorialNr, lessonNr + incr);
 };
 
 var populateTutorialElement = function(theHtml) {
@@ -80,7 +84,7 @@ var makeTutorialsList = function(i, tutorialNames) {
   } else {
     accordion.makeAccordion(tutorials);
     $(".menuTitle").on("click", {lessonIdNr: "0"}, showLesson);
-    loadLesson(tutorialNr, lessonNr);
+    loadLessonIfChanged(tutorialNr, lessonNr);
   }
 };
 

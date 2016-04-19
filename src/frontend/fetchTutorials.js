@@ -10,7 +10,7 @@ module.exports = function(callback) {
         console.log("Obtaining list of tutorials successful: " + tutorialPaths);
         callback(0, tutorialPaths);
       }).catch(function(error) {
-    console.log("There was an error obtaining the list of " +
+        console.log("There was an error obtaining the list of " +
         "tutorial files: " + error);
-  });
+      });
 };

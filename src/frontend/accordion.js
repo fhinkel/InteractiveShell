@@ -42,17 +42,20 @@ var scrollDownUntilTutorialVisible = function() {
 
 var appendTutorialToAccordion = function(tmptitle, lessons, index) {
   var title = tmptitle.clone();
-  title.wrapInner("<a href='#' class='" + cssClasses.titleHref + "' tutorialid=" + index + "/>")
+  title.wrapInner("<a href='#' class='" + cssClasses.titleHref +
+      "' tutorialid=" + index + "/>")
       .addClass(cssClasses.title)
       .prepend(
-          '<i class="' + cssClasses.titleSymbolClass + '">' + cssClasses.titleSymbolActive + '</i>')
+          '<i class="' + cssClasses.titleSymbolClass + '">' +
+          cssClasses.titleSymbolActive + '</i>')
       .hover(function() {
         $(this).toggleClass(cssClasses.titleHover);
       })
       .click(function() {
         $(this).toggleClass(cssClasses.titleToggleClass)
             .find("> .titleSymbol").toggleText(
-            cssClasses.titleSymbolActive + " " + cssClasses.titleSymbolInactive).end()
+            cssClasses.titleSymbolActive + " " +
+            cssClasses.titleSymbolInactive).end()
             .next().slideToggle(scrollDownUntilTutorialVisible);
         return false;
       })
@@ -61,7 +64,8 @@ var appendTutorialToAccordion = function(tmptitle, lessons, index) {
   var content = '<ul>';
   for (var j = 0; j < lessons.length; j++) {
     content = content +
-        '<li class="' + cssClasses.innerListItem + '"><a href="#" class="' + cssClasses.submenuHref + '" tutorialid=' + index +
+        '<li class="' + cssClasses.innerListItem + '"><a href="#" class="' +
+        cssClasses.submenuHref + '" tutorialid=' + index +
         ' lessonid=' + j + '>  ' + lessons[j].title + '</a></li>';
   }
   content += '</ul>';
@@ -108,7 +112,8 @@ var addExpandLoadTutorialInstructionsButton = function() {
   expandButton.click(function() {
     var title = $("#loadTutorialMenu");
     var instructions = $("#loadTutorialInstructions");
-    expandButton.toggleText(cssClasses.titleSymbolInactive + " " + cssClasses.titleSymbolActive);
+    expandButton.toggleText(cssClasses.titleSymbolInactive + " " +
+        cssClasses.titleSymbolActive);
     title.toggleClass(
         cssClasses.titleToggleClass);
     instructions.slideToggle(scrollDownUntilTutorialVisible);

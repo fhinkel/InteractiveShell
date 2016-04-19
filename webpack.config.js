@@ -1,10 +1,10 @@
 var webpack = require("webpack");
 
 module.exports = {
-  entry: "./public-source/mathProgram.js",
+  entry: "./public-source/index.js",
   output: {
     path: __dirname,
-    filename: "public/public-common/mathProgram.js"
+    filename: "public/public-common/index.js"
   },
   module: {
     loaders: [

@@ -4,11 +4,11 @@
 var socket = null;
 var serverDisconnect = false;
 var dialogPolyfill = require('dialog-polyfill');
-var shell = require('../src/frontend/shell-emulator')();
+var shell = require('./shell-emulator')();
 
 var saveInteractions = function() {
-  var input = document.getElementById("M2In");
-  var output = document.getElementById("M2Out");
+  var input = $("#M2In");
+  var output = $("#M2Out");
   var dialog = document.querySelector('#saveDialog');
   var inputLink = 'data:application/octet-stream,' +
       encodeURIComponent(input.val());
@@ -192,8 +192,8 @@ var fadeBackToOriginalColor = function() {
   $(this).removeClass("redWithShortTransition");
 };
 
-$(document).ready(function() {
-  var zoom = require('../src/frontend/zooming');
+var init = function() {
+  var zoom = require('./zooming');
   zoom.attachZoomButtons("M2Out", "M2OutZoomIn", "M2OutResetZoom",
       "M2OutZoomOut");
 
@@ -205,8 +205,8 @@ $(document).ready(function() {
   socket.on('image', showImageDialog);
   socket.on('viewHelp', displayUrlInNewWindow);
 
-  var tutorialManager = require('../src/frontend/tutorials')();
-  var fetchTutorials = require('../src/frontend/fetchTutorials');
+  var tutorialManager = require('./tutorials')();
+  var fetchTutorials = require('./fetchTutorials');
   fetchTutorials(tutorialManager.makeTutorialList);
   $("#uptutorial").on('change', tutorialManager.uploadTutorial);
   $(document).on("click", ".submenuItem", tutorialManager.showLesson);
@@ -235,4 +235,8 @@ $(document).ready(function() {
       fadeBackToOriginalColor);
   $(document).on("transitionend", "codeblock.redWithShortTransition",
       fadeBackToOriginalColor);
-});
+};
+
+module.exports = function() {
+  init();
+};

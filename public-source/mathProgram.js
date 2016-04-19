@@ -5,7 +5,7 @@ var socket = null;
 var serverDisconnect = false;
 var ctrlc = "\x03";
 var dialogPolyfill = require('dialog-polyfill');
-var shellTextArea = require('shell-emulator');
+var shellTextArea = require('../src/frontend/shell-emulator');
 var getSelected = require('get-selected-text');
 
 var postMessage = function(msg, notrack) {

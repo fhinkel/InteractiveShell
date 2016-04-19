@@ -135,9 +135,9 @@ var socketOnDisconnect = function(msg) {
   $("#M2Out").trigger("onmessage", " Sorry, your session was disconnected" +
       " by the server.\n\nPlease refresh to reconnect.\n\n");
   serverDisconnect = true;
-    // Could use the following to automatically reload. Probably too invasive,
-    // might kill results.
-    // location.reload();
+  // Could use the following to automatically reload. Probably too invasive,
+  // might kill results.
+  // location.reload();
 };
 
 var wrapEmitForDisconnect = function(event, msg) {

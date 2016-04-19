@@ -1,23 +1,7 @@
 /* global $ */
 /* eslint "max-len": "off" */
 /* eslint "no-unused-vars": "off" */
-var removeTutorial = function(title, div, button) {
-  return function() {
-    button.remove();
-    div.remove();
-    title.remove();
-  };
-};
-
-var insertDeleteButtonAtLastTutorial = function(tutorialMenu) {
-  var lastTitle = tutorialMenu.prev().prev();
-  var lastDiv = tutorialMenu.prev();
-  var deleteButton = $("<i>");
-  deleteButton.addClass("material-icons icon-with-action saveDialogClose");
-  deleteButton.text("close");
-  lastTitle.append(deleteButton);
-  deleteButton.click(removeTutorial(lastTitle, lastDiv, deleteButton));
-};
+var tutorials = [];
 
 var populateTutorialElement = function(theHtml) {
   var theLessons = [];
@@ -35,7 +19,7 @@ var populateTutorialElement = function(theHtml) {
   };
 };
 
-var tutorialFunctions = function(makeAccordion, tutorials) {
+var tutorialFunctions = function(makeAccordion) {
   var makeTutorialsList = function(i, tutorialNames, callback) {
     if (i < tutorialNames.length) {
       $.get(tutorialNames[i], function(resultHtml) {
@@ -44,7 +28,7 @@ var tutorialFunctions = function(makeAccordion, tutorials) {
         makeTutorialsList(i + 1, tutorialNames, callback);
       });
     } else {
-      callback();
+      callback(tutorials);
     }
   };
 
@@ -56,16 +40,13 @@ var tutorialFunctions = function(makeAccordion, tutorials) {
           return data.json();
         }).then(function(tutorialPaths) {
           console.log("Obtaining list of tutorials successful: " + tutorialPaths);
-          makeTutorialsList(0, tutorialPaths, function() {
-        makeAccordion(tutorials);
-      });
+          makeTutorialsList(0, tutorialPaths, makeAccordion);
         }).catch(function(error) {
-      console.log("There was an error obtaining the list of tutorial files: " + error);
-    });
+          console.log("There was an error obtaining the list of tutorial files: " + error);
+        });
   };
 
   return {
-    insertDeleteButtonAtLastTutorial: insertDeleteButtonAtLastTutorial,
     importTutorials: importTutorials,
     populateTutorialElement: populateTutorialElement
   };

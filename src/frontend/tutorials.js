@@ -141,6 +141,24 @@ var appendLoadTutorialMenuToAccordion = function() {
   addLoadTutorialButton();
 };
 
+var removeTutorial = function(title, div, button) {
+  return function() {
+    button.remove();
+    div.remove();
+    title.remove();
+  };
+};
+
+var insertDeleteButtonAtLastTutorial = function(tutorialMenu) {
+  var lastTitle = tutorialMenu.prev().prev();
+  var lastDiv = tutorialMenu.prev();
+  var deleteButton = $("<i>");
+  deleteButton.addClass("material-icons icon-with-action saveDialogClose");
+  deleteButton.text("close");
+  lastTitle.append(deleteButton);
+  deleteButton.click(removeTutorial(lastTitle, lastDiv, deleteButton));
+};
+
 var loadLesson = function(tutorialid, lessonid) {
   console.log(tutorialNr + "==" + tutorialid + " or " + lessonNr + "==" +
       lessonid);
@@ -181,7 +199,8 @@ var showLesson = function(e) {
   return false;
 };
 
-var makeAccordion = function(tutorials) {
+var makeAccordion = function(inputTutorials) {
+  tutorials = inputTutorials;
   $("#home").append("<div id=\"accordion\"></div>");
   appendLoadTutorialMenuToAccordion();
   for (var i = 0; i < tutorials.length; i++) {
@@ -198,7 +217,7 @@ var switchLesson = function(incr) {
   loadLesson(tutorialNr, lessonNr + incr);
 };
 
-var uploadTutorial = function(insertDeleteButtonAtLastTutorial, populateTutorialElement) {
+var uploadTutorial = function(populateTutorialElement) {
   return function() {
     var files = this.files;
     var file = files[0];

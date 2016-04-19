@@ -228,11 +228,11 @@ $(document).ready(function() {
   socket.on('viewHelp', displayUrlInNewWindow);
 
   var tutorialManager = require('../src/frontend/tutorials.js')();
-  var tf = tutorialFunctions(tutorialManager.makeAccordion, tutorialManager.tutorials);
+  var tf = tutorialFunctions(tutorialManager.makeAccordion);
 
   // pass fetch until webpack is responsible for public-common/tutorials.js file
   tf.importTutorials(fetch);
-  var uploadAction = tutorialManager.uploadTutorial(tf.insertDeleteButtonAtLastTutorial, tf.populateTutorialElement);
+  var uploadAction = tutorialManager.uploadTutorial(tf.populateTutorialElement);
   $("#uptutorial").on('change', uploadAction);
   $(document).on("click", ".submenuItem", tutorialManager.showLesson);
 

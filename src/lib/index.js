@@ -72,6 +72,7 @@ var Client = function() {
   this.saneState = true;
   this.reconnecting = false;
   this.instance = 0;
+  this.socketArray = [];
 };
 
 var setCookie = function(cookies, clientID) {
@@ -80,13 +81,29 @@ var setCookie = function(cookies, clientID) {
   });
 };
 
+var emitDataViaSockets = function(sockets, type, data) {
+  for (var socketKey in sockets) {
+    if (sockets.hasOwnProperty(socketKey)) {
+      var socket = sockets[socketKey];
+      try {
+        socket.emit(type, data);
+      } catch (error) {}
+    }
+  }
+};
+
+var emitDataViaClientSockets = function(clientID, type, data) {
+  var sockets = clients[clientID].socketArray;
+  emitDataViaSockets(sockets, type, data);
+};
+
 var getInstance = function(clientID, next) {
   if (clients[clientID].instance) {
     next(clients[clientID].instance);
   } else {
     instanceManager.getNewInstance(function(err, instance) {
       if (err) {
-        clients[clientID].socket.emit('result',
+        emitDataViaClientSockets(clientID, 'result',
             "Sorry, there was an error. Please come back later.\n" +
             err + "\n\n");
         deleteClientData(clientID);
@@ -148,6 +165,12 @@ var updateLastActiveTime = function(clientID) {
   instanceManager.updateLastActiveTime(clients[clientID].instance);
 };
 
+var updateSocket = function(clientID, socket) {
+  console.log(socket.id);
+  var ID = socket.id;
+  clients[clientID].socketArray[ID] = socket;
+};
+
 var sendDataToClient = function(clientID) {
   return function(dataObject) {
     var data = dataObject.toString();
@@ -161,17 +184,19 @@ var sendDataToClient = function(clientID) {
     var specialUrlEmitter = require('./specialUrlEmitter')(
         pathPrefix,
         sshCredentials,
-        logExceptOnTest
+        logExceptOnTest,
+        emitDataViaSockets
     );
     var dataMarkedAsSpecial = specialUrlEmitter.isSpecial(data);
     if (dataMarkedAsSpecial) {
       specialUrlEmitter.emitEventUrlToClient(
           clients[clientID],
           dataMarkedAsSpecial,
-          userSpecificPath(clientID));
+          userSpecificPath(clientID)
+          );
       return;
     }
-    socket.emit('result', data);
+    emitDataViaClientSockets(clientID, 'result', data);
   };
 };
 
@@ -273,6 +298,7 @@ var socketSanityCheck = function(clientId, socket) {
   }
   clients[clientId].saneState = false;
   clients[clientId].socket = socket;
+  updateSocket(clientId, socket);
 
   if (!clients[clientId].mathProgramInstance ||
       clients[clientId].mathProgramInstance._writableState.ended) {
@@ -283,7 +309,8 @@ var socketSanityCheck = function(clientId, socket) {
   } else {
     console.log("Has mathProgram instance.");
     if (clients[clientId].reconnecting) {
-      clients[clientId].socket.emit('result',
+      emitDataViaClientSockets(clientId,
+      'result',
           "Session resumed.\n" + options.resumeString);
       clients[clientId].reconnecting = false;
     }

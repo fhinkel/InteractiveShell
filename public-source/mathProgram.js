@@ -176,8 +176,8 @@ var openTabCloseDrawer = function(event) {
 };
 
 var openAboutTab = function(event) {
-  document.getElementById("helpTitle").click();
   // show tab panel
+  document.getElementById("helpTitle").click();
   // do not follow link
   event.preventDefault();
 };

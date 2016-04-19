@@ -171,6 +171,7 @@ code, codeblock {
     display: inline-block;
     text-decoration: none;
     line-height: 1.5;
+    transition: background-color 300ms;
 }
 
 code {
@@ -182,6 +183,12 @@ code {
 codeblock {
     padding: 3px 6px;
     border-radius: 10px;
+}
+
+.redWithShortTransition {
+    background-color: red;
+    /* Use >0ms transition, otherwise transitionend event is not fired */
+    transition: 1ms;
 }
 
 .mdl-mini-footer {

@@ -157,9 +157,7 @@ var displayUrlInNewWindow = function(url) {
 };
 
 var codeClickAction = function() {
-  $(this).effect("highlight", {
-    color: 'red'
-  }, 300);
+  $(this).addClass("redWithShortTransition");
   var code = $(this).text();
   code += "\n";
   $("#M2In").val($("#M2In").val() + code);
@@ -188,6 +186,10 @@ var socketOnMessage = function(msg) {
   if (msg !== "") {
     $("#M2Out").trigger("onmessage", msg);
   }
+};
+
+var fadeBackToOriginalColor = function() {
+  $(this).removeClass("redWithShortTransition");
 };
 
 $(document).ready(function() {
@@ -228,4 +230,9 @@ $(document).ready(function() {
   $(document).on("click", "codeblock", codeClickAction);
   $(document).on("click", ".tabPanelActivator", openTabCloseDrawer);
   $(document).on("click", "#about", openAboutTab);
+
+  $(document).on("transitionend", "code.redWithShortTransition",
+      fadeBackToOriginalColor);
+  $(document).on("transitionend", "codeblock.redWithShortTransition",
+      fadeBackToOriginalColor);
 });

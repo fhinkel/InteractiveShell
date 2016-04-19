@@ -310,19 +310,22 @@ var checkAndWrite = function(clientId, msg) {
   }
 };
 
-var checkStateAndExecuteAction = function(clientId, next) {
-  if (!clients[clientId] || !clients[clientId].saneState) {
-    console.log(clientId + " not accepting events.");
-  } else {
-    next();
-  }
+var checkState = function(clientId) {
+  return new Promise(function(resolve, reject) {
+    if (clients[clientId] && clients[clientId].saneState) {
+      resolve();
+    } else {
+      console.log(clientId + " not accepting events.");
+      reject();
+    }
+  });
 };
 
 var socketInputAction = function(clientId) {
   return function(msg) {
     console.log("Have clientId: " + clientId);
     updateLastActiveTime(clientId);
-    checkStateAndExecuteAction(clientId, function() {
+    checkState(clientId).then(function() {
       checkAndWrite(clientId, msg);
     });
   };
@@ -332,7 +335,7 @@ var socketResetAction = function(clientId) {
   return function() {
     optLogCmdToFile(clientId, "Resetting.\n");
     logExceptOnTest('Received reset.');
-    checkStateAndExecuteAction(clientId, function() {
+    checkState(clientId).then(function() {
       var client = clients[clientId];
       client.saneState = false;
       if (client.mathProgramInstance) {

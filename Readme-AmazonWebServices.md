@@ -1,5 +1,6 @@
-**Making your own Macaulay2 web server which
-runs on Amazon Web Services (AWS, i.e. on the Amazon cloud)**
+Making your own Macaulay2 web server which runs on Amazon Web Services (AWS, i.e. on the Amazon cloud)
+------------------------------------------
+
 
 Before you begin with AWS, install vagrant on your machine,
 and also get our **Vagrantfile,** which will be used to
@@ -102,3 +103,24 @@ Now you are finally ready build the Macaulay2 Amazon instance.
   * To manage the instance, you can ssh into that system.  In the
   same directory on your machine do `vagrant ssh`.  This will
   log you into a command line in the amazon instance.
+
+Doing basic authorization
+--------------------------
+
+  When you run your own Macaulay2 web server, you might prefer to require user names and passwords.
+  We have included a simple but effective method for handling this case.
+
+  * Create a file users.htpasswd (easiest is to place it in the folder where you placed `Vagrantfile`),
+    and populate it with at least one user and encrypted password as follows:
+    * Go to http://www.htaccesstools.com/htpasswd-generator/ and enter a user name and password.
+    * This generates a line.  Place this as a line in the users.htpasswd file.
+
+  It is fine to let all of your users use user name and one password, or you may ask your users to generate their own,
+  and to let you know the resulting line.
+
+  * Copy this file to the AWS instance.  Assuming the IP address is 54.236.196.49, and the pem file is keypair.pem, do:
+      * `scp -i keypair.pem users.htpasswd ubuntu@54.236.196.49:~/InteractiveShell/public/`
+  * Restart the server by doing:
+      * `ssh -i keypair.pem ubuntu@54.236.196.49 killall node`
+  * and then restart the server using the basic authorization method:
+      * `ssh -i keypair.pem ubuntu@54.236.196.49 'cd InteractiveShell; npm start forever_basicAuth'`

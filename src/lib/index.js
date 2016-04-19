@@ -20,8 +20,12 @@ var MathServer = function() {
     });
     app.use(auth.connect(basic));
     getClientIdFromSocket = function(socket) {
-      var clientId = socket.request.headers.authorization.substring(6);
-      return clientId;
+        try {
+          var clientId = socket.request.headers.authorization.substring(6);
+          return clientId;
+        } catch(error){
+            return "deadCookie";
+        }
     };
   } else {
     getClientIdFromSocket = function(socket) {
@@ -70,13 +74,16 @@ var MathServer = function() {
     return "/" + clientId + "-files/";
   };
 
+  var disconnectSocket = function(socket){
+    socket.disconnect();
+  }
+
   var deleteClientData = function(clientID) {
     logExceptOnTest("deleting folder " +
         staticFolder + userSpecificPath(clientID));
     try {
-      clients[clientID].socket.emit('serverDisconnect');
       console.log("Sending disconnect. " + clientID);
-      clients[clientID].socket.disconnect();
+      disconnectSocket(clients[clientID].socket);
     } catch (error) {
       console.log("Socket seems already dead: " + error);
     }
@@ -371,6 +378,11 @@ var MathServer = function() {
     io.on('connection', function(socket) {
       console.log("Incoming new connection!");
       var clientId = getClientIdFromSocket(socket);
+      if (clientId === "deadCookie"){
+        console.log("Disconnecting for dead cookie.");
+        disconnectSocket(socket);
+        return;
+      }
       if (clients[clientId]) {
         clients[clientId].reconnecting = true;
       }

@@ -32,6 +32,7 @@
     "get-selected-text": "1.0.2",
     "http-auth": "2.3.1",
     "imports-loader": "0.6.5",
+    "jquery": "^2.2.3",
     "scroll-down": "2.0.0",
     "serve-favicon": "2.1.7",
     "serve-static": "1.7.2",

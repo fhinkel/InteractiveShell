@@ -1,10 +1,11 @@
-/* global $, io, SocketIOFileUpload, mathProgramName, DefaultText */
+/* global io, SocketIOFileUpload, mathProgramName, DefaultText */
 /* eslint-env browser */
 
 var socket = null;
 var serverDisconnect = false;
 var dialogPolyfill = require('dialog-polyfill');
 var shell = require('./shell-emulator')();
+var $ = require('jquery');
 
 var saveInteractions = function() {
   var input = $("#M2In");

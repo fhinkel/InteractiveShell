@@ -1,4 +1,4 @@
-/* global $ */
+var $ = require('jquery');
 
 var cssClasses = {
   titleSymbolClass: "material-icons titleSymbol",

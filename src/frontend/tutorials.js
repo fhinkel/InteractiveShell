@@ -1,4 +1,4 @@
-/* global $, MathJax */
+/* global MathJax */
 /* eslint-env browser */
 /* eslint "max-len": "off" */
 /* eslint "new-cap": "off" */
@@ -8,6 +8,7 @@ var tutorialNr = 0;
 var tutorials = [];
 var firstLoadFlag = true; // true until we show tutorial for the first time. Needed because we need to load lesson 0
 var accordion = require('./accordion')();
+var $ = require('jquery');
 
 var loadLesson = function(tutorialid, lessonid) {
   if (tutorialid >= 0 && tutorialid < tutorials.length) {

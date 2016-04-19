@@ -5,7 +5,6 @@
 // shell functions for
 // * postMessage
 // * interrupt
-/* global $ */
 /* eslint-env browser */
 /* eslint "max-len": "off" */
 var keys = {
@@ -22,6 +21,8 @@ var keys = {
   enter: 13,
   ctrlc: "\x03"
 };
+
+var $ = require('jquery');
 
 var unicodeBell = '\u0007';
 var setCaretPosition = require('set-caret-position');

@@ -49,6 +49,7 @@
     "basicAuth": "webpack && node src/startupConfigs/Macaulay2BasicAuth.js",
     "ssh": "webpack && node src/startupConfigs/Macaulay2SshDocker.js",
     "forever": "webpack && ./node_modules/forever/bin/forever start -l /home/vagrant/webm2.logs/forever.log -o /home/vagrant/webm2.logs/out.log -e /home/vagrant/webm2.logs/err.log --append src/startupConfigs/Macaulay2SshDocker.js",
+    "forever_basicAuth": "webpack && ./node_modules/forever/bin/forever start -l /home/vagrant/webm2.logs/forever.log -o /home/vagrant/webm2.logs/out.log -e /home/vagrant/webm2.logs/err.log --append src/startupConfigs/Macaulay2BasicAuth.js",
     "start_singular": "webpack && node src/startupConfigs/SingularSudoDocker.js",
     "basic_singular": "webpack && node src/startupConfigs/SingularLocalServer.js",
     "ssh_singular": "webpack && node src/startupConfigs/SingularSshDocker.js",

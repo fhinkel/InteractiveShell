@@ -219,7 +219,7 @@ var init = function() {
 
   var tutorialManager = require('./tutorials')();
   var fetchTutorials = require('./fetchTutorials');
-  fetchTutorials(tutorialManager.makeTutorialList);
+  fetchTutorials(tutorialManager.makeTutorialsList);
   $("#uptutorial").on('change', tutorialManager.uploadTutorial);
   $(document).on("click", ".submenuItem", tutorialManager.showLesson);
 

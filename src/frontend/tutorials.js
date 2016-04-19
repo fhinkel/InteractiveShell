@@ -110,9 +110,9 @@ var uploadTutorial = function() {
 module.exports = function() {
   return {
     showLesson: showLesson,
-    makeTutorialList: makeTutorialsList,
     tutorials: tutorials,
     uploadTutorial: uploadTutorial,
-    switchLesson: switchLesson
+    switchLesson: switchLesson,
+    makeTutorialsList: makeTutorialsList
   };
 };

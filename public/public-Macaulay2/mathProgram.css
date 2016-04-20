@@ -35,10 +35,18 @@ body {
 }
 
 #lesson {
+   background-color: red;
     height: 100%;
+    width: 100%;
     overflow-y: auto;
-    position: relative;
+    overflow-x: auto;
     z-index: 1;
+    /* Position:absolute is needed for the editor not to be a tiny bit too
+     * high. */
+    position: absolute;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .navigationButton {
@@ -141,13 +149,6 @@ body {
     box-sizing: border-box;
 }
 
-#lesson {
-    overflow-y: auto;
-    position: absolute;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
 
 #M2In {
     /* We need this margin, otherwise flexbox does not work correctly.*/

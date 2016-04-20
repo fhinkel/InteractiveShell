@@ -2,7 +2,7 @@
 * Transfer changes to Singular
 * Tests! Tests! Tests!
 * Multiple File upload
-* "Session thing": Having several sockets in the same session
+* ~~"Session thing": Having several sockets in the same session~~
 * Streamline basic authorisation
 * Rename vagrantfile_aws, fix aws-readme
 * Update current readme
@@ -47,15 +47,15 @@
 
 2016-03-26
 * Playing with Google's Material Design light
-* Use fetch instead of $ajax
+* ~~Use fetch instead of $ajax~~
 * Fix footer
 * Try MDL list layout instead of jquery accordion
 * delete code for tabs, i.e., trym2.navbar
 * push to AWS, so everybody can look at the new design
 
 2016-03-19
-* UI: Make tabs on left side visible
-* extract frontend shell part as module
+* ~~UI: Make tabs on left side visible~~
+* ~~extract frontend shell part as module~~
 
 
 2016-03-19

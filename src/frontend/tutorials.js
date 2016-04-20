@@ -57,7 +57,7 @@ var switchLesson = function(incr) {
   loadLessonIfChanged(tutorialNr, lessonNr + incr);
 };
 
-var populateTutorialElement = function(theHtml) {
+var enrichTutorialWithHtml = function(theHtml) {
   var theLessons = [];
   var tutorial = $("<div>").html(theHtml);
   $("div", tutorial).each(function() {
@@ -73,24 +73,34 @@ var populateTutorialElement = function(theHtml) {
   };
 };
 
-var makeTutorialsList = function(i, tutorialNames) {
-  if (i < tutorialNames.length) {
-    console.log('Fetching ' + tutorialNames[i]);
-    fetch(tutorialNames[i], {
-      credentials: 'same-origin'
-    }).then(function(response) {
-      return response.text();
-    }).then(function(tutorial) {
-      tutorials[i] = populateTutorialElement(tutorial);
-      makeTutorialsList(i + 1, tutorialNames);
-    }).catch(function(error) {
-      console.log("Error loading tutorial: " + error);
-    });
-  } else {
-    accordion.makeAccordion(tutorials);
+var getTutorial = function(url) {
+  return fetch(url, {
+    credentials: 'same-origin'
+  }).then(function(response) {
+    if (response.status !== 200) {
+      throw new Error('Fetching tutorial failed: ' + url);
+    }
+    return response.text();
+  }, function(error) {
+    console.log("Error in fetch: " + error);
+    throw error;
+  });
+};
+
+var makeTutorialsList = function(tutorialNames) {
+  return Promise.all(
+      tutorialNames.map(getTutorial)
+  ).then(function(rawTutorials) {
+    return rawTutorials.map(enrichTutorialWithHtml);
+  }).then(function(data) {
+    accordion.makeAccordion(data);
+    tutorials = data;
     $(".menuTitle").on("click", {lessonIdNr: "0"}, showLesson);
     loadLessonIfChanged(tutorialNr, lessonNr);
-  }
+  }).catch(function(error) {
+    console.log("Error in makeTutorialList: " + error);
+    throw error;
+  });
 };
 
 var uploadTutorial = function() {
@@ -100,7 +110,7 @@ var uploadTutorial = function() {
   reader.readAsText(file);
   reader.onload = function(event) {
     var resultHtml = event.target.result;
-    tutorials.push(populateTutorialElement(resultHtml));
+    tutorials.push(enrichTutorialWithHtml(resultHtml));
     var lastIndex = tutorials.length - 1;
     var newTutorial = tutorials[lastIndex];
     var title = newTutorial.title; // this is an <h3>

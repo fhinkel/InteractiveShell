@@ -8,7 +8,7 @@ module.exports = function(callback) {
         return data.json();
       }).then(function(tutorialPaths) {
         console.log("Obtaining list of tutorials successful: " + tutorialPaths);
-        callback(0, tutorialPaths);
+        callback(tutorialPaths);
       }).catch(function(error) {
         console.log("There was an error obtaining the list of " +
         "tutorial files: " + error);

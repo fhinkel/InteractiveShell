@@ -79,7 +79,15 @@ Vagrant.configure(2) do |config|
        chown vagrant:vagrant /home/vagrant/keys/docker_key*
        chmod 644 /home/vagrant/keys/docker_key*
      SHELL
-     
+
+    nodejs.vm.provision "remove", type:"shell", privileged:false, run: "always", inline: <<-SHELL
+       rm -f /home/vagrant/InteractiveShell/public/users.htpasswd
+     SHELL
+    
+      if File.exists?('users.htpasswd') then 
+        nodejs.vm.provision "file", source: "./users.htpasswd", run: "always", destination: "/home/vagrant/InteractiveShell/public/users.htpasswd"
+      end
+      
      # Start server everytime machine is run.
      nodejs.vm.provision "startup_server", type:"shell", privileged:false, run: "always", inline: <<-SHELL
          source ~/.nvm/nvm.sh 

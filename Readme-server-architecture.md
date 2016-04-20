@@ -9,37 +9,26 @@ The components of the system include:
 
 * **Configuration methods**
 
-  1. **basic**.  no virtual machines at all, and no docker containers either: the node server and m2 processes are all run locally on the host.
-  2. **sudoDockers.** There is one virtual machine, and the node server runs on it, as do the docker containers for the M2 processes.
-  3. **sshDockers.** There are two virtual machines.  The node server runs on one, and all of the docker containers run
+  1. **local.**  No virtual machines at all, and no docker containers either: the node server and m2 processes are all run locally on the host.
+  2. **basic.** There is one virtual machine, and the node server runs on it, as do the docker containers for the M2 processes.
+  3. **twoMachines.** There are two virtual machines.  The node server runs on one, and all of the docker containers run
   in another.  One could imagine spreading these containers out over a number of machines, but htis is not
   yet done.
-  4. **AWS**. This is the same as **sudoDockers** but on an Amazon instance, rather than a local VM.
-
-* **Authentication**
-
-  All methods can use **startAuth,** where one has a `.htpasswd` file, and users are required to log in.
-  One interesting aspect is that you may have one user logged in from multiple machines or browsers
-  (and even have multiple people doing so), and everyone can see one person type in commands,
-  and everyone will receive the output.
-
-  The steps needed to use **startAuth:**
-
-    1.
-    2.
-    3.
+  4. **basicAWS.** This is the same as **basic** but on an Amazon instance, rather than a local VM.
 
 * **Port mappings**
 
-    1. **basic**.  The node server listens on (host) `localhost:8002`
+    1. **basic.**  The node server listens on (host) `localhost:8002`
     2. **sudoDockers.** The node server listens on (host) `localhost:8002` and communication between node and the m2 containers
     is via ssh.
     3. **sshDockers.** The node server listens  on (host) `localhost:3690` and `4998` for ssh.
     The docker machine listens for ssh traffic on `4999`.
+    4. **AWS.** The node server listens on port 8002.  To find the IP address, or machine name, use
+    the **EC2 Dashboard,** described in our readme for setting up **AWS.**
 
 * **Synced files**
 
-    1. **basic**. Everything is local here anyway, so there are no synced files (or, everything is synced!)
+    1. **basic.** Everything is local here anyway, so there are no synced files (or, everything is synced!)
     2. **sudoDockers.** The `InteractiveShell` directory is synced to `/hone/vagrant/InteractiveShell`.
     3. **sshDockers.** This copies files from the localhost, but does not share files or directories, for security.
     4. **AWS.** On Amazon, the current directory (containing the Vagrantfile) on localhost, is placed in `/vagrant`
@@ -53,14 +42,14 @@ The components of the system include:
   Here are the ways to start, stop, and what to do if one simply wants to git pull changes, and restart the server.
   In each case, we first `ssh` or `vagrant ssh` into the machine, to the `InteractiveShell` directory.
 
-  1. **basic**.
+  1. **basic.**
       * start: `npm run basic`
       * stop: control-C.
   2. **sudoDockers.**
       * start: `vagrant up`
       * stop: `vagrant halt`
       * restart: `vagrant reload`
-      * git pull: `vagrant ssh`, `cd InteractiveShell`, `git pull`, `npm install`, then `npm run forever`
+      * git pull: `vagrant ssh`, `cd InteractiveShell`, `git pull`, `npm install`, then `npm start`
   3. **sshDockers.**
       * start: `vagrant up`
       * stop: `vagrant halt`
@@ -70,7 +59,23 @@ The components of the system include:
       * start: `vagrant up`
       * stop: `vagrant halt`
       * restart: `vagrant reload`
-      * git pull: `vagrant ssh`, `cd InteractiveShell`, `git pull`, `npm install`, then `npm run forever`
+      * git pull: `vagrant ssh`, `cd InteractiveShell`, `git pull`, `npm install`, then `npm start`
+
+* **Authentication**
+
+  If there is a file named `.htpasswd` in the directory containing the Vagrantfile, then authentication
+  is enabled, and users are required to log in.
+
+  In order to change to using passwords, or to add users, modify or create the .htpasswd file,
+  and then issue `vagrant reload` (or `vagrant up`, if the machine is not yet running)
+
+  One interesting aspect is that you may have one user logged in from multiple machines or browsers
+  (and even have multiple people doing so), and everyone can see one person type in commands,
+  and everyone will receive the output.
+
+* **Accessing directories on your machine**
+
+  In the file,
 
 * **Configuration files**
 

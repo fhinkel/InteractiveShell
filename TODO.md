@@ -1,3 +1,11 @@
+2016-04-20
+* use promise-fs instead of fs (or something like this)
+* multiple file upload on one click, maybe
+* fix readme with new instructions
+* Singular layout
+* code coverage
+* better scalability (aws and other services)
+
 2016-04-18
 * Transfer changes to Singular
 * Tests! Tests! Tests!

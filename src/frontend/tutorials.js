@@ -1,12 +1,12 @@
 /* global MathJax, fetch */
 /* eslint-env browser */
-/* eslint "max-len": "off" */
 /* eslint "new-cap": "off" */
 
 var lessonNr = 0;
 var tutorialNr = 0;
 var tutorials = [];
-var firstLoadFlag = true; // true until we show tutorial for the first time. Needed because we need to load lesson 0
+var firstLoadFlag = true; // true until we show tutorial for the first time.
+// Needed because we need to load lesson 0
 var accordion = require('./accordion')();
 var $ = require('jquery');
 
@@ -99,7 +99,6 @@ var makeTutorialsList = function(tutorialNames) {
     loadLessonIfChanged(tutorialNr, lessonNr);
   }).catch(function(error) {
     console.log("Error in makeTutorialList: " + error);
-    throw error;
   });
 };
 

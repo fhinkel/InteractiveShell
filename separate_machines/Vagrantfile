@@ -34,25 +34,62 @@ Vagrant.configure(2) do |config|
      nodejs.vm.network :private_network, ip: nodejsip, virtualbox__intnet: "internal"
      nodejs.vm.hostname = "nodejs"
      nodejs.vm.box = "ubuntu/trusty64"
-     nodejs.vm.synced_folder "../", "/home/vagrant/InteractiveShell"
      nodejs.vm.synced_folder ".", "/vagrant", disabled: true
      nodejs.vm.network "forwarded_port", guest: 22, host: 4998, id: 'ssh'
      nodejs.vm.network "forwarded_port", guest: 8002, host: 3690
-     nodejs.vm.provision "shell", privileged:false, inline: <<-SHELL
-       sudo apt-get update
-       sudo apt-get upgrade -y
-       sudo apt-get install -y nodejs npm wget git
-       sudo ln -s /usr/bin/nodejs /usr/bin/node
-       sudo chown -R vagrant:vagrant /home/vagrant/InteractiveShell
-       sudo cp /home/vagrant/InteractiveShell/separate_machines/docker/sshd_config /etc/ssh/sshd_config
-       sudo chown root:root /etc/ssh/sshd_config
-       sudo chmod 600 /etc/ssh/sshd_config
-       sudo cp /home/vagrant/InteractiveShell/separate_machines/docker/ssh_config /etc/ssh/ssh_config
-       sudo chown root:root /etc/ssh/ssh_config
-       sudo chmod 644 /etc/ssh/ssh_config
-       mkdir webm2.logs
-       cd InteractiveShell
-       npm install
+
+      # Update machine.
+      nodejs.vm.provision "basic", type:"shell", privileged:true, inline: <<-SHELL
+         apt-get update && apt-get upgrade -y
+         apt-get install -y nodejs npm wget git
+         ln -s /usr/bin/nodejs /usr/bin/node
+      SHELL
+
+      # Install most recent version of node
+      nodejs.vm.provision "nvm", type:"shell", privileged:false, inline: <<-SHELL
+         curl https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
+         source ~/.nvm/nvm.sh; 
+         nvm install stable
+         nvm use stable
+         mkdir webm2.logs
+      SHELL
+
+      # Clone repo, install node modules.
+      nodejs.vm.provision "node-modules", type:"shell", privileged:false, inline: <<-SHELL
+         git clone https://github.com/fhinkel/InteractiveShell
+         cd InteractiveShell
+         npm install
+      SHELL
+
+   # Insert ssh config files.
+   nodejs.vm.provision "file", source: "./docker/sshd_config", destination: "/home/vagrant/sshd_config" 
+   nodejs.vm.provision "file", source: "./docker/ssh_config", destination: "/home/vagrant/ssh_config" 
+   nodejs.vm.provision "file", source: "./host_key", destination: "/home/vagrant/InteractiveShell/separate_machines/host_key" 
+   # nodejs.vm.provision "file", source: "./host_key.pub", destination: "/home/vagrant/InteractiveShell/separate_machines/host_key.pub" 
+   nodejs.vm.provision "file", source: "./docker_key", destination: "/home/vagrant/InteractiveShell/separate_machines/docker_key" 
+   # nodejs.vm.provision "file", source: "./docker_key.pub", destination: "/home/vagrant/InteractiveShell/separate_machines/docker_key.pub" 
+   
+    
+    # Own previously config files.
+    nodejs.vm.provision "ssh", type:"shell", privileged:true, inline: <<-SHELL
+      mv /home/vagrant/sshd_config /etc/ssh/sshd_config
+      mv /home/vagrant/ssh_config /etc/ssh/ssh_config
+       chown root:root /etc/ssh/sshd_config
+       chmod 600 /etc/ssh/sshd_config
+       chown root:root /etc/ssh/ssh_config
+       chmod 644 /etc/ssh/ssh_config
+       chown vagrant:vagrant /home/vagrant/InteractiveShell/separate_machines/host_key*
+       chmod 644 /home/vagrant/InteractiveShell/separate_machines/host_key*
+       chown vagrant:vagrant /home/vagrant/InteractiveShell/separate_machines/docker_key*
+       chmod 644 /home/vagrant/InteractiveShell/separate_machines/docker_key*
+     SHELL
+     
+     # Start server everytime machine is run.
+     nodejs.vm.provision "startup_server", type:"shell", privileged:false, run: "always", inline: <<-SHELL
+         source ~/.nvm/nvm.sh 
+         cd /home/vagrant/InteractiveShell
+         git pull --no-edit
+         npm run forever 2>&1 > ../webm2.log.txt &
      SHELL
   end
 
@@ -65,37 +102,68 @@ Vagrant.configure(2) do |config|
      end
      docker.vm.hostname = "docker"
      docker.vm.box = "ubuntu/trusty64"
-     docker.vm.synced_folder "./docker", "/home/vagrant/docker"
      docker.vm.synced_folder ".", "/vagrant", disabled: true
      docker.vm.network "forwarded_port", guest: 22, host: 4999, id: 'ssh'
      # for i in 5000..6000
      #    docker.vm.network :forwarded_port, guest: i, host: i
      # end
-     docker.vm.provision "shell", privileged:false, inline: <<-SHELL
+   
+   # Insert ssh config files.
+   docker.vm.provision "file", source: "./docker/sshd_config", destination: "/home/vagrant/sshd_config" 
+   docker.vm.provision "file", source: "./docker/ssh_config", destination: "/home/vagrant/ssh_config" 
+   docker.vm.provision "file", source: "./docker/host_key.pub", destination: "/home/vagrant/.ssh/host_key.pub"
+
+     # Own ssh config files.
+     docker.vm.provision "ssh", type:"shell", privileged:true, inline: <<-SHELL
+      cat /home/vagrant/.ssh/host_key.pub >> /home/vagrant/.ssh/authorized_keys
+      cp /home/vagrant/sshd_config /etc/ssh/sshd_config
+      cp /home/vagrant/ssh_config /etc/ssh/ssh_config
+       chown root:root /etc/ssh/sshd_config
+       chmod 600 /etc/ssh/sshd_config
+       chown root:root /etc/ssh/ssh_config
+       chmod 644 /etc/ssh/ssh_config
+       chown vagrant:vagrant /home/vagrant/.ssh/authorized_keys
+       chmod 644 /home/vagrant/.ssh/authorized_keys
+     SHELL
+     
+     docker.vm.provision "install", type:"shell", privileged:true, inline: <<-SHELL
        export DEBIAN_FRONTEND=noninteractive
-       sudo apt-get update 
-       sudo apt-get upgrade -y
-       echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
-       echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
-       sudo apt-get install -y wget iptables-persistent
+       apt-get update 
+       apt-get upgrade -y
+       echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
+       echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
+       apt-get install -y wget iptables-persistent
+     SHELL
+   
+   # Insert Dockerfile.
+   docker.vm.provision "file", source: "./docker/docker_key.pub", destination: "/home/vagrant/docker_key.pub"
+   docker.vm.provision "file", source: "./docker/Dockerfile", destination: "/home/vagrant/Dockerfile" 
+   docker.vm.provision "file", source: "./docker/open", destination: "/home/vagrant/open" 
+
+      # Install Docker and build container.
+     docker.vm.provision "docker", type:"shell", privileged:true, inline: <<-SHELL
        wget -qO- https://get.docker.com/ | sh
-       cd docker
-       cat /home/vagrant/docker/host_key.pub >> /home/vagrant/.ssh/authorized_keys
-       sudo cp /home/vagrant/docker/sshd_config /etc/ssh/sshd_config
-       sudo chown root:root /etc/ssh/sshd_config
-       sudo chmod 600 /etc/ssh/sshd_config
-       sudo cp /home/vagrant/docker/ssh_config /etc/ssh/ssh_config
-       sudo chown root:root /etc/ssh/ssh_config
-       sudo chmod 644 /etc/ssh/ssh_config
-       sudo docker build -t m2container .
-       sudo iptables -I DOCKER ! -d 192.168.2.37 -j DROP
-       sudo iptables -I DOCKER ! -s 192.168.2.37 -j DROP
-       sudo iptables -I DOCKER -d 192.168.2.37 -j ACCEPT
-       sudo iptables -I DOCKER -s 192.168.2.37 -j ACCEPT
-       sudo dpkg-reconfigure -fnoninteractive iptables-persistent
+       cd /home/vagrant
+       docker build -t m2container .
+     SHELL
+     
+     # Iptables configuration.
+     docker.vm.provision "iptables", type:"shell", privileged:true, inline: <<-SHELL
+       iptables -I DOCKER ! -d 192.168.2.37 -j DROP
+       iptables -I DOCKER ! -s 192.168.2.37 -j DROP
+       iptables -I DOCKER -d 192.168.2.37 -j ACCEPT
+       iptables -I DOCKER -s 192.168.2.37 -j ACCEPT
+       dpkg-reconfigure -fnoninteractive iptables-persistent
      SHELL
      # Last three lines need the nodejs IP from above, but this does not work
      # with verbatim mode.
+     # 
+     # Remove old docker containers on startup
+     docker.vm.provision "cleanup", type:"shell", privileged:true, run:"always", inline: <<-SHELL
+         docker ps -aq > old_containers
+         A=`cat old_containers | wc -l`
+         if [ $A -gt 0 ]; then docker rm -f $(docker ps -aq); fi 
+     SHELL
   end 
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at

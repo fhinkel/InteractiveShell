@@ -1,5 +1,3 @@
-GLOBAL.OPTIONS = require('./default.js').getConfig();
+GLOBAL.OPTIONS = require('./startup.js')();
 
-var Macaulay2Server = require('../lib/index.js').mathServer();
-Macaulay2Server.listen();
 

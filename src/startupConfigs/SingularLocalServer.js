@@ -1,4 +1,4 @@
-GLOBAL.OPTIONS = require('./default.js').getConfig({
+require('./startup.js')({
   serverConfig: {
     port: 8002,
     MATH_PROGRAM: 'Singular',
@@ -7,7 +7,3 @@ GLOBAL.OPTIONS = require('./default.js').getConfig({
   }
 });
 
-console.log(GLOBAL.OPTIONS);
-
-var SingularServer = require('../lib/index.js').mathServer();
-SingularServer.listen();

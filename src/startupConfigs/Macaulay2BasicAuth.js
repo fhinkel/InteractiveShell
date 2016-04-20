@@ -1,4 +1,4 @@
-GLOBAL.OPTIONS = require('./default.js').getConfig({
+GLOBAL.OPTIONS = require('./startup.js').getConfig({
   authentification: "basic",
   serverConfig: {
     port: 8002,
@@ -8,7 +8,3 @@ GLOBAL.OPTIONS = require('./default.js').getConfig({
   }
 });
 
-console.log(GLOBAL.OPTIONS);
-
-var Macaulay2Server = require('../lib/index.js').mathServer();
-Macaulay2Server.listen();

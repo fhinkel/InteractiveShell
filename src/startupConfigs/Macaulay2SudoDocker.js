@@ -1,4 +1,4 @@
-GLOBAL.OPTIONS = require('./default.js').getConfig({
+require('./startup.js')({
   serverConfig: {
     port: 8002,
     MATH_PROGRAM_COMMAND: 'export WWWBROWSER=/usr/bin/open; ' +
@@ -8,7 +8,3 @@ GLOBAL.OPTIONS = require('./default.js').getConfig({
   }
 });
 
-console.log(GLOBAL.OPTIONS);
-
-var Macaulay2Server = require('../lib/index.js').mathServer();
-Macaulay2Server.listen();

@@ -1,6 +1,0 @@
-#echo $1
-#echo "My PID" 
-#echo $$
-#echo "parent PID" 
-#echo $PPID
-echo ">>SPECIAL_EVENT_START>>$1<<SPECIAL_EVENT_END<<";

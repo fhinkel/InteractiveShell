@@ -4,7 +4,7 @@ all:
 withssh: 
 	rm -f id_rsa*
 	ssh-keygen -b 1024 -f id_rsa -P ''
-	docker build -t "ssh-macaulay2-1.8.2-0" -f Dockerfile-with-ssh-key .
+	docker build -t "ssh-macaulay2-1.8.2-0" -f ../Dockerfile .
 
 run:
 	docker run -i -t -u m2user -w /home/m2user -v /Users/mike/:/home/m2user/files:ro \

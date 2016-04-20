@@ -11,11 +11,18 @@
 # https://github.com/mitchellh/vagrant-aws
 #
 
+ACCESS_KEY_ID = "ACCESS_KEY_ID" # taken from ...
+SECRET_ACCESS_KEY = "SECRET_ACCESS_KEY"
+KEYPAIR_NAME = "KEYPAIR_NAME"
+PRIVATE_KEY_PATH = "PRIVATE_KEY_PATH.pem"
+AMI = "ami-d05e75b8"
+INSTANCE_TYPE = "t2.micro"
+AWS_REGION = "us-east-1" # not e.g. "us-east-1d" (i.e. leave out 'd')
+
 # Settings:
 mathProgram = "M2"
 npmCmd = "npm start"
 logfilePath = "/home/vagrant/web" + mathProgram + ".log"
-
 Vagrant.configure(2) do |config|
   
   # Use a dummy box, since aws-provider will just copy an already existing AMI.
@@ -35,22 +42,22 @@ Vagrant.configure(2) do |config|
   
   config.vm.provider :aws do |aws, override|
     # This are your AWS credentials from the page:
-    aws.access_key_id = "ACCESS_KEY_ID"
-    aws.secret_access_key = "SECRET_ACCESS_KEY"
+    aws.access_key_id = ACCESS_KEY_ID
+    aws.secret_access_key = SECRET_ACCESS_KEY
     
     # Create this on the aws page. The file you download goes into the second
     # entry. The keypair name is the name you enter when generating the key,
     # the path is the location of the file you download when generating the
     # key.
-    aws.keypair_name = "KEYPAIR_NAME"
-    override.ssh.private_key_path = "PRIVATE_KEY_PATH"
+    aws.keypair_name = KEYPAIR_NAME
+    override.ssh.private_key_path = PRIVATE_KEY_PATH
 
     # Find these on the AWS page, using the 'launch instance' dialogue.
-    aws.ami = "ami-d05e75b8"
-    aws.instance_type = "t2.micro"
+    aws.ami = AMI
+    aws.instance_type = INSTANCE_TYPE
 
     # Region on the AWS page at upper right.
-    aws.region = "us-east-1"
+    aws.region = AWS_REGION
 
     # Default username for ubuntu machine.
     override.ssh.username = "ubuntu"

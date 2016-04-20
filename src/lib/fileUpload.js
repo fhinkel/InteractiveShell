@@ -15,7 +15,7 @@ var completeFileUpload = function(client, sshCredentials) {
           console.log("There was an error while connecting via sftp: " + err);
         }
         var stream = sftp.createWriteStream(event.file.name);
-        stream.write(client.fileUploadBuffer.toString());
+        stream.write(client.fileUploadBuffer);
         stream.end(function() {
           connection.end();
         });
@@ -39,11 +39,12 @@ module.exports = function(logExceptOnTest, sshCredentials) {
 
       uploader.on("start", function(event) {
         client.fileUploadBuffer = "";
-        logExceptOnTest('File upload ' + event.file.name);
+        logExceptOnTest('File upload name:' + event.file.name);
+        logExceptOnTest('File upload encoding: ' + event.file.encoding);
       });
 
       uploader.on("progress", function(event) {
-        client.fileUploadBuffer += event.buffer;
+        client.fileUploadBuffer = event.buffer;
       });
 
       uploader.on("complete", completeFileUpload(client, sshCredentials));

@@ -5,18 +5,12 @@
 # The node server will use below keys to access the single docker containers.
 if not File.exists?('docker_key') then 
    system("ssh-keygen -b 4096 -f docker_key -P ''") 
-   system("cp docker_key.pub docker/")   
 end
 # The node server will use below keys to access the machine with the docker
 # containers, where it then creates and destroys docker containers.
 if not File.exists?('host_key') then
    system("ssh-keygen -b 4096 -f host_key -P ''") 
-   system("cp host_key.pub docker/")   
 end
-
-# Always copy open script, might have changed in git. Symlink will not do with
-# mounted dirs.
-system("cp `which ../open` docker/open")
 
 # Be careful to choose IPs that do not interfere with the eth0 IPs.
 nodejsip = '192.168.2.37'
@@ -46,6 +40,7 @@ Vagrant.configure(2) do |config|
          apt-get update && apt-get upgrade -y
          apt-get install -y nodejs npm wget git
          ln -s /usr/bin/nodejs /usr/bin/node
+         sudo -u vagrant mkdir /home/vagrant/keys
       SHELL
 
       # Install most recent version of node
@@ -65,26 +60,24 @@ Vagrant.configure(2) do |config|
       SHELL
 
    # Insert ssh config files.
-   nodejs.vm.provision "file", source: "./docker/sshd_config", destination: "/home/vagrant/sshd_config" 
-   nodejs.vm.provision "file", source: "./docker/ssh_config", destination: "/home/vagrant/ssh_config" 
-   nodejs.vm.provision "file", source: "./host_key", destination: "/home/vagrant/InteractiveShell/separate_machines/host_key" 
+   nodejs.vm.provision "file", source: "./host_key", destination: "/home/vagrant/keys/host_key" 
    # nodejs.vm.provision "file", source: "./host_key.pub", destination: "/home/vagrant/InteractiveShell/separate_machines/host_key.pub" 
-   nodejs.vm.provision "file", source: "./docker_key", destination: "/home/vagrant/InteractiveShell/separate_machines/docker_key" 
+   nodejs.vm.provision "file", source: "./docker_key", destination: "/home/vagrant/keys/docker_key" 
    # nodejs.vm.provision "file", source: "./docker_key.pub", destination: "/home/vagrant/InteractiveShell/separate_machines/docker_key.pub" 
    
     
     # Own previously config files.
     nodejs.vm.provision "ssh", type:"shell", privileged:true, inline: <<-SHELL
-      mv /home/vagrant/sshd_config /etc/ssh/sshd_config
-      mv /home/vagrant/ssh_config /etc/ssh/ssh_config
+      cp /home/vagrant/InteractiveShell/unix-files/sshd_config /etc/ssh/sshd_config
+      cp /home/vagrant/InteractiveShell/unix-files/ssh_config /etc/ssh/ssh_config
        chown root:root /etc/ssh/sshd_config
        chmod 600 /etc/ssh/sshd_config
        chown root:root /etc/ssh/ssh_config
        chmod 644 /etc/ssh/ssh_config
-       chown vagrant:vagrant /home/vagrant/InteractiveShell/separate_machines/host_key*
-       chmod 644 /home/vagrant/InteractiveShell/separate_machines/host_key*
-       chown vagrant:vagrant /home/vagrant/InteractiveShell/separate_machines/docker_key*
-       chmod 644 /home/vagrant/InteractiveShell/separate_machines/docker_key*
+       chown vagrant:vagrant /home/vagrant/keys/host_key*
+       chmod 644 /home/vagrant/keys/host_key*
+       chown vagrant:vagrant /home/vagrant/keys/docker_key*
+       chmod 644 /home/vagrant/keys/docker_key*
      SHELL
      
      # Start server everytime machine is run.
@@ -92,7 +85,7 @@ Vagrant.configure(2) do |config|
          source ~/.nvm/nvm.sh 
          cd /home/vagrant/InteractiveShell
          git pull --no-edit
-         npm run forever 2>&1 > ../webm2.log.txt &
+         npm run twoMachines_forever 2>&1 > ../webm2.log.txt &
      SHELL
   end
 
@@ -112,9 +105,9 @@ Vagrant.configure(2) do |config|
      # end
    
    # Insert ssh config files.
-   docker.vm.provision "file", source: "./docker/sshd_config", destination: "/home/vagrant/sshd_config" 
-   docker.vm.provision "file", source: "./docker/ssh_config", destination: "/home/vagrant/ssh_config" 
-   docker.vm.provision "file", source: "./docker/host_key.pub", destination: "/home/vagrant/.ssh/host_key.pub"
+   docker.vm.provision "file", source: "../../unix-files/sshd_config", destination: "/home/vagrant/sshd_config" 
+   docker.vm.provision "file", source: "../../unix-files/ssh_config", destination: "/home/vagrant/ssh_config" 
+   docker.vm.provision "file", source: "./host_key.pub", destination: "/home/vagrant/.ssh/host_key.pub"
 
      # Own ssh config files.
      docker.vm.provision "ssh", type:"shell", privileged:true, inline: <<-SHELL
@@ -139,9 +132,9 @@ Vagrant.configure(2) do |config|
      SHELL
    
    # Insert Dockerfile.
-   docker.vm.provision "file", source: "./docker/docker_key.pub", destination: "/home/vagrant/docker_key.pub"
-   docker.vm.provision "file", source: "./docker/Dockerfile", destination: "/home/vagrant/Dockerfile" 
-   docker.vm.provision "file", source: "./docker/open", destination: "/home/vagrant/open" 
+   docker.vm.provision "file", source: "./docker_key.pub", destination: "/home/vagrant/docker_key.pub"
+   docker.vm.provision "file", source: "./Dockerfile", destination: "/home/vagrant/Dockerfile" 
+   docker.vm.provision "file", source: "../../unix-files/open", destination: "/home/vagrant/open" 
 
       # Install Docker and build container.
      docker.vm.provision "docker", type:"shell", privileged:true, inline: <<-SHELL

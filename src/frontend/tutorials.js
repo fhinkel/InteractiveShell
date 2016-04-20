@@ -26,8 +26,6 @@ var loadLesson = function(tutorialid, lessonid) {
 };
 
 var loadLessonIfChanged = function(tutorialid, lessonid) {
-  console.log(tutorialNr + "==" + tutorialid + " or " + lessonNr + "==" +
-      lessonid);
   var changedLesson = (tutorialNr !== tutorialid || lessonNr !==
   lessonid || firstLoadFlag);
   firstLoadFlag = false;
@@ -84,7 +82,6 @@ var makeTutorialsList = function(i, tutorialNames) {
       return response.text();
     }).then(function(tutorial) {
       tutorials[i] = populateTutorialElement(tutorial);
-      console.log("Making tutorial: " + tutorials[i].title);
       makeTutorialsList(i + 1, tutorialNames);
     }).catch(function(error) {
       console.log("Error loading tutorial: " + error);

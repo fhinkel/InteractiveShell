@@ -11,7 +11,10 @@ commutative algebra, whose creation and development have been funded by the Nati
 Interactive Shell has been used in courses at Cornell University, Harvard University, Georgia Tech,
 and Free University of Berlin.
 
-**[See Interactive Shell in action](http://web.macaulay2.com)**.
+##See Interactive Shell in action
+[http://web.macaulay2.com](http://web.macaulay2.com)
+
+[https://www.singular.uni-kl.de:8003/](https://www.singular.uni-kl.de:8003/)
 
 ![Web App Screenshot](https://raw.githubusercontent.com/fhinkel/InteractiveShell/master/Readme/WebAppScreenshot-low.jpg "Interactive Shell with Macaulay2 running at http://web.macaulay2.com")
 

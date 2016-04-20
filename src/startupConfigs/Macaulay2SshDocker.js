@@ -7,7 +7,7 @@ GLOBAL.OPTIONS = require('./default.js').getConfig({
     'M2 --print-width 100',
     CONTAINERS: '../lib/sshDockerContainers.js'
   },
-  guestInstance: {
+  startInstance: {
     host: '192.168.2.42',
     username: 'm2user',
     port: '5000',

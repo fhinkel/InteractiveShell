@@ -96,7 +96,14 @@ Vagrant.configure(2) do |config|
     sudo docker build -t m2container .
   SHELL
 
-
+  config.vm.provision "remove", type:"shell", privileged:false, run: "always", inline: <<-SHELL
+       rm -f /home/vagrant/InteractiveShell/public/users.htpasswd
+     SHELL
+    
+      if File.exists?('users.htpasswd') then 
+        config.vm.provision "file", source: "./users.htpasswd", run: "always", destination: "/home/vagrant/InteractiveShell/public/users.htpasswd"
+      end
+  
   # config.vm.provision "cron", type:"shell", privileged:false do |cron|
   #     cron.inline = "echo \"" + cronString + "\" > tmpcron; crontab tmpcron; rm tmpcron"
   # end

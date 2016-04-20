@@ -23,6 +23,7 @@ AWS_REGION = "us-east-1" # not e.g. "us-east-1d" (i.e. leave out 'd')
 mathProgram = "M2"
 npmCmd = "npm start"
 logfilePath = "/home/vagrant/web" + mathProgram + ".log"
+
 Vagrant.configure(2) do |config|
   
   # Use a dummy box, since aws-provider will just copy an already existing AMI.

@@ -1,5 +1,5 @@
-GLOBAL.OPTIONS = require('./startup.js').getConfig({
-  authentification: "basic",
+require('./startup.js')({
+  authentication: "basic",
   serverConfig: {
     port: 8002,
     MATH_PROGRAM_COMMAND: 'export WWWBROWSER=/usr/bin/open; ' +

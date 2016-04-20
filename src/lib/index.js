@@ -433,7 +433,7 @@ var MathServer = function() {
     throw new Error("No CONTAINERS!");
   }
 
-  getClientIdFromSocket = authorizeIfNecessary(OPTIONS.authentification);
+  getClientIdFromSocket = authorizeIfNecessary(OPTIONS.authentication);
 
   instanceManager = require(options.CONTAINERS).manager();
 

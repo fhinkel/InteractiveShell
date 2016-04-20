@@ -2,7 +2,7 @@
 var configuration = function(overrideOptions) {
   var options = {
     cookieName: "tryM2",
-    authentification: "none",
+    authentication: "none",
     serverConfig: {
       CONTAINERS: '../lib/LocalContainerManager.js',
       MATH_PROGRAM: "Macaulay2",
@@ -38,6 +38,12 @@ var configuration = function(overrideOptions) {
     }
   };
 
+    var checkForAuth = function() {
+        if (File.exists("../../public/users.htpasswd")) {
+            console.log("Found authentication file");
+        }
+    };
+    
   var overrideDefaultOptions = function(overrideOptions, defaultOptions) {
     for (var opt in overrideOptions) {
       if (defaultOptions.hasOwnProperty(opt)) {
@@ -52,8 +58,8 @@ var configuration = function(overrideOptions) {
     }
   };
 
+  checkForAuth();
   overrideDefaultOptions(overrideOptions, options);
-
   return options;
 };
 

@@ -84,7 +84,7 @@ The components of the system include:
 
   Todo (**basic**): allow shared folder to be accessible (either read only or read/write) from inside M2 containers.
 
-  Todo (**basic,** **basicAWS,*** and **twoMachines**): allow files to be copied to the m2 container each time one is
+  Todo (**basic,** **basicAWS,** and **twoMachines**): allow files to be copied to the m2 container each time one is
   started.
 
 * **Configuration files**
@@ -97,20 +97,12 @@ The components of the system include:
 Notes:
 
 * The communication (1) <--> (2) is done using socketio.
-* The node web server is generally running inside a virtual machine created by vagrant.
-  and the m2 docker containers re created in this same virtual machine.  If you use
-  the separate_machines vagrant image, then **two** virtual machines are created:
-  one for the node server, and one for all of the m2 containers.
 * communication (2) <--> (3) is generally done via ssh.
 * if the M2 process tries to "open" a file (which happens for help pages,
     displaying graphics and other files), then the m2 docker container
     issues a request to the nodejs server, which handles sending this data back to the front end.
-
 * Duties of the nodejs server
   * a simple http server.
-
-    Serves the following things.
-      *
   * Sets up SocketIO connection with the front end, collects and verifies
     cookie and authorization information.
   * Manages the set of clients, i.e. the set of users currently connected.

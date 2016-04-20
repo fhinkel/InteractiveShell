@@ -2,10 +2,13 @@
 # vi: set ft=ruby :
 
 # Generate keys and copy public keys for docker machine to find.
+# The node server will use below keys to access the single docker containers.
 if not File.exists?('docker_key') then 
    system("ssh-keygen -b 4096 -f docker_key -P ''") 
    system("cp docker_key.pub docker/")   
 end
+# The node server will use below keys to access the machine with the docker
+# containers, where it then creates and destroys docker containers.
 if not File.exists?('host_key') then
    system("ssh-keygen -b 4096 -f host_key -P ''") 
    system("cp host_key.pub docker/")   

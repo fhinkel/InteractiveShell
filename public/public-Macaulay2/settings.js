@@ -15,6 +15,10 @@ var DefaultText = "" +
     "-- If nothing shows up, you may need to set your browser \n" +
     "-- to allow pop up windows.\n" +
     "\n" +
+    "-- To set the print width of the Macaulay2 output window:\n" +
+    "printWidth = 150\n" +
+    "-- (value of 0 means essentially infinite)\n" +
+    "\n" +
     "-- Here are some sample commands:\n" +
     "  R = ZZ/101[a,b,c,d]\n" +
     "  I = ideal(a^2-b*c, a^3-b^3, a^4-b*d^3, a^5-c^2*d^3)\n" +

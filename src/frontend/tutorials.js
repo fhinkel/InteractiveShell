@@ -1,4 +1,4 @@
-/* global MathJax */
+/* global MathJax, fetch */
 /* eslint-env browser */
 /* eslint "max-len": "off" */
 /* eslint "new-cap": "off" */
@@ -77,10 +77,17 @@ var populateTutorialElement = function(theHtml) {
 
 var makeTutorialsList = function(i, tutorialNames) {
   if (i < tutorialNames.length) {
-    $.get(tutorialNames[i], function(resultHtml) {
-      tutorials[i] = populateTutorialElement(resultHtml);
-      console.log(tutorials[i].title);
+    console.log('Fetching ' + tutorialNames[i]);
+    fetch('/' + tutorialNames[i], {
+      credentials: 'same-origin'
+    }).then(function(response) {
+      return response.text();
+    }).then(function(tutorial) {
+      tutorials[i] = populateTutorialElement(tutorial);
+      console.log("Making tutorial: " + tutorials[i].title);
       makeTutorialsList(i + 1, tutorialNames);
+    }).catch(function(error) {
+      console.log("Error loading tutorial: " + error);
     });
   } else {
     accordion.makeAccordion(tutorials);

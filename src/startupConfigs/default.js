@@ -38,12 +38,6 @@ var configuration = function(overrideOptions) {
     }
   };
 
-    var checkForAuth = function() {
-        if (File.exists("../../public/users.htpasswd")) {
-            console.log("Found authentication file");
-        }
-    };
-    
   var overrideDefaultOptions = function(overrideOptions, defaultOptions) {
     for (var opt in overrideOptions) {
       if (defaultOptions.hasOwnProperty(opt)) {
@@ -58,7 +52,6 @@ var configuration = function(overrideOptions) {
     }
   };
 
-  checkForAuth();
   overrideDefaultOptions(overrideOptions, options);
   return options;
 };

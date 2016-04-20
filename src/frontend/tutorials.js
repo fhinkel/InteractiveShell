@@ -78,7 +78,7 @@ var populateTutorialElement = function(theHtml) {
 var makeTutorialsList = function(i, tutorialNames) {
   if (i < tutorialNames.length) {
     console.log('Fetching ' + tutorialNames[i]);
-    fetch('/' + tutorialNames[i], {
+    fetch(tutorialNames[i], {
       credentials: 'same-origin'
     }).then(function(response) {
       return response.text();

@@ -1,3 +1,4 @@
+/* global fetch */
 var $ = require('jquery');
 
 var cssClasses = {
@@ -43,7 +44,7 @@ var scrollDownUntilTutorialVisible = function() {
 var appendTutorialToAccordion = function(tmptitle, lessons, index) {
   var title = tmptitle.clone();
   title.wrapInner("<a href='#' class='" + cssClasses.titleHref +
-      "' tutorialid=" + index + "/>")
+          "' tutorialid=" + index + "/>")
       .addClass(cssClasses.title)
       .prepend(
           '<i class="' + cssClasses.titleSymbolClass + '">' +
@@ -96,8 +97,15 @@ var appendLoadTutorialTitleToAccordion = function() {
 
 var appendInstructionsToAccordion = function() {
   var instructions = $("<div>");
-  $.get("uploadTutorialHelp.txt", function(content) {
+
+  fetch("uploadTutorialHelp.txt", {
+    credentials: 'same-origin'
+  }).then(function(response) {
+    return response.text();
+  }).then(function(content) {
     instructions.append(content);
+  }).catch(function(error) {
+    console.log("loading /uploadTutorialHelp.txt failed: " + error);
   });
   instructions.prop("id", "loadTutorialInstructions");
   instructions.addClass(

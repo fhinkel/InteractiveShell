@@ -1,4 +1,5 @@
-var mathProgramName = "Singular"
+var imageNo = Math.floor(24 * Math.random());
+var mathProgramName = "Singular";
 var DefaultText = "" +
     "   /**\n" +
     "    * Welcome to Singular online!\n" +
@@ -20,4 +21,14 @@ var DefaultText = "" +
     "  ring R = (0,t),(x,y,z),dp; // QQ(t)[x,y,z]\n" +
     "  ring C = (0,i),(x,y,z),dp; minpoly = i2+1;\n"
     "  /******************************************/\n";
+
+document.addEventListener('DOMContentLoaded', function() {
+    var fpis = document.getElementsByClassName("frontPageImage");
+    for(var key in fpis){
+        var fpi = fpis[key];
+        if(typeof fpi === "object"){
+            fpi.setAttribute("src", "/images/fpi" + imageNo + ".jpg");
+        }
+    }
+}, false);
 

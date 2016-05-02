@@ -4,6 +4,9 @@ require('./startup.js')({
     MATH_PROGRAM: 'Singular',
     MATH_PROGRAM_COMMAND: 'Singular',
     CONTAINERS: '../lib/sudoDockerContainers.js'
+    resumeString: 'Type \'listvar();\' to print the list of ' +
+    'existing variables.\n' +
+    'Type \'basering;\' to print the currently active ring.\n> '
   },
   containerConfig: {
     containerType: "singular_container"

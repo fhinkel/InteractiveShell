@@ -1,1 +1,2 @@
-<p>Lorem Ipsum</p>
+<p>You can load your own tutorial to use it on this website by clicking the caption of this tutorial. Your tutorial is
+only available to you and is not sent to the server. </p>

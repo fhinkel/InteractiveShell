@@ -1,4 +1,4 @@
-require('./default.js')({
+require('./startup.js')({
   serverConfig: {
     port: 8002,
     MATH_PROGRAM: 'Singular',
@@ -10,7 +10,7 @@ require('./default.js')({
   },
   startInstance: {
     host: '127.0.0.1',
-    sshKey: '/home/vagrant/InteractiveShell/Vagrant_singular/id_rsa',
+    sshKey: '/home/vagrant/InteractiveShell/setups/Singular/id_rsa',
     username: 'singularUser'
   }
 });

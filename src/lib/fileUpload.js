@@ -44,7 +44,7 @@ module.exports = function(logExceptOnTest, sshCredentials) {
       });
 
       uploader.on("progress", function(event) {
-        client.fileUploadBuffer = event.buffer;
+        client.fileUploadBuffer += event.buffer;
       });
 
       uploader.on("complete", completeFileUpload(client, sshCredentials));

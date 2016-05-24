@@ -2,7 +2,7 @@ FROM lkastner/m2container:1.9
 MAINTAINER InteractiveShell Team <trym2@googlegroups.com>
 
 ##### M2 userland
-# RUN mkdir /home/m2user/.ssh
+RUN mkdir /home/m2user/.ssh
 COPY unix-files/ssh_config /etc/ssh/ssh_config
 COPY unix-files/sshd_config /etc/ssh/sshd_config
 RUN chown root:root /etc/ssh/ssh_config

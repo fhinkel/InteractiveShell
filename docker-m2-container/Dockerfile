@@ -2,21 +2,23 @@
 #
 # VERSION               0.0.3
 
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 MAINTAINER InteractiveShell Team <trym2@googlegroups.com>
 
 # For ssh server and up-to-date ubuntu.
 RUN apt-get update && apt-get install -yq openssh-server wget emacs
-RUN apt-get upgrade -y
+RUN apt-get upgrade -yq libglpk36
 
 # Installing M2
-RUN echo "deb http://www.math.uiuc.edu/Macaulay2/Repositories/Ubuntu trusty main" >> /etc/apt/sources.list
+# First the 4ti2 dependency
+RUN apt-get install -yq 
+RUN echo "deb http://www.math.uiuc.edu/Macaulay2/Repositories/Ubuntu xenial main" >> /etc/apt/sources.list
 RUN wget http://www.math.uiuc.edu/Macaulay2/PublicKeys/Macaulay2-key
 RUN apt-key add Macaulay2-key
 RUN apt-get update && apt-get install -y macaulay2
 
 # RUN apt-get install -y polymake    ## too long and big
-RUN apt-get install -y graphviz
+RUN apt-get install -yq graphviz
 
 # M2 userland, part 1.    
 RUN useradd -m -d /home/m2user m2user

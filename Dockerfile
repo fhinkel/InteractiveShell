@@ -1,4 +1,4 @@
-FROM mikestillman/test-macaulay2-1.8.2-0
+FROM lkastner/m2container:1.9
 MAINTAINER InteractiveShell Team <trym2@googlegroups.com>
 
 ##### M2 userland

@@ -72,7 +72,7 @@ and that you have downloaded the **Vagrantfile_aws** mentioned above.
   * You need to set aws.region depending on the information
   visible on the **EC2 Dashboard** page.  For instance, I have
   `aws.region = "us-east-1"`.
-  * Optional: once you understand something about AWS, you might
+  * Optional, if your region is "us-east-1": once you understand something about AWS, you might
   want to change the value of `aws.ami` and/or `aws.instance_type`
   * Save this file.
 

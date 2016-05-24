@@ -67,7 +67,7 @@ Vagrant from within [Git BASH](https://msysgit.github.io/). Do the following ins
 
 ```bash
 git clone https://github.com/fhinkel/InteractiveShell.git
-cd InteractiveShell
+cd InteractiveShell/setups/basic
 vagrant up
 vagrant ssh
 cd InteractiveShell

@@ -75,6 +75,12 @@ npm install
 npm start
 ```
 
+If vagrant cannot mount due to a vboxfs not found error, do
+
+```bash
+vagrant plugin install vagrant-vbguest
+```
+
 The web app is running at [http://localhost:8002](http://localhost:8002). Every Macaulay2 instance runs in a
 separate Docker container with limited resources and does not have access to your
 filesystem. Users can only access files inside their

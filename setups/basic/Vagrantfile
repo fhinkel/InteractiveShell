@@ -113,9 +113,10 @@ Vagrant.configure(2) do |config|
   # end
 
   config.vm.provision "startup_server", type:"shell", privileged:false, run: "always", inline: <<-SHELL
-       source ~/.nvm/nvm.sh 
-      cd InteractiveShell
-      npm start 2>&1 > ../webm2.log &
+      source ~/.nvm/nvm.sh 
+      cd /home/vagrant/InteractiveShell
+      (npm start 2>&1 > ../webm2.log) &
+      sleep 10
   SHELL
 
 end

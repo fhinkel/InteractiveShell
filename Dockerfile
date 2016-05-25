@@ -36,3 +36,4 @@ EXPOSE 22
 
 COPY id_rsa.pub /home/m2user/.ssh/authorized_keys
 RUN chmod 644 /home/m2user/.ssh/authorized_keys
+RUN mkdir /var/run/sshd

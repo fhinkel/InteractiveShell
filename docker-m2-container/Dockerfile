@@ -9,9 +9,10 @@ MAINTAINER InteractiveShell Team <trym2@googlegroups.com>
 RUN apt-get update && apt-get install -yq openssh-server wget emacs
 RUN apt-get upgrade -yq libglpk36
 
+# gfan
+RUN apt-get install -yq gfan
+
 # Installing M2
-# First the 4ti2 dependency
-RUN apt-get install -yq 
 RUN echo "deb http://www.math.uiuc.edu/Macaulay2/Repositories/Ubuntu xenial main" >> /etc/apt/sources.list
 RUN wget http://www.math.uiuc.edu/Macaulay2/PublicKeys/Macaulay2-key
 RUN apt-key add Macaulay2-key
@@ -31,9 +32,12 @@ ENV PHC_VERSION 24
 RUN (cd /custom; wget http://www.math.uic.edu/~jan/x86_64phcv${PHC_VERSION}p.tar.gz)
 RUN (cd /custom; tar zxf x86_64phcv23p.tar.gz; mv phc /usr/bin; rm x86_64phcv${PHC_VERSION}p.tar.gz)
 # This is the only way extracting Bertini gives the right permissions.
+ENV BERTINI_VERSION 1.5.1
 RUN su m2user -c "/bin/bash;\
    cd /custom;\
-   wget https://bertini.nd.edu/BertiniLinux64_v1.5.tar.gz;\ 
-   tar xzf BertiniLinux64_v1.5.tar.gz;"
-RUN ln -s /custom/BertiniLinux64_v1.5/bin/bertini /usr/bin/
+   wget https://bertini.nd.edu/BertiniLinux64_v${BERTINI_VERSION}.tar.gz;\ 
+   tar xzf BertiniLinux64_v${BERTINI_VERSION}.tar.gz;"
+RUN ln -s /custom/BertiniLinux64_v${BERTINI_VERSION}/bin/bertini /usr/bin/
+
+
 

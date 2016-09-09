@@ -1,4 +1,4 @@
-FROM lkastner/m2container:1.9
+FROM lkastner/m2container:1.9.2
 MAINTAINER InteractiveShell Team <trym2@googlegroups.com>
 
 ##### M2 userland
@@ -12,9 +12,6 @@ RUN chmod 600 /etc/ssh/sshd_config
 RUN chown -R m2user:m2user /home/m2user/.ssh
 RUN chmod 700 /home/m2user/.ssh
 RUN sed -i 's/m2user:!/m2user:*/' /etc/shadow
-
-# Fix for 4ti2 bug
-RUN apt-get install -yq libglpk36
 
 # copy open
 COPY unix-files/open /usr/bin/open

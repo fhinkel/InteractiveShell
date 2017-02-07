@@ -15,6 +15,7 @@ require('./startup.js')({
     host: '127.0.0.1',
     sshKey: '/home/vagrant/InteractiveShell/setups/Singular/id_rsa',
     username: 'singularUser'
-  }
+  },
+  help: require('./HelpSingular.js').help()
 });
 

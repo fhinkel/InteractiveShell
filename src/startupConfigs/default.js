@@ -35,7 +35,8 @@ var configuration = function(overrideOptions) {
       username: 'vagrant',
       port: '22',
       sshKey: "/home/vagrant/keys/host_key"
-    }
+    },
+    help: require('./HelpMacaulay2.js').help()
   };
 
   var overrideDefaultOptions = function(overrideOptions, defaultOptions) {

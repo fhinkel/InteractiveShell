@@ -19,8 +19,8 @@ module.exports = function(overrideOptions) {
       }
     })
     .then(function() {
-      GLOBAL.OPTIONS = require('./default.js').getConfig(overrideOptions);
-      console.log(GLOBAL.OPTIONS);
+      global.OPTIONS = require('./default.js').getConfig(overrideOptions);
+      console.log(global.OPTIONS);
       var Macaulay2Server = require('../lib/index.js').mathServer();
       Macaulay2Server.listen();
     })

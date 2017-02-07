@@ -1,1 +1,1 @@
-GLOBAL.OPTIONS = require('./startup.js')({});
+global.OPTIONS = require('./startup.js')({});

@@ -26,6 +26,7 @@ require('./startup.js')({
     sshKey: "/home/user/InteractiveShell/Vagrant_singular/id_rsa",
     containerName: 'singularContainer',
     lastActiveTime: 0
-  }
+  },
+  help: require('./HelpSingular.js').help()
 });
 

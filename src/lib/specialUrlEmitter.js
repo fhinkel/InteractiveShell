@@ -74,26 +74,9 @@ var emitUrlForUserGeneratedFileToClient = function(client,
   sshConnection.connect(sshCredentials(client.instance));
 };
 
-var emitHelpUrlToClient = function(client,
-                                    viewHelp,
-                                    logFunction,
-                                    emitDataViaSockets) {
-  logFunction("Look at " + viewHelp);
-  var helpPath = viewHelp.match(/(\/Macaulay2Doc.*)$/);
-  if (helpPath) {
-    helpPath = helpPath[0];
-  } else {
-    return;
-  }
-  helpPath = "http://www.math.uiuc.edu/Macaulay2/doc/Macaulay2-1.7/" +
-      "share/doc/Macaulay2" + helpPath;
-  logFunction(helpPath);
-  emitDataViaSockets(client.socketArray, "viewHelp", helpPath);
-};
+var emitHelpUrlToClient = OPTIONS.help.emitHelpUrlToClient;
+var isViewHelpEvent = OPTIONS.help.isViewHelpEvent;
 
-var isViewHelpEvent = function(eventData) {
-  return eventData.match(/^file:.*/) !== null;
-};
 
 module.exports = function(pathPrefix,
                           sshCredentials,

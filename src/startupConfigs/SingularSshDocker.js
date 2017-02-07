@@ -1,18 +1,17 @@
 require('./startup.js')({
     hostConfig: {
         dockerRunCmd: '',
-        minContainerAge: 3600,
         maxContainerNumber: 10,
-        containerType: 'singular_container_power',
+        containerType: 'singular_container',
         sshdCmd: "/usr/sbin/sshd -D",
         host: 'localhost',
-        username: 'power',
+        username: 'user',
         port: '22',
-        sshKey: "/home/power/.ssh/id_rsa",
+        sshKey: "/home/user/.ssh/id_rsa",
         dockerCmdPrefix: ""
     },
     serverConfig: {
-        port: 1337,
+        port: 8002,
     MATH_PROGRAM: 'Singular',
     MATH_PROGRAM_COMMAND: 'Singular',
     CONTAINERS: '../lib/sshDockerContainers.js',
@@ -20,15 +19,11 @@ require('./startup.js')({
     'existing variables.\n' +
     'Type \'basering;\' to print the currently active ring.\n> '
   },
-	per_container_resources: {
-	    cpuShares: 4,
-	    memory: 2048
-	},
   startInstance: {
     host: 'localhost',
     username: 'singularUser',
-    port: '16000',
-    sshKey: "/home/power/InteractiveShell/Vagrant_singular/id_rsa",
+    port: '5000',
+    sshKey: "/home/user/InteractiveShell/Vagrant_singular/id_rsa",
     containerName: 'singularContainer',
     lastActiveTime: 0
   },

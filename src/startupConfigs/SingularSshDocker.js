@@ -19,7 +19,7 @@ require('./startup.js')({
     'existing variables.\n' +
     'Type \'basering;\' to print the currently active ring.\n> '
   },
-  guestInstance: {
+  startInstance: {
     host: 'localhost',
     username: 'singularUser',
     port: '5000',

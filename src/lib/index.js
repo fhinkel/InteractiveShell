@@ -377,6 +377,7 @@ var listen = function() {
     console.log("Incoming new connection!");
     var cookies = socket.request.headers.cookie;
     var clientId = socket.request.headers.authorization.substring(6);
+	console.log("ClientID: " + clientId);
     if (clientId === "deadCookie") {
       console.log("Disconnecting for dead cookie.");
       disconnectSocket(socket);

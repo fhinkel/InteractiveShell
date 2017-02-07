@@ -24,7 +24,7 @@ require('./startup.js')({
 	    cpuShares: 4,
 	    memory: 2048
 	},
-  guestInstance: {
+  startInstance: {
     host: 'localhost',
     username: 'singularUser',
     port: '16000',

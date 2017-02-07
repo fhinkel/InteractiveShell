@@ -1,40 +1,25 @@
-# sshd
-#
-# VERSION               0.0.2
-
-FROM ubuntu:14.04
+FROM lkastner/m2container:1.9.2
 MAINTAINER InteractiveShell Team <trym2@googlegroups.com>
 
-# For ssh server and up-to-date ubuntu.
-RUN apt-get update && apt-get install -y openssh-server wget
-RUN apt-get upgrade -y
-
-# Installing M2
-RUN echo "deb http://www.math.uiuc.edu/Macaulay2/Repositories/Ubuntu trusty main" >> /etc/apt/sources.list
-RUN wget http://www.math.uiuc.edu/Macaulay2/PublicKeys/Macaulay2-key
-RUN apt-key add Macaulay2-key
-RUN apt-get update && apt-get install -y macaulay2
-
-# M2 userland
-RUN sudo apt-get install -y graphviz
-RUN useradd -m -d /home/m2user m2user
+##### M2 userland
 RUN mkdir /home/m2user/.ssh
-COPY id_rsa.pub /home/m2user/.ssh/authorized_keys
+COPY unix-files/ssh_config /etc/ssh/ssh_config
+COPY unix-files/sshd_config /etc/ssh/sshd_config
+RUN chown root:root /etc/ssh/ssh_config
+RUN chmod 644 /etc/ssh/ssh_config
+RUN chown root:root /etc/ssh/sshd_config
+RUN chmod 600 /etc/ssh/sshd_config
 RUN chown -R m2user:m2user /home/m2user/.ssh
-RUN chmod 755 /home/m2user/.ssh
-RUN chmod 644 /home/m2user/.ssh/authorized_keys
+RUN chmod 700 /home/m2user/.ssh
+RUN sed -i 's/m2user:!/m2user:*/' /etc/shadow
 
-# Bertini
-# RUN sudo apt-get install -y gcc libmpfrc++-dev make libtool
-# RUN wget https://bertini.nd.edu/BertiniSource_v1.5.tar.gz
-RUN wget https://bertini.nd.edu/BertiniLinux64_v1.5.tar.gz
-# RUN tar xzf BertiniSource_v1.5.tar.gz
-RUN tar xzf BertiniLinux64_v1.5.tar.gz
-# RUN cd BertiniSource_v1.5; ./configure; /usr/bin/make; sudo /usr/bin/make install
+# copy open
+COPY unix-files/open /usr/bin/open
+# RUN ln -s /usr/bin/open /usr/bin/display
 
-
-RUN mkdir /var/run/sshd
-# RUN echo 'root:screencast' | chpasswd
+### Tweaks to ssh setup ###
+    
+# RUN mkdir /var/run/sshd
 RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin no/' /etc/ssh/sshd_config
 
 # SSH login fix. Otherwise user is kicked off after login
@@ -42,11 +27,10 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
-
-# copy open
-COPY open /usr/bin/open
-RUN ln -s /usr/bin/open /usr/bin/display
-
-
+        
 EXPOSE 22
 # CMD ["/usr/sbin/sshd", "-D"]
+
+COPY id_rsa.pub /home/m2user/.ssh/authorized_keys
+RUN chmod 644 /home/m2user/.ssh/authorized_keys
+RUN mkdir /var/run/sshd

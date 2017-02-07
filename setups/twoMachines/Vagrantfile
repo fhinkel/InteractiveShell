@@ -1,0 +1,197 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Generate keys and copy public keys for docker machine to find.
+# The node server will use below keys to access the single docker containers.
+if not File.exists?('docker_key') then 
+   system("ssh-keygen -b 4096 -f docker_key -P ''") 
+end
+# The node server will use below keys to access the machine with the docker
+# containers, where it then creates and destroys docker containers.
+if not File.exists?('host_key') then
+   system("ssh-keygen -b 4096 -f host_key -P ''") 
+end
+
+# Be careful to choose IPs that do not interfere with the eth0 IPs.
+nodejsip = '192.168.2.37'
+dockerip = '192.168.2.42'
+
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure(2) do |config|
+  config.vm.define "nodejs" do |nodejs|
+     nodejs.vm.provider "virtualbox" do |v|
+       # v.gui = true
+       v.cpus = 1
+       v.memory = 1024
+     end
+     nodejs.vm.network :private_network, ip: nodejsip, virtualbox__intnet: "internal"
+     nodejs.vm.hostname = "nodejs"
+     nodejs.vm.box = "ubuntu/trusty64"
+     nodejs.vm.synced_folder ".", "/vagrant", disabled: true
+     nodejs.vm.network "forwarded_port", guest: 22, host: 4998, id: 'ssh'
+     nodejs.vm.network "forwarded_port", guest: 8002, host: 3690
+
+      # Update machine.
+      nodejs.vm.provision "basic", type:"shell", privileged:true, inline: <<-SHELL
+         apt-get update && apt-get upgrade -y
+         apt-get install -y nodejs npm wget git
+         ln -s /usr/bin/nodejs /usr/bin/node
+         sudo -u vagrant mkdir /home/vagrant/keys
+      SHELL
+
+      # Install most recent version of node
+      nodejs.vm.provision "nvm", type:"shell", privileged:false, inline: <<-SHELL
+         curl https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
+         source ~/.nvm/nvm.sh; 
+         nvm install stable
+         nvm use stable
+         mkdir webm2.logs
+      SHELL
+
+      # Clone repo, install node modules.
+      nodejs.vm.provision "node-modules", type:"shell", privileged:false, inline: <<-SHELL
+         git clone https://github.com/fhinkel/InteractiveShell
+         cd InteractiveShell
+         npm install
+      SHELL
+
+   # Insert ssh config files.
+   nodejs.vm.provision "file", source: "./host_key", destination: "/home/vagrant/keys/host_key" 
+   # nodejs.vm.provision "file", source: "./host_key.pub", destination: "/home/vagrant/InteractiveShell/separate_machines/host_key.pub" 
+   nodejs.vm.provision "file", source: "./docker_key", destination: "/home/vagrant/keys/docker_key" 
+   # nodejs.vm.provision "file", source: "./docker_key.pub", destination: "/home/vagrant/InteractiveShell/separate_machines/docker_key.pub" 
+   
+    
+    # Own previously config files.
+    nodejs.vm.provision "ssh", type:"shell", privileged:true, inline: <<-SHELL
+      cp /home/vagrant/InteractiveShell/unix-files/sshd_config /etc/ssh/sshd_config
+      cp /home/vagrant/InteractiveShell/unix-files/ssh_config /etc/ssh/ssh_config
+       chown root:root /etc/ssh/sshd_config
+       chmod 600 /etc/ssh/sshd_config
+       chown root:root /etc/ssh/ssh_config
+       chmod 644 /etc/ssh/ssh_config
+       chown vagrant:vagrant /home/vagrant/keys/host_key*
+       chmod 644 /home/vagrant/keys/host_key*
+       chown vagrant:vagrant /home/vagrant/keys/docker_key*
+       chmod 644 /home/vagrant/keys/docker_key*
+     SHELL
+
+    nodejs.vm.provision "remove", type:"shell", privileged:false, run: "always", inline: <<-SHELL
+       rm -f /home/vagrant/InteractiveShell/public/users.htpasswd
+     SHELL
+    
+      if File.exists?('users.htpasswd') then 
+        nodejs.vm.provision "file", source: "./users.htpasswd", run: "always", destination: "/home/vagrant/InteractiveShell/public/users.htpasswd"
+      end
+      
+     # Start server everytime machine is run.
+     nodejs.vm.provision "startup_server", type:"shell", privileged:false, run: "always", inline: <<-SHELL
+         source ~/.nvm/nvm.sh 
+         cd /home/vagrant/InteractiveShell
+         git pull --no-edit
+         npm run twoMachines_forever 2>&1 > ../webm2.log.txt &
+     SHELL
+  end
+
+  config.vm.define "docker" do |docker|
+     docker.vm.network :private_network, ip: dockerip, virtualbox__intnet: "internal"
+     docker.vm.provider "virtualbox" do |v|
+       # v.gui = true
+       v.cpus = 1
+       v.memory = 1024
+     end
+     docker.vm.hostname = "docker"
+     docker.vm.box = "ubuntu/trusty64"
+     docker.vm.synced_folder ".", "/vagrant", disabled: true
+     docker.vm.network "forwarded_port", guest: 22, host: 4999, id: 'ssh'
+     # for i in 5000..6000
+     #    docker.vm.network :forwarded_port, guest: i, host: i
+     # end
+   
+   # Insert ssh config files.
+   docker.vm.provision "file", source: "../../unix-files/sshd_config", destination: "/home/vagrant/sshd_config" 
+   docker.vm.provision "file", source: "../../unix-files/ssh_config", destination: "/home/vagrant/ssh_config" 
+   docker.vm.provision "file", source: "./host_key.pub", destination: "/home/vagrant/.ssh/host_key.pub"
+
+     # Own ssh config files.
+     docker.vm.provision "ssh", type:"shell", privileged:true, inline: <<-SHELL
+      cat /home/vagrant/.ssh/host_key.pub >> /home/vagrant/.ssh/authorized_keys
+      cp /home/vagrant/sshd_config /etc/ssh/sshd_config
+      cp /home/vagrant/ssh_config /etc/ssh/ssh_config
+       chown root:root /etc/ssh/sshd_config
+       chmod 600 /etc/ssh/sshd_config
+       chown root:root /etc/ssh/ssh_config
+       chmod 644 /etc/ssh/ssh_config
+       chown vagrant:vagrant /home/vagrant/.ssh/authorized_keys
+       chmod 644 /home/vagrant/.ssh/authorized_keys
+     SHELL
+     
+     docker.vm.provision "install", type:"shell", privileged:true, inline: <<-SHELL
+       export DEBIAN_FRONTEND=noninteractive
+       apt-get update 
+       apt-get upgrade -y
+       echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
+       echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
+       apt-get install -y wget iptables-persistent
+     SHELL
+   
+   # Insert Dockerfile.
+   docker.vm.provision "file", source: "./docker_key.pub", destination: "/home/vagrant/docker_key.pub"
+   docker.vm.provision "file", source: "./Dockerfile", destination: "/home/vagrant/Dockerfile" 
+   docker.vm.provision "file", source: "../../unix-files/open", destination: "/home/vagrant/open" 
+
+      # Install Docker and build container.
+     docker.vm.provision "docker", type:"shell", privileged:true, inline: <<-SHELL
+       wget -qO- https://get.docker.com/ | sh
+       cd /home/vagrant
+       docker build -t m2container .
+     SHELL
+     
+     # Iptables configuration.
+     docker.vm.provision "iptables", type:"shell", privileged:true, inline: <<-SHELL
+       iptables -I DOCKER ! -d 192.168.2.37 -j DROP
+       iptables -I DOCKER ! -s 192.168.2.37 -j DROP
+       iptables -I DOCKER -d 192.168.2.37 -j ACCEPT
+       iptables -I DOCKER -s 192.168.2.37 -j ACCEPT
+       dpkg-reconfigure -fnoninteractive iptables-persistent
+     SHELL
+     # Last three lines need the nodejs IP from above, but this does not work
+     # with verbatim mode.
+     # 
+     # Remove old docker containers on startup
+     docker.vm.provision "cleanup", type:"shell", privileged:true, run:"always", inline: <<-SHELL
+         docker ps -aq > old_containers
+         A=`cat old_containers | wc -l`
+         if [ $A -gt 0 ]; then docker rm -f $(docker ps -aq); fi 
+     SHELL
+  end 
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://atlas.hashicorp.com/search.
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  # config.vm.network "public_network"
+
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # Example for VirtualBox:
+  #
+  # config.vm.provider "virtualbox" do |vb|
+  #   # Display the VirtualBox GUI when booting the machine
+  #   vb.gui = true
+  #
+  #   # Customize the amount of memory on the VM:
+  #   vb.memory = "1024"
+  # end
+  #
+
+end

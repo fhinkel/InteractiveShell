@@ -1,6 +1,6 @@
 {
   "name": "InteractiveShell",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Build web apps for interactive command-line tools",
   "contributors": [
     {
@@ -16,43 +16,66 @@
       "email": "mikestillman1@gmail.com"
     }
   ],
+  "engine": {
+    "node": ">=4.0.0"
+  },
   "dependencies": {
     "async": "0.9.0",
     "chai": "2.2.0",
-    "cookies": "0.5.0",
-    "express": "4.10.8",
+    "cookies": "0.6.1",
+    "create-download-link": "1.1.0",
+    "dialog-polyfill": "0.4.3",
+    "exports-loader": "0.6.3",
+    "express": "4.13.4",
     "express-winston": "0.2.9",
     "forever": "0.14.1",
+    "get-selected-text": "1.0.2",
+    "http-auth": "2.3.1",
+    "imports-loader": "0.6.5",
+    "jquery": "2.2.3",
+    "scroll-down": "2.0.0",
     "serve-favicon": "2.1.7",
     "serve-static": "1.7.2",
-    "socket.io": "1.2.1",
+    "set-caret-position": "3.0.0",
+    "socket.io": "1.4.5",
     "socket.io-cookie": "0.0.1",
-    "socketio-file-upload": "0.2.7",
+    "socketio-file-upload": "0.4.6",
     "ssh2": "0.4.6",
-    "winston": "0.8.3",
-    "http-auth": "2.2.8"
+    "http-auth": "2.2.8",
+    "whatwg-fetch": "0.11.0",
+    "winston": "0.8.3"
   },
   "scripts": {
-    "start": "node src/lib/Macaulay2SudoDocker.js",
-    "basic": "node src/lib/Macaulay2LocalServer.js",
-    "ssh": "node src/lib/Macaulay2SshDocker.js",
-    "test": "mocha src/tests/ --reporter spec --timeout 6000",
+    "start": "webpack && node src/startupConfigs/Macaulay2SudoDocker.js",
+    "basic": "webpack && node src/startupConfigs/Macaulay2SudoDocker.js",
+    "local": "webpack && node src/startupConfigs/Macaulay2LocalServer.js",
+    "twoMachines": "webpack && node src/startupConfigs/Macaulay2SshDocker.js",
+    "twoMachines_forever": "webpack && ./node_modules/forever/bin/forever start -l /home/vagrant/webm2.logs/forever.log -o /home/vagrant/webm2.logs/out.log -e /home/vagrant/webm2.logs/err.log --append src/startupConfigs/Macaulay2SshDocker.js",
+    "basicAuth": "webpack && node src/startupConfigs/Macaulay2BasicAuth.js",
+    "forever_basicAuth": "webpack && ./node_modules/forever/bin/forever start -l /home/vagrant/webm2.logs/forever.log -o /home/vagrant/webm2.logs/out.log -e /home/vagrant/webm2.logs/err.log --append src/startupConfigs/Macaulay2BasicAuth.js",
+    "start_singular": "webpack && node src/startupConfigs/SingularSudoDocker.js",
+    "basic_singular": "webpack && node src/startupConfigs/SingularLocalServer.js",
+    "ssh_singular": "webpack && node src/startupConfigs/SingularSshDocker.js",
+    "forever_singular": "webpack && ./node_modules/forever/bin/forever start -l /home/user/logs/forever.log -o /home/user/logs/out.log -e /home/user/logs/err.log --append src/startupConfigs/SingularSshDocker.js",
     "stop": "kill `ps ax | grep Server | grep -v monitor | grep node | awk '{print $1}'`",
-    "forever": "./node_modules/forever/bin/forever start -l /home/vagrant/webm2.logs/forever.log -o /home/vagrant/webm2.logs/out.log -e /home/vagrant/webm2.logs/err.log --append src/lib/Macaulay2SshDocker.js",
-    "start_singular": "node src/lib/SingularSudoDocker.js",
-    "basic_singular": "node src/lib/SingularLocalServer.js",
-    "ssh_singular": "node src/lib/SingularSshDocker.js",
-    "forever_singular": "./node_modules/forever/bin/forever start -l /home/power/logs/forever.log -o /home/power/logs/out.log -e /home/power/logs/err.log --append src/lib/SingularSshDocker.js"
+    "test": "mocha src/tests/ --reporter spec --timeout 6000",
+    "lint": "eslint ./src/ ./public-source/ ./public/public-common/mathJaxConfig.js --fix --env mocha --rule 'require-jsdoc: \"off\"'"
   },
   "repository": {
     "type": "git",
     "url": "git@github.com:fhinkel/tryM2.git"
   },
   "devDependencies": {
+    "eslint": "^2.7.0",
+    "eslint-config-google": "^0.5.0",
     "jsdom": "4.3.0",
     "mocha": "2.1.0",
-    "rewire": "2.3.1",
+    "rewire": "2.5.1",
     "sinon": "1.14.1",
-    "supertest": "0.15.0"
+    "supertest": "0.15.0",
+    "webpack": "1.12.14"
+  },
+  "eslintConfig": {
+    "extends": "google"
   }
 }

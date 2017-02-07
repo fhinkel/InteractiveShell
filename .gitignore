@@ -1,3 +1,5 @@
+public/public-common/index.js
+public/users.htpasswd
 public/public-Macaulay2/user*
 *.log
 .idea
@@ -13,8 +15,11 @@ node_modules
 .vagrant/
 *.swp
 id_rsa*
+docker_key*
+host_key*
 manuscript/jsag.maf
 manuscript/jsag.mtc
 manuscript/jsag.mtc0
 manuscript/jsag.out
 manuscript/jsag.synctex.gz
+public/public-common/mathProgram.js

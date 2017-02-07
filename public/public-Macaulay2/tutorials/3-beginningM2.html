@@ -20,23 +20,23 @@
 <p>
     You can immediately do arithmetic with integers:
 </p>
-<code>2+2</code><br/>
-<code>107*431</code><br/>
-<code>25!</code><br/>
-<code>binomial(5,4)</code><br/>
-<code>factor 32004</code><br/>
+<p><code>2+2</code></p>
+<p><code>107*431</code></p>
+<p><code>25!</code></p>
+<p><code>binomial(5,4)</code></p>
+<p><code>factor 32004</code></p>
 <p>
     Most \(\mac\) applications involve polynomial rings over fields
     and their quotient rings. Fields can be made in various ways:
 </p>
-<code>ZZ/101</code><br/>
-<code>QQ</code><br/>
-<code>GF 2^5</code><br/>
-<code>k = toField (QQ[i]/(i^2+1))</code><br/>
+<p><code>ZZ/101</code></p>
+<p><code>QQ</code></p>
+<p><code>GF 2^5</code></p>
+<p><code>k = toField (QQ[i]/(i^2+1))</code></p>
 <p>
     After making \({\tt k}\) we can compute in it:
 </p>
-<code>1/i</code><br/>
+<p><code>1/i</code></p>
 <p>
     Computation is often fastest and needs least
     memory when performed over finite prime fields of the form 
@@ -49,30 +49,30 @@
 <p>
     We make a polynomial ring in 5 variables over $\ZZ/101$:
 </p>
-<code>kk=ZZ/101</code><br/>
-<code>S=kk[x_1..x_5]</code><br/>
+<p><code>kk=ZZ/101</code></p>
+<p><code>S=kk[x_1..x_5]</code></p>
 <p>
     Here is another way:
 </p>
-<code>S=kk[a,b,c,d,e] </code><br/>
+<p><code>S=kk[a,b,c,d,e] </code></p>
 <p>
     One can do arithmetic on polynomials:
 </p>
-<code>(3*a^2+1)^5</code><br/>
+<p><code>(3*a^2+1)^5</code></p>
 <p>
     We make an ideal in $S$:
 </p>
-<code>I=ideal(a^3-b^3, a+b+c+d+e)</code><br/>
+<p><code>I=ideal(a^3-b^3, a+b+c+d+e)</code></p>
 <p>
     Using this ideal, we can make a factor ring:
 </p>
-<code>R=S/I</code><br/>
+<p><code>R=S/I</code></p>
 <p>
     Another way to make an ideal, with more compact notation (familiar to anyone who used the
     classic Macaulay) is:
 </p>
-<code>use S</code><br/>
-<code>I=ideal"3(a+b)3, 4c5"</code><br/>
+<p><code>use S</code></p>
+<p><code>I=ideal"3(a+b)3, 4c5"</code></p>
 <p>
     Note the command "use S", which specifies 
     that we want to work with the generators of the polynomial ring $S$ again;
@@ -82,14 +82,14 @@
 <p>
     Algebraic operations on ideals are available:
 </p>
-<code>I^2</code><br/>
-<code>I*I</code><br/>
-<code>I+ideal"a2"</code><br/>
+<p><code>I^2</code></p>
+<p><code>I*I</code></p>
+<p><code>I+ideal"a2"</code></p>
 <p>
     In case you forget any of these things, \({\tt help}\) is available! The most
     useful way to get it is often to type something like:
 </p>
-<code>viewHelp ideal</code><br/>
+<p><code>viewHelp ideal</code></p>
 <p>
     Then a browser window will pop up that contains documentation about the function 
     \({\tt ideal}\) that we've been using; links on that page allow one to explore 
@@ -100,7 +100,7 @@
     Not too surprisingly, this class is called \({\tt Ideal}\). We could get information about
     what functions create or use ideals by typing:
 </p>
-<code>viewHelp Ideal</code><br/>
+<p><code>viewHelp Ideal</code></p>
 <p>
     To see the names of classes, you can begin by looking at the output
     of commands; the second line output (the one introduced by a colon) often contains the name of the 
@@ -109,44 +109,44 @@
 <p>
     Here are some basic operations on matrices:
 </p>
-<code>M = matrix{{a,b,c},{b,c,d},{c,d,e}}</code><br/>
-<code>M^2</code><br/>
-<code>determinant M</code><br/>
-<code>trace M</code><br/>
-<code>M-transpose M</code><br/>
+<p><code>M = matrix{{a,b,c},{b,c,d},{c,d,e}}</code></p>
+<p><code>M^2</code></p>
+<p><code>determinant M</code></p>
+<p><code>trace M</code></p>
+<p><code>M-transpose M</code></p>
 <p>
     The function \({\tt entries}\) gives the entries of a matrix:
 </p>
-<code>entries M</code><br/>
+<p><code>entries M</code></p>
 <p>
     The result is a list of lists, one for each row of the matrix $M$.
     The function \({\tt flatten}\) can be used to merge the
     lists into a single list:
 </p>
-<code>flatten entries M</code><br/>
+<p><code>flatten entries M</code></p>
 <p>
     If you want a particular entry, say the one in the upper left corner, 
     you can use the underscore operator.
 </p>
-<code>M_(0,0)</code><br/>
+<p><code>M_(0,0)</code></p>
 <p>
     Here, as everywhere in \(\mac\), all indexing starts with 0.
     For example:
 </p>
-<code>I_0</code><br/>
+<p><code>I_0</code></p>
 <p>
     is the first generator of I. You can list all the generators with:
 </p>
-<code>I_*</code><br/>
+<p><code>I_*</code></p>
 <p>
     A \({\it module}\) can be defined as a cokernel, kernel, image, or even as a subquotient:
 </p>
-<code>coker M     </code><br/>
-<code>image M</code><br/>
-<code>kernel matrix"a,b,0;0,a,b"</code><br/>
-<code>N = matrix{{a,b},{b,c},{c,d}}</code><br/>
-<code>(image M)/(image N)</code><br/>
-<code>subquotient(M,N)</code><br/>
+<p><code>coker M     </code></p>
+<p><code>image M</code></p>
+<p><code>kernel matrix"a,b,0;0,a,b"</code></p>
+<p><code>N = matrix{{a,b},{b,c},{c,d}}</code></p>
+<p><code>(image M)/(image N)</code></p>
+<p><code>subquotient(M,N)</code></p>
 <p>
     Note that the matrix $N$ above was defined with an
     alternate syntax, parallel to the alternate syntax for \({\tt ideal}\).
@@ -156,7 +156,7 @@
     start is the top of the documentation tree, which can be reached, for
     example, by typing:
 </p>
-<code>viewHelp "Macaulay2Doc"</code><br/>
+<p><code>viewHelp "Macaulay2Doc"</code></p>
 </div>
 <div>
     <h4>Properties of ideals and modules</h4>
@@ -166,37 +166,37 @@
     four variables we proceed as follows.
     First we make our favorite field:
 </p>
-<code>kk = ZZ/32003</code><br/>
+<p><code>kk = ZZ/32003</code></p>
 <p>
     Then the polynomial ring:
 </p>
-<code>R = kk[x,y,z,w]</code><br/>
+<p><code>R = kk[x,y,z,w]</code></p>
 <p>
     And then the ideal:
 </p>
-<code>I = ideal(x^2*y,x*y^2+x^3)</code><br/>
+<p><code>I = ideal(x^2*y,x*y^2+x^3)</code></p>
 <p>
     Now the punch line.  We compute the Gröbner basis with the \({\tt groebnerBasis}\) function:
 </p>
-<code>J = groebnerBasis I</code><br/>
+<p><code>J = groebnerBasis I</code></p>
 <p>
     Gröbner bases are always computed with respect to a particular
     monomial order on the ring. In fact, the ring we defined above has
     a default monomial order, the graded reverse lex order. For many
     other possibilities, see \({\tt MonomialOrder}\):
 </p>
-<code>viewHelp MonomialOrder</code><br/>
+<p><code>viewHelp MonomialOrder</code></p>
 <p>
     The analogue of factorization in the theory of ideals
     is primary decomposition.
     For example, we can begin by intersecting three ideals:
 </p>
-<code>I= intersect (ideal"x2,y3", ideal"y2,z3", (ideal"x,y,z")^4)</code><br/>
+<p><code>I= intersect (ideal"x2,y3", ideal"y2,z3", (ideal"x,y,z")^4)</code></p>
 <p>
     We can almost undo this operation by computing
     a primary decomposition:
 </p>
-<code>primaryDecomposition I</code><br/>
+<p><code>primaryDecomposition I</code></p>
 <p>
     Inspecting the output, we see that the first two ideals
     are the same as the first two ideals we intersected, but the 
@@ -211,7 +211,7 @@
     Sometimes it is easier to compute just the minimal primes. To do
     this we can use \({\tt decompose}\): 
 </p>
-<code>decompose I</code><br/>
+<p><code>decompose I</code></p>
 <p>
     Using Gröbner bases we can compute 
     codimensions, dimensions,
@@ -230,12 +230,12 @@
     polynomial ring in 4 variables, to serve as the
     homogeneous coordinate ring of $\PP^3$:
 </p>
-<code>R = kk[a..d]</code><br/>
+<p><code>R = kk[a..d]</code></p>
 <p>
     We introduce the ring map $\phi: R \to kk[s,t]$ defined by 
     $(a,b,c,d) \mapsto{} (s^4, s^3 t, s t^3, t^4)$:         
 </p>
-<code>phi = map(kk[s,t],R,{s^4, s^3*t, s*t^3, t^4})</code><br/>
+<p><code>phi = map(kk[s,t],R,{s^4, s^3*t, s*t^3, t^4})</code></p>
 <p>
     Here the syntax of the function \({\tt map}\) has the target ring first and the source ring second:
     maps in \(\mac\) generally go from right to left!
@@ -243,23 +243,23 @@
     list of the elements to which to send the variables of the source ring.
     The ideal we want is the kernel of this map:
 </p>
-<code>I = ker phi</code><br/>
+<p><code>I = ker phi</code></p>
 <p>
     Shortcut notation for this construction is provided by the function 
     \({\tt monomialCurveIdeal}\):
 </p>
-<code>I = monomialCurveIdeal(R,{1,3,4})</code><br/>
+<p><code>I = monomialCurveIdeal(R,{1,3,4})</code></p>
 <p>
     We can compute the \({\tt dimension}\), \({\tt codimension}\) (also called the
     height) and \({\tt degree}\) of this ideal:
 </p>
-<code>dim I</code><br/>
-<code>codim I</code><br/>
-<code>degree I</code><br/>
+<p><code>dim I</code></p>
+<p><code>codim I</code></p>
+<p><code>degree I</code></p>
 <p>
     The Hilbert polynomial is obtained with the function \({\tt hilbertPolynomial}\):
 </p>
-<code>hilbertPolynomial(R/I)</code><br/>
+<p><code>hilbertPolynomial(R/I)</code></p>
 <p>
     The output above may not be what the user expected:
     the term ${\bf P}_m$ represents the Hilbert polynomial of
@@ -275,20 +275,20 @@
     The more usual expression for the Hilbert polynomial can
     be obtained as follows:
 </p>
-<code>hilbertPolynomial(R/I, Projective => false)</code><br/>
+<p><code>hilbertPolynomial(R/I, Projective => false)</code></p>
 <p>
     The construction "Projective => false" is our first example of
     an \({\it option}\) to a function: we specified that the option 
     \({\tt Projective}\) was to have the value \({\tt false}\).
     The form we used first could also have been written this way:
 </p>
-<code>hilbertPolynomial(R/I, Projective => true)</code><br/>
+<p><code>hilbertPolynomial(R/I, Projective => true)</code></p>
 <p>
     The Hilbert series of $M$ (the generating function
     for the dimensions of the graded pieces of $M$) is
     obtained with:
 </p>
-<code>hilbertSeries (R/I)</code><br/>
+<p><code>hilbertSeries (R/I)</code></p>
 <p>
     This generating function is expressed
     as a rational function with denominator equal to $(1-T)^n$, where
@@ -296,25 +296,25 @@
     Since $R/I$ has dimension 2, it can also be written
     with denominator $(1-t)^2$. To see it in this form, use \({\tt reduceHilbert}\):
 </p>
-<code>reduceHilbert hilbertSeries (R/I)</code><br/>
+<p><code>reduceHilbert hilbertSeries (R/I)</code></p>
 <p>
     It is possible to manipulate the numerator and denominator of this
     expression. To learn how to do so, see \({\tt hilbertSeries}\):
 </p>
-<code>viewHelp hilbertSeries</code><br/>
+<p><code>viewHelp hilbertSeries</code></p>
 <p>
     A great deal of subtle information about a module is visible using
     free resolutions. For an example, we begin
     by turning $R/I$ into a module. Here the code \({\tt R^1}\) produces the free module of
     rank 1 over $R$, and \({\tt res}\) computes a free resolution:
 </p>
-<code>M=R^1/I</code><br/>
-<code>Mres = res M</code><br/>
+<p><code>M=R^1/I</code></p>
+<p><code>Mres = res M</code></p>
 <p>
     To get more precise information about \({\tt Mres}\),
     we could compute its Betti table with \({\tt betti}\):
 </p>
-<code>betti Mres</code><br/>
+<p><code>betti Mres</code></p>
 <p>
     The display is chosen for compactness. Each column of the
     table corresponds
@@ -336,8 +336,8 @@
     such as projective dimension and regularity
     are (also) available directly:
 </p>
-<code>pdim M</code><br/>
-<code>regularity M</code><br/>
+<p><code>pdim M</code></p>
+<p><code>regularity M</code></p>
 </div>
 <div>
     <h4>Division With Remainder</h4>
@@ -350,17 +350,17 @@
     of a generic 3x3 matrix is expressible in terms of the entries of the 
     cube of the matrix with the following code:
 </p>
-<code>R = kk[a..i]</code><br/>
-<code>M = genericMatrix(R,a,3,3)</code><br/>
-<code>I = ideal M^3</code><br/>
+<p><code>R = kk[a..i]</code></p>
+<p><code>M = genericMatrix(R,a,3,3)</code></p>
+<p><code>I = ideal M^3</code></p>
 <p>
     This gives the ideal of entries of the matrix. In the expression
     "M = genericMatrix(R,a,3,3)" the arguments \({\tt R,a,3,3}\) specify the
     ring, the first variable to use, and the numbers of rows and columns
     desired.
 </p>
-<code>Tr = trace M </code><br/>
-<code>for p from 1 to 10 do print (Tr^p % I)</code><br/>
+<p><code>Tr = trace M </code></p>
+<p><code>for p from 1 to 10 do print (Tr^p % I)</code></p>
 <p>
     The expression $Tr^p \% I$ computes the normal form for the $p$-th power
     of the trace \({\tt Tr}\) with respect to the Gröbner basis of $I$.
@@ -369,7 +369,7 @@
     with 10 consecutive values of $p$. For more information on such loops see \({\tt for}\)
     or type:
 </p>
-<code>viewHelp "for"</code><br/>
+<p><code>viewHelp "for"</code></p>
 <p>
     Here we have put quotes around "for" because
     "for" is a keyword in the \(\mac\) language.  (In general, it's always safe to use
@@ -382,7 +382,7 @@
     using the division algorithm, denoted in this setting by 
     \({\tt //}\):
 </p>
-<code>Tr^7//(gens I)</code><br/>
+<p><code>Tr^7//(gens I)</code></p>
 </div>
 <div>
     <h4>Elimination Theory</h4>
@@ -396,25 +396,25 @@
     We first clear the earlier meaning of $x$
     to allow it to be used as a subscripted variable:
 </p>
-<code>x = symbol x</code><br/>
+<p><code>x = symbol x</code></p>
 <p>
     Since we are going to deal with a curve in $\PP^3$,
     we begin with a polynomial ring in four variables:
 </p>
-<code>R = kk[x_0..x_3] </code><br/>
+<p><code>R = kk[x_0..x_3] </code></p>
 <p>
     The ideal of the twisted cubic curve is generated by the $2 \times{} 2$
     minors of a "catalecticant" or "Hankel" matrix, conveniently
     defined as follows:
 </p>
-<code>M = map(R^2, 3, (i,j)->x_(i+j))</code><br/>
-<code>I = minors(2,M)</code><br/>
+<p><code>M = map(R^2, 3, (i,j)->x_(i+j))</code></p>
+<p><code>I = minors(2,M)</code></p>
 <p>
     As projection center we
     take the point with homogeneous coordinates $(1,0,0,-1)$,
     which is defined by the ideal:
 </p>
-<code>pideal = ideal(x_0+x_3, x_1, x_2)</code><br/>
+<p><code>pideal = ideal(x_0+x_3, x_1, x_2)</code></p>
 <p>
     The ideal $J$ of the image of the curve under the projection from this point
     is the kernel of the ring map $S=kk[u,v,w] \to R/I$
@@ -425,34 +425,34 @@
     To compute this we first substitute \({\tt pIdeal}\) into $R/I$, and then form
     the necessary ring map:
 </p>
-<code>Rbar = R/I</code><br/>
-<code>pideal = substitute(pideal, Rbar)</code><br/>
-<code>S = kk[u,v,w]</code><br/>
-<code>J=kernel map (Rbar, S, gens pideal)</code><br/>
+<p><code>Rbar = R/I</code></p>
+<p><code>pideal = substitute(pideal, Rbar)</code></p>
+<p><code>S = kk[u,v,w]</code></p>
+<p><code>J=kernel map (Rbar, S, gens pideal)</code></p>
 <p>
     The ideal $J$ defines a curve with one singular point.
     We can compute the ideal of the singular locus with:
 </p>
-<code>K = ideal singularLocus(J)</code><br/>
+<p><code>K = ideal singularLocus(J)</code></p>
 <p>
     This doesn't look like the ideal of a reduced point! But
     that's because it isn't yet saturated:
 </p>
-<code>saturate K</code><br/>
+<p><code>saturate K</code></p>
 <p>
     We have just seen the \({\tt saturate}\) function in its most
     common use: to saturate with respect to the maximal ideal.
     but we can also find the saturation of any ideal with
     respect to another:
 </p>
-<code>saturate (ideal"u3w,uv", ideal"u")</code><br/>
+<p><code>saturate (ideal"u3w,uv", ideal"u")</code></p>
 <p>
     We can also take the \({\it ideal\ quotient}\) $I:J$ of an ideal $I$ with
     respect to another, $J$
     defined as the set of elements $f$ such that
     $fJ$ is contained in $I$:
 </p>
-<code>ideal"u3w,uv":ideal"u"</code><br/>
+<p><code>ideal"u3w,uv":ideal"u"</code></p>
 </div>
 <div>
     <h4>Defining functions and loading packages</h4>
@@ -468,24 +468,24 @@
     performs the Hailstone procedure again and again,
     producing a list of the intermediate results.
 </p>
-<p><code2>Collatz = n ->
-    while n != 1 list if n%2 == 0 then n=n//2 else n=3*n+1</code2></p>
+<p><codeblock>Collatz = n ->
+    while n != 1 list if n%2 == 0 then n=n//2 else n=3*n+1</codeblock></p>
 <p>
     For example:
 </p>
-<code>Collatz 27</code><br/>
+<p><code>Collatz 27</code></p>
 <p>
     If you don't understand this code easily, see:
 </p>
-<code>viewHelp Function</code><br/>
-<code>viewHelp "while"</code><br/>
+<p><code>viewHelp Function</code></p>
+<p><code>viewHelp "while"</code></p>
 <p>
     In order to understand a process it is often useful to tabulate the 
     results of applying it many times. One feature of the Collatz process
     is how many steps it takes to get to 1. We can tabulate this statistic
     for the first 25 values of n with the function \({\tt tally}\), as follows:
 </p>
-<code>tally for n from 1 to 30 list length Collatz n</code><br/>
+<p><code>tally for n from 1 to 30 list length Collatz n</code></p>
 <p>
     A line of the form
 </p>
@@ -496,19 +496,19 @@
     that is, the numbers with longer Collatz sequences than any
     number before them, we might try:
 </p>
-<code>record = length Collatz 1</code><br/>
-<p><code2>L = for n from 2 to 1000 list (
+<p><code>record = length Collatz 1</code></p>
+<p><codeblock>L = for n from 2 to 1000 list (
         l := length Collatz n;
         if l > record 
           then (record = l; (n,l))
-          else continue)</code2></p>
+          else continue)</codeblock></p>
 <p>
     If you want to see a list of just the successive records, 
     you can apply the 
     function \({\tt last}\) to each element of the list $L$. 
     A convenient way to do this is with this syntax:
 </p>
-<code>L/last</code><br/>
+<p><code>L/last</code></p>
 <p>
     Note that in
     writing functions of more than one expression (usually
@@ -524,25 +524,25 @@
     your use, many written by other users (perhaps you'll contribute one
     someday!) A list of installed packages can be found with:
 </p>
-<code>viewHelp "packages provided with Macaulay2"</code><br/>
+<p><code>viewHelp "packages provided with Macaulay2"</code></p>
 <p>
     For example, there is a package called \({\tt EdgeIdeals}\). 
     To load the package, use:
 </p>
-<code>needsPackage "EdgeIdeals"</code><br/>
+<p><code>needsPackage "EdgeIdeals"</code></p>
 <p>
     After loading it, you can view its documentation with 
 </p>
-<code>viewHelp EdgeIdeals</code><br/>
+<p><code>viewHelp EdgeIdeals</code></p>
 <p>
     or you can call its functions, 
     such as \({\tt randomGraph}\) and \({\tt edgeIdeal}\):
 </p>
-<code>R = kk[vars(0..10)]</code><br/>
-<code>G=randomGraph (R,20)</code><br/>
-<code>K=edgeIdeal G</code><br/>
-<code>hilbertSeries K</code><br/>
-<code>betti res K</code><br/>
+<p><code>R = kk[vars(0..10)]</code></p>
+<p><code>G=randomGraph (R,20)</code></p>
+<p><code>K=edgeIdeal G</code></p>
+<p><code>hilbertSeries K</code></p>
+<p><code>betti res K</code></p>
 <p>
     When testing a conjecture  one sometimes wants to run a 
     large number of randomly chosen
@@ -554,19 +554,19 @@
     codimension, degree, and Betti table of a random graph ideal
     on 10 vertices having only 4 edges.
 </p>
-<code>R = ZZ/2[vars(0..10)]</code><br/>
-<p><code2>L=for j from 1 to 100 list(
+<p><code>R = ZZ/2[vars(0..10)]</code></p>
+<p><codeblock>L=for j from 1 to 100 list(
     I = edgeIdeal randomGraph (R,5);
-    (codim I, degree I, betti res I));</code2></p>
+    (codim I, degree I, betti res I));</codeblock></p>
 <p>
     We can use \({\tt tally}\) to find out how many examples
     were found with each combination of codimension and degree and Betti table.
 </p>
-<code>tally L</code><br/>
+<p><code>tally L</code></p>
 <p>
     We can determine how many distinct patterns were found:
 </p>
-<code>#tally L</code><br/>
+<p><code>#tally L</code></p>
 </div>
 <div>
     <h4>Ext, Tor, and cohomology</h4>
@@ -578,29 +578,29 @@
     The free module $S(-2) \oplus{} S(-3)$ can be defined with this
     syntax:
 </p>
-<code>S^{-2,-3} </code><br/>
+<p><code>S^{-2,-3} </code></p>
 <p>
     Here is how we can define the maps in the Koszul complex:
 </p>
-<code>S = kk[x,y]</code><br/>
-<code>phi1 = map(S^1, S^{-2,-3}, matrix"x2,xy2")</code><br/>
-<code>phi2 = map(S^{-2,-3}, S^{-5}, matrix"xy2;-x2")</code><br/>
+<p><code>S = kk[x,y]</code></p>
+<p><code>phi1 = map(S^1, S^{-2,-3}, matrix"x2,xy2")</code></p>
+<p><code>phi2 = map(S^{-2,-3}, S^{-5}, matrix"xy2;-x2")</code></p>
 <p>
     Let's check that this is will really make a complex:
 </p>
-<code>phi1*phi2</code><br/>
+<p><code>phi1*phi2</code></p>
 <p>
     To get the homology we can, for example compute:
 </p>
-<code>(ker phi1)/(image phi2)</code><br/>
+<p><code>(ker phi1)/(image phi2)</code></p>
 <p>
     We could also use the data type \({\tt ChainComplex}\) 
     and use a built-in facility to take homology (in our case $H_1$):
 </p>
-<code>FF = chainComplex(phi1,phi2)</code><br/>
-<code>FF.dd</code><br/>
-<code>homology FF</code><br/>
-<code>presentation (homology FF)_1</code><br/>
+<p><code>FF = chainComplex(phi1,phi2)</code></p>
+<p><code>FF.dd</code></p>
+<p><code>homology FF</code></p>
+<p><code>presentation (homology FF)_1</code></p>
 <p>
     Either way, the first homology is $((x^2):(xy^2)) / (x^2) \cong{} S/(x)$, in accord
     with general theory.
@@ -609,13 +609,13 @@
     There are other ways to construct Koszul complexes.  One way is as the tensor product of
     chain complexes of length 1:
 </p>
-<code>FF = chainComplex matrix {{x^2}} ** chainComplex matrix {{x*y^2}}</code><br/>
-<code>FF.dd</code><br/>
+<p><code>FF = chainComplex matrix {{x^2}} ** chainComplex matrix {{x*y^2}}</code></p>
+<p><code>FF.dd</code></p>
 <p>
     Another way is by using the function \({\tt koszul}\), designed for that purpose:
 </p>
-<code>FF = koszul matrix {{x^2, x*y^2}}</code><br/>
-<code>FF.dd</code><br/>
+<p><code>FF = koszul matrix {{x^2, x*y^2}}</code></p>
+<p><code>FF.dd</code></p>
 <p>
     Since \(\mac\) can compute resolutions and homology, it can
     compute things such as $Ext$, $Tor$ and sheaf cohomology, as in the 
@@ -628,17 +628,17 @@
     "for j from 0 to 4 list ..." to list some results and
     "sum(0..4, j -> ...)" to sum some results.
 </p>
-<code>S=kk[a,b,c,d]</code><br/>
-<code>IX = intersect(ideal(a,b), ideal(c,d))</code><br/>
-<code>IY = ideal(a-c, b-d)</code><br/>
-<code>degree ((S^1/IX) ** (S^1/IY))</code><br/>
-<code>for j from 0 to 4 list degree Tor_j(S^1/IX, S^1/IY)</code><br/>
-<code>sum(0..4, j-> (-1)^j * degree Tor_j(S^1/IX, S^1/IY))</code><br/>
+<p><code>S=kk[a,b,c,d]</code></p>
+<p><code>IX = intersect(ideal(a,b), ideal(c,d))</code></p>
+<p><code>IY = ideal(a-c, b-d)</code></p>
+<p><code>degree ((S^1/IX) ** (S^1/IY))</code></p>
+<p><code>for j from 0 to 4 list degree Tor_j(S^1/IX, S^1/IY)</code></p>
+<p><code>sum(0..4, j-> (-1)^j * degree Tor_j(S^1/IX, S^1/IY))</code></p>
 <p>
     Similarly, we can compute Hom and Ext:
 </p>
-<code>Hom(IX, S^1/IX)</code><br/>
-<code>Ext^1(IX, S^1/IX)</code><br/>
+<p><code>Hom(IX, S^1/IX)</code></p>
+<p><code>Ext^1(IX, S^1/IX)</code></p>
 <p>
     or the cohomology of the sheaf associated to a module. 
 </p>
@@ -649,7 +649,7 @@
     in this case is the disjoint union of two
     lines in $\PP^3$:
 </p>
-<code>HH^1 (sheaf (S^{-2}**(S^1/IX)))</code><br/>
+<p><code>HH^1 (sheaf (S^{-2}**(S^1/IX)))</code></p>
     </div>
   </body>
 </html>

@@ -6,6 +6,14 @@ var basic = auth.basic({
     file: __dirname + "/../../public/users.htpasswd" // gevorg:gpass, Sarah:testpass ... 
 });
 
+basic.on('fail', (result, req) => {
+    console.log(`User authentication failed: ${result.user}`);
+});
+
+basic.on('error', (error, req) => {
+    console.log(`Authentication error: ${error.code + " - " + error.message}`);
+});
+
 var express = require('express');
 var app = express();
 app.use(auth.connect(basic));
@@ -341,6 +349,17 @@ var checkAndWrite = function(clientId, msg) {
   } else {
     writeMsgOnStream(clientId, msg);
   }
+};
+
+var checkState = function(clientId) {
+  return new Promise(function(resolve, reject) {
+    if (clients[clientId] && clients[clientId].saneState) {
+      resolve();
+    } else {
+      console.log(clientId + " not accepting events.");
+      reject();
+    }
+  });
 };
 
 var socketInputAction = function(clientId) {

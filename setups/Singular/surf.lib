@@ -1,0 +1,500 @@
+////////////////////////////////////////////////////////////////////////////
+version="version surf.lib 4.0.3.3 Sep_2016 "; // $Id: 633e1841864e7b8f99eeabe29a27c5df78143924 $
+category="Visualization";
+info="
+LIBRARY: surf.lib    Procedures for Graphics with Surf
+AUTHOR: Hans Schoenemann, Frank Seelisch
+
+NOTE:
+ @texinfo
+ Using this library requires the program @code{surf} to be installed.
+ You can download @code{surf} either from
+  @uref{http://sourceforge.net/projects/surf}
+  or from @uref{ftp://www.mathematik.uni-kl.de/pub/Math/Singular/utils/}.
+ The procedure surfer requires the program @code{surfer} (version 1.4.1 or newwer)
+ to be installed.
+ You can download @code{surfer} from
+  @uref{http://imaginary.org/program/surfer}
+ @end texinfo
+
+SEE ALSO: surfex_lib
+
+PROCEDURES:
+ plot(I);    plots plane curves and surfaces
+ surfer(I);  plots surfaces interactivly
+";
+
+///////////////////////////////////////////////////////////////////////////////
+static proc num_of_vars(ideal I)
+"USAGE: num_of_vars(ideal I)
+
+RETURN: an intvec containing one entry for each ring variable.
+each contains the sums of all degrees in this variable of all monomials
+occuring in the ideal.
+An entry is zero if and only if the corresponding variable does not occur in the ideal.
+"
+{
+  ideal vv=variables(I);
+  intvec v;
+  v[nvars(basering)]=0;
+  int i;
+  for(i=ncols(vv);i>0;i--)
+  {
+    v[univariate(vv[i])]=1;
+  }
+  return(v);
+}
+example
+{
+  "EXAMPLE:"; echo = 2;
+  ring r = 0, (x,y,z),dp;
+  ideal j0 = x^2-x*y;
+  num_of_vars(j0);
+  ideal j1 = x^2-x*y-y;
+  num_of_vars(j1);
+  ideal j2 = x^2-x*y-y, x^3-2*y;
+  num_of_vars(j2);
+}
+
+proc plot(ideal I,list #)
+"USAGE:   plot(I);  I ideal or poly
+ASSUME: I defines a plane curve or a surface given by one equation
+RETURN: nothing
+NOTE: requires the external program `surf` to be installed,
+      to close the graphical interface just press `Q`
+EXAMPLE: example plot; shows an example
+"
+{
+  string l = "/tmp/surf" + string(system("pid"));
+  string err_mes; // string containing error messages
+  def base=basering;
+  intvec v=num_of_vars(I);
+  int i,j,n;
+  for(i=size(v);i>0;i--)
+  {
+    if (v[i]!=0) { n++; }
+  }
+  if (n==0 or n>3)
+  {
+    err_mes="Cannot plot equations with "+string(n)+" variables";
+    ERROR(err_mes);
+  }
+  ring r=0,(x,y,z),dp;
+  short=0;
+  map phi=base,0;
+  j=1;
+  for(i=1;i<=size(v);i++)
+  {
+    if (v[i]!=0)
+    {
+      phi[i]=var(j);
+      j++;
+      if(j==4) break;
+    }
+  }
+  ideal I=simplify(phi(I),2);
+  if (leadcoef(I[1]) <0) { I[1]=-I[1]; }
+  if (ncols(I)==1 and n<=2 and nvars(base)!=3) // curve
+  {
+    write(":w "+l,"clip=none;");
+      write(l, "width=500; height=500; set_size; do_background=yes;
+               background_red=255; background_green=255;
+               background_blue=255;");
+    write(l,
+    "root_finder=d_chain_bisection;epsilon=0.0000000001;iterations=20000;");
+    write(l, "curve_green=0; curve_blue=0; curve_width=1.5;");
+    if (size(#)>0)
+    {
+      write(l,#[1]);
+    }
+    write(l,"curve=",I[1],";");
+    write(l,"draw_curve;");
+    write(l,"color_file_format = jpg;");
+    write(l,"filename = \"/tmp/surf.jpg\";");
+    write(l,"save_color_image;");
+  }
+  else
+  {
+    if (ncols(I)==1 and (n==3 or nvars(base)==3)) // surface
+    {
+      write(":w " + l,
+            "root_finder=d_chain_bisection;epsilon=0.0000000001;iterations=20000;");
+      write(l, "width=500; height=500; set_size; do_background=yes; background_red=255; background_green=255; background_blue=255;");
+      write(l, "rot_x=0.14; rot_y=-0.3;");
+      if (size(#) > 0)
+      {
+          write(l, #[1]);
+      }
+      write(l, "surface=",I[1],";");
+      write(l, "draw_surface;");
+      write(l,"color_file_format = jpg;");
+      write(l,"filename = \"/tmp/surf.jpg\";");
+      write(l,"save_color_image;");
+    }
+    else
+    {
+      err_mes = "cannot plot " + string(ncols(I)) + " equations in "
+              + string(n) + " variables";
+      ERROR(err_mes);
+    }
+  }
+
+  string surf_call; i = 0;
+  if (isInteractiveShell())
+  {
+    surf_call = "surf-alggeo ";
+    surf_call = surf_call + l + " >/dev/null 2>&1";
+    "Close window to exit from `singularsurf`.";
+
+    i = system("sh", surf_call);
+    ">>SPECIAL_EVENT_START>>/tmp/surf.jpg<<SPECIAL_EVENT_END<<";
+    return();
+  }
+  if (isWindows())
+  {
+    string surferPath = getShellOutput("which surf");
+    if (find(surferPath, "no surf in") != 0)
+    { /* did not find surfer: either not installed or
+         not yet included in $PATH variable */
+      err_mes = "calling `surf` failed" + newline
+      + " (Either the program Surf is not installed," + newline
+      + "  or it has not yet been included in $PATH.)";
+      ERROR(err_mes);
+    }
+    else
+    {
+      surf_call = "surf ";
+      surf_call = surf_call + l + ">/dev/null 2>&1";
+      surf_call = surf_call + " && cygstart /tmp/surf.jpg.jpg";
+      i = system("sh", surf_call);
+      if (i != 0)
+      {
+        err_mes = "calling `surf` failed" + newline
+                + " (The shell returned the error code "
+                + string(i) + "." + newline;
+        ERROR(err_mes);
+      }
+    }
+  }
+  else
+  {
+    surf_call = "surf ";
+    surf_call = surf_call + l + " >/dev/null 2>&1";
+    surf_call = surf_call + " && "+FindDisplayProgram()+" /tmp/surf.jpg";
+    "Close window to exit from `singularsurf`.";
+
+    i = system("sh", surf_call);
+    if (i != 0)
+    {
+      err_mes = "calling `surf` failed" + newline
+              + " (The shell returned the error code "
+              + string(i) + ".";
+      ERROR(err_mes);
+    }
+  }
+  system("sh", "command rm -f " + l +" /tmp/surf.jpg /tmp/surf.jpg.jpg");
+}
+example
+{ "EXAMPLE:"; echo = 2;
+  // ---------  plane curves ------------
+  ring rr0 = 0,(x1,x2),dp;
+
+  ideal I = x1^3 - x2^2;
+  plot(I);
+
+  ring rr1 = 0,(x,y,z),dp;
+  ideal I(1) = 2x2-1/2x3 +1-y+1;
+  plot(I(1));
+
+  //  ---- Singular Logo --------------
+  poly logo = ((x+3)^3 + 2*(x+3)^2 - y^2)*(x^3 - y^2)*((x-3)^3-2*(x-3)^2-y^2);
+  plot(logo);
+
+  // Steiner surface
+  ideal J(2) = x^2*y^2+x^2*z^2+y^2*z^2-17*x*y*z;
+  plot(J(2));
+
+  // --------------------
+  plot(x*(x2-y2)+z2);
+
+  // E7
+  plot(x^3-x*y^3+z^2);
+
+  // Whitney umbrella
+  plot(z^2-x^2*y);
+
+}
+
+proc surfer(ideal I)
+"USAGE:   surfer(f);  f poly
+ASSUME: f defines a surface given by one equation
+RETURN: nothing
+NOTE: requires the external program `surfer` to be installed,
+      to close the graphical interface just close the window of surfer
+EXAMPLE: example surfer; shows an example
+"
+{
+  string l = "/tmp/surfer" + string(system("pid"));
+  string err_mes; // string containing error messages
+  def base=basering;
+  intvec v=num_of_vars(I);
+  int i,j,n;
+  for(i=size(v);i>0;i--)
+  {
+    if (v[i]!=0) { n++; }
+  }
+  if (n==0 or n>3)
+  {
+    err_mes="Cannot plot equations with "+string(n)+" variables";
+    ERROR(err_mes);
+  }
+  ring r=0,(x,y,z),dp;
+  short=0;
+  map phi=base,0;
+  j=1;
+  for(i=1;i<=size(v);i++)
+  {
+    if (v[i]!=0)
+    {
+      phi[i]=var(j);
+      j++;
+      if(j==4) break;
+    }
+  }
+  ideal I=simplify(phi(I),2);
+  if (leadcoef(I[1]) <0) { I[1]=-I[1]; }
+  if (ncols(I)==1 and (n==3 or nvars(base)==3)) // surface
+  {
+    write(":w " + l,
+"#jSurfer surface description
+#Fri Jul 08 16:45:41 CEST 2011
+
+nt_material_specular_iIntensity=0.5
+camera_type=ORTHOGRAPHIC_CAMERA
+back_material_specular_iIntensity=0.5
+surface_parameter_a=0.5
+light_position_7=0.0 0.0 0.0
+light_position_6=0.0 0.0 0.0
+light_position_5=0.0 0.0 0.0
+light_position_4=0.0 0.0 0.0
+light_position_3=0.0 0.0 0.0
+light_position_2=0.0 -100.0 100.0
+camera_fov_y=60.0
+light_position_1=100.0 100.0 100.0
+light_position_0=-100.0 100.0 100.0
+front_material_color=0.7058824 0.44313726 0.0627451
+background_color=1.0 1.0 1.0
+light_intensity_7=1.0
+front_material_ambient_intensity=0.4
+light_intensity_6=1.0
+scale_factor=0.3000002
+light_intensity_5=1.0
+light_intensity_4=1.0
+light_intensity_3=1.0
+light_intensity_2=0.3
+light_intensity_1=0.7
+light_intensity_0=0.5
+rotation_matrix=0.5272737 -0.8403951 -0.1254016 0.0 -0.19924057 -0.26575094 0.94323117 0.0 -0.8260085 -0.47235364 -0.30756372 0.0 0.0 0.0 0.0 1.0
+light_color_7=1.0 1.0 1.0
+light_color_6=1.0 1.0 1.0
+front_material_diffuse_intensity=0.8
+light_color_5=1.0 1.0 1.0
+light_color_4=1.0 1.0 1.0
+light_color_3=1.0 1.0 1.0
+light_color_2=1.0 1.0 1.0
+light_color_1=1.0 1.0 1.0
+light_color_0=1.0 1.0 1.0
+light_status_7=OFF
+light_status_6=OFF
+light_status_5=OFF
+light_status_4=OFF
+front_material_shininess=30.0
+light_status_3=OFF
+light_status_2=ON
+light_status_1=ON
+light_status_0=ON
+camera_height=2.0");
+    write(":a " + l, "surface_equation=" + string(I[1]));
+write(":a " + l,
+"camera_transform=1.0 0.0 0.0 -0.0 0.0 1.0 0.0 -0.0 0.0 0.0 1.0 -1.0 0.0 0.0 0.0 1.0
+back_material_ambient_intensity=0.4
+back_material_color=0.8392157 0.8117647 0.47058824
+back_material_shininess=30.0
+back_material_diffuse_intensity=0.8");
+  }
+  else
+  {
+    err_mes = "cannot plot " + string(ncols(I)) + " equations in "
+            + string(n) + " variables";
+    ERROR(err_mes);
+  }
+
+  string surf_call; i = 0;
+
+  if (isWindows())
+  {
+    string surferPath = getShellOutput("which surfer");
+    if (find(surferPath, "no surfer in") != 0)
+    { /* did not find surfer: either not installed or
+         not yet included in $PATH variable */
+      err_mes = "calling `surfer` failed" + newline
+      + " (Either the program Surfer is not installed," + newline
+      + "  or it has not yet been included in $PATH.)";
+      ERROR(err_mes);
+    }
+    else
+    {
+      string singularPath = getShellOutput("pwd");
+      surferPath = windowsCorrection(surferPath);
+      surferPath = surferPath[1..size(surferPath)-size("/surfer")];
+      singularPath = windowsCorrection(singularPath);
+      link ll = "|: cygpath -w " + singularPath;
+      singularPath = "'\""+read(ll)+"\"'"; close(ll);
+      surf_call = "cygstart -w -d " + surferPath + " ";
+      surf_call = surf_call + surferPath + "/surfer ";
+      surf_call = surf_call + singularPath + "/" + lForWindows;
+      "Close window to exit from `surfer`.";
+      i = system("sh", surf_call);
+    }
+  }
+  else
+  {
+    surf_call = "surfer";
+    surf_call = surf_call + " " + l + " >/dev/null 2>&1";
+    "Close window to exit from `surfer`.";
+    i = system("sh", surf_call);
+
+    if ( (i != 0) && isMacOSX() )
+    {
+      "*!* Sorry: calling `surfer` failed ['"+surf_call+"']" + newline
+      + " (The shell returned the error code " + string(i) + "." + newline
+      + "But since we are on Mac OS X, let us try to open SURFER.app instead..." + newline
+      + "Appropriate SURFER.app is available for instance at ftp://www.mathematik.uni-kl.de/pub/Math/Singular/utils/SURFER.dmg";
+
+      // fallback, will only work if SURFER.app is available (e.g. in /Applications)
+      // get SURFER.app e.g. from http://www.mathematik.uni-kl.de/~motsak/files/SURFER.dmg
+      // note that the newer (Java-based) variant of Surfer may not support command line usage yet :(
+
+      surf_call = "open -a SURFER -W --args -t -s";
+      surf_call = surf_call + " " + l + " >/dev/null 2>&1";
+      "Close window to exit from `surfer`.";
+      i = system("sh", surf_call);
+    }
+  }
+  system("sh", "command rm " + l);
+
+  if (i != 0)
+  {
+    err_mes = "calling `surfer` failed" + newline
+              + " (The shell returned the error code "
+              + string(i) + ".";
+    ERROR(err_mes);
+  }
+}
+example
+{ "EXAMPLE:"; echo = 2;
+  ring rr1 = 0,(x,y,z),dp;
+  // Steiner surface
+  ideal J(2) = x^2*y^2+x^2*z^2+y^2*z^2-17*x*y*z;
+  surfer(J(2));
+
+  // --------------------
+  surfer(x*(x2-y2)+z2);
+
+  // E7
+  surfer(x^3-x*y^3+z^2);
+
+  // Whitney umbrella
+  surfer(z^2-x^2*y);
+}
+
+static proc isWindows()
+"returns 1 if this SINGULAR instance runs under (some) Windows OS;
+0 otherwise"
+{
+  string s = system("uname");
+  if((find(s,"CYGWIN")!=0)
+  ||(find(s,"Win")!=0))
+  { return(1); }
+  return (0);
+}
+
+static proc isMacOSX()
+"returns 1 if this SINGULAR instance runs under (some) Mac OS X;
+0 otherwise"
+{
+  string s = system("uname");
+
+  for (int i = 1; i <= size(s)-2; i = i + 1)
+  {
+    if (s[i] == "d" or s[i] == "D")
+    {
+      if (s[i+1] == "a" or s[i+1] == "A")
+      {
+        if (s[i+2] == "r" or s[i+2] == "R")
+        {
+          return (1);
+        }
+      }
+    }
+  }
+  return (0);
+}
+
+static proc isInteractiveShell()
+"returns 1 if this SINGULAR instance runs in some container inside interactive shell;
+0 otherwise"
+{
+  // todo: do something here
+  return (1);
+  return (0);
+}
+
+static proc getShellOutput(string shellCommand)
+"returns the console output when executing the given shellCommand"
+{
+   int s;
+   string tempFilename = "tmp" + string(system("pid"));
+   s = system("sh", shellCommand + " > " + tempFilename + " 2>&1");
+   string r1 = read(tempFilename);
+   s = size(r1) - 1;
+   string r2 = r1[1..s];
+   s = system("sh", "command rm " + tempFilename);
+   return (r2);
+}
+
+static proc windowsCorrection(string windowsPath)
+"puts a backslash in front of each space and each special character
+and returns the resulting string"
+{
+  string s = ""; int i;
+  for (i = 1; i <= size(windowsPath); i++)
+  {
+    if (find(" ()", windowsPath[i]) != 0)
+    {
+      s = s + "\\";
+    }
+    s = s + windowsPath[i];
+  }
+  return (s);
+}
+///////////////////////////////////////////////////////////////////////////////
+static proc FindDisplayProgram()
+{
+ string s=system("executable","mimeopen");
+ if (s!="")
+ {
+   return(s);
+   //return(s+" -d");
+ }
+ s=system("executable","xdg-open");
+ if (s!="") { return(s); }
+ s=system("executable","cygstart"); // windows
+ if (s!="") { return(s); }
+ s=system("executable","open"); // osx
+ if (s!="") { return(s); }
+ s=system("executable","display"); // imagemagick
+ if (s!="") { return(s); }
+ " No display program for jpg files found";
+ return("");
+}

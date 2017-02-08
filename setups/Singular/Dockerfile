@@ -71,6 +71,9 @@ RUN ./autogen.sh;\
 
 RUN echo "interactive-shell!xE:echo:!echo \">>SPECIAL_EVENT_START>>\"%H\"<<SPECIAL_EVENT_END<<\"" >> /usr/local/share/singular/LIB/help.cnf
 COPY surf.lib /usr/local/share/singular/LIB/surf.lib
+RUN apt-get install -y surf-alggeo
+
+
 
 # Userland
 WORKDIR /

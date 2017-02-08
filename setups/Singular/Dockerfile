@@ -69,7 +69,7 @@ RUN ./autogen.sh;\
     make install
 #    Singular -v
 
-RUN echo "interactive-shell!xE:echo:!echo \">>SPECIAL_EVENT_START>>\"%H\"<<SPECIAL_EVENT_END<<\"" >> /usr/local/share/singular/LIB/help.cnf
+RUN echo "interactive-shell!xE:echo:!echo -n \">>SPECIAL_EVENT_START>>\"%H\"<<SPECIAL_EVENT_END<<\"" >> /usr/local/share/singular/LIB/help.cnf
 COPY surf.lib /usr/local/share/singular/LIB/surf.lib
 RUN apt-get install -y surf-alggeo
 

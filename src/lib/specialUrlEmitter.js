@@ -77,6 +77,25 @@ var emitUrlForUserGeneratedFileToClient = function(client,
 var emitHelpUrlToClient = OPTIONS.help.emitHelpUrlToClient;
 var isViewHelpEvent = OPTIONS.help.isViewHelpEvent;
 
+var stripSpecialLines = function(data) {
+    var splitted = data.split("\n");
+    var result = "";
+    for(var lineIndex in splitted) {
+        var line = splitted[lineIndex];
+        if(line.match(/>>SPECIAL_EVENT_START>>(.*)<<SPECIAL_EVENT_END<</) === null){
+            result += line;
+        }
+    }
+    return result;
+}
+
+var emitLeftOverData = function(client, emitDataViaSockets, data) {
+    console.log("DATA: " + data);
+    var leftOverData = stripSpecialLines(data);
+    if(leftOverData !== ""){
+        emitDataViaSockets(client.socketArray, "result", leftOverData);
+    }
+}
 
 module.exports = function(pathPrefix,
                           sshCredentials,
@@ -84,7 +103,8 @@ module.exports = function(pathPrefix,
                           emitDataViaSockets
                           ) {
   return {
-    emitEventUrlToClient: function(client, url, pathPostfix) {
+    emitEventUrlToClient: function(client, url, data, pathPostfix) {
+      emitLeftOverData(client, emitDataViaSockets, data);
       if (isViewHelpEvent(url)) {
         emitHelpUrlToClient(client, url, logFunction, emitDataViaSockets);
         return;
@@ -100,7 +120,7 @@ module.exports = function(pathPrefix,
     },
     isSpecial: function(data) {
       var eventData = data.match(
-          />>SPECIAL_EVENT_START>>(.*)<<SPECIAL_EVENT_END/);
+          />>SPECIAL_EVENT_START>>(.*)<<SPECIAL_EVENT_END<</);
       if (eventData) {
         return eventData[1];
       }

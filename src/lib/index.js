@@ -171,6 +171,10 @@ var updateSocket = function(clientID, socket) {
   clients[clientID].socketArray[ID] = socket;
 };
 
+var dataIsEmpty = function(data){
+    return data === "";
+}
+
 var sendDataToClient = function(clientID) {
   return function(dataObject) {
     var data = dataObject.toString();
@@ -192,6 +196,7 @@ var sendDataToClient = function(clientID) {
       specialUrlEmitter.emitEventUrlToClient(
           clients[clientID],
           dataMarkedAsSpecial,
+          data,
           userSpecificPath(clientID)
           );
       return;

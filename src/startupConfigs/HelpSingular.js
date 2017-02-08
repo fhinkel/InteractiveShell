@@ -5,11 +5,12 @@ var help = function(){
                                             logFunction,
                                             emitDataViaSockets) {
           logFunction("Look at " + viewHelp);
-          emitDataViaSockets(client.socketArray, "viewHelp", viewHelp);
+          var url = viewHelp.replace("\"","");
+          emitDataViaSockets(client.socketArray, "viewHelp", url);
         },
 
         isViewHelpEvent : function(eventData) {
-          return true;
+          return eventData.match(/Manual/) !== null;
         }
     }
     return result;

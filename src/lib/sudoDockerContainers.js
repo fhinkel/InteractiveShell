@@ -37,7 +37,7 @@ var dockerManager = function() {
         function(error) {
           if (error) {
             var containerAlreadyStarted =
-                error.message.match(/Conflict. The container name/);
+                error.message.match(/Conflict. The name/) || error.message.match(/Conflict. The container name/);
             if (containerAlreadyStarted) {
               getNewInstance(next);
             } else {

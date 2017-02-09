@@ -78,14 +78,7 @@ var emitHelpUrlToClient = OPTIONS.help.emitHelpUrlToClient;
 var isViewHelpEvent = OPTIONS.help.isViewHelpEvent;
 
 var stripSpecialLines = function(data) {
-    var splitted = data.split("\n");
-    var result = "";
-    for(var lineIndex in splitted) {
-        var line = splitted[lineIndex];
-        if(line.match(/>>SPECIAL_EVENT_START>>(.*)<<SPECIAL_EVENT_END<</) === null){
-            result += line;
-        }
-    }
+    var result = data.replace(/^.*>>SPECIAL_EVENT_START>>(.*)<<SPECIAL_EVENT_END<<.*$/mg, "");
     return result;
 }
 

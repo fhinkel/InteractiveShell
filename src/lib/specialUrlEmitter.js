@@ -76,14 +76,10 @@ var emitUrlForUserGeneratedFileToClient = function(client,
 
 var emitHelpUrlToClient = OPTIONS.help.emitHelpUrlToClient;
 var isViewHelpEvent = OPTIONS.help.isViewHelpEvent;
+var stripSpecialLines = OPTIONS.help.stripSpecialLines;
 
-var stripSpecialLines = function(data) {
-    var result = data.replace(/^.*>>SPECIAL_EVENT_START>>(.*)<<SPECIAL_EVENT_END<<.*$/mg, "");
-    return result;
-}
 
 var emitLeftOverData = function(client, emitDataViaSockets, data) {
-    console.log("DATA: " + data);
     var leftOverData = stripSpecialLines(data);
     if(leftOverData !== ""){
         emitDataViaSockets(client.socketArray, "result", leftOverData);

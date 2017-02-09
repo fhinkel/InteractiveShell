@@ -19,6 +19,10 @@ var help = function(){
 
         isViewHelpEvent : function(eventData) {
           return eventData.match(/^file:.*/) !== null;
+        },
+        stripSpecialLines : function(data) {
+            var result = data.replace(/^.*>>SPECIAL_EVENT_START>>(.*)<<SPECIAL_EVENT_END<<.*$/mg, "");
+            return result;
         }
     }
     return result;

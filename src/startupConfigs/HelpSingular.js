@@ -10,7 +10,7 @@ var help = function(){
         },
 
         isViewHelpEvent : function(eventData) {
-          return eventData.match(/Manual/) !== null;
+          return eventData.match(/http/) !== null;
         },
         stripSpecialLines : function(data) {
             var result = data.replace(/^.*>>SPECIAL_EVENT_START>>.*<<SPECIAL_EVENT_END<<(>.*$)/mg, '$1');

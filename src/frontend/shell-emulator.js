@@ -129,7 +129,7 @@ module.exports = function() {
     shell.on("track", function(e, msg) { // add command to history
       if (typeof msg !== 'undefined') {
         if(history !== undefined){
-            history.val(history.val() + msg);
+            history.val(history.val() + msg + "\n");
             scrollDown(history);
         }
         shell.trigger("innerTrack", msg);

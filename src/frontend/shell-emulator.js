@@ -59,7 +59,10 @@ var sendOnEnterCallback = function(id, socket) {
     if (e.which === 13 && e.shiftKey) {
       e.preventDefault();
       // do not make a line break or remove selected text when sending
-      postMessage(getSelected(id), false, socket);
+      var msg = getSelected(id);
+      // We only trigger the innerTrack.
+      shell.trigger("innerTrack", msg);
+      postMessage(msg, true, socket);
     }
   };
 };
@@ -121,17 +124,29 @@ var backspace = function(shell) {
 module.exports = function() {
   var create = function(shell, historyArea, socket) {
     var history = historyArea;
-    historyArea.keypress(sendOnEnterCallback('M2In', socket));
+    history.keypress(sendOnEnterCallback('M2In', socket));
 
     shell.on("track", function(e, msg) { // add command to history
       if (typeof msg !== 'undefined') {
+        if(history !== undefined){
+            history.val(history.val() + msg);
+            scrollDown(history);
+        }
+        shell.trigger("innerTrack", msg);
+      }
+    });
+
+    shell.on("innerTrack", function(e, msg) {
+        // This function will track the messages, i.e. such that arrow up and
+        // down work, but it will not put the msg in the history textarea. We
+        // need this if someone uses the shift+enter functionality in the
+        // history area, because we do not want to track these messages.
         var input = msg.split("\n");
         for (var line in input) {
           if (input[line].length > 0) {
             cmdHistory.index = cmdHistory.push(input[line]);
           }
         }
-      }
     });
 
     var packageAndSendMessage = function(tail, notrack) {
@@ -139,10 +154,6 @@ module.exports = function() {
       if (shell.val().length >= mathProgramOutput.length) {
         var l = shell.val().length;
         var msg = shell.val().substring(mathProgramOutput.length, l) + tail;
-        if (history !== undefined) {
-          history.val(history.val() + msg);
-          scrollDown(history);
-        }
         postMessage(msg, notrack, socket);
       } else {
         console.log("There must be an error.");

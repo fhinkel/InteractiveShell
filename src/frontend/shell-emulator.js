@@ -49,12 +49,12 @@ var interrupt = function(socket) {
 var sendCallback = function(id, socket) {
   return function() {
     var str = getSelected(id);
-    postMessage(str, false, socket);
+    postMessage(str, true, socket);
     return false;
   };
 };
 
-var sendOnEnterCallback = function(id, socket) {
+var sendOnEnterCallback = function(id, socket, shell) {
   return function(e) {
     if (e.which === 13 && e.shiftKey) {
       e.preventDefault();
@@ -124,7 +124,7 @@ var backspace = function(shell) {
 module.exports = function() {
   var create = function(shell, historyArea, socket) {
     var history = historyArea;
-    history.keypress(sendOnEnterCallback('M2In', socket));
+    history.keypress(sendOnEnterCallback('M2In', socket, shell));
 
     shell.on("track", function(e, msg) { // add command to history
       if (typeof msg !== 'undefined') {

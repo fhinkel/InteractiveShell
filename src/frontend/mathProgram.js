@@ -166,7 +166,7 @@ var codeClickAction = function() {
   code += "\n";
   $("#M2In").val($("#M2In").val() + code);
   require('scroll-down')($("#M2In"));
-  shell.postMessage(code, false, socket);
+  shell.postMessage(code, true, socket);
 };
 
 var openTabCloseDrawer = function(event) {

@@ -32,24 +32,21 @@ var mathProgramOutput = "";
 var cmdHistory = []; // History of commands for shell-like arrow navigation
 cmdHistory.index = 0;
 
-var postMessage = function(msg, notrack, socket) {
+var postMessage = function(msg, socket) {
   socket.emit('input', msg);
-  if (!notrack) {
-    $("#M2Out").trigger("track", msg);
-  }
   return true;
 };
 
 var interrupt = function(socket) {
   return function() {
-    postMessage(keys.ctrlc, true, socket);
+    postMessage(keys.ctrlc, socket);
   };
 };
 
 var sendCallback = function(id, socket) {
   return function() {
     var str = getSelected(id);
-    postMessage(str, true, socket);
+    postMessage(str, socket);
     return false;
   };
 };
@@ -62,7 +59,7 @@ var sendOnEnterCallback = function(id, socket, shell) {
       var msg = getSelected(id);
       // We only trigger the innerTrack.
       shell.trigger("innerTrack", msg);
-      postMessage(msg, true, socket);
+      postMessage(msg, socket);
     }
   };
 };
@@ -149,12 +146,12 @@ module.exports = function() {
         }
     });
 
-    var packageAndSendMessage = function(tail, notrack) {
+    var packageAndSendMessage = function(tail) {
       setCaretPosition(shell.attr('id'), shell.val().length);
       if (shell.val().length >= mathProgramOutput.length) {
         var l = shell.val().length;
         var msg = shell.val().substring(mathProgramOutput.length, l) + tail;
-        postMessage(msg, notrack, socket);
+        postMessage(msg, socket);
       } else {
         console.log("There must be an error.");
             // We don't want empty lines send to M2 at pressing return twice.

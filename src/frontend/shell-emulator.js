@@ -73,7 +73,8 @@ function stripSpacesAtBeginningOfLine(lastLine) {
 }
 
 function stripPrompt(lastLine) {
-  return lastLine.replace(/^> /, "");
+  var result = lastLine.replace(/^> /, "");
+  return result.replace(/^\. /, "");
 }
 
 var getCurrentCommand = function(shell) {

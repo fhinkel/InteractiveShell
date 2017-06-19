@@ -1,3 +1,14 @@
+2017-06-19
+* Update M2 version
+* Update link to M2 docu to matching version
+* Publication: address comments for JSAG? AMS notices? Journal of symbolic computation
+** Withdraw submission from JSAG
+** Put our article in JSC Latex format
+** Maybe shorten it?
+** Do we need better tutorials?
+* Recover graceful when Node server crashes
+
+
 2016-04-20
 * use promise-fs instead of fs (or something like this)
 * multiple file upload on one click, maybe
@@ -7,7 +18,7 @@
 * better scalability (aws and other services)
 
 2016-04-18
-* Transfer changes to Singular
+* ~~Transfer changes to Singular~~
 * Tests! Tests! Tests!
 * Multiple File upload
 * ~~"Session thing": Having several sockets in the same session~~

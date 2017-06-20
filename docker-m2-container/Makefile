@@ -10,7 +10,11 @@ withssh:
 
 run:
 	docker run -i -t -u m2user -w /home/m2user -v /Users/mike/:/home/m2user/files:ro \
-        mikestillman/test-macaulay2-$(VERSION)  M2
+        mikestillman/test-macaulay2-$(VERSION) M2
+
+run-bash:
+	docker run -i -t -u m2user -w /home/m2user -v /Users/mike/:/home/m2user/files:ro \
+        mikestillman/test-macaulay2-$(VERSION) bash
 
 login:
 	docker login --username=mikestillman

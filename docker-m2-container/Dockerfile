@@ -24,6 +24,7 @@ RUN apt-get install -yq graphviz
 # M2 userland, part 1.    
 RUN useradd -m -d /home/m2user m2user
 RUN mkdir /custom
+#RUN chown -R m2user:m2user /usr/share/Macaulay2
 RUN chown -R m2user:m2user /custom
 RUN chmod -R 775 /custom
 
@@ -33,11 +34,10 @@ RUN (cd /custom; wget http://www.math.uic.edu/~jan/x86_64phcv${PHC_VERSION}p.tar
 RUN (cd /custom; tar zxf x86_64phcv${PHC_VERSION}p.tar.gz; mv phc /usr/bin; rm x86_64phcv${PHC_VERSION}p.tar.gz)
 # This is the only way extracting Bertini gives the right permissions.
 ENV BERTINI_VERSION 1.5.1
+RUN apt-get install -yq libmpfr4
 RUN su m2user -c "/bin/bash;\
    cd /custom;\
    wget https://bertini.nd.edu/BertiniLinux64_v${BERTINI_VERSION}.tar.gz;\ 
    tar xzf BertiniLinux64_v${BERTINI_VERSION}.tar.gz;"
 RUN ln -s /custom/BertiniLinux64_v${BERTINI_VERSION}/bin/bertini /usr/bin/
-
-
-
+RUN cp -a /custom/BertiniLinux64_v${BERTINI_VERSION}/lib/* /usr/lib/

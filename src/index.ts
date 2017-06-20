@@ -16,7 +16,7 @@ if (n > 4) {
   process.exit(0);
 }
 
-// Dirname is src/dist
+// Dirname is src/dist.
 var path = require("path").join(__dirname, "/../startupConfigs/");
 
 if (mathProgram === "Macaulay2" || mathProgram === "M2") {

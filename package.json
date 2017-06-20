@@ -45,7 +45,7 @@
     "winston": "0.8.3"
   },
   "scripts": {
-    "start": "webpack && tsc && node src/startupConfigs/Macaulay2SudoDocker.js",
+    "start": "webpack && tsc && node src/dist/index.js",
     "basic": "webpack && node src/startupConfigs/Macaulay2SudoDocker.js",
     "local": "webpack && node src/startupConfigs/Macaulay2LocalServer.js",
     "twoMachines": "webpack && node src/startupConfigs/Macaulay2SshDocker.js",

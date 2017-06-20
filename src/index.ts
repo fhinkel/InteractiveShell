@@ -16,23 +16,26 @@ if (n > 4) {
   process.exit(0);
 }
 
+// Dirname is src/dist
+var path = require("path").join(__dirname, "/../startupConfigs/");
+
 if (mathProgram === "Macaulay2" || mathProgram === "M2") {
   if (mode === "local") {
-    require("./startupConfigs/Macaulay2LocalServer.js");
+    require(path + "Macaulay2LocalServer.js");
   } else if (mode === "docker") {
-    require("./startupConfigs/Macaulay2SudoDocker.js");
+    require(path + "Macaulay2SudoDocker.js");
   } else if (mode === "ssh") {
-    require("./startupConfigs/Macaulay2SshDocker.js");
+    require(path + "Macaulay2SshDocker.js");
   } else {
     console.log("There is no mode " + mode);
   }
 } else if (mathProgram === "Singular") {
   if (mode === "local") {
-    require("./startupConfigs/SingularLocalServer.js");
+    require(path + "SingularLocalServer.js");
   } else if (mode === "docker") {
-    require("./startupConfigs/SingularSudoDocker.js");
+    require(path + "SingularSudoDocker.js");
   } else if (mode === "ssh") {
-    require("./startupConfigs/SingularSshDocker.js");
+    require(path + "SingularSshDocker.js");
   } else {
     console.log("There is no mode " + mode);
   }

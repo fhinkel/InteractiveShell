@@ -1,3 +1,4 @@
+// This starts the main server!
 var fs = require('fs');
 
 var fileExistsPromise = function(filename) {

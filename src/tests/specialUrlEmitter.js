@@ -34,7 +34,7 @@ require("../startupConfigs/default.js").getConfig({}, function(options) {
 
         var revert = specialUrlEmitterModule.__set__("ssh2", ssh2);
 
-        specialUrlEmitter.emitEventUrlToClient("user12", "eventType", "", "blubb");
+        specialUrlEmitter.emitEventUrlToClient("user12", "eventType", "", "");
 
         revert();
       });

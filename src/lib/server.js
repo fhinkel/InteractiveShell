@@ -1,4 +1,3 @@
-/* global OPTIONS */
 'use strict;';
 
 var express = require('express');
@@ -13,6 +12,7 @@ var SocketIOFileUpload = require('socketio-file-upload');
 var path = require('path');
 var getClientIdFromSocket;
 var serverConfig;
+var options; // These used to be global.OPTIONS
 var staticFolder = path.join(__dirname, '../../public/public');
 
 var logExceptOnTest = function(string) {
@@ -76,7 +76,7 @@ var Client = function() {
 };
 
 var setCookie = function(cookies, clientID) {
-  cookies.set(OPTIONS.cookieName, clientID, {
+  cookies.set(options.cookieName, clientID, {
     httpOnly: false
   });
 };
@@ -234,7 +234,7 @@ var killMathProgram = function(stream, clientID) {
 
 var checkCookie = function(request, response, next) {
   var cookies = new Cookies(request, response);
-  var clientID = cookies.get(OPTIONS.cookieName);
+  var clientID = cookies.get(options.cookieName);
   if (!clientID) {
     logExceptOnTest('New client without a cookie set came along');
     logExceptOnTest('Set new cookie!');
@@ -422,19 +422,20 @@ var authorizeIfNecessary = function(authOption) {
   }
   return function(socket) {
     var cookies = socket.request.headers.cookie;
-    return cookies[OPTIONS.cookieName];
+    return cookies[options.cookieName];
   };
 };
 
-var MathServer = function() {
-  serverConfig = OPTIONS.serverConfig;
+var MathServer = function(o) {
+  options = o;
+  serverConfig = options.serverConfig;
 
   if (!serverConfig.CONTAINERS) {
     console.error("error, no container management given.");
     throw new Error("No CONTAINERS!");
   }
 
-  getClientIdFromSocket = authorizeIfNecessary(OPTIONS.authentication);
+  getClientIdFromSocket = authorizeIfNecessary(options.authentication);
 
   instanceManager = require(serverConfig.CONTAINERS).manager();
 

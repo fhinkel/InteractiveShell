@@ -45,7 +45,7 @@
     "winston": "0.8.3"
   },
   "scripts": {
-    "start": "webpack && node src/startupConfigs/Macaulay2SudoDocker.js",
+    "start": "webpack && tsc && node src/startupConfigs/Macaulay2SudoDocker.js",
     "basic": "webpack && node src/startupConfigs/Macaulay2SudoDocker.js",
     "local": "webpack && node src/startupConfigs/Macaulay2LocalServer.js",
     "twoMachines": "webpack && node src/startupConfigs/Macaulay2SshDocker.js",
@@ -55,7 +55,7 @@
     "ssh_singular": "webpack && node src/startupConfigs/SingularSshDocker.js",
     "forever_singular": "webpack && ./node_modules/forever/bin/forever start -l /home/user/logs/forever.log -o /home/user/logs/out.log -e /home/user/logs/err.log --append src/startupConfigs/SingularSshDocker.js",
     "stop": "kill `ps ax | grep Server | grep -v monitor | grep node | awk '{print $1}'`",
-    "test": "mocha src/tests/ --reporter spec --timeout 6000",
+    "test": "tsc && mocha src/tests/ --reporter spec --timeout 6000",
     "lint": "eslint ./src/ ./public-source/ ./public/public-common/mathJaxConfig.js --fix --ext ts --env mocha --rule 'require-jsdoc: \"off\"'"
   },
   "repository": {
@@ -63,8 +63,10 @@
     "url": "git@github.com:fhinkel/tryM2.git"
   },
   "devDependencies": {
+    "@types/mocha": "^2.2.41",
+    "@types/node": "^8.0.0",
     "eslint": "2.7.0",
-    "eslint-config-google": "0.5.0",    
+    "eslint-config-google": "0.5.0",
     "jsdom": "4.3.0",
     "mocha": "2.1.0",
     "rewire": "2.5.1",

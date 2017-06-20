@@ -1,5 +1,4 @@
 require("../startupConfigs/default.js").getConfig({}, function(options) {
-  global.OPTIONS = options;
   var rewire = require('rewire');
   var sinon = require('sinon');
   var assert = require('chai').assert;
@@ -17,7 +16,9 @@ require("../startupConfigs/default.js").getConfig({}, function(options) {
       specialUrlEmitter = specialUrlEmitterModule(
         pathPrefix,
         sshCredentials,
-        logFunction);
+        logFunction, 
+        function() {},
+        options);
     });
 
     describe('emitEventUrlToClient()', function() {
@@ -105,7 +106,7 @@ require("../startupConfigs/default.js").getConfig({}, function(options) {
     describe('isViewHelpEvent', function() {
       var isViewHelpEvent;
       before(function() {
-        isViewHelpEvent = specialUrlEmitterModule.__get__("isViewHelpEvent");
+        isViewHelpEvent = options.help.isViewHelpEvent;
       });
       it('should match on file:', function() {
         var data = "file:";

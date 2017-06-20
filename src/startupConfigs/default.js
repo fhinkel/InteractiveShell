@@ -1,5 +1,5 @@
 
-var configuration = function(overrideOptions) {
+var configuration = function(overrideOptions, next) {
   var options = {
     cookieName: "tryM2",
     authentication: "none",
@@ -56,7 +56,7 @@ var configuration = function(overrideOptions) {
   };
 
   overrideDefaultOptions(overrideOptions, options);
-  return options;
+  next(options);
 };
 
 exports.getConfig = configuration;

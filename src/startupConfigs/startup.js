@@ -19,10 +19,12 @@ module.exports = function(overrideOptions) {
       }
     })
     .then(function() {
-      global.OPTIONS = require('./default.js').getConfig(overrideOptions);
-      console.log(global.OPTIONS);
-      var Macaulay2Server = require('../lib/index.js').mathServer();
-      Macaulay2Server.listen();
+      require('./default.js').getConfig(overrideOptions, function(options) {
+        global.OPTIONS = options;
+        console.log(global.OPTIONS);
+        var Macaulay2Server = require('../lib/index.js').mathServer();
+        Macaulay2Server.listen();
+      });
     })
     .catch(function(err) {
       console.log(err);

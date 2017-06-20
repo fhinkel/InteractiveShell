@@ -1,3 +1,22 @@
+2017-06-19 Ithaca
+* We want an easy setup for AWS, Digitalocean, GDC, etc
+* We want to send a maintenance notification to our users in cae of sesrver downtime
+* DocConverter: 
+** More tutorials 
+** MathJax 
+** Organize tutorials in groups or by rating
+** Allow URL of tutorial location
+* Fix TravisCI (npm test fails.)
+* More documentation
+* Make Docker container with always newest M2 version
+* Is Bertini up-to-date?
+* Do we need other programs? Is Polymake running?
+* Use ESNext features (.keys() instead of ownProperty, promises, etc)
+* DocConverter.m2 needs to be in November M2 release and in vagrant file
+* Update Node
+* Check Cookie Logic
+* Fun with TypeScript
+
 2017-06-19
 * Update M2 version
 * Update link to M2 docu to matching version

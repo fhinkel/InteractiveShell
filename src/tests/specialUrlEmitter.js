@@ -1,3 +1,13 @@
+
+
+
+
+
+
+
+
+
+
 require("../startupConfigs/default.js").getConfig({}, function(options) {
   var rewire = require('rewire');
   var sinon = require('sinon');
@@ -77,19 +87,15 @@ require("../startupConfigs/default.js").getConfig({}, function(options) {
 
       it('emits correct URL for viewHelp', function() {
         var spy = sinon.spy();
-        var revert = specialUrlEmitterModule
-          .__set__("emitHelpUrlToClient", spy);
-
-        var revertIsViewHelpEvent = specialUrlEmitterModule
-          .__set__("isViewHelpEvent", function() {
-            return true;
-          });
+        var originalEmitHelpUrlToClient = options.help.emitHelpUrlToClient;
+        options.help.emitHelpUrlToClient = spy;
+        var originalIsViewHelpEvent = options.help.isViewHelpEvent; 
+        options.help.isViewHelpEvent = function() {return true;};
 
         specialUrlEmitter.emitEventUrlToClient("user12", "eventType", "");
         assert(spy.called, "emitHelpUrlToClient was never called");
-
-        revert();
-        revertIsViewHelpEvent();
+        options.help.emitHelpUrlToClient = originalEmitHelpUrlToClient;
+        options.help.isViewHelpEvent = originalIsViewHelpEvent; 
       });
     });
     describe('isSpecial()', function() {

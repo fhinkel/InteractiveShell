@@ -30,7 +30,7 @@ RUN chmod -R 775 /custom
 # Bertini and PHCpack
 ENV PHC_VERSION 24
 RUN (cd /custom; wget http://www.math.uic.edu/~jan/x86_64phcv${PHC_VERSION}p.tar.gz)
-RUN (cd /custom; tar zxf x86_64phcv23p.tar.gz; mv phc /usr/bin; rm x86_64phcv${PHC_VERSION}p.tar.gz)
+RUN (cd /custom; tar zxf x86_64phcv${PHC_VERSION}p.tar.gz; mv phc /usr/bin; rm x86_64phcv${PHC_VERSION}p.tar.gz)
 # This is the only way extracting Bertini gives the right permissions.
 ENV BERTINI_VERSION 1.5.1
 RUN su m2user -c "/bin/bash;\

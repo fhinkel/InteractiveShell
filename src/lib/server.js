@@ -185,7 +185,8 @@ var sendDataToClient = function(clientID) {
         pathPrefix,
         sshCredentials,
         logExceptOnTest,
-        emitDataViaSockets
+        emitDataViaSockets,
+        options
     );
     var dataMarkedAsSpecial = specialUrlEmitter.isSpecial(data);
     if (dataMarkedAsSpecial) {
@@ -437,7 +438,7 @@ var MathServer = function(o) {
 
   getClientIdFromSocket = authorizeIfNecessary(options.authentication);
 
-  instanceManager = require(serverConfig.CONTAINERS).manager();
+  instanceManager = require(serverConfig.CONTAINERS).manager(options);
 
   initializeServer();
 

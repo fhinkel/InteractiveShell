@@ -1,9 +1,7 @@
-/* global OPTIONS */
-
 var exec = require('child_process').exec;
 var waitForSshd;
 
-var dockerManager = function() {
+var dockerManager = function(OPTIONS) {
   var resources = OPTIONS.perContainerResources;
   var options = OPTIONS.containerConfig;
   var currentInstance = OPTIONS.startInstance;

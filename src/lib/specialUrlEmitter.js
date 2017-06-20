@@ -1,5 +1,3 @@
-/* global OPTIONS */
-
 var ssh2 = require('ssh2');
 var fs = require('fs');
 
@@ -72,13 +70,8 @@ var emitUrlForUserGeneratedFileToClient = function(client,
   sshConnection.connect(sshCredentials(client.instance));
 };
 
-// These are in OPTIONS, as they differ between Math software.
-var emitHelpUrlToClient = OPTIONS.help.emitHelpUrlToClient;
-var isViewHelpEvent = OPTIONS.help.isViewHelpEvent;
-var stripSpecialLines = OPTIONS.help.stripSpecialLines;
-
-var emitLeftOverData = function(client, emitDataViaSockets, data) {
-  var leftOverData = stripSpecialLines(data);
+var emitLeftOverData = function(client, emitDataViaSockets, data, stripFunction) {
+  var leftOverData = stripFunction(data);
   if (leftOverData !== "") {
     emitDataViaSockets(client.socketArray, "result", leftOverData);
   }
@@ -87,13 +80,14 @@ var emitLeftOverData = function(client, emitDataViaSockets, data) {
 module.exports = function(pathPrefix,
                           sshCredentials,
                           logFunction,
-                          emitDataViaSockets
+                          emitDataViaSockets,
+                          options
                           ) {
   return {
     emitEventUrlToClient: function(client, url, data, pathPostfix) {
-      emitLeftOverData(client, emitDataViaSockets, data);
-      if (isViewHelpEvent(url)) {
-        emitHelpUrlToClient(client, url, logFunction, emitDataViaSockets);
+      emitLeftOverData(client, emitDataViaSockets, data, options.help.stripSpecialLines);
+      if (options.help.isViewHelpEvent(url)) {
+        options.help.emitHelpUrlToClient(client, url, logFunction, emitDataViaSockets);
         return;
       }
       emitUrlForUserGeneratedFileToClient(

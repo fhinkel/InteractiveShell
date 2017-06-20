@@ -1,7 +1,7 @@
-var mathProgram = "Macaulay2";
-var mode = "docker";
-var args = process.argv;
-var n = args.length;
+let mathProgram : string = "Macaulay2";
+let mode : string = "docker";
+const args : string[] = process.argv;
+const n : number = args.length;
 
 if (n > 2) {
   mathProgram = args[2];
@@ -17,7 +17,7 @@ if (n > 4) {
 }
 
 // Dirname is src/dist.
-var path = require("path").join(__dirname, "/../startupConfigs/");
+const path = require("path").join(__dirname, "/../startupConfigs/");
 
 if (mathProgram === "Macaulay2" || mathProgram === "M2") {
   if (mode === "local") {

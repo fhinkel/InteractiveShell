@@ -11,7 +11,7 @@ var help = function() {
       } else {
         return;
       }
-      helpPath = "http://www.math.uiuc.edu/Macaulay2/doc/Macaulay2-1.9/" +
+      helpPath = "http://www.math.uiuc.edu/Macaulay2/doc/Macaulay2-1.10/" +
               "share/doc/Macaulay2" + helpPath;
       logFunction(helpPath);
       emitDataViaSockets(client.socketArray, "viewHelp", helpPath);

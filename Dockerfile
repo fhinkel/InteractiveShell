@@ -1,4 +1,4 @@
-FROM lkastner/m2container:1.9.2
+FROM lkastner/m2container:latest
 MAINTAINER InteractiveShell Team <trym2@googlegroups.com>
 
 ##### M2 userland

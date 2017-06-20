@@ -12,7 +12,7 @@ var SocketIOFileUpload = require('socketio-file-upload');
 
 var path = require('path');
 var getClientIdFromSocket;
-var options;
+var serverConfig;
 var staticFolder = path.join(__dirname, '../../public/public');
 
 var logExceptOnTest = function(string) {
@@ -115,8 +115,8 @@ var getInstance = function(clientID, next) {
 };
 
 var optLogCmdToFile = function(clientId, msg) {
-  if (options.CMD_LOG_FOLDER) {
-    fs.appendFile(options.CMD_LOG_FOLDER + "/" + clientId + ".log",
+  if (serverConfig.CMD_LOG_FOLDER) {
+    fs.appendFile(serverConfig.CMD_LOG_FOLDER + "/" + clientId + ".log",
         msg,
         function(err) {
           if (err) {
@@ -140,7 +140,7 @@ var spawnMathProgramInSecureContainer = function(clientID, next) {
     clients[clientID].instance = instance;
     var connection = new ssh2.Client();
     connection.on('ready', function() {
-      connection.exec(options.MATH_PROGRAM_COMMAND,
+      connection.exec(serverConfig.MATH_PROGRAM_COMMAND,
           {pty: true},
           function(err, stream) {
             if (err) {
@@ -180,7 +180,7 @@ var sendDataToClient = function(clientID) {
       return;
     }
     updateLastActiveTime(clientID);
-    var pathPrefix = staticFolder + '-' + options.MATH_PROGRAM;
+    var pathPrefix = staticFolder + '-' + serverConfig.MATH_PROGRAM;
     var specialUrlEmitter = require('./specialUrlEmitter')(
         pathPrefix,
         sshCredentials,
@@ -271,14 +271,14 @@ var initializeServer = function() {
       })
     ]
   };
-  var prefix = staticFolder + "-" + options.MATH_PROGRAM + "/";
+  var prefix = staticFolder + "-" + serverConfig.MATH_PROGRAM + "/";
   var tutorialReader = require('./tutorialReader')(prefix, fs);
-  var admin = require('./admin')(clients, options);
+  var admin = require('./admin')(clients, serverConfig);
   app.use(favicon(staticFolder + '-' +
-      options.MATH_PROGRAM + '/favicon.ico'));
+      serverConfig.MATH_PROGRAM + '/favicon.ico'));
   app.use(SocketIOFileUpload.router);
   app.use(checkCookie);
-  app.use(serveStatic(staticFolder + '-' + options.MATH_PROGRAM));
+  app.use(serveStatic(staticFolder + '-' + serverConfig.MATH_PROGRAM));
   app.use(serveStatic(staticFolder + '-common'));
   app.use(expressWinston.logger(loggerSettings));
   app.use('/admin', admin.stats);
@@ -312,7 +312,7 @@ var socketSanityCheck = function(clientId, socket) {
     if (clients[clientId].reconnecting) {
       emitDataViaClientSockets(clientId,
       'result',
-          "Session resumed.\n" + options.resumeString);
+          "Session resumed.\n" + serverConfig.resumeString);
       clients[clientId].reconnecting = false;
     }
     clients[clientId].saneState = true;
@@ -399,7 +399,7 @@ var listen = function() {
     socket.on('reset', socketResetAction(clientId));
   });
 
-  var listener = http.listen(options.port);
+  var listener = http.listen(serverConfig.port);
   console.log("Server running on " + listener.address().port);
   return listener;
 };
@@ -427,16 +427,16 @@ var authorizeIfNecessary = function(authOption) {
 };
 
 var MathServer = function() {
-  options = OPTIONS.serverConfig;
+  serverConfig = OPTIONS.serverConfig;
 
-  if (!options.CONTAINERS) {
+  if (!serverConfig.CONTAINERS) {
     console.error("error, no container management given.");
     throw new Error("No CONTAINERS!");
   }
 
   getClientIdFromSocket = authorizeIfNecessary(OPTIONS.authentication);
 
-  instanceManager = require(options.CONTAINERS).manager();
+  instanceManager = require(serverConfig.CONTAINERS).manager();
 
   initializeServer();
 

@@ -45,7 +45,6 @@ var emitUrlForUserGeneratedFileToClient = function(client,
       throw new Error('ssh2.sftp() failed: ' + err);
     }
     var targetPath = pathPrefix + pathPostfix;
-    // console.log('Path: ' + targetPath);
     fs.mkdir(targetPath, function(err) {
       if (err) {
         logFunction("Folder exists, but we proceed anyway");
@@ -58,7 +57,6 @@ var emitUrlForUserGeneratedFileToClient = function(client,
               path + ", ERROR: " + error);
         } else {
           setTimeout(unlink(completePath), 1000 * 60 * 10);
-          // console.log("Emitting path.");
           emitDataViaSockets(client.socketArray,
               "image", pathPostfix + fileName
           );
@@ -68,14 +66,13 @@ var emitUrlForUserGeneratedFileToClient = function(client,
   };
 
   sshConnection.on('ready', function() {
-    // console.log("I am ready.");
     sshConnection.sftp(handleUserGeneratedFile);
   });
-  // console.log(sshCredentials(clients[clientId].instance));
 
   sshConnection.connect(sshCredentials(client.instance));
 };
 
+// These are in OPTIONS, as they differ between Math software.
 var emitHelpUrlToClient = OPTIONS.help.emitHelpUrlToClient;
 var isViewHelpEvent = OPTIONS.help.isViewHelpEvent;
 var stripSpecialLines = OPTIONS.help.stripSpecialLines;

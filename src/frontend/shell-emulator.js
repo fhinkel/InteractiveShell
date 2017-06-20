@@ -22,8 +22,6 @@ var keys = {
   ctrlc: "\x03"
 };
 
-var $ = require('jquery');
-
 var unicodeBell = '\u0007';
 var setCaretPosition = require('set-caret-position');
 var scrollDown = require('scroll-down');

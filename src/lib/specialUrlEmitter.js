@@ -1,3 +1,5 @@
+/* global OPTIONS */
+
 var ssh2 = require('ssh2');
 var fs = require('fs');
 

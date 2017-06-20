@@ -45,8 +45,8 @@ newPackage(
         )
 
 export {
-     convert,
-     simpledocExample
+     "convert",
+     "simpledocExample"
      --tutorialToSimpleDoc,
      --tutorialExample
      }
@@ -393,6 +393,11 @@ end
 // test of processTextSection
 restart
 debug loadPackage "DocConverter"
+installPackage "DocConverter"
+
+uninstallPackage "DocConverter"
+check "DocConverter" -- no tests...
+
 contents = lines simpledocExample
 contents = select(contents, s -> not match(///^\s*--///, s));
 M = groupLines(contents, keywordRE);

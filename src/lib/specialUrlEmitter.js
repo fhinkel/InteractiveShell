@@ -78,13 +78,12 @@ var emitHelpUrlToClient = OPTIONS.help.emitHelpUrlToClient;
 var isViewHelpEvent = OPTIONS.help.isViewHelpEvent;
 var stripSpecialLines = OPTIONS.help.stripSpecialLines;
 
-
 var emitLeftOverData = function(client, emitDataViaSockets, data) {
-    var leftOverData = stripSpecialLines(data);
-    if(leftOverData !== ""){
-        emitDataViaSockets(client.socketArray, "result", leftOverData);
-    }
-}
+  var leftOverData = stripSpecialLines(data);
+  if (leftOverData !== "") {
+    emitDataViaSockets(client.socketArray, "result", leftOverData);
+  }
+};
 
 module.exports = function(pathPrefix,
                           sshCredentials,

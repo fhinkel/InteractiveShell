@@ -126,9 +126,9 @@ module.exports = function() {
 
     shell.on("track", function(e, msg) { // add command to history
       if (typeof msg !== 'undefined') {
-        if(history !== undefined){
-            history.val(history.val() + msg + "\n");
-            scrollDown(history);
+        if (history !== undefined) {
+          history.val(history.val() + msg + "\n");
+          scrollDown(history);
         }
         shell.trigger("innerTrack", msg);
       }
@@ -139,12 +139,12 @@ module.exports = function() {
         // down work, but it will not put the msg in the history textarea. We
         // need this if someone uses the shift+enter functionality in the
         // history area, because we do not want to track these messages.
-        var input = msg.split("\n");
-        for (var line in input) {
-          if (input[line].length > 0) {
-            cmdHistory.index = cmdHistory.push(input[line]);
-          }
+      var input = msg.split("\n");
+      for (var line in input) {
+        if (input[line].length > 0) {
+          cmdHistory.index = cmdHistory.push(input[line]);
         }
+      }
     });
 
     var packageAndSendMessage = function(tail) {

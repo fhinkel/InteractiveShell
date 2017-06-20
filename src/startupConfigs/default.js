@@ -42,8 +42,8 @@ var configuration = function(overrideOptions, next) {
   var overrideDefaultOptions = function(overrideOptions, defaultOptions) {
     for (var opt in overrideOptions) {
       if (defaultOptions.hasOwnProperty(opt)) {
-        if (defaultOptions[opt] instanceof Function){
-            defaultOptions[opt] = overrideOptions[opt];
+        if (defaultOptions[opt] instanceof Function) {
+          defaultOptions[opt] = overrideOptions[opt];
         } else if (defaultOptions[opt] instanceof Object) {
           overrideDefaultOptions(overrideOptions[opt], defaultOptions[opt]);
         } else {

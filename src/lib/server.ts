@@ -3,7 +3,7 @@
 import {Client} from "./client";
 import {Clients} from "./client";
 
-import {Type} from "../lib/socketEventType";
+import {SocketEvent} from "../lib/enums";
 import {Instance} from "./instance";
 import * as reader from "./tutorialReader";
 
@@ -80,7 +80,7 @@ const setCookie = function(cookies, clientID: string): void {
   });
 };
 
-const emitDataViaSockets = function(sockets, type: Type, data: string): void {
+const emitDataViaSockets = function(sockets, type: SocketEvent, data: string): void {
   for (const socketKey in sockets) {
     if (sockets.hasOwnProperty(socketKey)) {
       const socket = sockets[socketKey];
@@ -91,7 +91,7 @@ const emitDataViaSockets = function(sockets, type: Type, data: string): void {
   }
 };
 
-const emitDataViaClientSockets = function(clientID: string, type: Type, data) {
+const emitDataViaClientSockets = function(clientID: string, type: SocketEvent, data) {
   const sockets = clients[clientID].socketArray;
   emitDataViaSockets(sockets, type, data);
 };
@@ -102,7 +102,7 @@ const getInstance = function(clientID: string, next) {
   } else {
     instanceManager.getNewInstance(function(err, instance: Instance) {
       if (err) {
-        emitDataViaClientSockets(clientID, Type.result,
+        emitDataViaClientSockets(clientID, SocketEvent.result,
           "Sorry, there was an error. Please come back later.\n" +
             err + "\n\n");
         deleteClientData(clientID);
@@ -204,7 +204,7 @@ const sendDataToClient = function(clientID: string) {
       );
       return;
     }
-    emitDataViaClientSockets(clientID, Type.result, data);
+    emitDataViaClientSockets(clientID, SocketEvent.result, data);
   };
 };
 
@@ -318,7 +318,7 @@ const socketSanityCheck = function(clientId: string, socket) {
     console.log("Has mathProgram instance.");
     if (clients[clientId].reconnecting) {
       emitDataViaClientSockets(clientId,
-         Type.result,
+         SocketEvent.result,
         "Session resumed.\n" + serverConfig.resumeString);
       clients[clientId].reconnecting = false;
     }

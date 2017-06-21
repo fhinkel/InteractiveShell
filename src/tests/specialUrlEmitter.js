@@ -1,13 +1,4 @@
 
-
-
-
-
-
-
-
-
-
 require("../startupConfigs/default.js").getConfig({}, function(options) {
   var rewire = require('rewire');
   var sinon = require('sinon');
@@ -26,7 +17,7 @@ require("../startupConfigs/default.js").getConfig({}, function(options) {
       specialUrlEmitter = specialUrlEmitterModule(
         pathPrefix,
         sshCredentials,
-        logFunction, 
+        logFunction,
         function() {},
         options);
     });
@@ -89,13 +80,13 @@ require("../startupConfigs/default.js").getConfig({}, function(options) {
         var spy = sinon.spy();
         var originalEmitHelpUrlToClient = options.help.emitHelpUrlToClient;
         options.help.emitHelpUrlToClient = spy;
-        var originalIsViewHelpEvent = options.help.isViewHelpEvent; 
+        var originalIsViewHelpEvent = options.help.isViewHelpEvent;
         options.help.isViewHelpEvent = function() {return true;};
 
         specialUrlEmitter.emitEventUrlToClient("user12", "eventType", "");
         assert(spy.called, "emitHelpUrlToClient was never called");
         options.help.emitHelpUrlToClient = originalEmitHelpUrlToClient;
-        options.help.isViewHelpEvent = originalIsViewHelpEvent; 
+        options.help.isViewHelpEvent = originalIsViewHelpEvent;
       });
     });
     describe('isSpecial()', function() {

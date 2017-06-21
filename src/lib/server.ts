@@ -2,24 +2,24 @@
 
 import * as reader from "./tutorialReader";
 
-const express = require("express");
-const app = express();
-const http = require("http").createServer(app);
+import express = require("express");
+import app = express;();
+import http = require("http");.createServer(app);
 import fs = require("fs");
-const Cookies = require("cookies");
-const io = require("socket.io")(http);
+import Cookies = require("cookies");
+import io = require("socket.io");(http);
 import ssh2 = require("ssh2");
-const SocketIOFileUpload = require("socketio-file-upload");
+import SocketIOFileUpload = require("socketio-file-upload");
 
-const path = require("path");
+import path = require("path");
 let getClientIdFromSocket;
 let serverConfig;
-let options; // These used to be global.OPTIONS
+let options;
 const staticFolder = path.join(__dirname, "../../../public/public");
 
-const logExceptOnTest = function(string) {
+const logExceptOnTest = function(msg: string): void {
   if (process.env.NODE_ENV !== "test") {
-    console.log(string);
+    console.log(msg);
   }
 };
 

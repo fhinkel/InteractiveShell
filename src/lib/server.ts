@@ -1,5 +1,6 @@
 "use strict;";
 
+import {Instance} from "./instance";
 import * as reader from "./tutorialReader";
 
 import express = require("express");
@@ -23,7 +24,7 @@ const logExceptOnTest = function(msg: string): void {
   }
 };
 
-const sshCredentials = function(instance) {
+const sshCredentials = function(instance: Instance) {
   return {
     host: instance.host,
     port: instance.port,
@@ -103,7 +104,7 @@ const getInstance = function(clientID, next) {
   if (clients[clientID].instance) {
     next(clients[clientID].instance);
   } else {
-    instanceManager.getNewInstance(function(err, instance) {
+    instanceManager.getNewInstance(function(err, instance: Instance) {
       if (err) {
         emitDataViaClientSockets(clientID, "result",
           "Sorry, there was an error. Please come back later.\n" +
@@ -137,7 +138,7 @@ const killNotify = function(clientID) {
 };
 
 const spawnMathProgramInSecureContainer = function(clientID, next) {
-  getInstance(clientID, function(instance) {
+  getInstance(clientID, function(instance: Instance) {
     instance.killNotify = killNotify(clientID);
     clients[clientID].instance = instance;
     const connection = new ssh2.Client();

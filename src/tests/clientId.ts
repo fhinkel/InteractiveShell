@@ -1,4 +1,3 @@
-var sinon = require('sinon');
 var assert = require('chai').assert;
 var rewire = require('rewire');
 

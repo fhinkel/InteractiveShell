@@ -70,7 +70,8 @@ var emitUrlForUserGeneratedFileToClient = function(client,
   sshConnection.connect(sshCredentials(client.instance));
 };
 
-var emitLeftOverData = function(client, emitDataViaSockets, data, stripFunction) {
+var emitLeftOverData = function(client, emitDataViaSockets,
+  data, stripFunction) {
   var leftOverData = stripFunction(data);
   if (leftOverData !== "") {
     emitDataViaSockets(client.socketArray, "result", leftOverData);
@@ -84,10 +85,13 @@ module.exports = function(pathPrefix,
                           options
                           ) {
   return {
-    emitEventUrlToClient: function(client, url, data, pathPostfix) {
-      emitLeftOverData(client, emitDataViaSockets, data, options.help.stripSpecialLines);
+    emitEventUrlToClient: function(client, url, data,
+    pathPostfix) {
+      emitLeftOverData(client, emitDataViaSockets, data,
+      options.help.stripSpecialLines);
       if (options.help.isViewHelpEvent(url)) {
-        options.help.emitHelpUrlToClient(client, url, logFunction, emitDataViaSockets);
+        options.help.emitHelpUrlToClient(client, url, logFunction,
+        emitDataViaSockets);
         return;
       }
       emitUrlForUserGeneratedFileToClient(

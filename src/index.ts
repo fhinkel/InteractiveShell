@@ -17,8 +17,8 @@ if (n > 4) {
 }
 
 // Dirname is src/dist.
-import p = require("path");
-const path = p.join(__dirname, "/startupConfigs/");
+import p = require("path"); // eslint-disable-line  no-undef
+const path = p.join(__dirname, "/startupConfigs/"); // eslint-disable-line  no-undef
 
 if (mathProgram === "Macaulay2" || mathProgram === "M2") {
   if (mode === "local") {

@@ -70,7 +70,8 @@ require("../startupConfigs/default.ts").getConfig({}, function(options) {
             return true;
           });
 
-        specialUrlEmitter.emitEventUrlToClient("user12", "eventType", "");
+        specialUrlEmitter.emitEventUrlToClient(
+          "user12", "eventType", "");
 
         revert();
         revertIsViewHelpEvent();
@@ -81,7 +82,9 @@ require("../startupConfigs/default.ts").getConfig({}, function(options) {
         var originalEmitHelpUrlToClient = options.help.emitHelpUrlToClient;
         options.help.emitHelpUrlToClient = spy;
         var originalIsViewHelpEvent = options.help.isViewHelpEvent;
-        options.help.isViewHelpEvent = function() {return true;};
+        options.help.isViewHelpEvent = function() {
+          return true;
+        };
 
         specialUrlEmitter.emitEventUrlToClient("user12", "eventType", "");
         assert(spy.called, "emitHelpUrlToClient was never called");

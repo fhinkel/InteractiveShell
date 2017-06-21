@@ -104,7 +104,7 @@ var getInstance = function(clientID, next) {
     instanceManager.getNewInstance(function(err, instance) {
       if (err) {
         emitDataViaClientSockets(clientID, 'result',
-            "Sorry, there was an error. Please come back later.\n" +
+          "Sorry, there was an error. Please come back later.\n" +
             err + "\n\n");
         deleteClientData(clientID);
       } else {
@@ -117,12 +117,12 @@ var getInstance = function(clientID, next) {
 var optLogCmdToFile = function(clientId, msg) {
   if (serverConfig.CMD_LOG_FOLDER) {
     fs.appendFile(serverConfig.CMD_LOG_FOLDER + "/" + clientId + ".log",
-        msg,
-        function(err) {
-          if (err) {
-            logClient(clientId, "logging msg failed: " + err);
-          }
-        });
+      msg,
+      function(err) {
+        if (err) {
+          logClient(clientId, "logging msg failed: " + err);
+        }
+      });
   }
 };
 
@@ -141,22 +141,22 @@ var spawnMathProgramInSecureContainer = function(clientID, next) {
     var connection = new ssh2.Client();
     connection.on('ready', function() {
       connection.exec(serverConfig.MATH_PROGRAM_COMMAND,
-          {pty: true},
-          function(err, stream) {
-            if (err) {
-              throw err;
-            }
-            optLogCmdToFile(clientID, "Starting.\n");
-            stream.on('close', function() {
-              connection.end();
-            });
-            stream.on('end', function() {
-              stream.close();
-              logExceptOnTest('I ended.');
-              connection.end();
-            });
-            next(stream);
+        {pty: true},
+        function(err, stream) {
+          if (err) {
+            throw err;
+          }
+          optLogCmdToFile(clientID, "Starting.\n");
+          stream.on('close', function() {
+            connection.end();
           });
+          stream.on('end', function() {
+            stream.close();
+            logExceptOnTest('I ended.');
+            connection.end();
+          });
+          next(stream);
+        });
     }).connect(sshCredentials(instance));
   });
 };
@@ -182,20 +182,20 @@ var sendDataToClient = function(clientID) {
     updateLastActiveTime(clientID);
     var pathPrefix = staticFolder + '-' + serverConfig.MATH_PROGRAM;
     var specialUrlEmitter = require('./specialUrlEmitter')(
-        pathPrefix,
-        sshCredentials,
-        logExceptOnTest,
-        emitDataViaSockets,
-        options
+      pathPrefix,
+      sshCredentials,
+      logExceptOnTest,
+      emitDataViaSockets,
+      options
     );
     var dataMarkedAsSpecial = specialUrlEmitter.isSpecial(data);
     if (dataMarkedAsSpecial) {
       specialUrlEmitter.emitEventUrlToClient(
-          clients[clientID],
-          dataMarkedAsSpecial,
-          data,
-          userSpecificPath(clientID)
-          );
+        clients[clientID],
+        dataMarkedAsSpecial,
+        data,
+        userSpecificPath(clientID)
+      );
       return;
     }
     emitDataViaClientSockets(clientID, 'result', data);
@@ -209,8 +209,8 @@ var attachListenersToOutput = function(clientID) {
   }
   if (client.mathProgramInstance) {
     clients[clientID].mathProgramInstance
-        .removeAllListeners('data')
-        .on('data', sendDataToClient(clientID));
+      .removeAllListeners('data')
+      .on('data', sendDataToClient(clientID));
   }
 };
 
@@ -312,8 +312,8 @@ var socketSanityCheck = function(clientId, socket) {
     console.log("Has mathProgram instance.");
     if (clients[clientId].reconnecting) {
       emitDataViaClientSockets(clientId,
-      'result',
-          "Session resumed.\n" + serverConfig.resumeString);
+        'result',
+        "Session resumed.\n" + serverConfig.resumeString);
       clients[clientId].reconnecting = false;
     }
     clients[clientId].saneState = true;
@@ -393,8 +393,8 @@ var listen = function() {
     }
     socketSanityCheck(clientId, socket);
     var fileUpload = require('./fileUpload')(
-        logExceptOnTest,
-        sshCredentials);
+      logExceptOnTest,
+      sshCredentials);
     fileUpload.attachUploadListenerToSocket(clients[clientId], socket);
     socket.on('input', socketInputAction(clientId));
     socket.on('reset', socketResetAction(clientId));

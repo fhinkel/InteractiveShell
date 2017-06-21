@@ -45,7 +45,7 @@ module.exports = function(prefix, fs) {
           "Content-Type": "text/html"
         });
         tutorials = moveWelcomeTutorialToBeginning(tutorials,
-            "tutorials/welcome2.html");
+          "tutorials/welcome2.html");
         response.end(JSON.stringify(tutorials));
       });
     });

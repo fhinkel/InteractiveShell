@@ -17,9 +17,9 @@ var multiMachineManager = function() {
       }
     };
     this.init = function(name,
-                            containerManagerFile,
-                            config,
-                            maxContainerNumber) {
+      containerManagerFile,
+      config,
+      maxContainerNumber) {
       this.name = name;
       this.containerManager = require(containerManagerFile)(config);
       this.config = config;

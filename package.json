@@ -65,7 +65,7 @@
   "devDependencies": {
     "@types/mocha": "2.2.41",
     "@types/node": "8.0.0",
-    "eslint": "2.7.0",
+    "eslint": "4.0.0",
     "eslint-config-google": "0.5.0",
     "jsdom": "4.3.0",
     "mocha": "2.1.0",

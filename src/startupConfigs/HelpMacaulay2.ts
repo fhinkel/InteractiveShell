@@ -1,9 +1,9 @@
 var help = function() {
   var result = {
     emitHelpUrlToClient: function(client,
-                                            viewHelp,
-                                            logFunction,
-                                            emitDataViaSockets) {
+      viewHelp,
+      logFunction,
+      emitDataViaSockets) {
       logFunction("Look at " + viewHelp);
       var helpPath = viewHelp.match(/(\/Macaulay2Doc.*)$/);
       if (helpPath) {

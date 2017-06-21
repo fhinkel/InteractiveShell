@@ -8,7 +8,7 @@ describe('GetListOfTutorials Module:', function() {
   before(function() {
     fs = require('fs');
     directoryReader = require('../lib/tutorialReader.ts')(
-        "public/public-Macaulay2/", fs);
+      "public/public-Macaulay2/", fs);
   });
 
   describe('When we call getTutorialList on the real file system', function() {
@@ -94,11 +94,11 @@ describe('GetListOfTutorials Module:', function() {
       assert.deepEqual(sorted, ['b', 'a', 'c']);
     });
     it('should move the tutorial to the beginning and keep the others',
-        function() {
-          var tutorials = ['c', 'b', 'a'];
-          var sorted = directoryReader.sortTutorials(tutorials, 'b');
-          assert.deepEqual(sorted, ['b', 'c', 'a']);
-        });
+      function() {
+        var tutorials = ['c', 'b', 'a'];
+        var sorted = directoryReader.sortTutorials(tutorials, 'b');
+        assert.deepEqual(sorted, ['b', 'c', 'a']);
+      });
     it('should move do nothing it index not found', function() {
       var tutorials = ['c', 'b', 'a'];
       var sorted = directoryReader.sortTutorials(tutorials, 'x');

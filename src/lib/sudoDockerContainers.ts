@@ -32,22 +32,22 @@ var dockerManager = function(OPTIONS) {
     currentInstance.port++;
     newInstance.containerName = "m2Port" + newInstance.port;
     exec(constructDockerRunCommand(resources, newInstance),
-        function(error) {
-          if (error) {
-            var containerAlreadyStarted =
+      function(error) {
+        if (error) {
+          var containerAlreadyStarted =
                 error.message.match(/Conflict. The name/) ||
                 error.message.match(/Conflict. The container name/);
-            if (containerAlreadyStarted) {
-              getNewInstance(next);
-            } else {
-              console.error("Error starting the docker container: " +
-                  error.message);
-              throw error;
-            }
+          if (containerAlreadyStarted) {
+            getNewInstance(next);
           } else {
-            waitForSshd(next, newInstance);
+            console.error("Error starting the docker container: " +
+                  error.message);
+            throw error;
           }
-        });
+        } else {
+          waitForSshd(next, newInstance);
+        }
+      });
   };
 
   waitForSshd = function(next, instance) {
@@ -57,22 +57,22 @@ var dockerManager = function(OPTIONS) {
     var excludeGrep = "grep -v grep";
 
     exec(dockerRunningProcesses + " | " + filterForSshd + " | " + excludeGrep,
-        function(error, stdout, stderr) {
-          if (error) {
-            console.error("Error while waiting for sshd: " + error);
-          }
-          var runningSshDaemons = stdout;
+      function(error, stdout, stderr) {
+        if (error) {
+          console.error("Error while waiting for sshd: " + error);
+        }
+        var runningSshDaemons = stdout;
 
-          console.log("Looking for sshd. OUT: " + stdout + " ERR: " + stderr);
+        console.log("Looking for sshd. OUT: " + stdout + " ERR: " + stderr);
 
-          if (runningSshDaemons) {
-            console.log("sshd is ready.");
-            next(null, instance);
-          } else {
-            console.log("sshd not ready yet.");
-            waitForSshd(next, instance);
-          }
-        });
+        if (runningSshDaemons) {
+          console.log("sshd is ready.");
+          next(null, instance);
+        } else {
+          console.log("sshd not ready yet.");
+          waitForSshd(next, instance);
+        }
+      });
   };
 
   return {

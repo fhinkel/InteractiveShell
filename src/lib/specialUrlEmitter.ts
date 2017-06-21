@@ -2,7 +2,7 @@ var ssh2 = require('ssh2');
 var fs = require('fs');
 
 var getFilename = function(path) {
-  var partAfterLastSlash = /([^\/]*)$/;
+  var partAfterLastSlash = /([^\/]*)$/; // eslint-disable-line  no-useless-escape
   var filename = path.match(partAfterLastSlash);
   if (filename) {
     return filename[0];
@@ -23,12 +23,12 @@ var unlink = function(completePath) {
 };
 
 var emitUrlForUserGeneratedFileToClient = function(client,
-                                                   path,
-                                                   pathPrefix,
-                                                   pathPostfix,
-                                                   sshCredentials,
-                                                   logFunction,
-                                                   emitDataViaSockets) {
+  path,
+  pathPrefix,
+  pathPostfix,
+  sshCredentials,
+  logFunction,
+  emitDataViaSockets) {
   var fileName = getFilename(path);
   if (!fileName) {
     return;
@@ -56,7 +56,7 @@ var emitUrlForUserGeneratedFileToClient = function(client,
         } else {
           setTimeout(unlink(completePath), 1000 * 60 * 10);
           emitDataViaSockets(client.socketArray,
-              "image", pathPostfix + fileName
+            "image", pathPostfix + fileName
           );
         }
       });
@@ -79,33 +79,33 @@ var emitLeftOverData = function(client, emitDataViaSockets,
 };
 
 module.exports = function(pathPrefix,
-                          sshCredentials,
-                          logFunction,
-                          emitDataViaSockets,
-                          options
-                          ) {
+  sshCredentials,
+  logFunction,
+  emitDataViaSockets,
+  options
+) {
   return {
     emitEventUrlToClient: function(client, url, data,
-    pathPostfix) {
+      pathPostfix) {
       emitLeftOverData(client, emitDataViaSockets, data,
-      options.help.stripSpecialLines);
+        options.help.stripSpecialLines);
       if (options.help.isViewHelpEvent(url)) {
         options.help.emitHelpUrlToClient(client, url, logFunction,
-        emitDataViaSockets);
+          emitDataViaSockets);
         return;
       }
       emitUrlForUserGeneratedFileToClient(
-          client,
-          url,
-          pathPrefix,
-          pathPostfix,
-          sshCredentials,
-          logFunction,
-          emitDataViaSockets);
+        client,
+        url,
+        pathPrefix,
+        pathPostfix,
+        sshCredentials,
+        logFunction,
+        emitDataViaSockets);
     },
     isSpecial: function(data) {
       var eventData = data.match(
-          />>SPECIAL_EVENT_START>>(.*)<<SPECIAL_EVENT_END<</);
+        />>SPECIAL_EVENT_START>>(.*)<<SPECIAL_EVENT_END<</);
       if (eventData) {
         return eventData[1];
       }

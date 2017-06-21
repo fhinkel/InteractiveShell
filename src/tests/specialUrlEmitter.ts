@@ -1,9 +1,8 @@
 
-require("../startupConfigs/default.ts").getConfig({}, function(options) {
-  var rewire = require('rewire');
-  var sinon = require('sinon');
-  var assert = require('chai').assert;
-
+var rewire = require('rewire');
+var sinon = require('sinon');
+var assert = require('chai').assert;
+require('../startupConfigs/default.ts').getConfig({}, function(options) {
   var specialUrlEmitterModule = rewire('../lib/specialUrlEmitter.ts');
 
   describe('SpecialUrlEmitter module:', function() {

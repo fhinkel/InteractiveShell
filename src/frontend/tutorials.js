@@ -107,7 +107,7 @@ var makeTutorialsList = function(tutorialNames) {
 var markdownToHtml = function(markdownText) {
     var lines = markdownText.split("\n");
     var output = [];
-    var inSection = false;
+    var inSection = false; // only false until the first ##.  After that, it is true.
     var inExample = false;
     var firstLineInExample = false;
     var inPara = false;
@@ -115,6 +115,7 @@ var markdownToHtml = function(markdownText) {
         if (line.match("^\#\#")) {
             if (inPara) {
                 output.push("</p>");
+                inPara = false;
             }
             if (inSection) {
                 output.push("</div>");
@@ -125,11 +126,8 @@ var markdownToHtml = function(markdownText) {
             output.push("<title>" + line.substring(1) + "</title>");    
         } else if (line.match("^ *$")) {
             if (inPara) {
-                output.push("<\p>");
+                output.push("</p>");
                 inPara = false;
-            } else if (inSection) {
-                inPara = true;
-                output.push("<p>");
             }
         } else if (line.match("^```")) {
             if (inPara) {
@@ -137,7 +135,7 @@ var markdownToHtml = function(markdownText) {
                 inPara = false;
             }
             if (inExample) {
-                output.push("</code></p>");
+                output[output.length-1] = output[output.length-1] + "</code></p>";
                 inExample = false;
             } else {
                 firstLineInExample = true;
@@ -165,19 +163,6 @@ var markdownToHtml = function(markdownText) {
     var txt = output.join("\n");
     console.log(txt);
     return txt;
-    // states:
-    //   inSection: bool
-    //   inPara: bool
-    // separate into lines
-    // for each line:
-    //   if it matches ##:
-    //     if inSection: end last section (add "</div>")
-    //     inSection
-    //        <div><h3>rest of line</h3>rest of lines until next ##</div>
-    //   if it matches #: <title>rest of line</title>
-    //   if it matches blank line: end paragraph
-    //   if it matches ```
-    // 
 };
 
 var uploadTutorial = function() {

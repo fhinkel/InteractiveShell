@@ -1,19 +1,19 @@
-var currentUsers = function(clients) {
+var currentUsers = function(clients) : number {
   return Object.keys(clients).length - 1;
 };
 
-var totalUsers = function(clients) {
+var totalUsers = function(clients) : number {
   return clients.totalUsers;
 };
 
 module.exports = function(clients, options) {
   var program : string = options.MATH_PROGRAM;
-  var stats = function(request, response) {
+  var stats = function(request, response) : void {
     response.writeHead(200, {
       "Content-Type": "text/html"
     });
 
-    var htmlString =
+    const htmlString : string =
 `<head>
     <link rel="stylesheet" href="mathProgram.css" type="text/css"
         media="screen">

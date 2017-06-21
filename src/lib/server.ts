@@ -139,8 +139,9 @@ var spawnMathProgramInSecureContainer = function(clientID, next) {
     instance.killNotify = killNotify(clientID);
     clients[clientID].instance = instance;
     var connection = new ssh2.Client();
-    connection.on('error', function(err){
-      logClient(clientID, "Error when connecting. " + err + "; Retrying with new instance.");
+    connection.on('error', function(err) {
+      logClient(clientID, "Error when connecting. " + err +
+        "; Retrying with new instance.");
       instanceManager.removeInstance(instance);
       delete clients[clientID].instance;
       spawnMathProgramInSecureContainer(clientID, next);
@@ -158,7 +159,7 @@ var spawnMathProgramInSecureContainer = function(clientID, next) {
           });
           stream.on('end', function() {
             stream.close();
-            logClient(clientID, 'I ended.');
+            logClient(clientID, 'Stream ended, closing connection.');
             connection.end();
           });
           next(stream);
@@ -362,6 +363,8 @@ var socketInputAction = function(clientId) {
     updateLastActiveTime(clientId);
     checkState(clientId).then(function() {
       checkAndWrite(clientId, msg);
+    }, function(){
+      socketSanityCheck(clientId, clients[clientId].socket);
     });
   };
 };
@@ -379,6 +382,8 @@ var socketResetAction = function(clientId) {
       mathProgramStart(clientId, function() {
         client.saneState = true;
       });
+    }, function(){
+      socketSanityCheck(clientId, clients[clientId].socket);
     });
   };
 };

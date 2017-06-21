@@ -1,8 +1,9 @@
-let rewire = require("rewire");
-let sinon = require("sinon");
-let assert = require("chai").assert;
+import rewire = require("rewire");
+import sinon = require("sinon");
+import chai = require("chai");
+const assert = chai.assert;
 
-let fileUploadModule = rewire("../lib/fileUpload.ts");
+const fileUploadModule = rewire("../lib/fileUpload.ts");
 
 describe("FileUpload module:", function() {
   let fileUpload;

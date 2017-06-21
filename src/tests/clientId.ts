@@ -1,5 +1,6 @@
-let assert = require("chai").assert;
-let rewire = require("rewire");
+import chai = require("chai");
+const assert = chai.assert;
+import rewire = require("rewire");
 
 describe("ClientId Module:", function() {
   let clientId;

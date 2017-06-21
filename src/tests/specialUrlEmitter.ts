@@ -1,7 +1,9 @@
 
-let rewire = require("rewire");
-let sinon = require("sinon");
-let assert = require("chai").assert;
+import rewire = require("rewire");
+import sinon = require("sinon");
+import chai = require("chai");
+const assert = chai.assert;
+
 require("../startupConfigs/default.ts").getConfig({}, function(options) {
   const specialUrlEmitterModule = rewire("../lib/specialUrlEmitter.ts");
 

@@ -1,5 +1,6 @@
-const sinon = require("sinon");
-const assert = require("chai").assert;
+import sinon = require("sinon");
+import chai = require("chai");
+const assert = chai.assert;
 import * as reader from "../lib/tutorialReader";
 import Tutorials = reader.Tutorials;
 

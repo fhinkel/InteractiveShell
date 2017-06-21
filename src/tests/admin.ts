@@ -1,6 +1,7 @@
-let sinon = require("sinon");
-let assert = require("chai").assert;
-let rewire = require("rewire");
+import sinon = require("sinon");
+import chai = require("chai");
+const assert = chai.assert;
+import rewire = require("rewire");
 
 describe("Admin Module:", function() {
   let admin;

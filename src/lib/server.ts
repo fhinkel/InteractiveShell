@@ -80,7 +80,7 @@ const setCookie = function(cookies, clientID: string): void {
   });
 };
 
-const emitDataViaSockets = function(sockets, type, data): void {
+const emitDataViaSockets = function(sockets, type: Type, data: string): void {
   for (const socketKey in sockets) {
     if (sockets.hasOwnProperty(socketKey)) {
       const socket = sockets[socketKey];
@@ -96,7 +96,7 @@ const emitDataViaClientSockets = function(clientID: string, type: Type, data) {
   emitDataViaSockets(sockets, type, data);
 };
 
-const getInstance = function(clientID, next) {
+const getInstance = function(clientID: string, next) {
   if (clients[clientID].instance) {
     next(clients[clientID].instance);
   } else {
@@ -113,7 +113,7 @@ const getInstance = function(clientID, next) {
   }
 };
 
-const optLogCmdToFile = function(clientId, msg) {
+const optLogCmdToFile = function(clientId: string, msg: string) {
   if (serverConfig.CMD_LOG_FOLDER) {
     fs.appendFile(serverConfig.CMD_LOG_FOLDER + "/" + clientId + ".log",
       msg,
@@ -125,7 +125,7 @@ const optLogCmdToFile = function(clientId, msg) {
   }
 };
 
-const killNotify = function(clientID) {
+const killNotify = function(clientID: string) {
   return function() {
     console.log("KILL: " + clientID);
     deleteClientData(clientID);
@@ -133,7 +133,7 @@ const killNotify = function(clientID) {
   };
 };
 
-const spawnMathProgramInSecureContainer = function(clientID, next) {
+const spawnMathProgramInSecureContainer = function(clientID: string, next) {
   getInstance(clientID, function(instance: Instance) {
     instance.killNotify = killNotify(clientID);
     clients[clientID].instance = instance;
@@ -167,17 +167,17 @@ const spawnMathProgramInSecureContainer = function(clientID, next) {
   });
 };
 
-const updateLastActiveTime = function(clientID) {
+const updateLastActiveTime = function(clientID: string) {
   instanceManager.updateLastActiveTime(clients[clientID].instance);
 };
 
-const updateSocket = function(clientID, socket) {
+const updateSocket = function(clientID: string, socket) {
   console.log(socket.id);
   const ID = socket.id;
   clients[clientID].socketArray[ID] = socket;
 };
 
-const sendDataToClient = function(clientID) {
+const sendDataToClient = function(clientID: string) {
   return function(dataObject) {
     const data = dataObject.toString();
     const socket = clients[clientID].socket;
@@ -204,11 +204,11 @@ const sendDataToClient = function(clientID) {
       );
       return;
     }
-    emitDataViaClientSockets(clientID,  Type.result, data);
+    emitDataViaClientSockets(clientID, Type.result, data);
   };
 };
 
-const attachListenersToOutput = function(clientID) {
+const attachListenersToOutput = function(clientID: string) {
   const client = clients[clientID];
   if (!client) {
     return;
@@ -220,7 +220,7 @@ const attachListenersToOutput = function(clientID) {
   }
 };
 
-const mathProgramStart = function(clientID, next) {
+const mathProgramStart = function(clientID: string, next) {
   logClient(clientID, "Spawning new MathProgram process...");
   spawnMathProgramInSecureContainer(clientID, function(stream) {
     stream.setEncoding("utf8");
@@ -234,7 +234,7 @@ const mathProgramStart = function(clientID, next) {
   });
 };
 
-const killMathProgram = function(stream, clientID) {
+const killMathProgram = function(stream, clientID: string) {
   logClient(clientID, "killMathProgramClient.");
   stream.close();
 };
@@ -279,7 +279,7 @@ const initializeServer = function() {
     ],
   };
 
-  const prefix = staticFolder + "-" + serverConfig.MATH_PROGRAM + "/";
+  const prefix: string = staticFolder + "-" + serverConfig.MATH_PROGRAM + "/";
   const getList: reader.GetListFunction = reader.tutorialReader(prefix, fs);
   const admin = require("./admin")(clients, serverConfig.MATH_PROGRAM);
   app.use(favicon(staticFolder + "-" +
@@ -294,7 +294,7 @@ const initializeServer = function() {
   app.use(unhandled);
 };
 
-const socketSanityCheck = function(clientId, socket) {
+const socketSanityCheck = function(clientId: string, socket) {
   console.log("CID is: " + clientId);
   if (!clients[clientId]) {
     console.log("No client, yet.");
@@ -326,7 +326,7 @@ const socketSanityCheck = function(clientId, socket) {
   }
 };
 
-const writeMsgOnStream = function(clientId, msg) {
+const writeMsgOnStream = function(clientId: string, msg: string) {
   clients[clientId].mathProgramInstance.stdin.write(msg, function(err) {
     if (err) {
       logClient(clientId, "write failed: " + err);
@@ -336,7 +336,7 @@ const writeMsgOnStream = function(clientId, msg) {
   });
 };
 
-const checkAndWrite = function(clientId, msg) {
+const checkAndWrite = function(clientId: string, msg: string) {
   if (!clients[clientId].mathProgramInstance ||
       clients[clientId].mathProgramInstance._writableState.ended) {
     socketSanityCheck(clientId, clients[clientId].socket);
@@ -345,7 +345,7 @@ const checkAndWrite = function(clientId, msg) {
   }
 };
 
-const checkState = function(clientId) {
+const checkState = function(clientId: string) {
   return new Promise(function(resolve, reject) {
     if (clients[clientId] && clients[clientId].saneState) {
       resolve();
@@ -356,8 +356,8 @@ const checkState = function(clientId) {
   });
 };
 
-const socketInputAction = function(clientId) {
-  return function(msg) {
+const socketInputAction = function(clientId: string) {
+  return function(msg: string) {
     console.log("Have clientId: " + clientId);
     updateLastActiveTime(clientId);
     checkState(clientId).then(function() {
@@ -368,7 +368,7 @@ const socketInputAction = function(clientId) {
   };
 };
 
-const socketResetAction = function(clientId) {
+const socketResetAction = function(clientId: string) {
   return function() {
     optLogCmdToFile(clientId, "Resetting.\n");
     logExceptOnTest("Received reset.");
@@ -392,7 +392,7 @@ const listen = function() {
   io.use(cookieParser);
   io.on("connection", function(socket) {
     console.log("Incoming new connection!");
-    const clientId = getClientIdFromSocket(socket);
+    const clientId: string = getClientIdFromSocket(socket);
     if (clientId === "deadCookie") {
       console.log("Disconnecting for dead cookie.");
       disconnectSocket(socket);

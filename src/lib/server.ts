@@ -48,15 +48,15 @@ const logClient = function(clientID, str) {
   }
 };
 
-const userSpecificPath = function(clientId) {
+const userSpecificPath = function(clientId: string): string {
   return "/" + clientId + "-files/";
 };
 
-const disconnectSocket = function(socket) {
+const disconnectSocket = function(socket): void  {
   socket.disconnect();
 };
 
-const deleteClientData = function(clientID) {
+const deleteClientData = function(clientID: string): void {
   logExceptOnTest("deleting folder " +
       staticFolder + userSpecificPath(clientID));
   try {
@@ -73,13 +73,13 @@ const deleteClientData = function(clientID) {
   delete clients[clientID];
 };
 
-const setCookie = function(cookies, clientID) {
+const setCookie = function(cookies, clientID: string): void {
   cookies.set(options.cookieName, clientID, {
     httpOnly: false,
   });
 };
 
-const emitDataViaSockets = function(sockets, type, data) {
+const emitDataViaSockets = function(sockets, type, data): void {
   for (const socketKey in sockets) {
     if (sockets.hasOwnProperty(socketKey)) {
       const socket = sockets[socketKey];
@@ -90,7 +90,8 @@ const emitDataViaSockets = function(sockets, type, data) {
   }
 };
 
-const emitDataViaClientSockets = function(clientID, type, data) {
+enum Type {"result"}
+const emitDataViaClientSockets = function(clientID: string, type: Type, data) {
   const sockets = clients[clientID].socketArray;
   emitDataViaSockets(sockets, type, data);
 };
@@ -101,7 +102,7 @@ const getInstance = function(clientID, next) {
   } else {
     instanceManager.getNewInstance(function(err, instance: Instance) {
       if (err) {
-        emitDataViaClientSockets(clientID, "result",
+        emitDataViaClientSockets(clientID, Type.result,
           "Sorry, there was an error. Please come back later.\n" +
             err + "\n\n");
         deleteClientData(clientID);
@@ -203,7 +204,7 @@ const sendDataToClient = function(clientID) {
       );
       return;
     }
-    emitDataViaClientSockets(clientID, "result", data);
+    emitDataViaClientSockets(clientID,  Type.result, data);
   };
 };
 
@@ -317,7 +318,7 @@ const socketSanityCheck = function(clientId, socket) {
     console.log("Has mathProgram instance.");
     if (clients[clientId].reconnecting) {
       emitDataViaClientSockets(clientId,
-        "result",
+         Type.result,
         "Session resumed.\n" + serverConfig.resumeString);
       clients[clientId].reconnecting = false;
     }

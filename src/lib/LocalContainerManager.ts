@@ -1,3 +1,5 @@
+import {Instance} from "./instance";
+
 let localContainerManager = function() {
   const exec = require("child_process").exec;
 

@@ -1,5 +1,6 @@
 import ssh2 = require("ssh2");
 import fs = require("fs");
+import {Instance} from "./instance";
 
 const sshDockerManager = function(OPTIONS) {
   const resources = OPTIONS.perContainerResources;
@@ -17,7 +18,7 @@ const sshDockerManager = function(OPTIONS) {
 
   init();
 
-  const getDockerStartCmd = function(instance) {
+  const getDockerStartCmd = function(instance : Instance) {
     let result = hostConfig.dockerRunCmd;
     result += " " + instance.containerName;
     result += " -p " + instance.port + ":22";
@@ -58,12 +59,12 @@ const sshDockerManager = function(OPTIONS) {
     });
   };
 
-  const removeInstanceFromArray = function(instance) {
+  const removeInstanceFromArray = function(instance : Instance) {
     const position = currentContainers.indexOf(instance);
     currentContainers.splice(position, 1);
   };
 
-  const removeInstance = function(instance, next) {
+  const removeInstance = function(instance : Instance, next) {
     console.log("Removing container: " + instance.containerName);
     if (instance.killNotify) {
       instance.killNotify();
@@ -82,11 +83,11 @@ const sshDockerManager = function(OPTIONS) {
     }, function() {});
   };
 
-  const addInstanceToArray = function(instance) {
+  const addInstanceToArray = function(instance : Instance) {
     currentContainers.push(instance);
   };
 
-  const isLegal = function(instance) {
+  const isLegal = function(instance : Instance) {
     const age = Date.now() - instance.lastActiveTime;
     return age > hostConfig.minContainerAge;
   };
@@ -108,7 +109,7 @@ const sshDockerManager = function(OPTIONS) {
     }
   };
 
-  const checkForSuccessfulContainerStart = function(instance, next) {
+  const checkForSuccessfulContainerStart = function(instance : Instance, next) {
     const getListOfAllContainers = hostConfig.dockerCmdPrefix +
         " docker ps --no-trunc | grep " +
         instance.containerName +
@@ -128,7 +129,7 @@ const sshDockerManager = function(OPTIONS) {
     }, next);
   };
 
-  const connectWithSshAndCreateContainer = function(instance, next) {
+  const connectWithSshAndCreateContainer = function(instance : Instance, next) {
     const dockerRunCmd = getDockerStartCmd(instance);
     connectToHostAndExecCmd(dockerRunCmd, function(stream) {
       stream.on("data", function(dataObject) {
@@ -147,7 +148,7 @@ const sshDockerManager = function(OPTIONS) {
     }, next);
   };
 
-  function getNewInstance(next) {
+  function getNewInstance(next){
     if (currentContainers.length >= hostConfig.maxContainerNumber) {
       killOldestContainer(next);
     } else {
@@ -162,7 +163,7 @@ const sshDockerManager = function(OPTIONS) {
     console.error("Caught exception in cm process object: " + err);
   });
 
-  function checkForRunningSshd(instance, next) {
+  function checkForRunningSshd(instance : Instance, next) {
     const getContainerProcesses = hostConfig.dockerCmdPrefix + " docker exec " +
         instance.containerName + " ps aux";
     const filterForSshd = "grep \"" + hostConfig.sshdCmd + "\"";
@@ -186,7 +187,7 @@ const sshDockerManager = function(OPTIONS) {
     }, next);
   }
 
-  const updateLastActiveTime = function(instance) {
+  const updateLastActiveTime = function(instance : Instance) {
     instance.lastActiveTime = Date.now();
   };
 

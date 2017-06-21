@@ -1,4 +1,6 @@
-let exists = function(clientId: string, clients, logFunction) {
+import {Clients} from "./client";
+
+const exists = function(clientId: string, clients: Clients, logFunction) {
   if (clientId in clients) {
     logFunction("Client already exists");
     return true;
@@ -6,12 +8,12 @@ let exists = function(clientId: string, clients, logFunction) {
   return false;
 };
 
-module.exports = function(clients, logFunction) {
+module.exports = function(clients: Clients, logFunction) {
   return {
     getNewId() {
       let clientId: string;
       do {
-        let randomId = Math.random() * 1000000;
+        let randomId: number = Math.random() * 1000000;
         randomId = Math.floor(randomId);
         clientId = "user" + randomId.toString(10);
       } while (exists(clientId, clients, logFunction));

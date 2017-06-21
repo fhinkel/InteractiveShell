@@ -1,7 +1,6 @@
 import {Client} from "./client";
 import {Clients} from "./client";
 
-
 const currentUsers = function(clients: Clients): number {
   return Object.keys(clients).length;
 };

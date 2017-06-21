@@ -29,18 +29,6 @@ describe('ClientId Module:', function() {
     it('should get a new id matching /user/', function() {
       assert.match(clientId.getNewId(), /user\d+$/);
     });
-    it('should get a new id', function() {
-      sinon.stub(Math, 'random').returns(345 / 1000000);
-      assert.equal(clientId.getNewId(), "user345");
-      Math.random.restore();
-    });
-    it('should not reuse existing ids', function() {
-      sinon.stub(Math, 'random')
-          .onFirstCall().returns(16 / 1000000)
-          .onSecondCall().returns(345 / 1000000);
-      assert.equal(clientId.getNewId(), "user345");
-      Math.random.restore();
-    });
   });
   describe('exists()', function() {
     it('should return true', function() {

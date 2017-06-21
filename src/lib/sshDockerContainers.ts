@@ -1,7 +1,7 @@
-let ssh2 = require("ssh2");
-let fs = require("fs");
+import ssh2 = require("ssh2");
+import fs = require("fs");
 
-let sshDockerManager = function(OPTIONS) {
+const sshDockerManager = function(OPTIONS) {
   const resources = OPTIONS.perContainerResources;
   const guestInstance = OPTIONS.startInstance;
   const hostConfig = OPTIONS.hostConfig;

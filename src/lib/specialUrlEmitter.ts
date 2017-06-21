@@ -1,7 +1,7 @@
-let ssh2 = require("ssh2");
-let fs = require("fs");
+import ssh2 = require("ssh2");
+import fs = require("fs");
 
-let getFilename = function(path) {
+const getFilename = function(path) {
   const partAfterLastSlash = /([^\/]*)$/; // eslint-disable-line  no-useless-escape
   const filename = path.match(partAfterLastSlash);
   if (filename) {
@@ -10,7 +10,7 @@ let getFilename = function(path) {
   return null;
 };
 
-let unlink = function(completePath) {
+const unlink = function(completePath) {
   return function() {
     fs.unlink(completePath, function(err) {
       if (err) {
@@ -22,13 +22,13 @@ let unlink = function(completePath) {
   };
 };
 
-let emitUrlForUserGeneratedFileToClient = function(client,
-                                                   path,
-                                                   pathPrefix,
-                                                   pathPostfix,
-                                                   sshCredentials,
-                                                   logFunction,
-                                                   emitDataViaSockets) {
+const emitUrlForUserGeneratedFileToClient = function(client,
+                                                     path,
+                                                     pathPrefix,
+                                                     pathPostfix,
+                                                     sshCredentials,
+                                                     logFunction,
+                                                     emitDataViaSockets) {
   const fileName = getFilename(path);
   if (!fileName) {
     return;
@@ -70,8 +70,8 @@ let emitUrlForUserGeneratedFileToClient = function(client,
   sshConnection.connect(sshCredentials(client.instance));
 };
 
-let emitLeftOverData = function(client, emitDataViaSockets,
-                                data, stripFunction) {
+const emitLeftOverData = function(client, emitDataViaSockets,
+                                  data, stripFunction) {
   const leftOverData = stripFunction(data);
   if (leftOverData !== "") {
     emitDataViaSockets(client.socketArray, "result", leftOverData);

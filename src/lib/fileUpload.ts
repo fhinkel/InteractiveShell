@@ -1,7 +1,7 @@
-let ssh2 = require("ssh2");
-let SocketIOFileUpload = require("socketio-file-upload");
+import ssh2 = require("ssh2");
+const SocketIOFileUpload = require("socketio-file-upload");
 
-let completeFileUpload = function(client, sshCredentials) {
+const completeFileUpload = function(client, sshCredentials) {
   return function(event) {
     const credentials = sshCredentials(client.instance);
     const connection = ssh2();

@@ -1,9 +1,10 @@
 // This starts the main server!
-var fs = require('fs');
+import fs = require('fs');
 
 var fileExistsPromise = function(filename) {
-  return new Promise(function(resolve /* , reject*/) {
-    fs.access(filename, fs.R_OK, function(err) {
+  return new Promise(function(resolve) {
+    fs.access(filename, fs.constants.R_OK, function(err) {
+      console.log(!err);
       resolve(!err);
     });
   });

@@ -1,4 +1,4 @@
-require('./startup.ts')({
+require('./startup')({
   hostConfig: {
     dockerRunCmd: '',
     maxContainerNumber: 10,

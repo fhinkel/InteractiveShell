@@ -1,4 +1,4 @@
-require('./startup.ts')({
+require('./startup')({
   serverConfig: {
     port: 8002,
     MATH_PROGRAM: 'Macaulay2',

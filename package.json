@@ -47,6 +47,7 @@
   },
   "scripts": {
     "start": "webpack && tsc && node src/dist/index.js",
+    "debug-start": "webpack --config webpack.debug-config.js && tsc && node src/dist/index.js",
     "basic": "webpack && tsc && node src/dist/index.js M2 docker",
     "local": "webpack && tsc && node src/dist/index.js M2 local",
     "twoMachines": "webpack && tsc && node src/dist/index.js M2 ssh",

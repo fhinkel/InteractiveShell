@@ -58,19 +58,21 @@ var switchLesson = function(incr) {
 };
 
 var enrichTutorialWithHtml = function(theHtml) {
-  var theLessons = [];
-  var tutorial = $("<div>").html(theHtml);
-  $("div", tutorial).each(function() {
-    theLessons.push({
-      title: $("h4:first", $(this)).text(),
-      html: $(this)
+    var result;
+    var theLessons = [];
+    var tutorial = $("<div>").html(theHtml);
+    $("div", tutorial).each(function() {
+        theLessons.push({
+            title: $("h4:first", $(this)).text(),
+            html: $(this)
+        });
     });
-  });
-  return { // class Tutorial
-    title: $("<h3>").append($("title", tutorial).text()),
-    current: 0,
-    lessons: theLessons
-  };
+    result = { // class Tutorial
+        title: $("<h3>").append($("title", tutorial).text()),
+        current: 0,
+        lessons: theLessons
+    };
+    return result;
 };
 
 var getTutorial = function(url) {
@@ -102,13 +104,90 @@ var makeTutorialsList = function(tutorialNames) {
   });
 };
 
+var markdownToHtml = function(markdownText) {
+    var lines = markdownText.split("\n");
+    var output = [];
+    var inSection = false;
+    var inExample = false;
+    var firstLineInExample = false;
+    var inPara = false;
+    for (let line of lines) {
+        if (line.match("^\#\#")) {
+            if (inPara) {
+                output.push("</p>");
+            }
+            if (inSection) {
+                output.push("</div>");
+            }
+            inSection = true;
+            output.push("<div><h4>" + line.substring(2) + "</h4>");    
+        } else if (line.match("^\#")) {
+            output.push("<title>" + line.substring(1) + "</title>");    
+        } else if (line.match("^ *$")) {
+            if (inPara) {
+                output.push("<\p>");
+                inPara = false;
+            } else if (inSection) {
+                inPara = true;
+                output.push("<p>");
+            }
+        } else if (line.match("^```")) {
+            if (inPara) {
+                output.push("</p>");
+                inPara = false;
+            }
+            if (inExample) {
+                output.push("</code></p>");
+                inExample = false;
+            } else {
+                firstLineInExample = true;
+                inExample = true;
+            }
+        } else {
+            // all other lines
+            if (firstLineInExample) {
+                output.push("<p><code>" + line);
+                firstLineInExample = false;
+            } else if (inPara || inExample) {
+                output.push(line);
+            } else {
+                output.push("<p>" + line);
+                inPara = true;
+            }
+        }
+    }
+    if (inPara) {
+        output.push("</p>");
+    }
+    if (inSection) {
+        output.push("</div>");
+    }
+    var txt = output.join("\n");
+    console.log(txt);
+    return txt;
+    // states:
+    //   inSection: bool
+    //   inPara: bool
+    // separate into lines
+    // for each line:
+    //   if it matches ##:
+    //     if inSection: end last section (add "</div>")
+    //     inSection
+    //        <div><h3>rest of line</h3>rest of lines until next ##</div>
+    //   if it matches #: <title>rest of line</title>
+    //   if it matches blank line: end paragraph
+    //   if it matches ```
+    // 
+};
+
 var uploadTutorial = function() {
   var files = this.files;
   var file = files[0];
   var reader = new FileReader();
   reader.readAsText(file);
   reader.onload = function(event) {
-    var resultHtml = event.target.result;
+    var markdownText = event.target.result;
+    var resultHtml = markdownToHtml(markdownText);
     tutorials.push(enrichTutorialWithHtml(resultHtml));
     var lastIndex = tutorials.length - 1;
     var newTutorial = tutorials[lastIndex];

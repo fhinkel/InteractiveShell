@@ -1,4 +1,4 @@
-import ssh2 = require("ssh2");
+let ssh2 = require("ssh2"); // tslint:disable-line
 import fs = require("fs");
 
 const getFilename = function(path) {
@@ -22,13 +22,13 @@ const unlink = function(completePath) {
   };
 };
 
-const emitUrlForUserGeneratedFileToClient = function(client,
-                                                     path,
-                                                     pathPrefix,
-                                                     pathPostfix,
-                                                     sshCredentials,
-                                                     logFunction,
-                                                     emitDataViaSockets) {
+let emitUrlForUserGeneratedFileToClient = function(client, // tslint:disable-line
+                                                   path,
+                                                   pathPrefix,
+                                                   pathPostfix,
+                                                   sshCredentials,
+                                                   logFunction,
+                                                   emitDataViaSockets) {
   const fileName = getFilename(path);
   if (!fileName) {
     return;

@@ -66,16 +66,15 @@ require("../startupConfigs/default.ts").getConfig({}, function(options) {
 
         const revert = specialUrlEmitterModule.__set__("ssh2", ssh2);
 
-        const revertIsViewHelpEvent = specialUrlEmitterModule
-          .__set__("isViewHelpEvent", function() {
-            return true;
-          });
-
+        const originalIsViewHelpEvent = options.help.isViewHelpEvent;
+        options.help.isViewHelpEvent = function() {
+          return true;
+        };
         specialUrlEmitter.emitEventUrlToClient(
           "user12", "eventType", "");
 
         revert();
-        revertIsViewHelpEvent();
+        options.help.isViewHelpEvent = originalIsViewHelpEvent;
       });
 
       it("emits correct URL for viewHelp", function() {
@@ -121,7 +120,7 @@ require("../startupConfigs/default.ts").getConfig({}, function(options) {
         const data = "somethingfile:";
         assert.isFalse(isViewHelpEvent(data));
       });
-      it("should not on empty string", function() {
+      it("should not match on empty string", function() {
         const data = "";
         assert.isFalse(isViewHelpEvent(data));
       });

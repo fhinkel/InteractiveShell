@@ -1,14 +1,14 @@
 import {Instance} from "./instance";
 
-let exec = require("child_process").exec;
+const exec = require("child_process").exec;
 let waitForSshd;
 
-let dockerManager = function(OPTIONS) {
+const dockerManager = function(OPTIONS) {
   const resources = OPTIONS.perContainerResources;
   const options = OPTIONS.containerConfig;
   const currentInstance = OPTIONS.startInstance;
 
-  const removeInstance = function(instance : Instance) {
+  const removeInstance = function(instance: Instance) {
     console.log("Removing container: " + instance.containerName);
     const removeDockerContainer = "sudo docker rm -f " + instance.containerName;
     exec(removeDockerContainer, function(error) {
@@ -52,7 +52,7 @@ let dockerManager = function(OPTIONS) {
       });
   };
 
-  waitForSshd = function(next, instance : Instance) {
+  waitForSshd = function(next, instance: Instance) {
     const dockerRunningProcesses = "sudo docker exec " + instance.containerName +
         " ps aux";
     const filterForSshd = "grep \"" + options.sshdCmd + "\"";

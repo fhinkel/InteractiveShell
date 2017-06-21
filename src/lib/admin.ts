@@ -1,12 +1,15 @@
-let currentUsers = function(clients): number {
-  return Object.keys(clients).length - 1;
+import {Client} from "./client";
+import {Clients} from "./client";
+
+
+const currentUsers = function(clients: Clients): number {
+  return Object.keys(clients).length;
 };
 
-let totalUsers = function(clients): number {
-  return clients.totalUsers;
-};
+let totalUsers;
 
-module.exports = function(clients, program: string) {
+module.exports = function(clients: Clients, total: number, program: string) {
+  totalUsers = total;
   const stats = function(request, response): void {
     response.writeHead(200, {
       "Content-Type": "text/html",
@@ -22,7 +25,7 @@ module.exports = function(clients, program: string) {
 </h1>
 There are currently ${currentUsers(clients)} users using ${program}.
 <br>
-In total, there were ${totalUsers(clients)} new users since
+In total, there were ${totalUsers} new users since
  the server started.
 <br>
 Enjoy ${program}!`;

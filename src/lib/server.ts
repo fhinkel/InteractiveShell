@@ -1,5 +1,8 @@
 "use strict;";
 
+import {Client} from "./client";
+import {Clients} from "./client";
+
 import {Instance} from "./instance";
 import * as reader from "./tutorialReader";
 
@@ -33,10 +36,9 @@ const sshCredentials = function(instance: Instance) {
   };
 };
 
-//  object of all client objects.  Each has a math program process.
-const clients = {
-  totalUsers: 0,
-};
+const clients: Clients = {};
+
+let totalUsers: number = 0;
 
 let instanceManager;
 
@@ -70,17 +72,6 @@ const deleteClientData = function(clientID) {
   });
   delete clients[clientID];
 };
-
-class Client {
-    saneState: boolean;
-    reconnecting: boolean;
-    instance: Instance;
-    socketArray: any;
-    constructor() {
-        this.saneState = true;
-        this.reconnecting = false;
-    }
-}
 
 const setCookie = function(cookies, clientID) {
   cookies.set(options.cookieName, clientID, {
@@ -259,7 +250,7 @@ const checkCookie = function(request, response, next) {
 
   if (!clients[clientID]) {
     clients[clientID] = new Client();
-    clients.totalUsers += 1;
+    totalUsers += 1;
   }
   next();
 };
@@ -307,8 +298,7 @@ const socketSanityCheck = function(clientId, socket) {
   if (!clients[clientId]) {
     console.log("No client, yet.");
     clients[clientId] = new Client();
-    clients.totalUsers += 1;
-    clients[clientId].clientID = clientId;
+    totalUsers += 1;
   } else if (!clients[clientId].saneState) {
     console.log("Have client " + clientId + ", but they are not sane.");
     return;

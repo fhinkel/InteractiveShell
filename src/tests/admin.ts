@@ -14,11 +14,10 @@ describe("Admin Module:", function() {
 
   beforeEach(function() {
     clients = {
-      totalUsers: 17,
       user16: {},
       user12: {},
     };
-    admin = adminModule(clients, "MyProgram");
+    admin = adminModule(clients, 17, "MyProgram");
   });
 
   describe("Admin.stats()", function() {
@@ -57,7 +56,7 @@ describe("Admin Module:", function() {
   describe("Number of total users", function() {
     it("should be correct", function() {
       const totalUsers = adminModule.__get__("totalUsers");
-      assert.equal(totalUsers(clients), 17);
+      assert.equal(totalUsers, 17);
     });
   });
   describe("Adding new users", function() {
@@ -79,7 +78,7 @@ describe("Admin Module:", function() {
     it("should not change total users", function() {
       delete clients.user12;
       const totalUsers = adminModule.__get__("totalUsers");
-      assert.equal(totalUsers(clients), 17);
+      assert.equal(totalUsers, 17);
     });
   });
 });

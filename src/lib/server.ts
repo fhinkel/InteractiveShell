@@ -3,6 +3,7 @@
 import {Client} from "./client";
 import {Clients} from "./client";
 
+import {Type} from "../lib/socketEventType";
 import {Instance} from "./instance";
 import * as reader from "./tutorialReader";
 
@@ -90,7 +91,6 @@ const emitDataViaSockets = function(sockets, type, data): void {
   }
 };
 
-enum Type {"result"}
 const emitDataViaClientSockets = function(clientID: string, type: Type, data) {
   const sockets = clients[clientID].socketArray;
   emitDataViaSockets(sockets, type, data);

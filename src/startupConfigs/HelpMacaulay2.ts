@@ -1,3 +1,4 @@
+import {Type} from "../lib/socketEventType";
 var help = function() {
   var result = {
     emitHelpUrlToClient: function(client,
@@ -14,7 +15,7 @@ var help = function() {
       helpPath = "http://www.math.uiuc.edu/Macaulay2/doc/Macaulay2-1.10/" +
               "share/doc/Macaulay2" + helpPath;
       logFunction(helpPath);
-      emitDataViaSockets(client.socketArray, "viewHelp", helpPath);
+      emitDataViaSockets(client.socketArray, Type["viewHelp"], helpPath);
     },
 
     isViewHelpEvent: function(eventData) {

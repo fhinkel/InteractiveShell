@@ -1,3 +1,5 @@
+import {Type} from "../lib/socketEventType";
+
 var help = function() {
   var result = {
     emitHelpUrlToClient: function(client,
@@ -6,7 +8,7 @@ var help = function() {
       emitDataViaSockets) {
       logFunction("Look at " + viewHelp);
       var url = viewHelp.replace("\"", "");
-      emitDataViaSockets(client.socketArray, "viewHelp", url);
+      emitDataViaSockets(client.socketArray, Type["viewHelp"], url);
     },
 
     isViewHelpEvent: function(eventData) {

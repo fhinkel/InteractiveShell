@@ -1,5 +1,6 @@
 let ssh2 = require("ssh2"); // tslint:disable-line
 import fs = require("fs");
+import {Type} from "../lib/socketEventType";
 
 const getFilename = function(path) {
   const partAfterLastSlash = /([^\/]*)$/; // eslint-disable-line  no-useless-escape
@@ -56,7 +57,7 @@ let emitUrlForUserGeneratedFileToClient = function(client, // tslint:disable-lin
         } else {
           setTimeout(unlink(completePath), 1000 * 60 * 10);
           emitDataViaSockets(client.socketArray,
-            "image", pathPostfix + fileName,
+            Type.image, pathPostfix + fileName,
           );
         }
       });
@@ -74,7 +75,7 @@ const emitLeftOverData = function(client, emitDataViaSockets,
                                   data, stripFunction) {
   const leftOverData = stripFunction(data);
   if (leftOverData !== "") {
-    emitDataViaSockets(client.socketArray, "result", leftOverData);
+    emitDataViaSockets(client.socketArray, Type.result, leftOverData);
   }
 };
 

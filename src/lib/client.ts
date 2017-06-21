@@ -4,7 +4,7 @@ export class Client {
     saneState: boolean;
     reconnecting: boolean;
     instance: Instance;
-    socketArray: {[socketID:string]:any;};
+    socketArray: {[socketID: string]: any; };
     socket: any;
     mathProgramInstance: any;
     //clientId: string;
@@ -13,7 +13,7 @@ export class Client {
         this.reconnecting = false;
         this.socketArray = [];
     }
-    nSockets():number{
+    nSockets(): number{
       return Object.keys(this.socketArray).length;
     }
 }

@@ -177,7 +177,7 @@ const updateLastActiveTime = function(clientID: string) {
 
 const addNewSocket = function(clientID: string, socket) {
   logClient(clientID, "Adding new socket");
-  const socketID :string = socket.id;
+  const socketID: string = socket.id;
   clients[clientID].socketArray[socketID] = socket;
 };
 

@@ -13,12 +13,22 @@ if (n > 3) {
 
 if (n > 4) {
   console.log("Too many options");
+  usage();
   process.exit(0);
+}
+
+function usage() : void {
+  console.log("Usage: index.js {Macaulay2|Singular} {local|docker|ssh}");
 }
 
 // Dirname is src/dist.
 import p = require("path"); // eslint-disable-line  no-undef
 const path = p.join(__dirname, "/startupConfigs/"); // eslint-disable-line  no-undef
+
+if (mathProgram === "--help") {
+  usage();
+  process.exit(0);
+}
 
 if (mathProgram === "Macaulay2" || mathProgram === "M2") {
   if (mode === "local") {

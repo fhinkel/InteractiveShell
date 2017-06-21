@@ -133,7 +133,7 @@ var attachCloseDialogBtns = function() {
 var socketOnDisconnect = function(msg) {
   console.log("We got disconnected. " + msg);
   $("#M2Out").trigger("onmessage", " Sorry, your session was disconnected" +
-      " by the server.\n\nPlease refresh to reconnect.\n\n");
+      " by the server.\n\nPlease click the reset button to reconnect.\n\n");
   serverDisconnect = true;
   // Could use the following to automatically reload. Probably too invasive,
   // might kill results.
@@ -192,8 +192,11 @@ var socketOnMessage = function(msg) {
   }
 };
 
-var socketOnError = function(error) {
-  console.log("We got an error. " + error);
+var socketOnError = function(type) {
+  return function(error) {
+    console.log("We got an " + type + " error. " + error);
+    serverDisconnect = true;
+  };
 };
 
 var fadeBackToOriginalColor = function() {
@@ -207,9 +210,9 @@ var init = function() {
 
   socket = io();
   console.log("Connection attempts: " + socket.reconnectionAttempts);
-  socket.on('reconnect_failed', socketOnError);
-  socket.on('reconnect_error', socketOnError);
-  socket.on('connect_error', socketOnError);
+  socket.on('reconnect_failed', socketOnError("reconnect_fail"));
+  socket.on('reconnect_error', socketOnError("reconnect_error"));
+  socket.on('connect_error', socketOnError("connect_error"));
   socket.on('result', socketOnMessage);
   socket.on('disconnect', socketOnDisconnect);
   socket.oldEmit = socket.emit;

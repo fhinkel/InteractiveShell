@@ -139,6 +139,12 @@ var spawnMathProgramInSecureContainer = function(clientID, next) {
     instance.killNotify = killNotify(clientID);
     clients[clientID].instance = instance;
     var connection = new ssh2.Client();
+    connection.on('error', function(err){
+      logClient(clientID, "Error when connecting. " + err + "; Retrying with new instance.");
+      instanceManager.removeInstance(instance);
+      delete clients[clientID].instance;
+      spawnMathProgramInSecureContainer(clientID, next);
+    });
     connection.on('ready', function() {
       connection.exec(serverConfig.MATH_PROGRAM_COMMAND,
         {pty: true},
@@ -152,7 +158,7 @@ var spawnMathProgramInSecureContainer = function(clientID, next) {
           });
           stream.on('end', function() {
             stream.close();
-            logExceptOnTest('I ended.');
+            logClient(clientID, 'I ended.');
             connection.end();
           });
           next(stream);

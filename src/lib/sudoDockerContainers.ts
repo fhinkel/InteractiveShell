@@ -1,40 +1,40 @@
-var exec = require('child_process').exec;
-var waitForSshd;
+let exec = require("child_process").exec;
+let waitForSshd;
 
-var dockerManager = function(OPTIONS) {
-  var resources = OPTIONS.perContainerResources;
-  var options = OPTIONS.containerConfig;
-  var currentInstance = OPTIONS.startInstance;
+let dockerManager = function(OPTIONS) {
+  const resources = OPTIONS.perContainerResources;
+  const options = OPTIONS.containerConfig;
+  const currentInstance = OPTIONS.startInstance;
 
-  var removeInstance = function(instance) {
+  const removeInstance = function(instance) {
     console.log("Removing container: " + instance.containerName);
-    var removeDockerContainer = 'sudo docker rm -f ' + instance.containerName;
+    const removeDockerContainer = "sudo docker rm -f " + instance.containerName;
     exec(removeDockerContainer, function(error) {
       if (error) {
         console.error("Error removing container " +
-            instance.containerName + ' with error:' + error);
+            instance.containerName + " with error:" + error);
       }
     });
   };
 
-  var constructDockerRunCommand = function(resources, newInstance) {
-    var dockerRunCmd = 'sudo docker run -d';
-    dockerRunCmd += ' -c ' + resources.cpuShares;
-    dockerRunCmd += ' -m ' + resources.memory + 'm';
-    dockerRunCmd += ' --name ' + newInstance.containerName;
-    dockerRunCmd += ' -p ' + newInstance.port + ':22 ';
-    dockerRunCmd += options.containerType + ' ' + options.sshdCmd;
+  const constructDockerRunCommand = function(resources, newInstance) {
+    let dockerRunCmd = "sudo docker run -d";
+    dockerRunCmd += " -c " + resources.cpuShares;
+    dockerRunCmd += " -m " + resources.memory + "m";
+    dockerRunCmd += " --name " + newInstance.containerName;
+    dockerRunCmd += " -p " + newInstance.port + ":22 ";
+    dockerRunCmd += options.containerType + " " + options.sshdCmd;
     return dockerRunCmd;
   };
 
-  var getNewInstance = function(next) {
-    var newInstance = JSON.parse(JSON.stringify(currentInstance));
+  const getNewInstance = function(next) {
+    const newInstance = JSON.parse(JSON.stringify(currentInstance));
     currentInstance.port++;
     newInstance.containerName = "m2Port" + newInstance.port;
     exec(constructDockerRunCommand(resources, newInstance),
       function(error) {
         if (error) {
-          var containerAlreadyStarted =
+          const containerAlreadyStarted =
                 error.message.match(/Conflict. The name/) ||
                 error.message.match(/Conflict. The container name/);
           if (containerAlreadyStarted) {
@@ -51,17 +51,17 @@ var dockerManager = function(OPTIONS) {
   };
 
   waitForSshd = function(next, instance) {
-    var dockerRunningProcesses = "sudo docker exec " + instance.containerName +
+    const dockerRunningProcesses = "sudo docker exec " + instance.containerName +
         " ps aux";
-    var filterForSshd = "grep \"" + options.sshdCmd + "\"";
-    var excludeGrep = "grep -v grep";
+    const filterForSshd = "grep \"" + options.sshdCmd + "\"";
+    const excludeGrep = "grep -v grep";
 
     exec(dockerRunningProcesses + " | " + filterForSshd + " | " + excludeGrep,
       function(error, stdout, stderr) {
         if (error) {
           console.error("Error while waiting for sshd: " + error);
         }
-        var runningSshDaemons = stdout;
+        const runningSshDaemons = stdout;
 
         console.log("Looking for sshd. OUT: " + stdout + " ERR: " + stderr);
 
@@ -76,10 +76,10 @@ var dockerManager = function(OPTIONS) {
   };
 
   return {
-    getNewInstance: getNewInstance,
-    removeInstance: removeInstance,
-    updateLastActiveTime: function() {
-    }
+    getNewInstance,
+    removeInstance,
+    updateLastActiveTime() {
+    },
   };
 };
 

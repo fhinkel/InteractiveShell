@@ -1,8 +1,8 @@
 /* eslint "no-unused-vars": "off" */
-var multiMachineManager = function() {
-  var Machine = function() {
-    this.name = '';
-    this.containerManager = '';
+let multiMachineManager = function() {
+  const Machine = function() {
+    this.name = "";
+    this.containerManager = "";
     this.config = null;
     this.maxContainerNumber = 1;
     this.currentContainerNumber = 0;
@@ -17,9 +17,9 @@ var multiMachineManager = function() {
       }
     };
     this.init = function(name,
-      containerManagerFile,
-      config,
-      maxContainerNumber) {
+                         containerManagerFile,
+                         config,
+                         maxContainerNumber) {
       this.name = name;
       this.containerManager = require(containerManagerFile)(config);
       this.config = config;
@@ -51,26 +51,26 @@ var multiMachineManager = function() {
     };
   };
 
-  var machines = [];
+  const machines = [];
 
-  var updateLastActiveTime = function(instance) {
+  const updateLastActiveTime = function(instance) {
     instance.machine.updateLastActiveTime(instance);
   };
 
-  var getNewInstance = function(next) {
+  const getNewInstance = function(next) {
     machines.sort(function(a, b) {
       return a.load - b.load;
     });
     machines[0].getNewInstance(next);
   };
 
-  var removeInstance = function(instance, next) {
+  const removeInstance = function(instance, next) {
     instance.machine.removeInstance(instance, next);
   };
 
   return {
-    updateLastActiveTime: updateLastActiveTime,
-    getNewInstance: getNewInstance,
-    removeInstance: removeInstance
+    updateLastActiveTime,
+    getNewInstance,
+    removeInstance,
   };
 };

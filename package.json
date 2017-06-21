@@ -20,6 +20,7 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
+    "D": "0.0.1",
     "async": "0.9.0",
     "chai": "2.2.0",
     "cookies": "0.6.1",
@@ -56,7 +57,7 @@
     "forever_singular": "webpack && ./node_modules/forever/bin/forever start -l /home/user/logs/forever.log -o /home/user/logs/out.log -e /home/user/logs/err.log --append src/startupConfigs/SingularSshDocker.js",
     "stop": "kill `ps ax | grep Server | grep -v monitor | grep node | awk '{print $1}'`",
     "test": "mocha -r ts-node/register src/tests/**/*.ts --reporter spec --timeout 6000",
-    "lint": "eslint ./public-source/ ./public/public-common/mathJaxConfig.js --fix"
+    "lint": "tslint -c tslint.json 'src/lib/*ts' --fix && eslint ./public-source/ ./public/public-common/mathJaxConfig.js --fix && tslint "
   },
   "repository": {
     "type": "git",
@@ -73,6 +74,7 @@
     "sinon": "1.14.1",
     "supertest": "0.15.0",
     "ts-node": "3.0.6",
+    "tslint": "5.4.3",
     "typescript": "2.3.4",
     "typescript-eslint-parser": "3.0.0",
     "webpack": "1.12.14"

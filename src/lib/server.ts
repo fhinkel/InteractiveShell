@@ -1,57 +1,57 @@
-'use strict;';
+"use strict;";
 
-var express = require('express');
-var app = express();
-var http = require('http').createServer(app);
-var fs = require('fs');
-var Cookies = require('cookies');
-var io = require('socket.io')(http);
-var ssh2 = require('ssh2');
-var SocketIOFileUpload = require('socketio-file-upload');
+let express = require("express");
+let app = express();
+let http = require("http").createServer(app);
+let fs = require("fs");
+let Cookies = require("cookies");
+let io = require("socket.io")(http);
+let ssh2 = require("ssh2");
+let SocketIOFileUpload = require("socketio-file-upload");
 
-var path = require('path');
-var getClientIdFromSocket;
-var serverConfig;
-var options; // These used to be global.OPTIONS
-var staticFolder = path.join(__dirname, '../../../public/public');
+let path = require("path");
+let getClientIdFromSocket;
+let serverConfig;
+let options; // These used to be global.OPTIONS
+let staticFolder = path.join(__dirname, "../../../public/public");
 
-var logExceptOnTest = function(string) {
-  if (process.env.NODE_ENV !== 'test') {
+let logExceptOnTest = function(string) {
+  if (process.env.NODE_ENV !== "test") {
     console.log(string);
   }
 };
 
-var sshCredentials = function(instance) {
+let sshCredentials = function(instance) {
   return {
     host: instance.host,
     port: instance.port,
     username: instance.username,
-    privateKey: fs.readFileSync(instance.sshKey)
+    privateKey: fs.readFileSync(instance.sshKey),
   };
 };
 
 //  object of all client objects.  Each has a math program process.
-var clients = {
-  totalUsers: 0
+let clients = {
+  totalUsers: 0,
 };
 
-var instanceManager;
+let instanceManager;
 
-var logClient = function(clientID, str) {
-  if (process.env.NODE_ENV !== 'test') {
+let logClient = function(clientID, str) {
+  if (process.env.NODE_ENV !== "test") {
     logExceptOnTest(clientID + ": " + str);
   }
 };
 
-var userSpecificPath = function(clientId) {
+let userSpecificPath = function(clientId) {
   return "/" + clientId + "-files/";
 };
 
-var disconnectSocket = function(socket) {
+let disconnectSocket = function(socket) {
   socket.disconnect();
 };
 
-var deleteClientData = function(clientID) {
+let deleteClientData = function(clientID) {
   logExceptOnTest("deleting folder " +
       staticFolder + userSpecificPath(clientID));
   try {
@@ -62,29 +62,29 @@ var deleteClientData = function(clientID) {
   }
   fs.rmdir(staticFolder + userSpecificPath(clientID), function(error) {
     if (error) {
-      console.error('Error deleting user folder: ' + error);
+      console.error("Error deleting user folder: " + error);
     }
   });
   delete clients[clientID];
 };
 
-var Client = function() {
+let Client = function() {
   this.saneState = true;
   this.reconnecting = false;
   this.instance = 0;
   this.socketArray = [];
 };
 
-var setCookie = function(cookies, clientID) {
+let setCookie = function(cookies, clientID) {
   cookies.set(options.cookieName, clientID, {
-    httpOnly: false
+    httpOnly: false,
   });
 };
 
-var emitDataViaSockets = function(sockets, type, data) {
-  for (var socketKey in sockets) {
+let emitDataViaSockets = function(sockets, type, data) {
+  for (const socketKey in sockets) {
     if (sockets.hasOwnProperty(socketKey)) {
-      var socket = sockets[socketKey];
+      const socket = sockets[socketKey];
       try {
         socket.emit(type, data);
       } catch (error) {}
@@ -92,18 +92,18 @@ var emitDataViaSockets = function(sockets, type, data) {
   }
 };
 
-var emitDataViaClientSockets = function(clientID, type, data) {
-  var sockets = clients[clientID].socketArray;
+let emitDataViaClientSockets = function(clientID, type, data) {
+  const sockets = clients[clientID].socketArray;
   emitDataViaSockets(sockets, type, data);
 };
 
-var getInstance = function(clientID, next) {
+let getInstance = function(clientID, next) {
   if (clients[clientID].instance) {
     next(clients[clientID].instance);
   } else {
     instanceManager.getNewInstance(function(err, instance) {
       if (err) {
-        emitDataViaClientSockets(clientID, 'result',
+        emitDataViaClientSockets(clientID, "result",
           "Sorry, there was an error. Please come back later.\n" +
             err + "\n\n");
         deleteClientData(clientID);
@@ -114,7 +114,7 @@ var getInstance = function(clientID, next) {
   }
 };
 
-var optLogCmdToFile = function(clientId, msg) {
+let optLogCmdToFile = function(clientId, msg) {
   if (serverConfig.CMD_LOG_FOLDER) {
     fs.appendFile(serverConfig.CMD_LOG_FOLDER + "/" + clientId + ".log",
       msg,
@@ -126,7 +126,7 @@ var optLogCmdToFile = function(clientId, msg) {
   }
 };
 
-var killNotify = function(clientID) {
+let killNotify = function(clientID) {
   return function() {
     console.log("KILL: " + clientID);
     deleteClientData(clientID);
@@ -134,11 +134,11 @@ var killNotify = function(clientID) {
   };
 };
 
-var spawnMathProgramInSecureContainer = function(clientID, next) {
+let spawnMathProgramInSecureContainer = function(clientID, next) {
   getInstance(clientID, function(instance) {
     instance.killNotify = killNotify(clientID);
     clients[clientID].instance = instance;
-    var connection = new ssh2.Client();
+    const connection = new ssh2.Client();
     connection.on('error', function(err) {
       logClient(clientID, "Error when connecting. " + err +
         "; Retrying with new instance.");
@@ -154,10 +154,10 @@ var spawnMathProgramInSecureContainer = function(clientID, next) {
             throw err;
           }
           optLogCmdToFile(clientID, "Starting.\n");
-          stream.on('close', function() {
+          stream.on("close", function() {
             connection.end();
           });
-          stream.on('end', function() {
+          stream.on("end", function() {
             stream.close();
             logClient(clientID, 'Stream ended, closing connection.');
             connection.end();
@@ -168,60 +168,60 @@ var spawnMathProgramInSecureContainer = function(clientID, next) {
   });
 };
 
-var updateLastActiveTime = function(clientID) {
+let updateLastActiveTime = function(clientID) {
   instanceManager.updateLastActiveTime(clients[clientID].instance);
 };
 
-var updateSocket = function(clientID, socket) {
+let updateSocket = function(clientID, socket) {
   console.log(socket.id);
-  var ID = socket.id;
+  const ID = socket.id;
   clients[clientID].socketArray[ID] = socket;
 };
 
-var sendDataToClient = function(clientID) {
+let sendDataToClient = function(clientID) {
   return function(dataObject) {
-    var data = dataObject.toString();
-    var socket = clients[clientID].socket;
+    const data = dataObject.toString();
+    const socket = clients[clientID].socket;
     if (!socket) {
       logClient(clientID, "Error, no socket for client.");
       return;
     }
     updateLastActiveTime(clientID);
-    var pathPrefix = staticFolder + '-' + serverConfig.MATH_PROGRAM;
-    var specialUrlEmitter = require('./specialUrlEmitter')(
+    const pathPrefix = staticFolder + "-" + serverConfig.MATH_PROGRAM;
+    const specialUrlEmitter = require("./specialUrlEmitter")(
       pathPrefix,
       sshCredentials,
       logExceptOnTest,
       emitDataViaSockets,
-      options
+      options,
     );
-    var dataMarkedAsSpecial = specialUrlEmitter.isSpecial(data);
+    const dataMarkedAsSpecial = specialUrlEmitter.isSpecial(data);
     if (dataMarkedAsSpecial) {
       specialUrlEmitter.emitEventUrlToClient(
         clients[clientID],
         dataMarkedAsSpecial,
         data,
-        userSpecificPath(clientID)
+        userSpecificPath(clientID),
       );
       return;
     }
-    emitDataViaClientSockets(clientID, 'result', data);
+    emitDataViaClientSockets(clientID, "result", data);
   };
 };
 
-var attachListenersToOutput = function(clientID) {
-  var client = clients[clientID];
+let attachListenersToOutput = function(clientID) {
+  const client = clients[clientID];
   if (!client) {
     return;
   }
   if (client.mathProgramInstance) {
     clients[clientID].mathProgramInstance
-      .removeAllListeners('data')
-      .on('data', sendDataToClient(clientID));
+      .removeAllListeners("data")
+      .on("data", sendDataToClient(clientID));
   }
 };
 
-var mathProgramStart = function(clientID, next) {
+let mathProgramStart = function(clientID, next) {
   logClient(clientID, "Spawning new MathProgram process...");
   spawnMathProgramInSecureContainer(clientID, function(stream) {
     stream.setEncoding("utf8");
@@ -235,18 +235,18 @@ var mathProgramStart = function(clientID, next) {
   });
 };
 
-var killMathProgram = function(stream, clientID) {
+let killMathProgram = function(stream, clientID) {
   logClient(clientID, "killMathProgramClient.");
   stream.close();
 };
 
-var checkCookie = function(request, response, next) {
-  var cookies = new Cookies(request, response);
-  var clientID = cookies.get(options.cookieName);
+let checkCookie = function(request, response, next) {
+  const cookies = new Cookies(request, response);
+  let clientID = cookies.get(options.cookieName);
   if (!clientID) {
-    logExceptOnTest('New client without a cookie set came along');
-    logExceptOnTest('Set new cookie!');
-    clientID = require('./clientId')(clients, logExceptOnTest).getNewId();
+    logExceptOnTest("New client without a cookie set came along");
+    logExceptOnTest("Set new cookie!");
+    clientID = require("./clientId")(clients, logExceptOnTest).getNewId();
   }
   setCookie(cookies, clientID);
 
@@ -257,44 +257,44 @@ var checkCookie = function(request, response, next) {
   next();
 };
 
-var unhandled = function(request, response) {
+let unhandled = function(request, response) {
   logExceptOnTest("Request for something we don't serve: " + request.url);
   response.writeHead(404, "Request for something we don't serve.");
   response.write("404");
   response.end();
 };
 
-var initializeServer = function() {
-  var favicon = require('serve-favicon');
-  var serveStatic = require('serve-static');
-  var winston = require('winston');
-  var expressWinston = require('express-winston');
+let initializeServer = function() {
+  const favicon = require("serve-favicon");
+  const serveStatic = require("serve-static");
+  const winston = require("winston");
+  const expressWinston = require("express-winston");
 
-  var loggerSettings = {
+  const loggerSettings = {
     transports: [
       new winston.transports.Console({
-        level: 'error',
+        level: "error",
         json: true,
-        colorize: true
-      })
-    ]
+        colorize: true,
+      }),
+    ],
   };
-  var prefix = staticFolder + "-" + serverConfig.MATH_PROGRAM + "/";
-  var tutorialReader = require('./tutorialReader')(prefix, fs);
-  var admin = require('./admin')(clients, serverConfig.MATH_PROGRAM);
-  app.use(favicon(staticFolder + '-' +
-      serverConfig.MATH_PROGRAM + '/favicon.ico'));
+  const prefix = staticFolder + "-" + serverConfig.MATH_PROGRAM + "/";
+  const tutorialReader = require("./tutorialReader")(prefix, fs);
+  const admin = require("./admin")(clients, serverConfig.MATH_PROGRAM);
+  app.use(favicon(staticFolder + "-" +
+      serverConfig.MATH_PROGRAM + "/favicon.ico"));
   app.use(SocketIOFileUpload.router);
   app.use(checkCookie);
-  app.use(serveStatic(staticFolder + '-' + serverConfig.MATH_PROGRAM));
-  app.use(serveStatic(staticFolder + '-common'));
+  app.use(serveStatic(staticFolder + "-" + serverConfig.MATH_PROGRAM));
+  app.use(serveStatic(staticFolder + "-common"));
   app.use(expressWinston.logger(loggerSettings));
-  app.use('/admin', admin.stats);
-  app.use('/getListOfTutorials', tutorialReader.getList);
+  app.use("/admin", admin.stats);
+  app.use("/getListOfTutorials", tutorialReader.getList);
   app.use(unhandled);
 };
 
-var socketSanityCheck = function(clientId, socket) {
+let socketSanityCheck = function(clientId, socket) {
   console.log("CID is: " + clientId);
   if (!clients[clientId]) {
     console.log("No client, yet.");
@@ -319,7 +319,7 @@ var socketSanityCheck = function(clientId, socket) {
     console.log("Has mathProgram instance.");
     if (clients[clientId].reconnecting) {
       emitDataViaClientSockets(clientId,
-        'result',
+        "result",
         "Session resumed.\n" + serverConfig.resumeString);
       clients[clientId].reconnecting = false;
     }
@@ -327,7 +327,7 @@ var socketSanityCheck = function(clientId, socket) {
   }
 };
 
-var writeMsgOnStream = function(clientId, msg) {
+let writeMsgOnStream = function(clientId, msg) {
   clients[clientId].mathProgramInstance.stdin.write(msg, function(err) {
     if (err) {
       logClient(clientId, "write failed: " + err);
@@ -337,7 +337,7 @@ var writeMsgOnStream = function(clientId, msg) {
   });
 };
 
-var checkAndWrite = function(clientId, msg) {
+let checkAndWrite = function(clientId, msg) {
   if (!clients[clientId].mathProgramInstance ||
       clients[clientId].mathProgramInstance._writableState.ended) {
     socketSanityCheck(clientId, clients[clientId].socket);
@@ -346,7 +346,7 @@ var checkAndWrite = function(clientId, msg) {
   }
 };
 
-var checkState = function(clientId) {
+let checkState = function(clientId) {
   return new Promise(function(resolve, reject) {
     if (clients[clientId] && clients[clientId].saneState) {
       resolve();
@@ -357,7 +357,7 @@ var checkState = function(clientId) {
   });
 };
 
-var socketInputAction = function(clientId) {
+let socketInputAction = function(clientId) {
   return function(msg) {
     console.log("Have clientId: " + clientId);
     updateLastActiveTime(clientId);
@@ -369,12 +369,12 @@ var socketInputAction = function(clientId) {
   };
 };
 
-var socketResetAction = function(clientId) {
+let socketResetAction = function(clientId) {
   return function() {
     optLogCmdToFile(clientId, "Resetting.\n");
-    logExceptOnTest('Received reset.');
+    logExceptOnTest("Received reset.");
     checkState(clientId).then(function() {
-      var client = clients[clientId];
+      const client = clients[clientId];
       client.saneState = false;
       if (client.mathProgramInstance) {
         killMathProgram(client.mathProgramInstance, clientId);
@@ -388,12 +388,12 @@ var socketResetAction = function(clientId) {
   };
 };
 
-var listen = function() {
-  var cookieParser = require('socket.io-cookie');
+let listen = function() {
+  const cookieParser = require("socket.io-cookie");
   io.use(cookieParser);
-  io.on('connection', function(socket) {
+  io.on("connection", function(socket) {
     console.log("Incoming new connection!");
-    var clientId = getClientIdFromSocket(socket);
+    const clientId = getClientIdFromSocket(socket);
     if (clientId === "deadCookie") {
       console.log("Disconnecting for dead cookie.");
       disconnectSocket(socket);
@@ -403,25 +403,25 @@ var listen = function() {
       clients[clientId].reconnecting = true;
     }
     socketSanityCheck(clientId, socket);
-    var fileUpload = require('./fileUpload')(
+    const fileUpload = require("./fileUpload")(
       logExceptOnTest,
       sshCredentials);
     fileUpload.attachUploadListenerToSocket(clients[clientId], socket);
-    socket.on('input', socketInputAction(clientId));
-    socket.on('reset', socketResetAction(clientId));
+    socket.on("input", socketInputAction(clientId));
+    socket.on("reset", socketResetAction(clientId));
   });
 
-  var listener = http.listen(serverConfig.port);
+  const listener = http.listen(serverConfig.port);
   console.log("Server running on " + listener.address().port);
   return listener;
 };
 
-var authorizeIfNecessary = function(authOption) {
+let authorizeIfNecessary = function(authOption) {
   if (authOption === "basic") {
-    var auth = require('http-auth');
-    var basic = auth.basic({
+    const auth = require("http-auth");
+    const basic = auth.basic({
       realm: "Please enter your username and password.",
-      file: path.join(__dirname, "/../../../public/users.htpasswd")
+      file: path.join(__dirname, "/../../../public/users.htpasswd"),
     });
     app.use(auth.connect(basic));
     return function(socket) {
@@ -433,12 +433,12 @@ var authorizeIfNecessary = function(authOption) {
     };
   }
   return function(socket) {
-    var cookies = socket.request.headers.cookie;
+    const cookies = socket.request.headers.cookie;
     return cookies[options.cookieName];
   };
 };
 
-var MathServer = function(o) {
+let MathServer = function(o) {
   options = o;
   serverConfig = options.serverConfig;
 
@@ -455,10 +455,10 @@ var MathServer = function(o) {
 
   // These are the methods available from the outside:
   return {
-    listen: listen,
-    close: function() {
+    listen,
+    close() {
       http.close();
-    }
+    },
   };
 };
 

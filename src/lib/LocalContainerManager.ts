@@ -1,35 +1,35 @@
-var localContainerManager = function() {
-  var exec = require('child_process').exec;
+let localContainerManager = function() {
+  const exec = require("child_process").exec;
 
-  var options = {
+  const options = {
     credentials: {
-      host: '127.0.0.1',
-      port: '22',
+      host: "127.0.0.1",
+      port: "22",
       username: undefined,
-      sshKey: undefined
-    }
+      sshKey: undefined,
+    },
   };
 
-  exec('whoami', function(error, username) {
+  exec("whoami", function(error, username) {
     options.credentials.username = username.trim();
   });
 
-  exec('echo $HOME', function(error, homedir) {
-    options.credentials.sshKey = homedir.trim() + '/.ssh/id_rsa';
+  exec("echo $HOME", function(error, homedir) {
+    options.credentials.sshKey = homedir.trim() + "/.ssh/id_rsa";
   });
 
-  var removeInstance = function() {
+  const removeInstance = function() {
     return;
   };
 
-  var getNewInstance = function(next) {
+  const getNewInstance = function(next) {
     next(false, options.credentials);
   };
 
   return {
-    getNewInstance: getNewInstance,
-    removeInstance: removeInstance,
-    updateLastActiveTime: function() {}
+    getNewInstance,
+    removeInstance,
+    updateLastActiveTime() {},
   };
 };
 

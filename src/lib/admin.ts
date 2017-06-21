@@ -1,18 +1,18 @@
-var currentUsers = function(clients) : number {
+let currentUsers = function(clients): number {
   return Object.keys(clients).length - 1;
 };
 
-var totalUsers = function(clients) : number {
+let totalUsers = function(clients): number {
   return clients.totalUsers;
 };
 
-module.exports = function(clients, program : string) {
-  var stats = function(request, response) : void {
+module.exports = function(clients, program: string) {
+  const stats = function(request, response): void {
     response.writeHead(200, {
-      "Content-Type": "text/html"
+      "Content-Type": "text/html",
     });
 
-    const htmlString : string =
+    const htmlString: string =
 `<head>
     <link rel="stylesheet" href="mathProgram.css" type="text/css"
         media="screen">
@@ -32,6 +32,6 @@ Enjoy ${program}!`;
   };
 
   return {
-    stats: stats
+    stats,
   };
 };

@@ -4,7 +4,6 @@ var fs = require('fs');
 var fileExistsPromise = function(filename) {
   return new Promise(function(resolve /* , reject*/) {
     fs.access(filename, fs.R_OK, function(err) {
-      console.log(!err);
       resolve(!err);
     });
   });

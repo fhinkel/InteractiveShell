@@ -1,7 +1,7 @@
 // This starts the main server!
-import fs = require('fs');
+import fs = require("fs");
 
-var fileExistsPromise = function(filename) {
+let fileExistsPromise = function(filename) {
   return new Promise(function(resolve) {
     fs.access(filename, fs.constants.R_OK, function(err) {
       resolve(!err);
@@ -19,8 +19,8 @@ module.exports = function(overrideOptions) {
       }
     })
     .then(function() {
-      require('./default').getConfig(overrideOptions, function(options) {
-        var Macaulay2Server = require('../lib/server').mathServer(options);
+      require("./default").getConfig(overrideOptions, function(options) {
+        let Macaulay2Server = require("../lib/server").mathServer(options);
         Macaulay2Server.listen();
       });
     })

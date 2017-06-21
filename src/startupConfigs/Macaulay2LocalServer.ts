@@ -1,1 +1,1 @@
-require('./startup')({});
+require("./startup")({});

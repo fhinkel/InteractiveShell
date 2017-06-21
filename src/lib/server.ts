@@ -71,12 +71,16 @@ const deleteClientData = function(clientID) {
   delete clients[clientID];
 };
 
-const Client = function() {
-  this.saneState = true;
-  this.reconnecting = false;
-  this.instance = 0;
-  this.socketArray = [];
-};
+class Client {
+    saneState: boolean;
+    reconnecting: boolean;
+    instance: Instance;
+    socketArray: any;
+    constructor() {
+        this.saneState = true;
+        this.reconnecting = false;
+    }
+}
 
 const setCookie = function(cookies, clientID) {
   cookies.set(options.cookieName, clientID, {

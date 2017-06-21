@@ -1,14 +1,15 @@
 var sinon = require('sinon');
 var assert = require('chai').assert;
+import * as reader from '../lib/tutorialReader';
+import Tutorials = reader.Tutorials;
 
 describe('GetListOfTutorials Module:', function() {
   var fs;
-  var directoryReader;
+  var getList: reader.GetListFunction;
 
   before(function() {
     fs = require('fs');
-    directoryReader = require('../lib/tutorialReader.ts')(
-      "public/public-Macaulay2/", fs);
+    getList = reader.tutorialReader("public/public-Macaulay2/", fs);
   });
 
   describe('When we call getTutorialList on the real file system', function() {
@@ -24,7 +25,7 @@ describe('GetListOfTutorials Module:', function() {
         }
       };
       spy = sinon.spy(response, "end");
-      directoryReader.getList(null, response);
+      getList(null, response);
     });
   });
 
@@ -62,7 +63,7 @@ describe('GetListOfTutorials Module:', function() {
       readDirStub.yields(null, ['mock.html', 'nothtml.foo']);
       existsStub.yields(true);
 
-      directoryReader.getList(null, response);
+      getList(null, response);
     });
 
     it('should get the list without shared tutorials', function(done) {
@@ -71,7 +72,7 @@ describe('GetListOfTutorials Module:', function() {
         writeHead: function() {
         },
         end: function() {
-          var expected = JSON.stringify(["tutorials/mock.html"]);
+          var expected : string = JSON.stringify(["tutorials/mock.html"]);
           assert.equal(spy.args, expected);
           assert(spy.calledOnce);
           done();
@@ -83,25 +84,25 @@ describe('GetListOfTutorials Module:', function() {
       existsStub.onFirstCall().yields(true);
       existsStub.onSecondCall().yields(false);
 
-      directoryReader.getList(null, response);
+      getList(null, response);
     });
   });
 
   describe('When calling moveWelcomeTutorialToBeginning', function() {
     it('should move the tutorial to the beginning', function() {
-      var tutorials = ['a', 'b', 'c'];
-      var sorted = directoryReader.sortTutorials(tutorials, 'b');
+      var tutorials : Tutorials = ['a', 'b', 'c'];
+      var sorted : Tutorials = reader.sortTutorials(tutorials, 'b');
       assert.deepEqual(sorted, ['b', 'a', 'c']);
     });
     it('should move the tutorial to the beginning and keep the others',
       function() {
-        var tutorials = ['c', 'b', 'a'];
-        var sorted = directoryReader.sortTutorials(tutorials, 'b');
+        var tutorials : Tutorials = ['c', 'b', 'a'];
+        var sorted : Tutorials = reader.sortTutorials(tutorials, 'b');
         assert.deepEqual(sorted, ['b', 'c', 'a']);
       });
     it('should move do nothing it index not found', function() {
-      var tutorials = ['c', 'b', 'a'];
-      var sorted = directoryReader.sortTutorials(tutorials, 'x');
+      var tutorials : Tutorials = ['c', 'b', 'a'];
+      var sorted : Tutorials = reader.sortTutorials(tutorials, 'x');
       assert.deepEqual(sorted, ['c', 'b', 'a']);
     });
   });

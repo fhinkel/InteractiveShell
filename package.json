@@ -56,7 +56,7 @@
     "forever_singular": "webpack && ./node_modules/forever/bin/forever start -l /home/user/logs/forever.log -o /home/user/logs/out.log -e /home/user/logs/err.log --append src/startupConfigs/SingularSshDocker.js",
     "stop": "kill `ps ax | grep Server | grep -v monitor | grep node | awk '{print $1}'`",
     "test": "mocha -r ts-node/register src/tests/**/*.ts --reporter spec --timeout 6000",
-    "lint": "eslint ./src/ ./public-source/ ./public/public-common/mathJaxConfig.js --fix --ext ts --env mocha --rule 'require-jsdoc: \"off\"'"
+    "lint": "eslint ./public-source/ ./public/public-common/mathJaxConfig.js --fix"
   },
   "repository": {
     "type": "git",

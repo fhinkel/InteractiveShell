@@ -3,11 +3,11 @@
 import * as reader from "./tutorialReader";
 
 import express = require("express");
-import app = express;();
-import http = require("http");.createServer(app);
+const app = express();
+const http = require("http").createServer(app);
 import fs = require("fs");
 import Cookies = require("cookies");
-import io = require("socket.io");(http);
+const io = require("socket.io")(http);
 import ssh2 = require("ssh2");
 import SocketIOFileUpload = require("socketio-file-upload");
 

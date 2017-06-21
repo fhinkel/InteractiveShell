@@ -1,45 +1,45 @@
-var rewire = require('rewire');
-var sinon = require('sinon');
-var assert = require('chai').assert;
+let rewire = require("rewire");
+let sinon = require("sinon");
+let assert = require("chai").assert;
 
-var fileUploadModule = rewire('../lib/fileUpload.ts');
+let fileUploadModule = rewire("../lib/fileUpload.ts");
 
-describe('FileUpload module:', function() {
-  var fileUpload;
+describe("FileUpload module:", function() {
+  let fileUpload;
   before(function() {
     fileUpload = fileUploadModule({});
   });
 
-  describe('attachUploadListenerToSocket()', function() {
-    it('can be called', function() {
-      var socket = {
-        on: function() {
-        }
+  describe("attachUploadListenerToSocket()", function() {
+    it("can be called", function() {
+      const socket = {
+        on() {
+        },
       };
       fileUpload.attachUploadListenerToSocket(undefined, socket);
     });
   });
-  describe('completeFileUpload()', function() {
-    it('can be called', function() {
-      var completeFileUpload = fileUploadModule.__get__("completeFileUpload");
+  describe("completeFileUpload()", function() {
+    it("can be called", function() {
+      const completeFileUpload = fileUploadModule.__get__("completeFileUpload");
 
-      var connection = {
-        on: function() {
+      const connection = {
+        on() {
         },
-        connect: function() {
-        }
+        connect() {
+        },
       };
-      var ssh2 = function() {
+      const ssh2 = function() {
         return connection;
       };
 
-      var spy = sinon.spy(connection, "connect");
+      const spy = sinon.spy(connection, "connect");
 
-      var revert = fileUploadModule.__set__("ssh2", ssh2);
+      const revert = fileUploadModule.__set__("ssh2", ssh2);
 
-      var client = {};
+      const client = {};
 
-      var sshCredentials = function() {
+      const sshCredentials = function() {
       };
 
       completeFileUpload(client, sshCredentials)();

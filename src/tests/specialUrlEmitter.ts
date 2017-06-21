@@ -1,17 +1,17 @@
 
-var rewire = require('rewire');
-var sinon = require('sinon');
-var assert = require('chai').assert;
-require('../startupConfigs/default.ts').getConfig({}, function(options) {
-  var specialUrlEmitterModule = rewire('../lib/specialUrlEmitter.ts');
+let rewire = require("rewire");
+let sinon = require("sinon");
+let assert = require("chai").assert;
+require("../startupConfigs/default.ts").getConfig({}, function(options) {
+  const specialUrlEmitterModule = rewire("../lib/specialUrlEmitter.ts");
 
-  describe('SpecialUrlEmitter module:', function() {
-    var specialUrlEmitter;
+  describe("SpecialUrlEmitter module:", function() {
+    let specialUrlEmitter;
     before(function() {
-      var pathPrefix;
-      var sshCredentials = function() {
+      let pathPrefix;
+      const sshCredentials = function() {
       };
-      var logFunction = function() {
+      const logFunction = function() {
       };
       specialUrlEmitter = specialUrlEmitterModule(
         pathPrefix,
@@ -21,28 +21,28 @@ require('../startupConfigs/default.ts').getConfig({}, function(options) {
         options);
     });
 
-    describe('emitEventUrlToClient()', function() {
-      it('can be called', function() {
-        var connection = {
-          on: function() {
+    describe("emitEventUrlToClient()", function() {
+      it("can be called", function() {
+        const connection = {
+          on() {
           },
-          connect: function() {
-          }
+          connect() {
+          },
         };
-        var ssh2 = function() {
+        const ssh2 = function() {
           return connection;
         };
 
-        var revert = specialUrlEmitterModule.__set__("ssh2", ssh2);
+        const revert = specialUrlEmitterModule.__set__("ssh2", ssh2);
 
         specialUrlEmitter.emitEventUrlToClient("user12", "eventType", "", "");
 
         revert();
       });
 
-      it('should call emit for file', function() {
-        var spy = sinon.spy();
-        var revert = specialUrlEmitterModule
+      it("should call emit for file", function() {
+        const spy = sinon.spy();
+        const revert = specialUrlEmitterModule
           .__set__("emitUrlForUserGeneratedFileToClient", spy);
 
         specialUrlEmitter.emitEventUrlToClient("user12", "eventType", "");
@@ -51,20 +51,20 @@ require('../startupConfigs/default.ts').getConfig({}, function(options) {
         revert();
       });
 
-      it('can be called with viewHelp', function() {
-        var connection = {
-          on: function() {
+      it("can be called with viewHelp", function() {
+        const connection = {
+          on() {
           },
-          connect: function() {
-          }
+          connect() {
+          },
         };
-        var ssh2 = function() {
+        const ssh2 = function() {
           return connection;
         };
 
-        var revert = specialUrlEmitterModule.__set__("ssh2", ssh2);
+        const revert = specialUrlEmitterModule.__set__("ssh2", ssh2);
 
-        var revertIsViewHelpEvent = specialUrlEmitterModule
+        const revertIsViewHelpEvent = specialUrlEmitterModule
           .__set__("isViewHelpEvent", function() {
             return true;
           });
@@ -76,11 +76,11 @@ require('../startupConfigs/default.ts').getConfig({}, function(options) {
         revertIsViewHelpEvent();
       });
 
-      it('emits correct URL for viewHelp', function() {
-        var spy = sinon.spy();
-        var originalEmitHelpUrlToClient = options.help.emitHelpUrlToClient;
+      it("emits correct URL for viewHelp", function() {
+        const spy = sinon.spy();
+        const originalEmitHelpUrlToClient = options.help.emitHelpUrlToClient;
         options.help.emitHelpUrlToClient = spy;
-        var originalIsViewHelpEvent = options.help.isViewHelpEvent;
+        const originalIsViewHelpEvent = options.help.isViewHelpEvent;
         options.help.isViewHelpEvent = function() {
           return true;
         };
@@ -91,36 +91,36 @@ require('../startupConfigs/default.ts').getConfig({}, function(options) {
         options.help.isViewHelpEvent = originalIsViewHelpEvent;
       });
     });
-    describe('isSpecial()', function() {
-      it('should match special data', function() {
-        var data = ">>SPECIAL_EVENT_START>>special<<SPECIAL_EVENT_END<<";
+    describe("isSpecial()", function() {
+      it("should match special data", function() {
+        const data = ">>SPECIAL_EVENT_START>>special<<SPECIAL_EVENT_END<<";
         assert.equal(specialUrlEmitter.isSpecial(data), "special");
       });
-      it('should return false', function() {
-        var data = ">>SPECIAL_EVENT_START>>";
+      it("should return false", function() {
+        const data = ">>SPECIAL_EVENT_START>>";
         assert.isFalse(specialUrlEmitter.isSpecial(data),
           data + " should not be special.");
       });
     });
-    describe('isViewHelpEvent', function() {
-      var isViewHelpEvent;
+    describe("isViewHelpEvent", function() {
+      let isViewHelpEvent;
       before(function() {
         isViewHelpEvent = options.help.isViewHelpEvent;
       });
-      it('should match on file:', function() {
-        var data = "file:";
+      it("should match on file:", function() {
+        const data = "file:";
         assert.isTrue(isViewHelpEvent(data));
       });
-      it('should match on file:something', function() {
-        var data = "file:something";
+      it("should match on file:something", function() {
+        const data = "file:something";
         assert.isTrue(isViewHelpEvent(data));
       });
-      it('should not match', function() {
-        var data = "somethingfile:";
+      it("should not match", function() {
+        const data = "somethingfile:";
         assert.isFalse(isViewHelpEvent(data));
       });
-      it('should not on empty string', function() {
-        var data = "";
+      it("should not on empty string", function() {
+        const data = "";
         assert.isFalse(isViewHelpEvent(data));
       });
     });

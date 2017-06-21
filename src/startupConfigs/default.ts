@@ -18,7 +18,7 @@ var configuration = function(overrideOptions, next) {
       host: '127.0.0.1',
       username: 'm2user',
       port: '123',
-      sshKey: '/home/vagrant/InteractiveShell/id_rsa',
+      sshKey: '/home/ubuntu/InteractiveShell/id_rsa',
       containerName: ''
     },
     perContainerResources: {
@@ -32,9 +32,9 @@ var configuration = function(overrideOptions, next) {
       sshdCmd: "/usr/sbin/sshd -D",
       dockerCmdPrefix: 'sudo ',
       host: '192.168.2.42',
-      username: 'vagrant',
+      username: 'ubuntu',
       port: '22',
-      sshKey: "/home/vagrant/keys/host_key"
+      sshKey: "/home/ubuntu/keys/host_key"
     },
     help: require('./HelpMacaulay2.ts').help()
   };

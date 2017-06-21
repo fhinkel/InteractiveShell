@@ -30,8 +30,8 @@ Vagrant.configure(2) do |config|
      end
      nodejs.vm.network :private_network, ip: nodejsip, virtualbox__intnet: "internal"
      nodejs.vm.hostname = "nodejs"
-     nodejs.vm.box = "ubuntu/trusty64"
-     nodejs.vm.synced_folder ".", "/vagrant", disabled: true
+     nodejs.vm.box = "ubuntu/xenial64"
+     nodejs.vm.synced_folder ".", "/ubuntu", disabled: true
      nodejs.vm.network "forwarded_port", guest: 22, host: 4998, id: 'ssh'
      nodejs.vm.network "forwarded_port", guest: 8002, host: 3690
 
@@ -39,7 +39,7 @@ Vagrant.configure(2) do |config|
       nodejs.vm.provision "basic", type:"shell", privileged:true, inline: <<-SHELL
          apt-get update && apt-get upgrade -y
          apt-get install -y wget git
-         sudo -u vagrant mkdir /home/vagrant/keys
+         sudo -u ubuntu mkdir /home/ubuntu/keys
       SHELL
 
       # Install most recent version of node
@@ -61,36 +61,36 @@ Vagrant.configure(2) do |config|
       SHELL
 
    # Insert ssh config files.
-   nodejs.vm.provision "file", source: "./host_key", destination: "/home/vagrant/keys/host_key" 
-   nodejs.vm.provision "file", source: "./docker_key", destination: "/home/vagrant/keys/docker_key" 
+   nodejs.vm.provision "file", source: "./host_key", destination: "/home/ubuntu/keys/host_key" 
+   nodejs.vm.provision "file", source: "./docker_key", destination: "/home/ubuntu/keys/docker_key" 
    
     
     # Own previously config files.
     nodejs.vm.provision "ssh", type:"shell", privileged:true, inline: <<-SHELL
-      cp /home/vagrant/InteractiveShell/unix-files/sshd_config /etc/ssh/sshd_config
-      cp /home/vagrant/InteractiveShell/unix-files/ssh_config /etc/ssh/ssh_config
+      cp /home/ubuntu/InteractiveShell/unix-files/sshd_config /etc/ssh/sshd_config
+      cp /home/ubuntu/InteractiveShell/unix-files/ssh_config /etc/ssh/ssh_config
        chown root:root /etc/ssh/sshd_config
        chmod 600 /etc/ssh/sshd_config
        chown root:root /etc/ssh/ssh_config
        chmod 644 /etc/ssh/ssh_config
-       chown vagrant:vagrant /home/vagrant/keys/host_key*
-       chmod 644 /home/vagrant/keys/host_key*
-       chown vagrant:vagrant /home/vagrant/keys/docker_key*
-       chmod 644 /home/vagrant/keys/docker_key*
+       chown ubuntu:ubuntu /home/ubuntu/keys/host_key*
+       chmod 644 /home/ubuntu/keys/host_key*
+       chown ubuntu:ubuntu /home/ubuntu/keys/docker_key*
+       chmod 644 /home/ubuntu/keys/docker_key*
      SHELL
 
     nodejs.vm.provision "remove", type:"shell", privileged:false, run: "always", inline: <<-SHELL
-       rm -f /home/vagrant/InteractiveShell/public/users.htpasswd
+       rm -f /home/ubuntu/InteractiveShell/public/users.htpasswd
      SHELL
     
       if File.exists?('users.htpasswd') then 
-        nodejs.vm.provision "file", source: "./users.htpasswd", run: "always", destination: "/home/vagrant/InteractiveShell/public/users.htpasswd"
+        nodejs.vm.provision "file", source: "./users.htpasswd", run: "always", destination: "/home/ubuntu/InteractiveShell/public/users.htpasswd"
       end
       
      # Start server everytime machine is run.
      nodejs.vm.provision "startup_server", type:"shell", privileged:false, run: "always", inline: <<-SHELL
          source ~/.nvm/nvm.sh 
-         cd /home/vagrant/InteractiveShell
+         cd /home/ubuntu/InteractiveShell
          git pull --no-edit
          npm run twoMachines_forever 2>&1 > ../webm2.log.txt &
      SHELL
@@ -104,29 +104,29 @@ Vagrant.configure(2) do |config|
        v.memory = 1024
      end
      docker.vm.hostname = "docker"
-     docker.vm.box = "ubuntu/trusty64"
-     docker.vm.synced_folder ".", "/vagrant", disabled: true
+     docker.vm.box = "ubuntu/xenial64"
+     docker.vm.synced_folder ".", "/ubuntu", disabled: true
      docker.vm.network "forwarded_port", guest: 22, host: 4999, id: 'ssh'
      # for i in 5000..6000
      #    docker.vm.network :forwarded_port, guest: i, host: i
      # end
    
    # Insert ssh config files.
-   docker.vm.provision "file", source: "../../unix-files/sshd_config", destination: "/home/vagrant/sshd_config" 
-   docker.vm.provision "file", source: "../../unix-files/ssh_config", destination: "/home/vagrant/ssh_config" 
-   docker.vm.provision "file", source: "./host_key.pub", destination: "/home/vagrant/.ssh/host_key.pub"
+   docker.vm.provision "file", source: "../../unix-files/sshd_config", destination: "/home/ubuntu/sshd_config" 
+   docker.vm.provision "file", source: "../../unix-files/ssh_config", destination: "/home/ubuntu/ssh_config" 
+   docker.vm.provision "file", source: "./host_key.pub", destination: "/home/ubuntu/.ssh/host_key.pub"
 
      # Own ssh config files.
      docker.vm.provision "ssh", type:"shell", privileged:true, inline: <<-SHELL
-      cat /home/vagrant/.ssh/host_key.pub >> /home/vagrant/.ssh/authorized_keys
-      cp /home/vagrant/sshd_config /etc/ssh/sshd_config
-      cp /home/vagrant/ssh_config /etc/ssh/ssh_config
+      cat /home/ubuntu/.ssh/host_key.pub >> /home/ubuntu/.ssh/authorized_keys
+      cp /home/ubuntu/sshd_config /etc/ssh/sshd_config
+      cp /home/ubuntu/ssh_config /etc/ssh/ssh_config
        chown root:root /etc/ssh/sshd_config
        chmod 600 /etc/ssh/sshd_config
        chown root:root /etc/ssh/ssh_config
        chmod 644 /etc/ssh/ssh_config
-       chown vagrant:vagrant /home/vagrant/.ssh/authorized_keys
-       chmod 644 /home/vagrant/.ssh/authorized_keys
+       chown ubuntu:ubuntu /home/ubuntu/.ssh/authorized_keys
+       chmod 644 /home/ubuntu/.ssh/authorized_keys
      SHELL
      
      docker.vm.provision "install", type:"shell", privileged:true, inline: <<-SHELL
@@ -139,14 +139,14 @@ Vagrant.configure(2) do |config|
      SHELL
    
    # Insert Dockerfile.
-   docker.vm.provision "file", source: "./docker_key.pub", destination: "/home/vagrant/docker_key.pub"
-   docker.vm.provision "file", source: "./Dockerfile", destination: "/home/vagrant/Dockerfile" 
-   docker.vm.provision "file", source: "../../unix-files/open", destination: "/home/vagrant/open" 
+   docker.vm.provision "file", source: "./docker_key.pub", destination: "/home/ubuntu/docker_key.pub"
+   docker.vm.provision "file", source: "./Dockerfile", destination: "/home/ubuntu/Dockerfile" 
+   docker.vm.provision "file", source: "../../unix-files/open", destination: "/home/ubuntu/open" 
 
       # Install Docker and build container.
      docker.vm.provision "docker", type:"shell", privileged:true, inline: <<-SHELL
        wget -qO- https://get.docker.com/ | sh
-       cd /home/vagrant
+       cd /home/ubuntu
        docker build -t m2container .
      SHELL
      

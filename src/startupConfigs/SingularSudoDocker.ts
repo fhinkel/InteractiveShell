@@ -13,7 +13,7 @@ require('./startup.ts')({
   },
   startInstance: {
     host: '127.0.0.1',
-    sshKey: '/home/vagrant/InteractiveShell/setups/Singular/id_rsa',
+    sshKey: '/home/ubuntu/InteractiveShell/setups/Singular/id_rsa',
     username: 'singularUser'
   },
   help: require('./HelpSingular.ts').help()

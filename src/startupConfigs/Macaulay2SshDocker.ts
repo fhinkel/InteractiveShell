@@ -11,7 +11,7 @@ require('./startup.ts')({
     host: '192.168.2.42',
     username: 'm2user',
     port: '5000',
-    sshKey: '/home/vagrant/keys/docker_key',
+    sshKey: '/home/ubuntu/keys/docker_key',
     containerName: '',
     lastActiveTime: 0
   }

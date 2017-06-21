@@ -5,13 +5,9 @@ var rewire = require('rewire');
 describe('Admin Module:', function() {
   var admin;
   var clients;
-  var options;
   var adminModule;
 
   before(function() {
-    options = {
-      MATH_PROGRAM: "MyProgram"
-    };
     adminModule = rewire('../lib/admin.ts');
   });
 
@@ -21,7 +17,7 @@ describe('Admin Module:', function() {
       user16: {},
       user12: {}
     };
-    admin = adminModule(clients, options);
+    admin = adminModule(clients, "MyProgram");
   });
 
   describe('Admin.stats()', function() {

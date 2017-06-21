@@ -274,7 +274,7 @@ var initializeServer = function() {
   };
   var prefix = staticFolder + "-" + serverConfig.MATH_PROGRAM + "/";
   var tutorialReader = require('./tutorialReader')(prefix, fs);
-  var admin = require('./admin')(clients, serverConfig);
+  var admin = require('./admin')(clients, serverConfig.MATH_PROGRAM);
   app.use(favicon(staticFolder + '-' +
       serverConfig.MATH_PROGRAM + '/favicon.ico'));
   app.use(SocketIOFileUpload.router);

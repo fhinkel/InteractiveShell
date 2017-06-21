@@ -6,8 +6,7 @@ var totalUsers = function(clients) : number {
   return clients.totalUsers;
 };
 
-module.exports = function(clients, options) {
-  var program : string = options.MATH_PROGRAM;
+module.exports = function(clients, program : string) {
   var stats = function(request, response) : void {
     response.writeHead(200, {
       "Content-Type": "text/html"

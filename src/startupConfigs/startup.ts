@@ -1,7 +1,8 @@
 // This starts the main server!
 import fs = require("fs");
+import {AuthOption} from "../lib/enums";
 
-let fileExistsPromise = function(filename) {
+const fileExistsPromise = function(filename) {
   return new Promise(function(resolve) {
     fs.access(filename, fs.constants.R_OK, function(err) {
       resolve(!err);
@@ -13,14 +14,14 @@ module.exports = function(overrideOptions) {
   fileExistsPromise("public/users.htpasswd")
     .then(function(exists) {
       if (exists) {
-        overrideOptions.authentication = "basic";
+        overrideOptions.authentication = AuthOption.basic;
       } else {
-        overrideOptions.authentication = "none";
+        overrideOptions.authentication = AuthOption.none;
       }
     })
     .then(function() {
       require("./default").getConfig(overrideOptions, function(options) {
-        let Macaulay2Server = require("../lib/server").mathServer(options);
+        const Macaulay2Server = require("../lib/server").mathServer(options);
         Macaulay2Server.listen();
       });
     })

@@ -3,7 +3,7 @@
 import {Client} from "./client";
 import {Clients} from "./client";
 
-import {SocketEvent} from "../lib/enums";
+import {AuthOption, SocketEvent} from "../lib/enums";
 import {Instance} from "./instance";
 import * as reader from "./tutorialReader";
 
@@ -415,8 +415,8 @@ const listen = function() {
   return listener;
 };
 
-const authorizeIfNecessary = function(authOption) {
-  if (authOption === "basic") {
+const authorizeIfNecessary = function(authOption: AuthOption) {
+  if (authOption === AuthOption.basic) {
     const auth = require("http-auth");
     const basic = auth.basic({
       realm: "Please enter your username and password.",

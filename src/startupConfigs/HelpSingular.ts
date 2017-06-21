@@ -1,13 +1,13 @@
 import {SocketEvent} from "../lib/enums";
 
-let help = function() {
-  let result = {
+const help = function() {
+  const result = {
     emitHelpUrlToClient(client,
-                                  viewHelp,
-                                  logFunction,
-                                  emitDataViaSockets) {
+                        viewHelp,
+                        logFunction,
+                        emitDataViaSockets) {
       logFunction("Look at " + viewHelp);
-      let url = viewHelp.replace("\"", "");
+      const url = viewHelp.replace("\"", "");
       emitDataViaSockets(client.socketArray, SocketEvent.viewHelp, url);
     },
 

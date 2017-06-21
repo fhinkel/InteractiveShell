@@ -1,8 +1,9 @@
+import {AuthOption} from "../lib/enums";
 
-let configuration = function(overrideOptions, next) {
-  let options = {
+const configuration = function(overrideOptions, next) {
+  const options = {
     cookieName: "tryM2",
-    authentication: "none",
+    authentication: AuthOption.none,
     serverConfig: {
       CONTAINERS: "../lib/LocalContainerManager",
       MATH_PROGRAM: "Macaulay2",
@@ -39,8 +40,8 @@ let configuration = function(overrideOptions, next) {
     help: require("./HelpMacaulay2").help(),
   };
 
-  let overrideDefaultOptions = function(overrideOptions, defaultOptions) {
-    for (let opt in overrideOptions) {
+  const overrideDefaultOptions = function(overrideOptions, defaultOptions) {
+    for (const opt in overrideOptions) {
       if (defaultOptions.hasOwnProperty(opt)) {
         if (defaultOptions[opt] instanceof Function) {
           defaultOptions[opt] = overrideOptions[opt];

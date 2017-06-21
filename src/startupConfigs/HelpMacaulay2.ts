@@ -1,10 +1,10 @@
 import {SocketEvent} from "../lib/enums";
-let help = function() {
-  let result = {
+const help = function() {
+  const result = {
     emitHelpUrlToClient(client,
-                                  viewHelp,
-                                  logFunction,
-                                  emitDataViaSockets) {
+                        viewHelp,
+                        logFunction,
+                        emitDataViaSockets) {
       logFunction("Look at " + viewHelp);
       let helpPath = viewHelp.match(/(\/Macaulay2Doc.*)$/);
       if (helpPath) {
@@ -22,7 +22,7 @@ let help = function() {
       return eventData.match(/^file:.*/) !== null;
     },
     stripSpecialLines(data) {
-      let result = data.replace(
+      const result = data.replace(
         /^.*>>SPECIAL_EVENT_START>>(.*)<<SPECIAL_EVENT_END<<.*$/mg, "");
       return result;
     },

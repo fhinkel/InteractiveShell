@@ -49,7 +49,7 @@
     "basic": "webpack && node src/startupConfigs/Macaulay2SudoDocker.js",
     "local": "webpack && node src/startupConfigs/Macaulay2LocalServer.js",
     "twoMachines": "webpack && tsc && node src/dist/startupConfigs/Macaulay2SshDocker.js",
-    "twoMachines_forever": "webpack && ./node_modules/forever/bin/forever start -l /home/vagrant/webm2.logs/forever.log -o /home/vagrant/webm2.logs/out.log -e /home/vagrant/webm2.logs/err.log --append src/startupConfigs/Macaulay2SshDocker.js",
+    "twoMachines_forever": "webpack && tsc && ./node_modules/forever/bin/forever start -l /home/vagrant/webm2.logs/forever.log -o /home/vagrant/webm2.logs/out.log -e /home/vagrant/webm2.logs/err.log --append src/dist/startupConfigs/Macaulay2SshDocker.js",
     "start_singular": "webpack && node src/startupConfigs/SingularSudoDocker.js",
     "basic_singular": "webpack && node src/startupConfigs/SingularLocalServer.js",
     "ssh_singular": "webpack && node src/startupConfigs/SingularSshDocker.js",

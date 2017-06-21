@@ -16,6 +16,6 @@ require('./startup.ts')({
     sshKey: '/home/ubuntu/InteractiveShell/setups/Singular/id_rsa',
     username: 'singularUser'
   },
-  help: require('./HelpSingular.ts').help()
+  help: require('./HelpSingular').help()
 });
 

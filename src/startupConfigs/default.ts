@@ -4,7 +4,7 @@ var configuration = function(overrideOptions, next) {
     cookieName: "tryM2",
     authentication: "none",
     serverConfig: {
-      CONTAINERS: '../lib/LocalContainerManager.ts',
+      CONTAINERS: '../lib/LocalContainerManager',
       MATH_PROGRAM: "Macaulay2",
       MATH_PROGRAM_COMMAND: 'M2',
       resumeString: '',
@@ -36,7 +36,7 @@ var configuration = function(overrideOptions, next) {
       port: '22',
       sshKey: "/home/ubuntu/keys/host_key"
     },
-    help: require('./HelpMacaulay2.ts').help()
+    help: require('./HelpMacaulay2').help()
   };
 
   var overrideDefaultOptions = function(overrideOptions, defaultOptions) {

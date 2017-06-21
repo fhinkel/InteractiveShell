@@ -18,25 +18,25 @@ if (n > 4) {
 
 // Dirname is src/dist.
 import p = require("path");
-const path = p.join(__dirname, "/../startupConfigs/");
+const path = p.join(__dirname, "/startupConfigs/");
 
 if (mathProgram === "Macaulay2" || mathProgram === "M2") {
   if (mode === "local") {
-    require(path + "Macaulay2LocalServer.js");
+    require(path + "Macaulay2LocalServer");
   } else if (mode === "docker") {
-    require(path + "Macaulay2SudoDocker.ts");
+    require(path + "Macaulay2SudoDocker");
   } else if (mode === "ssh") {
-    require(path + "Macaulay2SshDocker.js");
+    require(path + "Macaulay2SshDocker");
   } else {
     console.log("There is no mode " + mode);
   }
 } else if (mathProgram === "Singular") {
   if (mode === "local") {
-    require(path + "SingularLocalServer.js");
+    require(path + "SingularLocalServer");
   } else if (mode === "docker") {
-    require(path + "SingularSudoDocker.js");
+    require(path + "SingularSudoDocker");
   } else if (mode === "ssh") {
-    require(path + "SingularSshDocker.js");
+    require(path + "SingularSshDocker");
   } else {
     console.log("There is no mode " + mode);
   }

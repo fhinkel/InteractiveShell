@@ -27,6 +27,6 @@ require('./startup.ts')({
     containerName: 'singularContainer',
     lastActiveTime: 0
   },
-  help: require('./HelpSingular.ts').help()
+  help: require('./HelpSingular').help()
 });
 

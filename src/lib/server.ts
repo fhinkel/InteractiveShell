@@ -13,7 +13,7 @@ var path = require('path');
 var getClientIdFromSocket;
 var serverConfig;
 var options; // These used to be global.OPTIONS
-var staticFolder = path.join(__dirname, '../../public/public');
+var staticFolder = path.join(__dirname, '../../../public/public');
 
 var logExceptOnTest = function(string) {
   if (process.env.NODE_ENV !== 'test') {
@@ -181,7 +181,7 @@ var sendDataToClient = function(clientID) {
     }
     updateLastActiveTime(clientID);
     var pathPrefix = staticFolder + '-' + serverConfig.MATH_PROGRAM;
-    var specialUrlEmitter = require('./specialUrlEmitter.ts')(
+    var specialUrlEmitter = require('./specialUrlEmitter')(
         pathPrefix,
         sshCredentials,
         logExceptOnTest,
@@ -273,8 +273,8 @@ var initializeServer = function() {
     ]
   };
   var prefix = staticFolder + "-" + serverConfig.MATH_PROGRAM + "/";
-  var tutorialReader = require('./tutorialReader.ts')(prefix, fs);
-  var admin = require('./admin.ts')(clients, serverConfig);
+  var tutorialReader = require('./tutorialReader')(prefix, fs);
+  var admin = require('./admin')(clients, serverConfig);
   app.use(favicon(staticFolder + '-' +
       serverConfig.MATH_PROGRAM + '/favicon.ico'));
   app.use(SocketIOFileUpload.router);
@@ -392,7 +392,7 @@ var listen = function() {
       clients[clientId].reconnecting = true;
     }
     socketSanityCheck(clientId, socket);
-    var fileUpload = require('./fileUpload.ts')(
+    var fileUpload = require('./fileUpload')(
         logExceptOnTest,
         sshCredentials);
     fileUpload.attachUploadListenerToSocket(clients[clientId], socket);
@@ -410,7 +410,7 @@ var authorizeIfNecessary = function(authOption) {
     var auth = require('http-auth');
     var basic = auth.basic({
       realm: "Please enter your username and password.",
-      file: path.join(__dirname, "/../../public/users.htpasswd")
+      file: path.join(__dirname, "/../../../public/users.htpasswd")
     });
     app.use(auth.connect(basic));
     return function(socket) {

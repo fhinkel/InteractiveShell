@@ -85,8 +85,12 @@ const emitDataViaSockets = function(sockets, type: SocketEvent, data: string): v
     if (sockets.hasOwnProperty(socketKey)) {
       const socket = sockets[socketKey];
       try {
-        socket.emit(type, data);
-      } catch (error) {}
+        socket.emit(SocketEvent[type], data);
+      } catch (error) {
+        console.log("Emit error.");
+      }
+    } else {
+      console.log("No socketKey");
     }
   }
 };
@@ -171,17 +175,16 @@ const updateLastActiveTime = function(clientID: string) {
   instanceManager.updateLastActiveTime(clients[clientID].instance);
 };
 
-const updateSocket = function(clientID: string, socket) {
-  console.log(socket.id);
-  const ID = socket.id;
-  clients[clientID].socketArray[ID] = socket;
+const addNewSocket = function(clientID: string, socket) {
+  logClient(clientID, "Adding new socket");
+  const socketID :string = socket.id;
+  clients[clientID].socketArray[socketID] = socket;
 };
 
 const sendDataToClient = function(clientID: string) {
   return function(dataObject) {
     const data = dataObject.toString();
-    const socket = clients[clientID].socket;
-    if (!socket) {
+    if (clients[clientID].nSockets() === 0) {
       logClient(clientID, "Error, no socket for client.");
       return;
     }
@@ -294,7 +297,7 @@ const initializeServer = function() {
   app.use(unhandled);
 };
 
-const socketSanityCheck = function(clientId: string, socket) {
+const clientSanityCheck = function(clientId: string) {
   console.log("CID is: " + clientId);
   if (!clients[clientId]) {
     console.log("No client, yet.");
@@ -305,8 +308,6 @@ const socketSanityCheck = function(clientId: string, socket) {
     return;
   }
   clients[clientId].saneState = false;
-  clients[clientId].socket = socket;
-  updateSocket(clientId, socket);
 
   if (!clients[clientId].mathProgramInstance ||
       clients[clientId].mathProgramInstance._writableState.ended) {
@@ -332,14 +333,14 @@ const writeMsgOnStream = function(clientId: string, msg: string) {
       logClient(clientId, "write failed: " + err);
     }
     optLogCmdToFile(clientId, msg);
-    socketSanityCheck(clientId, clients[clientId].socket);
+    clientSanityCheck(clientId);
   });
 };
 
 const checkAndWrite = function(clientId: string, msg: string) {
   if (!clients[clientId].mathProgramInstance ||
       clients[clientId].mathProgramInstance._writableState.ended) {
-    socketSanityCheck(clientId, clients[clientId].socket);
+    clientSanityCheck(clientId);
   } else {
     writeMsgOnStream(clientId, msg);
   }
@@ -363,7 +364,7 @@ const socketInputAction = function(clientId: string) {
     checkState(clientId).then(function() {
       checkAndWrite(clientId, msg);
     }, function(){
-      socketSanityCheck(clientId, clients[clientId].socket);
+      clientSanityCheck(clientId);
     });
   };
 };
@@ -382,7 +383,7 @@ const socketResetAction = function(clientId: string) {
         client.saneState = true;
       });
     }, function(){
-      socketSanityCheck(clientId, clients[clientId].socket);
+      clientSanityCheck(clientId);
     });
   };
 };
@@ -401,7 +402,8 @@ const listen = function() {
     if (clients[clientId]) {
       clients[clientId].reconnecting = true;
     }
-    socketSanityCheck(clientId, socket);
+    clientSanityCheck(clientId);
+    addNewSocket(clientId, socket);
     const fileUpload = require("./fileUpload")(
       logExceptOnTest,
       sshCredentials);

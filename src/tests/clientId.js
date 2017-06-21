@@ -10,7 +10,7 @@ describe('ClientId Module:', function() {
   var logFunction;
 
   before(function() {
-    clientIdModule = rewire('../lib/clientId.js');
+    clientIdModule = rewire('../lib/clientId.ts');
     exists = clientIdModule.__get__("exists");
     logFunction = function() {};
   });

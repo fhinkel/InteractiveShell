@@ -1,9 +1,9 @@
-require('./startup.js')({
+require('./startup.ts')({
   serverConfig: {
     port: 8002,
     MATH_PROGRAM: 'Singular',
     MATH_PROGRAM_COMMAND: 'Singular',
-    CONTAINERS: '../lib/sudoDockerContainers.js',
+    CONTAINERS: '../lib/sudoDockerContainers.ts',
     resumeString: 'Type \'listvar();\' to print the list of ' +
     'existing variables.\n' +
     'Type \'basering;\' to print the currently active ring.\n> '
@@ -16,6 +16,6 @@ require('./startup.js')({
     sshKey: '/home/vagrant/InteractiveShell/setups/Singular/id_rsa',
     username: 'singularUser'
   },
-  help: require('./HelpSingular.js').help()
+  help: require('./HelpSingular.ts').help()
 });
 

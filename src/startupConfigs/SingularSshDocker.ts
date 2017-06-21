@@ -1,4 +1,4 @@
-require('./startup.js')({
+require('./startup.ts')({
   hostConfig: {
     dockerRunCmd: '',
     maxContainerNumber: 10,
@@ -14,7 +14,7 @@ require('./startup.js')({
     port: 8002,
     MATH_PROGRAM: 'Singular',
     MATH_PROGRAM_COMMAND: 'Singular',
-    CONTAINERS: '../lib/sshDockerContainers.js',
+    CONTAINERS: '../lib/sshDockerContainers.ts',
     resumeString: 'Type \'listvar();\' to print the list of ' +
     'existing variables.\n' +
     'Type \'basering;\' to print the currently active ring.\n> '
@@ -27,6 +27,6 @@ require('./startup.js')({
     containerName: 'singularContainer',
     lastActiveTime: 0
   },
-  help: require('./HelpSingular.js').help()
+  help: require('./HelpSingular.ts').help()
 });
 

@@ -2,7 +2,7 @@ var rewire = require('rewire');
 var sinon = require('sinon');
 var assert = require('chai').assert;
 
-var fileUploadModule = rewire('../lib/fileUpload');
+var fileUploadModule = rewire('../lib/fileUpload.ts');
 
 describe('FileUpload module:', function() {
   var fileUpload;

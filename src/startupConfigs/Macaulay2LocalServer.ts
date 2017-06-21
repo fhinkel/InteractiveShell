@@ -1,1 +1,1 @@
-require('./startup.js')({});
+require('./startup.ts')({});

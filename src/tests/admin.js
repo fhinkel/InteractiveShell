@@ -12,7 +12,7 @@ describe('Admin Module:', function() {
     options = {
       MATH_PROGRAM: "MyProgram"
     };
-    adminModule = rewire('../lib/admin.js');
+    adminModule = rewire('../lib/admin.ts');
   });
 
   beforeEach(function() {

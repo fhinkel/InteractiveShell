@@ -181,7 +181,7 @@ var sendDataToClient = function(clientID) {
     }
     updateLastActiveTime(clientID);
     var pathPrefix = staticFolder + '-' + serverConfig.MATH_PROGRAM;
-    var specialUrlEmitter = require('./specialUrlEmitter')(
+    var specialUrlEmitter = require('./specialUrlEmitter.ts')(
         pathPrefix,
         sshCredentials,
         logExceptOnTest,
@@ -273,8 +273,8 @@ var initializeServer = function() {
     ]
   };
   var prefix = staticFolder + "-" + serverConfig.MATH_PROGRAM + "/";
-  var tutorialReader = require('./tutorialReader')(prefix, fs);
-  var admin = require('./admin')(clients, serverConfig);
+  var tutorialReader = require('./tutorialReader.ts')(prefix, fs);
+  var admin = require('./admin.ts')(clients, serverConfig);
   app.use(favicon(staticFolder + '-' +
       serverConfig.MATH_PROGRAM + '/favicon.ico'));
   app.use(SocketIOFileUpload.router);
@@ -392,7 +392,7 @@ var listen = function() {
       clients[clientId].reconnecting = true;
     }
     socketSanityCheck(clientId, socket);
-    var fileUpload = require('./fileUpload.js')(
+    var fileUpload = require('./fileUpload.ts')(
         logExceptOnTest,
         sshCredentials);
     fileUpload.attachUploadListenerToSocket(clients[clientId], socket);

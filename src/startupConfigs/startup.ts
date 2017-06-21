@@ -21,7 +21,7 @@ module.exports = function(overrideOptions) {
     })
     .then(function() {
       require('./default.ts').getConfig(overrideOptions, function(options) {
-        var Macaulay2Server = require('../lib/server.js').mathServer(options);
+        var Macaulay2Server = require('../lib/server.ts').mathServer(options);
         Macaulay2Server.listen();
       });
     })

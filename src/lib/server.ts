@@ -41,7 +41,11 @@ const clients: Clients = {};
 
 let totalUsers: number = 0;
 
-let instanceManager;
+let instanceManager = {
+  getNewInstance : undefined,
+  removeInstance : undefined,
+  updateLastActiveTime : undefined,
+};
 
 const logClient = function(clientID, str) {
   if (process.env.NODE_ENV !== "test") {
@@ -116,6 +120,8 @@ const getInstance = function(clientID: string, next) {
     });
   }
 };
+
+export {clients, getInstance, instanceManager};
 
 const optLogCmdToFile = function(clientId: string, msg: string) {
   if (serverConfig.CMD_LOG_FOLDER) {

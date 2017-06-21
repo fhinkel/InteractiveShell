@@ -17,7 +17,8 @@ if (n > 4) {
 }
 
 // Dirname is src/dist.
-const path = require("path").join(__dirname, "/../startupConfigs/");
+import p = require("path");
+const path = p.join(__dirname, "/../startupConfigs/");
 
 if (mathProgram === "Macaulay2" || mathProgram === "M2") {
   if (mode === "local") {

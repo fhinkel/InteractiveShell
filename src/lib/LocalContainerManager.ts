@@ -4,7 +4,9 @@ var localContainerManager = function() {
   var options = {
     credentials: {
       host: '127.0.0.1',
-      port: '22'
+      port: '22',
+      username: undefined,
+      sshKey: undefined
     }
   };
 

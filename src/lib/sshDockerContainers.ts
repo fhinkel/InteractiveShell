@@ -79,7 +79,7 @@ var sshDockerManager = function(OPTIONS) {
       if (next) {
         next();
       }
-    });
+    }, function() {});
   };
 
   var addInstanceToArray = function(instance) {

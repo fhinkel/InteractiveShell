@@ -23,7 +23,7 @@ if (mathProgram === "Macaulay2" || mathProgram === "M2") {
   if (mode === "local") {
     require(path + "Macaulay2LocalServer.js");
   } else if (mode === "docker") {
-    require(path + "Macaulay2SudoDocker.js");
+    require(path + "Macaulay2SudoDocker.ts");
   } else if (mode === "ssh") {
     require(path + "Macaulay2SshDocker.js");
   } else {

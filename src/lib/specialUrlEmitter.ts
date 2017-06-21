@@ -1,8 +1,9 @@
 let ssh2 = require("ssh2"); // tslint:disable-line
 import fs = require("fs");
-import {SocketEvent} from "../lib/enums";
+import {Client} from "./client";
+import {SocketEvent} from "./enums";
 
-const getFilename = function(path) {
+const getFilename = function(path: string): string {
   const partAfterLastSlash = /([^\/]*)$/; // eslint-disable-line  no-useless-escape
   const filename = path.match(partAfterLastSlash);
   if (filename) {
@@ -11,7 +12,7 @@ const getFilename = function(path) {
   return null;
 };
 
-const unlink = function(completePath) {
+const unlink = function(completePath: string) {
   return function() {
     fs.unlink(completePath, function(err) {
       if (err) {
@@ -23,14 +24,14 @@ const unlink = function(completePath) {
   };
 };
 
-let emitUrlForUserGeneratedFileToClient = function(client, // tslint:disable-line
-                                                   path,
-                                                   pathPrefix,
-                                                   pathPostfix,
+let emitUrlForUserGeneratedFileToClient = function(client : Client, // tslint:disable-line
+                                                   path: string,
+                                                   pathPrefix: string,
+                                                   pathPostfix: string,
                                                    sshCredentials,
                                                    logFunction,
                                                    emitDataViaSockets) {
-  const fileName = getFilename(path);
+  const fileName: string = getFilename(path);
   if (!fileName) {
     return;
   }
@@ -43,7 +44,7 @@ let emitUrlForUserGeneratedFileToClient = function(client, // tslint:disable-lin
     if (err) {
       throw new Error("ssh2.sftp() failed: " + err);
     }
-    const targetPath = pathPrefix + pathPostfix;
+    const targetPath: string = pathPrefix + pathPostfix;
     fs.mkdir(targetPath, function(err) {
       if (err) {
         logFunction("Folder exists, but we proceed anyway");
@@ -71,23 +72,23 @@ let emitUrlForUserGeneratedFileToClient = function(client, // tslint:disable-lin
   sshConnection.connect(sshCredentials(client.instance));
 };
 
-const emitLeftOverData = function(client, emitDataViaSockets,
-                                  data, stripFunction) {
+const emitLeftOverData = function(client: Client, emitDataViaSockets,
+                                  data: string, stripFunction): void {
   const leftOverData = stripFunction(data);
   if (leftOverData !== "") {
     emitDataViaSockets(client.socketArray, SocketEvent.result, leftOverData);
   }
 };
 
-module.exports = function(pathPrefix,
+module.exports = function(pathPrefix: string,
                           sshCredentials,
                           logFunction,
                           emitDataViaSockets,
                           options,
 ) {
   return {
-    emitEventUrlToClient(client, url, data,
-                         pathPostfix) {
+    emitEventUrlToClient(client: Client, url: string, data: string,
+                         pathPostfix: string) {
       emitLeftOverData(client, emitDataViaSockets, data,
         options.help.stripSpecialLines);
       if (options.help.isViewHelpEvent(url)) {
@@ -104,7 +105,7 @@ module.exports = function(pathPrefix,
         logFunction,
         emitDataViaSockets);
     },
-    isSpecial(data) {
+    isSpecial(data: string) {
       const eventData = data.match(
         />>SPECIAL_EVENT_START>>(.*)<<SPECIAL_EVENT_END<</);
       if (eventData) {

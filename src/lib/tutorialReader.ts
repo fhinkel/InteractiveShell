@@ -1,10 +1,13 @@
 "use strict";
 
-module.exports = function(prefix, fs) {
-  var async = require('async');
+type Tutorial = string;
+type Tutorials = Tutorial[];
 
-  var moveWelcomeTutorialToBeginning = function(tutorials, firstTutorial) {
-    var index = tutorials.indexOf(firstTutorial);
+module.exports = function(prefix : string, fs) {
+  const async = require('async');
+
+  var moveWelcomeTutorialToBeginning = function(tutorials : Tutorials, firstTutorial : Tutorial) : Tutorials {
+    var index : number = tutorials.indexOf(firstTutorial);
     if (index > -1) {
       tutorials.splice(index, 1);
       tutorials.unshift(firstTutorial);
@@ -12,33 +15,33 @@ module.exports = function(prefix, fs) {
     return tutorials;
   };
 
-  var prefixedFsReaddir = function(path, next) {
-    var totalPath = prefix + path;
+  var prefixedFsReaddir = function(path : string, next) : void {
+    var totalPath : string = prefix + path;
     fs.readdir(totalPath, function(err, files) {
-      var tutorials = files.map(function(filename) {
+      var tutorials : Tutorials = files.map(function(filename) : Tutorial {
         return path + filename;
       });
       next(err, tutorials);
     });
   };
 
-  var prefixedFsExists = function(path, next) {
-    var totalPath = prefix + path;
+  var prefixedFsExists = function(path : string, next) : void {
+    var totalPath : string = prefix + path;
     fs.exists(totalPath, function(exists) {
       next(exists);
     });
   };
 
-  var getListOfTutorials = function(request, response) {
-    var pathForTutorials = 'tutorials/';
-    var pathForUserTutorials = 'shared-tutorials/';
-    var folderList = [pathForTutorials, pathForUserTutorials];
+  var getListOfTutorials = function(request, response) : void {
+    var pathForTutorials : string = 'tutorials/';
+    var pathForUserTutorials : string = 'shared-tutorials/';
+    var folderList : string[] = [pathForTutorials, pathForUserTutorials];
     async.filter(folderList, prefixedFsExists, function(existingFolders) {
-      async.concat(existingFolders, prefixedFsReaddir, function(err, files) {
+      async.concat(existingFolders, prefixedFsReaddir, function(err, files : string[]) {
         if (err) {
           throw new Error("async.concat() failed: " + err);
         }
-        var tutorials = files.filter(function(filename) {
+        var tutorials : Tutorials = files.filter(function(filename : Tutorial) : Tutorials {
           return filename.match(/\.html$/);
         });
         response.writeHead(200, {

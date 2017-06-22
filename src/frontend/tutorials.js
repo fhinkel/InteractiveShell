@@ -120,6 +120,7 @@ var markdownToHtml = function(markdownText) {
     var output = [];
     var inSection = false; // only false until the first ##.  After that, it is true.
     var inExample = false;
+    var exampleLines = [];
     var firstLineInExample = false;
     var inPara = false;
     for (let line of lines) {
@@ -146,19 +147,26 @@ var markdownToHtml = function(markdownText) {
                 inPara = false;
             }
             if (inExample) {
-                output[output.length-1] = output[output.length-1] + "</code></p>";
+                if (exampleLines.length > 1) {
+                    output.push("<p><codeblock>" + exampleLines[0]);
+                    for (var j=1; j<exampleLines.length-2; j++) {
+                        output.push(exampleLines[j]);
+                    }
+                    output.push(exampleLines[exampleLines.length-1] + "</codeblock></p>");
+                } else if (exampleLines.length == 1) {
+                    output.push("<p><code>" + exampleLines[0] + "</code></p>");
+                }
                 inExample = false;
+                exampleLines = [];
             } else {
-                firstLineInExample = true;
                 inExample = true;
             }
         } else {
             // all other lines
-            if (firstLineInExample) {
-                output.push("<p><code>" + line);
-                firstLineInExample = false;
-            } else if (inPara || inExample) {
+            if (inPara) {
                 output.push(line);
+            } else if (inExample) {
+                exampleLines.push(line);
             } else {
                 output.push("<p>" + line);
                 inPara = true;

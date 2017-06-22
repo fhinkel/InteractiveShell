@@ -18,7 +18,7 @@ const app = express();
 const http = require("http").createServer(app);
 import fs = require("fs");
 import Cookies = require("cookies");
-const io : SocketIO.Server = require("socket.io")(http);
+const io: SocketIO.Server = require("socket.io")(http);
 import ssh2 = require("ssh2");
 import SocketIOFileUpload = require("socketio-file-upload");
 
@@ -81,7 +81,7 @@ const disconnectSocket = function(socket: SocketIO.Socket): void  {
 const disconnectSockets = function(sockets): void  {
   for (const socketKey in sockets) {
     if (sockets.hasOwnProperty(socketKey)) {
-      const socket : SocketIO.Socket= sockets[socketKey];
+      const socket: SocketIO.Socket = sockets[socketKey];
       disconnectSocket(socket);
     }
   }

@@ -6,7 +6,7 @@ export class Client {
     reconnecting: boolean;
     instance: Instance;
     socketArray: {[socketID: string]: any; };
-    mathProgramInstance: ssh2.ClientChannel;
+    channel: ssh2.ClientChannel;
     id: string;
     constructor(newId: string) {
         this.saneState = true;

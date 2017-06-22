@@ -182,20 +182,20 @@ const spawnMathProgramInSecureContainer = function(client: Client, next) {
     connection.on("ready", function() {
       connection.exec(serverConfig.MATH_PROGRAM_COMMAND,
         {pty: true},
-        function(err, stream: ssh2.ClientChannel) {
+        function(err, channel: ssh2.ClientChannel) {
           if (err) {
             throw err;
           }
           optLogCmdToFile(client.id, "Starting.\n");
-          stream.on("close", function() {
+          channel.on("close", function() {
             connection.end();
           });
-          stream.on("end", function() {
-            stream.close();
-            logClient(client.id, "Stream ended, closing connection.");
+          channel.on("end", function() {
+            channel.close();
+            logClient(client.id, "Channel to Math program ended, closing connection.");
             connection.end();
           });
-          next(stream);
+          next(channel);
         });
     }).connect(sshCredentials(instance));
   });
@@ -242,8 +242,8 @@ const sendDataToClient = function(client: Client) {
 };
 
 const attachListenersToOutput = function(client: Client) {
-  if (client.mathProgramInstance) {
-    client.mathProgramInstance
+  if (client.channel) {
+    client.channel
       .removeAllListeners("data")
       .on("data", sendDataToClient(client));
   }
@@ -251,9 +251,9 @@ const attachListenersToOutput = function(client: Client) {
 
 const mathProgramStart = function(client: Client, next) {
   logClient(client.id, "Spawning new MathProgram process...");
-  spawnMathProgramInSecureContainer(client, function(stream: ssh2.ClientChannel) {
-    stream.setEncoding("utf8");
-    client.mathProgramInstance = stream;
+  spawnMathProgramInSecureContainer(client, function(channel: ssh2.ClientChannel) {
+    channel.setEncoding("utf8");
+    client.channel = channel;
     attachListenersToOutput(client);
     setTimeout(function() {
       if (next) {
@@ -263,9 +263,9 @@ const mathProgramStart = function(client: Client, next) {
   });
 };
 
-const killMathProgram = function(stream: ssh2.ClientChannel, clientID: string) {
+const killMathProgram = function(channel: ssh2.ClientChannel, clientID: string) {
   logClient(clientID, "killMathProgramClient.");
-  stream.close();
+  channel.close();
 };
 
 const checkCookie = function(request, response, next) {
@@ -340,8 +340,8 @@ const clientSanityCheck = function(client: Client) {
   }
   client.saneState = false;
 
-  if (!client.mathProgramInstance ||
-      !client.mathProgramInstance.writable) {
+  if (!client.channel ||
+      !client.channel.writable) {
     console.log("Starting new mathProgram instance.");
     mathProgramStart(client, function() {
       client.saneState = true;
@@ -359,7 +359,7 @@ const clientSanityCheck = function(client: Client) {
 };
 
 const writeMsgOnStream = function(client: Client, msg: string) {
-  client.mathProgramInstance.stdin.write(msg, function(err) {
+  client.channel.stdin.write(msg, function(err) {
     if (err) {
       logClient(client.id, "write failed: " + err);
     }
@@ -369,8 +369,8 @@ const writeMsgOnStream = function(client: Client, msg: string) {
 };
 
 const checkAndWrite = function(client: Client, msg: string) {
-  if (!client.mathProgramInstance ||
-      !client.mathProgramInstance.writable) {
+  if (!client.channel ||
+      !client.channel.writable) {
     clientSanityCheck(client);
   } else {
     writeMsgOnStream(client, msg);
@@ -406,8 +406,8 @@ const socketResetAction = function(client: Client) {
     logClient(client.id, "Received reset.");
     checkState(client).then(function() {
       client.saneState = false;
-      if (client.mathProgramInstance) {
-        killMathProgram(client.mathProgramInstance, client.id);
+      if (client.channel) {
+        killMathProgram(client.channel, client.id);
       }
       mathProgramStart(client, function() {
         client.saneState = true;

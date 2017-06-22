@@ -11,7 +11,7 @@ class SudoDockerContainersInstanceManager implements InstanceManager {
     this.currentInstance.port++;
     newInstance.containerName = "m2Port" + newInstance.port;
     exec(this.constructDockerRunCommand(this.resources, newInstance),
-      function(error) {
+      (function(error) {
         if (error) {
           const containerAlreadyStarted =
                 error.message.match(/Conflict. The name/) ||
@@ -24,9 +24,9 @@ class SudoDockerContainersInstanceManager implements InstanceManager {
             throw error;
           }
         } else {
-          waitForSshd(next, newInstance);
+          this.waitForSshd(next, newInstance);
         }
-      });
+      }).bind(this));
   }
 
 removeInstance(instance: Instance) {
@@ -49,6 +49,7 @@ constructor(resources: any, options: any, currentInstance: Instance) {
   this.options = options;
   this.currentInstance = currentInstance;
 }
+c;
 
 constructDockerRunCommand(resources, newInstance: Instance) {
     let dockerRunCmd = "sudo docker run -d";

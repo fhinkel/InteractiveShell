@@ -18,15 +18,15 @@
 --  load your own tutorial
 --  WRITE: "writing tutorials" text
 --  change included tutorials as .md files.
---  place .simpledoc files into the DocConverter dir
---  change DocConverter name.
+--  place .simpledoc files into the SimpledocToMarkdown dir
+--  change SimpledocToMarkdown name.
 --  change Makefile in tutorials directory
 --  in frontend/tutorials.js:
 --    
 
 --  in tutorials.js: 
 newPackage(
-        "DocConverter",
+        "SimpledocToMarkdown",
         Version => "0.9", 
         Date => "21 June 2017",
         Authors => {
@@ -94,7 +94,7 @@ TEST ///
 {*
   restart
 *}
-  debug needsPackage "DocConverter"
+  debug needsPackage "SimpledocToMarkdown"
   L = {"    ", "  a", "   bcd"}
   assert(L/initialSpaceSize1 === {infinity, 2, 3})
   assert(splitByMinimumSpace L === {{"  ", "a", " bcd"}}) -- note that L_0 is not here.  Should we complain if the first element is not the smallest?
@@ -122,7 +122,7 @@ TEST ///
 {*
   restart
 *}
-  debug needsPackage "DocConverter"
+  debug needsPackage "SimpledocToMarkdown"
   assert(concatenateLines {} == "")
   assert(concatenateLines {"", ""} === "\n\n")  
   assert(concatenateLines {"a b", " c d"} === "a b\n c d\n") 
@@ -155,7 +155,7 @@ TEST ///
 {*
   restart
 *}
-  debug needsPackage "DocConverter"
+  debug needsPackage "SimpledocToMarkdown"
   assert(replaceWithValueOf "" === "")
   assert(replaceWithValueOf "1@TO \"hi\"" === "1\\({\\tt hi}\\)")
   assert(replaceWithValueOf "@@" === "\\({\\tt null}\\)")
@@ -186,7 +186,7 @@ TEST ///
 {*
   restart
 *}
-  debug needsPackage "DocConverter"
+  debug needsPackage "SimpledocToMarkdown"
   assert(getSubsectionString "  SUBSECTION \"hi there\" " === "hi there")
   assert(getSubsectionString "  SUBSECTION       \"hi there\"      what " =!= null)
   assert(getSubsectionString "      SUBSECTION \"bases of vector spaces\" "
@@ -300,9 +300,9 @@ Description
 TEST ///
 {*
   restart
-  needsPackage "DocConverter"
+  needsPackage "SimpledocToMarkdown"
 *}
-  debug DocConverter
+  debug SimpledocToMarkdown
   example1    
   simpledocToMarkdown example1
   simpledocToMarkdown example2
@@ -381,7 +381,7 @@ Description
 
 doc ///
 Key
-  DocConverter
+  SimpledocToMarkdown
 Headline
   Conversion from simpledoc format to the html format of web.macaulay2.com
 Description
@@ -407,11 +407,11 @@ SeeAlso
 end--
 
 restart
-uninstallPackage "DocConverter"
+uninstallPackage "SimpledocToMarkdown"
 restart
-needsPackage "DocConverter"
-installPackage "DocConverter"
-check "DocConverter"
+needsPackage "SimpledocToMarkdown"
+installPackage "SimpledocToMarkdown"
+check "SimpledocToMarkdown"
 
 
 doc ///
@@ -490,7 +490,7 @@ TEST ///
   restart
 *}
   
-  debug needsPackage "DocConverter"
+  debug needsPackage "SimpledocToMarkdown"
   simpledocToMarkdown eg1 -- fails
   
 ///
@@ -505,11 +505,11 @@ TEST ///
 
 // test of processTextSection
 restart
-loadPackage "DocConverter"
-installPackage "DocConverter"
+loadPackage "SimpledocToMarkdown"
+installPackage "SimpledocToMarkdown"
 
-uninstallPackage "DocConverter"
-check "DocConverter" -- no tests...
+uninstallPackage "SimpledocToMarkdown"
+check "SimpledocToMarkdown" -- no tests...
 
 contents = lines simpledocExample
 contents = select(contents, s -> not match(///^\s*--///, s));
@@ -527,7 +527,7 @@ s = ///
 ///
 
 restart
-loadPackage "DocConverter"
+loadPackage "SimpledocToMarkdown"
 X = get "tu_elementary.m2"
 "tu_elementary.simpledoc" << tutorialToSimpleDoc X << close;
 "../public/tutorials/elementary.html" << convert "tu_elementary.simpledoc" << close;

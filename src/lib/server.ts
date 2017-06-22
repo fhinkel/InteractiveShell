@@ -213,13 +213,13 @@ const addNewSocket = function(client: Client, socket: SocketIO.Socket) {
 
 const sendDataToClient = function(client: Client) {
   return function(dataObject) {
-    const data = dataObject.toString();
+    const data: string = dataObject.toString();
     if (client.nSockets() === 0) {
       logClient(client.id, "Error, no socket for client.");
       return;
     }
     updateLastActiveTime(client);
-    const pathPrefix = staticFolder + "-" + serverConfig.MATH_PROGRAM;
+    const pathPrefix: string = staticFolder + "-" + serverConfig.MATH_PROGRAM;
     const specialUrlEmitter = require("./specialUrlEmitter")(
       pathPrefix,
       sshCredentials,

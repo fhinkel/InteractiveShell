@@ -499,7 +499,7 @@ Description
      Example
       tally for n from 1 to 30 list length Collatz n
      Text
-      A line of the form
+      A line of the form @TT "18 => 3"@
      Code
           EXAMPLE { 
            PRE "            18 => 3"
@@ -513,10 +513,11 @@ Description
      Example
       record = length Collatz 1
       L = for n from 2 to 1000 list (
-          l := length Collatz n;
-          if l > record 
-            then (record = l; (n,l))
-            else continue)
+            l := length Collatz n;
+            if l > record 
+              then (record = l; (n,l))
+              else continue
+            )
      Text
       If you want to see a list of just the successive records, 
       you can apply the 
@@ -571,9 +572,9 @@ Description
       on 10 vertices having only 4 edges.
      Example
       R = ZZ/2[vars(0..10)]
-      L=for j from 1 to 100 list(
-          I = edgeIdeal randomGraph (R,5);
-          (codim I, degree I, betti res I));
+      L = for j from 1 to 100 list(
+            I = edgeIdeal randomGraph (R,5);
+            (codim I, degree I, betti res I));
      Text
       We can use @ TO tally @ to find out how many examples
       were found with each combination of codimension and degree and Betti table.

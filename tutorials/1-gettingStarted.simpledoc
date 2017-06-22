@@ -28,7 +28,7 @@ Description
         output.  In this case, the symbol \({\tt QQ}\) is our notation for
         the class of all rational numbers, and indicates that the answer on
         the previous line is a rational number.
-    Text
+
         Multiplication is indicated with an asterisk.
     Example
         1*2*3*4

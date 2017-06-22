@@ -18,8 +18,8 @@
 --  load your own tutorial
 --  WRITE: "writing tutorials" text
 --  change included tutorials as .md files.
---  place .simpledoc files into the SimpledocToMarkdown dir
---  change SimpledocToMarkdown name.
+--  place .simpledoc files into the SimpledocToMarkdown dir DONE
+--  change SimpledocToMarkdown name. DONE
 --  change Makefile in tutorials directory
 --  in frontend/tutorials.js:
 --    
@@ -46,15 +46,16 @@ newPackage(
                 }
             },
         Headline => "Convert tutorial and simpleDOC formats to HTML for TryM2 tutorials",
-        AuxiliaryFiles => false, -- change to true...
+        AuxiliaryFiles => true, -- change to true...
         DebuggingMode => true,
         PackageExports => {"Text"}
         )
 
 export {
     "simpledocToMarkdown",
-     "simpledocExample"
-     }
+    "fileToMarkdown",
+    "simpledocExample"
+    }
 
 initialSpaceSize1 = method()
 initialSpaceSize1 String := (line) -> (
@@ -254,6 +255,14 @@ simpledocToMarkdown String := (simpledoc) -> (
     concatenateLines markdownLines
     )
 
+fileToMarkdown = method()
+fileToMarkdown String := (filenamePrefix) -> (
+    contents := get (filenamePrefix | ".simpledoc");
+    outname := filenamePrefix | ".md";
+    << "-- writing file: " << outname << endl;
+    outname << simpledocToMarkdown contents << close;
+    )
+    
 example1 = ///
   Key
     example1

@@ -4,6 +4,7 @@
 
 Some text, allowing TeX, and things like ${\tt ring}$.
 
+<!-- html comments are allowed, but will not appear in the final display -->
 A blank line in a Text section places the parts in separate paragraphs.
 Here is a second line for this paragraph.
 

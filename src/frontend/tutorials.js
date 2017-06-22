@@ -149,7 +149,7 @@ var markdownToHtml = function(markdownText) {
             if (inExample) {
                 if (exampleLines.length > 1) {
                     output.push("<p><codeblock>" + exampleLines[0]);
-                    for (var j=1; j<exampleLines.length-2; j++) {
+                    for (var j=1; j<=exampleLines.length-2; j++) {
                         output.push(exampleLines[j]);
                     }
                     output.push(exampleLines[exampleLines.length-1] + "</codeblock></p>");

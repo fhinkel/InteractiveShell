@@ -6,6 +6,7 @@ import {Clients} from "./client";
 import {AuthOption, SocketEvent} from "../lib/enums";
 import {Instance} from "./instance";
 import {InstanceManager} from "./instanceManager";
+import {LocalContainerManager} from "./LocalContainerManager";
 import {SshDockerContainers} from "./sshDockerContainers";
 import {SudoDockerContainers} from "./sudoDockerContainers";
 
@@ -459,24 +460,15 @@ const MathServer = function(o) {
   }
 
   getClientIdFromSocket = authorizeIfNecessary(options.authentication);
-
+  const resources = options.perContainerResources;
+  const guestInstance = options.startInstance;
+  const hostConfig = options.hostConfig;
   if (serverConfig.CONTAINERS === "../lib/sudoDockerContainers") {
-      const resources = options.perContainerResources;
-      const guestInstance = options.startInstance;
-      const hostConfig = options.hostConfig;
       instanceManager = new SudoDockerContainers(resources, hostConfig, guestInstance);
   } else if (serverConfig.CONTAINERS === "../lib/sshDockerContainers") {
-      const resources = options.perContainerResources;
-      const guestInstance = options.startInstance;
-      const hostConfig = options.hostConfig;
       instanceManager = new SshDockerContainers(resources, hostConfig, guestInstance);
   } else if (serverConfig.CONTAINERS === "../lib/LocalContainerManager") {
-      const resources = options.perContainerResources;
-      const guestInstance = options.startInstance;
-      const hostConfig = options.hostConfig;
-           // TODO: fixme, need to be LocalManager
-
-      instanceManager = new SshDockerContainers(resources, hostConfig, guestInstance);
+      instanceManager = new LocalContainerManager();
   } else {
     throw new Error ("That is the wrong serverConfig.CONTAINERS: " + serverConfig.CONTAINERS);
   //instanceManager = require(serverConfig.CONTAINERS).manager(options);

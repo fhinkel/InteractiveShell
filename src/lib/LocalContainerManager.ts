@@ -1,8 +1,11 @@
 import {Instance} from "./instance";
+import {InstanceManager} from "./instanceManager";
 
-const localContainerManager = function() {
-  const exec = require("child_process").exec;
+class LocalContainerManager implements InstanceManager {
+exec = require("child_process").exec;
+options: any;
 
+constructor() {
   const options = {
     credentials: {
       host: "127.0.0.1",
@@ -11,28 +14,23 @@ const localContainerManager = function() {
       sshKey: undefined,
     },
   };
-
-  exec("whoami", function(error, username) {
+  this.exec("whoami", function(error, username) {
     options.credentials.username = username.trim();
   });
 
-  exec("echo $HOME", function(error, homedir) {
+  this.exec("echo $HOME", function(error, homedir) {
     options.credentials.sshKey = homedir.trim() + "/.ssh/id_rsa";
   });
 
-  const removeInstance = function() {
-    return;
+  this.options = options;
+}
+removeInstance = function() {};
+
+getNewInstance = function(next) {
+    next(false, this.options.credentials);
   };
 
-  const getNewInstance = function(next) {
-    next(false, options.credentials);
-  };
+updateLastActiveTime() {}
+}
 
-  return {
-    getNewInstance,
-    removeInstance,
-    updateLastActiveTime() {},
-  };
-};
-
-exports.manager = localContainerManager;
+export {LocalContainerManager as LocalContainerManager};

@@ -5,6 +5,8 @@ import {Clients} from "./client";
 
 import {AuthOption, SocketEvent} from "../lib/enums";
 import {Instance} from "./instance";
+import {InstanceManager} from "./instanceManager";
+import {SudoDockerContainers} from "./sudoDockerContainers";
 import * as reader from "./tutorialReader";
 
 import express = require("express");
@@ -41,10 +43,10 @@ const clients: Clients = {};
 
 let totalUsers: number = 0;
 
-let instanceManager = {
-  getNewInstance : undefined,
-  removeInstance : undefined,
-  updateLastActiveTime : undefined,
+let instanceManager: InstanceManager = {
+    getNewInstance(next: any){},
+    removeInstance(instance: any){},
+    updateLastActiveTime(){},
 };
 
 const logClient = function(clientID, str) {
@@ -456,7 +458,14 @@ const MathServer = function(o) {
 
   getClientIdFromSocket = authorizeIfNecessary(options.authentication);
 
+  if (serverConfig.CONTAINERS === "../lib/sudoDockerContainers") {
+      const resources = options.perContainerResources;
+      const guestInstance = options.startInstance;
+      const hostConfig = options.hostConfig;
+      instanceManager = new SudoDockerContainers(resources, hostConfig, guestInstance);
+  } else {
   instanceManager = require(serverConfig.CONTAINERS).manager(options);
+  }
 
   initializeServer();
 

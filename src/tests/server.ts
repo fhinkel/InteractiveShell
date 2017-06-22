@@ -4,8 +4,6 @@ import {Instance} from "../lib/instance";
 import {clients, getInstance, instanceManager} from "../lib/server";
 const assert = chai.assert;
 
-console.log(instanceManager);
-
 describe("Server Module:", function() {
 
   before(function() {

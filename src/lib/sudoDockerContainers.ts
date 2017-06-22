@@ -1,46 +1,23 @@
 import {Instance} from "./instance";
+import {InstanceManager} from "./instanceManager";
 
-const exec = require("child_process").exec;
+import child_process = require("child_process");
+const exec = child_process.exec;
 let waitForSshd;
 
-const dockerManager = function(OPTIONS) {
-  const resources = OPTIONS.perContainerResources;
-  const options = OPTIONS.containerConfig;
-  const currentInstance = OPTIONS.startInstance;
-
-  const removeInstance = function(instance: Instance) {
-    console.log("Removing container: " + instance.containerName);
-    const removeDockerContainer = "sudo docker rm -f " + instance.containerName;
-    exec(removeDockerContainer, function(error) {
-      if (error) {
-        console.error("Error removing container " +
-            instance.containerName + " with error:" + error);
-      }
-    });
-  };
-
-  const constructDockerRunCommand = function(resources, newInstance) {
-    let dockerRunCmd = "sudo docker run -d";
-    dockerRunCmd += " -c " + resources.cpuShares;
-    dockerRunCmd += " -m " + resources.memory + "m";
-    dockerRunCmd += " --name " + newInstance.containerName;
-    dockerRunCmd += " -p " + newInstance.port + ":22 ";
-    dockerRunCmd += options.containerType + " " + options.sshdCmd;
-    return dockerRunCmd;
-  };
-
-  const getNewInstance = function(next){
-    const newInstance = JSON.parse(JSON.stringify(currentInstance));
-    currentInstance.port++;
+class SudoDockerContainersInstanceManager implements InstanceManager {
+  getNewInstance(next){
+    const newInstance = JSON.parse(JSON.stringify(this.currentInstance));
+    this.currentInstance.port++;
     newInstance.containerName = "m2Port" + newInstance.port;
-    exec(constructDockerRunCommand(resources, newInstance),
+    exec(this.constructDockerRunCommand(this.resources, newInstance),
       function(error) {
         if (error) {
           const containerAlreadyStarted =
                 error.message.match(/Conflict. The name/) ||
                 error.message.match(/Conflict. The container name/);
           if (containerAlreadyStarted) {
-            getNewInstance(next);
+            this.getNewInstance(next);
           } else {
             console.error("Error starting the docker container: " +
                   error.message);
@@ -50,12 +27,42 @@ const dockerManager = function(OPTIONS) {
           waitForSshd(next, newInstance);
         }
       });
-  };
+  }
 
-  waitForSshd = function(next, instance: Instance) {
+removeInstance(instance: Instance) {
+    console.log("Removing container: " + instance.containerName);
+    const removeDockerContainer = "sudo docker rm -f " + instance.containerName;
+    exec(removeDockerContainer, function(error) {
+      if (error) {
+        console.error("Error removing container " +
+            instance.containerName + " with error:" + error);
+      }
+    });
+  }
+updateLastActiveTime(){}
+resources: any;
+options: any;
+currentInstance: any;
+
+constructor(resources: any, options: any, currentInstance: Instance) {
+  this.resources = resources;
+  this.options = options;
+  this.currentInstance = currentInstance;
+}
+
+constructDockerRunCommand(resources, newInstance: Instance) {
+    let dockerRunCmd = "sudo docker run -d";
+    dockerRunCmd += " -c " + resources.cpuShares;
+    dockerRunCmd += " -m " + resources.memory + "m";
+    dockerRunCmd += " --name " + newInstance.containerName;
+    dockerRunCmd += " -p " + newInstance.port + ":22 ";
+    dockerRunCmd += this.options.containerType + " " + this.options.sshdCmd;
+    return dockerRunCmd;
+  }
+waitForSshd(next, instance: Instance) {
     const dockerRunningProcesses = "sudo docker exec " + instance.containerName +
         " ps aux";
-    const filterForSshd = "grep \"" + options.sshdCmd + "\"";
+    const filterForSshd = "grep \"" + this.options.sshdCmd + "\"";
     const excludeGrep = "grep -v grep";
 
     exec(dockerRunningProcesses + " | " + filterForSshd + " | " + excludeGrep,
@@ -75,14 +82,7 @@ const dockerManager = function(OPTIONS) {
           waitForSshd(next, instance);
         }
       });
-  };
+  }
+}
 
-  return {
-    getNewInstance,
-    removeInstance,
-    updateLastActiveTime() {
-    },
-  };
-};
-
-exports.manager = dockerManager;
+export {SudoDockerContainersInstanceManager as SudoDockerContainers};

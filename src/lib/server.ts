@@ -41,7 +41,7 @@ const logExceptOnTest = function(msg: string): void {
   }
 };
 
-const sshCredentials = function(instance: Instance) {
+const sshCredentials = function(instance: Instance): ssh2.ConnectConfig {
   return {
     host: instance.host,
     port: instance.port,
@@ -171,7 +171,7 @@ const spawnMathProgramInSecureContainer = function(client: Client, next) {
   getInstance(client, function(instance: Instance) {
     instance.killNotify = killNotify(client);
     client.instance = instance;
-    const connection = new ssh2.Client();
+    const connection: ssh2.Client = new ssh2.Client();
     connection.on("error", function(err) {
       logClient(client.id, "Error when connecting. " + err +
         "; Retrying with new instance.");

@@ -1,8 +1,8 @@
 import chai = require("chai");
 import {Client, Clients} from "../lib/client";
-import {Instance} from "../lib/instance";
-import {serverConfig, emitDataViaClientSockets, clients, getInstance, instanceManager, sendDataToClient} from "../lib/server";
 import {SocketEvent} from "../lib/enums";
+import {Instance} from "../lib/instance";
+import {clients, emitDataViaClientSockets, getInstance, instanceManager, sendDataToClient, serverConfig} from "../lib/server";
 const assert = chai.assert;
 
 // Suppressing the server output
@@ -16,7 +16,7 @@ describe("Server Module:", function() {
   beforeEach(function() {
   });
 
-  describe("getInstance", function() {
+  describe("getInstance()", function() {
     it("should allow us to call getInstance", function(done) {
       const id: string = "user123";
       clients[id] = new Client();
@@ -58,15 +58,15 @@ describe("Server Module:", function() {
     });
   });
 
-  describe("sendDataToClient", function(){
+  describe("sendDataToClient()", function(){
     it("should make a callable function", function(done){
       const id: string = "user123";
       clients[id] = new Client();
-      var sender = sendDataToClient(id);
+      let sender = sendDataToClient(id);
       sender("Hi.");
       done();
     });
-    it("should make a call to the socket.emit function for data of type " + SocketEvent["result"], function(){
+    it("should make a call to the socket.emit function for data of type " + SocketEvent.result, function(){
       const id: string = "user123";
       serverConfig.MATH_PROGRAM = "none";
       clients[id] = new Client();
@@ -76,15 +76,15 @@ describe("Server Module:", function() {
         username: "3",
         sshKey: "4",
       };
-      instanceManager.updateLastActiveTime = function(instance : Instance){
+      instanceManager.updateLastActiveTime = function(instance: Instance){
         assert.equal(instance.host, "17");
       };
-      clients[id].socketArray["bla"] = {
-        emit : function(event, data){
-          assert.equal(event, SocketEvent["result"]);
-        }
-      }
-      var sender = sendDataToClient(id);
+      clients[id].socketArray.bla = {
+        emit(event, data){
+          assert.equal(event, SocketEvent.result);
+        },
+      };
+      let sender = sendDataToClient(id);
       sender("Hi.");
     });
     // clients[id].socketArray["bla"] = {};

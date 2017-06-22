@@ -103,7 +103,7 @@ require("../startupConfigs/default.ts").getConfig({}, function(options) {
           data + " should not be special.");
       });
     });
-    describe("isViewHelpEvent", function() {
+    describe("isViewHelpEvent()", function() {
       let isViewHelpEvent;
       before(function() {
         isViewHelpEvent = options.help.isViewHelpEvent;

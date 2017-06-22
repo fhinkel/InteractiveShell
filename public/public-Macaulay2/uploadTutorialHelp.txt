@@ -1,10 +1,5 @@
-<p>You can load your own tutorial to use it on this website. Your tutorial is only available to you and is not sent to the server. Write your tutorial in simpledoc format, and convert it using the DocConverter package.
-Upload a file "mytutorial.simpledoc" in simpleDoc format by using the "upload File" button. Then run <br>
-<code>installPackage "DocConverter"</code><br>
-<code>convert "mytutorial"</code><br>
-Download the resulting html file with<br>
-<code>get "!open mytutorial.html"</code>. <br>
-You can use the html file now by loading it with "Load Tutorial." <br>
-For more details see<br>
-<code>viewHelp DocConverter</code><br>
-<code>viewHelp SimpleDoc</code><br></p>
+<p> You can write your own tutorial, and then load it on this website
+(or, give it to your students, and let them load it). Download the
+file <a href="/tutorial-template.md" target="_blank">tutorial-template.md</a>
+which is both a template for your own tutorial, and a guide for how to write one.
+</p>

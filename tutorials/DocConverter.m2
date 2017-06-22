@@ -13,6 +13,18 @@
 --  markdownToSimpledoc
 --  markdownToTutorial
 --  tutorialToMarkdown
+-- 
+-- TODO:
+--  load your own tutorial
+--  WRITE: "writing tutorials" text
+--  change included tutorials as .md files.
+--  place .simpledoc files into the DocConverter dir
+--  change DocConverter name.
+--  change Makefile in tutorials directory
+--  in frontend/tutorials.js:
+--    
+
+--  in tutorials.js: 
 newPackage(
         "DocConverter",
         Version => "0.9", 
@@ -181,7 +193,7 @@ TEST ///
 
 
 ///
-   
+
 -- simpledocToMarkdown: takes a string in simpledoc format, and extracts out the title,
 -- section headings, and text and examples, returning a markdown string, suitable for 
 -- use with web.macaulay2.com
@@ -298,7 +310,7 @@ TEST ///
     
   simpledocToMarkdown get "~/src/InteractiveShell/tutorials/1-gettingStarted.simpledoc"
   simpledocToMarkdown get "~/src/InteractiveShell/tutorials/2-elementary-groebner.simpledoc"
-  simpledocToMarkdown get "~/src/InteractiveShell/tutorials/3-beginningM2.simpledoc";
+  "foo.md" << simpledocToMarkdown get "~/src/InteractiveShell/tutorials/3-beginningM2.simpledoc" << close;
 ///       
 
 {*

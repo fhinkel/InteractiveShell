@@ -57,6 +57,17 @@ var switchLesson = function(incr) {
   loadLessonIfChanged(tutorialNr, lessonNr + incr);
 };
 
+var markdownToTutorial = function(theMD) {
+    // input: is a simple markdown text, very little is used or recognized:
+    // lines beginning with "#": title (and author) of the tutorial
+    //   beginning with "##": section name (or "lesson" name)
+    //   M2 code is enclosed by ```, on its own line.
+    //   mathjax code is allowed.
+    // returns an object of class Tutorial
+    var theHtml = markdownToHtml(theMD);
+    return enrichTutorialWithHtml(theHtml);
+};
+
 var enrichTutorialWithHtml = function(theHtml) {
     var result;
     var theLessons = [];
@@ -112,7 +123,7 @@ var markdownToHtml = function(markdownText) {
     var firstLineInExample = false;
     var inPara = false;
     for (let line of lines) {
-        if (line.match("^\#\#")) {
+        if (!inExample && line.match("^\#\#")) {
             if (inPara) {
                 output.push("</p>");
                 inPara = false;
@@ -122,7 +133,7 @@ var markdownToHtml = function(markdownText) {
             }
             inSection = true;
             output.push("<div><h4>" + line.substring(2) + "</h4>");    
-        } else if (line.match("^\#")) {
+        } else if (!inExample && line.match("^\#")) {
             output.push("<title>" + line.substring(1) + "</title>");    
         } else if (line.match("^ *$")) {
             if (inPara) {
@@ -172,8 +183,7 @@ var uploadTutorial = function() {
   reader.readAsText(file);
   reader.onload = function(event) {
     var markdownText = event.target.result;
-    var resultHtml = markdownToHtml(markdownText);
-    tutorials.push(enrichTutorialWithHtml(resultHtml));
+    tutorials.push(markdownToTutorial(markdownText));
     var lastIndex = tutorials.length - 1;
     var newTutorial = tutorials[lastIndex];
     var title = newTutorial.title; // this is an <h3>

@@ -41,7 +41,7 @@
     "socket.io": "2.0.3",
     "socket.io-cookie": "0.0.1",
     "socketio-file-upload": "0.4.6",
-    "ssh2": "0.4.6",
+    "ssh2": "0.5.5",
     "whatwg-fetch": "0.11.0",
     "winston": "0.8.3"
   },
@@ -68,6 +68,7 @@
     "@types/mocha": "2.2.41",
     "@types/node": "8.0.0",
     "@types/socket.io": "1.4.29",
+    "@types/ssh2": "^0.5.35",
     "eslint": "4.0.0",
     "eslint-config-google": "0.5.0",
     "jsdom": "4.3.0",

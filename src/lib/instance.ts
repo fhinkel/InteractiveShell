@@ -1,6 +1,6 @@
 export interface Instance {
   host: string;
-  port: string;
+  port: number;
   username: string;
   sshKey: string;
   containerName?: string;

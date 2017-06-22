@@ -45,99 +45,97 @@ hostConfig: any;
 guestInstance: any;
 currentContainers: any[];
 
+private init = (function() {
+    this.hostConfig.dockerRunCmd = this.hostConfig.dockerCmdPrefix + " docker run -d";
+    this.hostConfig.dockerRunCmd += " --cpu-shares " + this.resources.cpuShares;
+    this.hostConfig.dockerRunCmd += " -m " + this.resources.memory + "m";
+    this.hostConfig.dockerRunCmd += " --name";
+  }).bind(this);
+
  constructor(resources: any, options: any, currentInstance: Instance) {
    this.resources = resources;
    this.guestInstance = currentInstance;
    this.hostConfig = options;
-
    const currentContainers = [];
    this.currentContainers = currentContainers;
+   this.init();
+}
 
-   const init = function() {
-    this.hostConfig.dockerRunCmd = this.hostConfig.dockerCmdPrefix + " docker run -d";
-    this.hostConfig.dockerRunCmd += " --cpu-shares " + resources.cpuShares;
-    this.hostConfig.dockerRunCmd += " -m " + resources.memory + "m";
-    this.hostConfig.dockerRunCmd += " --name";
-  };
-
-   init();
-
-   const getDockerStartCmd = function(instance: Instance) {
+   private getDockerStartCmd(instance: Instance) {
     let result = this.hostConfig.dockerRunCmd;
     result += " " + instance.containerName;
     result += " -p " + instance.port + ":22";
     result += " " + this.hostConfig.containerType + " " + this.hostConfig.sshdCmd;
     return result;
+  }
+
+  private removeInstanceFromArray = function(instance: Instance) {
+    const position = this.currentContainers.indexOf(instance);
+    this.currentContainers.splice(position, 1);
   };
 
-   const removeInstanceFromArray = function(instance: Instance) {
-    const position = currentContainers.indexOf(instance);
-    currentContainers.splice(position, 1);
+   private addInstanceToArray = function(instance: Instance) {
+    this.currentContainers.push(instance);
   };
 
-   const addInstanceToArray = function(instance: Instance) {
-    currentContainers.push(instance);
-  };
-
-   const isLegal = function(instance: Instance) {
+   private isLegal = function(instance: Instance) {
     const age = Date.now() - instance.lastActiveTime;
     return age > this.hostConfig.minContainerAge;
   };
 
-   const sortInstancesByAge = function() {
-    currentContainers.sort(function(a, b) {
+   private sortInstancesByAge = function() {
+    this.currentContainers.sort(function(a, b) {
       return a.lastActiveTime - b.lastActiveTime;
     });
   };
 
-   const checkForSuccessfulContainerStart = function(instance: Instance, next) {
+   private checkForSuccessfulContainerStart = (function(instance: Instance, next) {
     const getListOfAllContainers = this.hostConfig.dockerCmdPrefix +
         " docker ps --no-trunc | grep " +
         instance.containerName +
         " | wc -l";
-    this.connectToHostAndExecCmd(getListOfAllContainers, function(stream) {
-      stream.on("data", function(dataObject) {
+    this.connectToHostAndExecCmd(getListOfAllContainers, (function(stream) {
+      stream.on("data", (function(dataObject) {
         const data = dataObject.toString();
         if (data === "") {
           this.getNewInstance(next);
         } else {
-          checkForRunningSshd(instance, next);
+          this.checkForRunningSshd(instance, next);
         }
-      });
+      }).bind(this));
 
       stream.stderr.on("data", function() {
       });
-    }, next);
-  };
-
+    }).bind(this), next);
+  }).bind(this);
+/*
    process.on("uncaughtException", function(err) {
     console.error("Caught exception in cm process object: " + err);
   });
-
-   function checkForRunningSshd(instance: Instance, next) {
+*/
+   private checkForRunningSshd(instance: Instance, next) {
     const getContainerProcesses = this.hostConfig.dockerCmdPrefix + " docker exec " +
         instance.containerName + " ps aux";
     const filterForSshd = "grep \"" + this.hostConfig.sshdCmd + "\"";
     const excludeGrepAndWc = "grep -v grep | wc -l";
     const sshdCheckCmd = getContainerProcesses + " | " + filterForSshd + " | " +
         excludeGrepAndWc;
-    this.connectToHostAndExecCmd(sshdCheckCmd, function(stream) {
-      stream.on("data", function(dataObject) {
+    this.connectToHostAndExecCmd(sshdCheckCmd, (function(stream) {
+      stream.on("data", (function(dataObject) {
         const data = dataObject.toString();
         if (data === "") {
-          checkForRunningSshd(instance, next);
+          this.checkForRunningSshd(instance, next);
         } else {
           instance.lastActiveTime = Date.now();
-          addInstanceToArray(instance);
+          this.addInstanceToArray(instance);
           next(null, instance);
         }
-      });
+      }).bind(this));
 
       stream.stderr.on("data", function() {
       });
-    }, next);
+    }).bind(this), next);
   }
- }
 
     connectToHostAndExecCmd(cmd, next, errorHandler) {
     const connection = new ssh2.Client();
@@ -181,14 +179,14 @@ currentContainers: any[];
     }
   };
 
-  connectWithSshAndCreateContainer = function(instance: Instance, next) {
+  connectWithSshAndCreateContainer = (function(instance: Instance, next) {
     const dockerRunCmd = this.getDockerStartCmd(instance);
-    this.connectToHostAndExecCmd(dockerRunCmd, function(stream) {
-      stream.on("data", function(dataObject) {
+    this.connectToHostAndExecCmd(dockerRunCmd, (function(stream) {
+      stream.on("data", (function(dataObject) {
         instance.containerId = dataObject.toString();
         this.checkForSuccessfulContainerStart(instance, next);
-      });
-      stream.stderr.on("data", function(dataObject) {
+      }).bind(this));
+      stream.stderr.on("data", (function(dataObject) {
         // If we get stderr, there will not come an id, so don't be
         // afraid of data.
         const data = dataObject.toString();
@@ -196,9 +194,9 @@ currentContainers: any[];
           this.getNewInstance(next);
           stream.end();
         }
-      });
-    }, next);
-  };
+      }).bind(this));
+    }).bind(this), next);
+  }).bind(this);
 }
 
 export {SshDockerContainersInstanceManager as SshDockerContainers};

@@ -87,17 +87,17 @@ var enrichTutorialWithHtml = function(theHtml) {
 };
 
 var getTutorial = function(url) {
-  return fetch(url, {
-    credentials: 'same-origin'
-  }).then(function(response) {
-    if (response.status !== 200) {
-      throw new Error('Fetching tutorial failed: ' + url);
-    }
-    return response.text();
-  }, function(error) {
-    console.log("Error in fetch: " + error);
-    throw error;
-  });
+    return fetch(url, {
+        credentials: 'same-origin'
+    }).then(function(response) {
+        if (response.status !== 200) {
+            throw new Error('Fetching tutorial failed: ' + url);
+        }
+        return response.text();
+    }, function(error) {
+        console.log("Error in fetch: " + error);
+        throw error;
+    });
 };
 
 var makeTutorialsList = function(tutorialNames) {
@@ -185,21 +185,22 @@ var markdownToHtml = function(markdownText) {
 };
 
 var uploadTutorial = function() {
-  var files = this.files;
-  var file = files[0];
-  var reader = new FileReader();
-  reader.readAsText(file);
-  reader.onload = function(event) {
-    var markdownText = event.target.result;
-    tutorials.push(markdownToTutorial(markdownText));
-    var lastIndex = tutorials.length - 1;
-    var newTutorial = tutorials[lastIndex];
-    var title = newTutorial.title; // this is an <h3>
-    var lessons = newTutorial.lessons;
-    accordion.appendTutorialToAccordion(title, lessons, lastIndex);
-    accordion.insertDeleteButtonAtLastTutorial($("#loadTutorialMenu"));
-  };
-  return false;
+    var files = this.files;
+    var file = files[0];
+    console.log("file name: " + file);
+    var reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = function(event) {
+        var txt = event.target.result;
+        tutorials.push(markdownToTutorial(txt));
+        var lastIndex = tutorials.length - 1;
+        var newTutorial = tutorials[lastIndex];
+        var title = newTutorial.title; // this is an <h3>
+        var lessons = newTutorial.lessons;
+        accordion.appendTutorialToAccordion(title, lessons, lastIndex);
+        accordion.insertDeleteButtonAtLastTutorial($("#loadTutorialMenu"));
+    };
+    return false;
 };
 
 module.exports = function() {

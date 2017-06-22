@@ -4,7 +4,7 @@
     "module": "commonjs",
     "outDir": "src/dist",
     "sourceMap": true, 
-    "lib": ["es7"]
+      "lib": ["es7", "dom"]
   },
   "files": [
     "./node_modules/@types/mocha/index.d.ts",
@@ -13,7 +13,8 @@
   "include": [
     "src/index.ts",
     "src/lib/*.ts",
-    "src/startupConfigs/*.ts"
+    "src/startupConfigs/*.ts",
+    "src/frontend/*.ts"
   ],
   "exclude": [
     "node_modules"

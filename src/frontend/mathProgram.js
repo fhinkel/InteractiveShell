@@ -220,7 +220,7 @@ var init = function() {
   socket.on('image', showImageDialog);
   socket.on('viewHelp', displayUrlInNewWindow);
 
-  var tutorialManager = require('./tutorials')();
+  var tutorialManager = require('../dist/frontend/tutorials')();
   var fetchTutorials = require('./fetchTutorials');
   fetchTutorials(tutorialManager.makeTutorialsList);
   $("#uptutorial").on('change', tutorialManager.uploadTutorial);

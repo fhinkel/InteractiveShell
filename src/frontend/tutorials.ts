@@ -2,6 +2,8 @@
 /* eslint-env browser */
 /* eslint "new-cap": "off" */
 
+var MathJax = require('mathjax');
+
 var lessonNr = 0;
 var tutorialNr = 0;
 var tutorials = [];
@@ -190,7 +192,7 @@ var uploadTutorial = function() {
     console.log("file name: " + file);
     var reader = new FileReader();
     reader.readAsText(file);
-    reader.onload = function(event) {
+    reader.onload = function(event:any) {
         var txt = event.target.result;
         tutorials.push(markdownToTutorial(txt));
         var lastIndex = tutorials.length - 1;

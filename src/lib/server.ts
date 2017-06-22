@@ -465,13 +465,21 @@ const MathServer = function(o) {
       const guestInstance = options.startInstance;
       const hostConfig = options.hostConfig;
       instanceManager = new SudoDockerContainers(resources, hostConfig, guestInstance);
-  } else   if (serverConfig.CONTAINERS === "../lib/sshDockerContainers") {
+  } else if (serverConfig.CONTAINERS === "../lib/sshDockerContainers") {
       const resources = options.perContainerResources;
       const guestInstance = options.startInstance;
       const hostConfig = options.hostConfig;
       instanceManager = new SshDockerContainers(resources, hostConfig, guestInstance);
-  } else{
-  instanceManager = require(serverConfig.CONTAINERS).manager(options);
+  } else if (serverConfig.CONTAINERS === "../lib/LocalContainerManager") {
+      const resources = options.perContainerResources;
+      const guestInstance = options.startInstance;
+      const hostConfig = options.hostConfig;
+           // TODO: fixme, need to be LocalManager
+
+      instanceManager = new SshDockerContainers(resources, hostConfig, guestInstance);
+  } else {
+    throw new Error ("That is the wrong serverConfig.CONTAINERS: " + serverConfig.CONTAINERS);
+  //instanceManager = require(serverConfig.CONTAINERS).manager(options);
   }
 
   initializeServer();

@@ -7,7 +7,7 @@
 // * interrupt
 /* eslint-env browser */
 /* eslint "max-len": "off" */
-var keys = {
+let keys = {
     // The keys 37, 38, 39 and 40 are the arrow keys.
   arrowUp: 38,
   arrowDown: 40,
@@ -19,42 +19,42 @@ var keys = {
   backspace: 8,
   tab: 9,
   enter: 13,
-  ctrlc: "\x03"
+  ctrlc: "\x03",
 };
 
-var unicodeBell = '\u0007';
-var setCaretPosition = require('set-caret-position');
-var scrollDown = require('scroll-down');
-var getSelected = require('get-selected-text');
-var mathProgramOutput = "";
-var cmdHistory:any = []; // History of commands for shell-like arrow navigation
+let unicodeBell = "\u0007";
+let setCaretPosition = require("set-caret-position");
+let scrollDown = require("scroll-down");
+let getSelected = require("get-selected-text");
+let mathProgramOutput = "";
+let cmdHistory: any = []; // History of commands for shell-like arrow navigation
 cmdHistory.index = 0;
 
-var postMessage2 = function(msg, socket) {
-  socket.emit('input', msg);
+let postMessage2 = function(msg, socket) {
+  socket.emit("input", msg);
   return true;
 };
 
-var interrupt = function(socket) {
+let interrupt = function(socket) {
   return function() {
     postMessage2(keys.ctrlc, socket);
   };
 };
 
-var sendCallback = function(id, socket) {
+let sendCallback = function(id, socket) {
   return function() {
-    var str = getSelected(id);
+    const str = getSelected(id);
     postMessage2(str, socket);
     return false;
   };
 };
 
-var sendOnEnterCallback = function(id, socket, shell) {
+let sendOnEnterCallback = function(id, socket, shell) {
   return function(e) {
     if (e.which === 13 && e.shiftKey) {
       e.preventDefault();
       // do not make a line break or remove selected text when sending
-      var msg = getSelected(id);
+      const msg = getSelected(id);
       // We only trigger the innerTrack.
       shell.trigger("innerTrack", msg);
       postMessage2(msg, socket);
@@ -71,13 +71,13 @@ function stripSpacesAtBeginningOfLine(lastLine) {
 }
 
 function stripPrompt(lastLine) {
-  var result = lastLine.replace(/^> /, "");
+  const result = lastLine.replace(/^> /, "");
   return result.replace(/^\. /, "");
 }
 
-var getCurrentCommand = function(shell) {
-  var completeText = shell.val().split("\n");
-  var lastLine = completeText[completeText.length - 2];
+let getCurrentCommand = function(shell) {
+  const completeText = shell.val().split("\n");
+  let lastLine = completeText[completeText.length - 2];
     // Need to set prompt symbol somewhere else.
   lastLine = stripInputPrompt(lastLine);
   lastLine = stripSpacesAtBeginningOfLine(lastLine);
@@ -85,7 +85,7 @@ var getCurrentCommand = function(shell) {
   return lastLine;
 };
 
-var upDownArrowKeyHandling = function(shell, e) {
+let upDownArrowKeyHandling = function(shell, e) {
   e.preventDefault();
   if (cmdHistory.length === 0) {
         // Maybe we did nothing so far.
@@ -108,22 +108,22 @@ var upDownArrowKeyHandling = function(shell, e) {
   scrollDown(shell);
 };
 
-var backspace = function(shell) {
-  var completeText = shell.val();
-  var before = completeText.substring(0, mathProgramOutput.length - 1);
-  var after = completeText.substring(mathProgramOutput.length, completeText.length);
+let backspace = function(shell) {
+  const completeText = shell.val();
+  const before = completeText.substring(0, mathProgramOutput.length - 1);
+  const after = completeText.substring(mathProgramOutput.length, completeText.length);
   mathProgramOutput = before;
   shell.val(before + after);
   scrollDown(shell);
 };
 
 module.exports = function() {
-  var create = function(shell, historyArea, socket) {
-    var history = historyArea;
-    history.keypress(sendOnEnterCallback('M2In', socket, shell));
+  const create = function(shell, historyArea, socket) {
+    const history = historyArea;
+    history.keypress(sendOnEnterCallback("M2In", socket, shell));
 
     shell.on("track", function(e, msg) { // add command to history
-      if (typeof msg !== 'undefined') {
+      if (typeof msg !== "undefined") {
         if (history !== undefined) {
           history.val(history.val() + msg + "\n");
           scrollDown(history);
@@ -137,19 +137,19 @@ module.exports = function() {
         // down work, but it will not put the msg in the history textarea. We
         // need this if someone uses the shift+enter functionality in the
         // history area, because we do not want to track these messages.
-      var input = msg.split("\n");
-      for (var line in input) {
+      const input = msg.split("\n");
+      for (const line in input) {
         if (input[line].length > 0) {
           cmdHistory.index = cmdHistory.push(input[line]);
         }
       }
     });
 
-    var packageAndSendMessage = function(tail) {
-      setCaretPosition(shell.attr('id'), shell.val().length);
+    const packageAndSendMessage = function(tail) {
+      setCaretPosition(shell.attr("id"), shell.val().length);
       if (shell.val().length >= mathProgramOutput.length) {
-        var l = shell.val().length;
-        var msg = shell.val().substring(mathProgramOutput.length, l) + tail;
+        const l = shell.val().length;
+        const msg = shell.val().substring(mathProgramOutput.length, l) + tail;
         postMessage2(msg, socket);
       } else {
         console.log("There must be an error.");
@@ -161,16 +161,16 @@ module.exports = function() {
     shell.keyup(function(e) {
       if (e.keyCode === keys.enter) { // Return
             // We trigger the track manually, since we might have used tab.
-        shell.trigger('track', getCurrentCommand(shell));
+        shell.trigger("track", getCurrentCommand(shell));
             // Disable tracking of posted message.
-        packageAndSendMessage('');
+        packageAndSendMessage("");
       }
     });
 
     // If something is entered, change to end of textarea, if at wrong position.
     shell.keydown(function(e) {
       if (e.keyCode === keys.enter) {
-        setCaretPosition(shell.attr('id'), shell.val().length);
+        setCaretPosition(shell.attr("id"), shell.val().length);
       }
 
       if ((e.keyCode === keys.arrowUp) || (e.keyCode === keys.arrowDown)) {
@@ -186,9 +186,9 @@ module.exports = function() {
       if ((e.metaKey && e.keyCode === keys.cKey) || (keys.metaKeyCodes.indexOf(e.keyCode) > -1)) { // do not jump to bottom on Command+C or on Command
         return;
       }
-      var pos = shell[0].selectionStart;
+      const pos = shell[0].selectionStart;
       if (pos < mathProgramOutput.length) {
-        setCaretPosition(shell.attr('id'), shell.val().length);
+        setCaretPosition(shell.attr("id"), shell.val().length);
       }
         // This deals with backspace.
         // If we start removing output, we have already received, then we need
@@ -213,7 +213,7 @@ module.exports = function() {
       }
         // If we get a 'Session resumed.' message, we check whether it is
         // relevant.
-      if (msgDirty.indexOf('Session resumed.') > -1) {
+      if (msgDirty.indexOf("Session resumed.") > -1) {
         if (mathProgramOutput.length > 0) {
           return;
         }
@@ -223,17 +223,17 @@ module.exports = function() {
         backspace(shell);
         return;
       }
-      var msg = msgDirty.replace(/\u0007/, "");
+      let msg = msgDirty.replace(/\u0007/, "");
       msg = msg.replace(/\r\n/g, "\n");
       msg = msg.replace(/\r/g, "\n");
-      var completeText = shell.val();
+      const completeText = shell.val();
       mathProgramOutput += msg;
-      var after = completeText.substring(mathProgramOutput.length, completeText.length);
-      var commonIndex = 0;
+      const after = completeText.substring(mathProgramOutput.length, completeText.length);
+      let commonIndex = 0;
       while ((after[commonIndex] === msg[commonIndex]) && (commonIndex < after.length) && (commonIndex < msg.length)) {
         commonIndex++;
       }
-      var nonReturnedInput = after.substring(commonIndex, after.length);
+      const nonReturnedInput = after.substring(commonIndex, after.length);
       shell.val(mathProgramOutput + nonReturnedInput);
       scrollDown(shell);
     });
@@ -244,9 +244,9 @@ module.exports = function() {
   };
 
   return {
-    create: create,
-    postMessage2: postMessage2,
-    sendCallback: sendCallback,
-    interrupt: interrupt
+    create,
+    postMessage2,
+    sendCallback,
+    interrupt,
   };
 };

@@ -1,7 +1,7 @@
 /* global fetch */
-var $ = require('jquery');
+let $ = require("jquery");
 
-var cssClasses = {
+let cssClasses = {
   titleSymbolClass: "material-icons titleSymbol",
   titleSymbolActive: "expand_more",
   titleSymbolInactive: "expand_less",
@@ -11,44 +11,44 @@ var cssClasses = {
   content: "mdl-list__item-text-body mdl-list__item",
   innerListItem: "unstyled",
   titleHref: "menuTitle mdl-button mdl-js-button mdl-button-raised",
-  submenuHref: "submenuItem"
+  submenuHref: "submenuItem",
 };
 
 $.fn.extend({
-  toggleText: function(text) {
+  toggleText(text) {
     return this.each(function() {
-      var current = $(this).text();
-      var replacement = text.replace(current, "");
+      const current = $(this).text();
+      const replacement = text.replace(current, "");
       $(this).text(replacement);
     });
-  }
+  },
 });
 
-var doUptutorialClick = function() {
+let doUptutorialClick = function() {
   $("#uptutorial").val("");
   $("#uptutorial").click();
 };
 
-var scrollDownUntilTutorialVisible = function() {
-  var y = $(this).position().top;
-  var height = parseInt($("#home").css('height'), 10);
-  var totalHeight = parseInt($(this).css('height'), 10) + 50;
+let scrollDownUntilTutorialVisible = function() {
+  const y = $(this).position().top;
+  const height = parseInt($("#home").css("height"), 10);
+  const totalHeight = parseInt($(this).css("height"), 10) + 50;
   if (height - y < totalHeight) {
-    var scroll = totalHeight - height + y;
+    const scroll = totalHeight - height + y;
     $("#home").animate({
-      scrollTop: ($("#home").scrollTop() + scroll)
+      scrollTop: ($("#home").scrollTop() + scroll),
     }, 400);
   }
 };
 
-var appendTutorialToAccordion = function(tmptitle, lessons, index) {
-  var title = tmptitle.clone();
+let appendTutorialToAccordion = function(tmptitle, lessons, index) {
+  const title = tmptitle.clone();
   title.wrapInner("<a href='#' class='" + cssClasses.titleHref +
           "' tutorialid=" + index + "/>")
       .addClass(cssClasses.title)
       .prepend(
           '<i class="' + cssClasses.titleSymbolClass + '">' +
-          cssClasses.titleSymbolActive + '</i>')
+          cssClasses.titleSymbolActive + "</i>")
       .hover(function() {
         $(this).toggleClass(cssClasses.titleHover);
       })
@@ -61,15 +61,15 @@ var appendTutorialToAccordion = function(tmptitle, lessons, index) {
         return false;
       })
       .next();
-  var div = $("<div>");
-  var content = '<ul>';
-  for (var j = 0; j < lessons.length; j++) {
+  const div = $("<div>");
+  let content = "<ul>";
+  for (let j = 0; j < lessons.length; j++) {
     content = content +
         '<li class="' + cssClasses.innerListItem + '"><a href="#" class="' +
         cssClasses.submenuHref + '" tutorialid=' + index +
-        ' lessonid=' + j + '>  ' + lessons[j].title + '</a></li>';
+        " lessonid=" + j + ">  " + lessons[j].title + "</a></li>";
   }
-  content += '</ul>';
+  content += "</ul>";
   if (index > 0) {
     div.append(content).addClass(
         cssClasses.content)
@@ -87,19 +87,19 @@ var appendTutorialToAccordion = function(tmptitle, lessons, index) {
   $("#loadTutorialMenu").before(div);
 };
 
-var appendLoadTutorialTitleToAccordion = function() {
-  var title = $("<h3>");
+let appendLoadTutorialTitleToAccordion = function() {
+  const title = $("<h3>");
   title.prop("id", "loadTutorialMenu");
   title.addClass(
       cssClasses.title);
   $("#accordion").append(title);
 };
 
-var appendInstructionsToAccordion = function() {
-  var instructions = $("<div>");
+let appendInstructionsToAccordion = function() {
+  const instructions = $("<div>");
 
   fetch("uploadTutorialHelp.txt", {
-    credentials: 'same-origin'
+    credentials: "same-origin",
   }).then(function(response) {
     return response.text();
   }).then(function(content) {
@@ -113,13 +113,13 @@ var appendInstructionsToAccordion = function() {
   $("#accordion").append(instructions);
 };
 
-var addExpandLoadTutorialInstructionsButton = function() {
-  var expandButton = $("<i>");
+let addExpandLoadTutorialInstructionsButton = function() {
+  const expandButton = $("<i>");
   expandButton.addClass(cssClasses.titleSymbolClass);
   expandButton.text(cssClasses.titleSymbolActive);
   expandButton.click(function() {
-    var title = $("#loadTutorialMenu");
-    var instructions = $("#loadTutorialInstructions");
+    const title = $("#loadTutorialMenu");
+    const instructions = $("#loadTutorialInstructions");
     expandButton.toggleText(cssClasses.titleSymbolInactive + " " +
         cssClasses.titleSymbolActive);
     title.toggleClass(
@@ -129,8 +129,8 @@ var addExpandLoadTutorialInstructionsButton = function() {
   $("#loadTutorialMenu").append(expandButton);
 };
 
-var addLoadTutorialButton = function() {
-  var loadTutorialButton = $("<a>");
+let addLoadTutorialButton = function() {
+  const loadTutorialButton = $("<a>");
   loadTutorialButton.prop("id", "loadTutorialButton");
   loadTutorialButton.html("Load Your Own Tutorial");
   // loadTutorialButton has no tutorial attached, that can be loaded on click.
@@ -139,24 +139,24 @@ var addLoadTutorialButton = function() {
   $("#loadTutorialButton").click(doUptutorialClick);
 };
 
-var appendLoadTutorialMenuToAccordion = function() {
+let appendLoadTutorialMenuToAccordion = function() {
   appendLoadTutorialTitleToAccordion();
   appendInstructionsToAccordion();
   addExpandLoadTutorialInstructionsButton();
   addLoadTutorialButton();
 };
 
-var makeAccordion = function(tutorials) {
+let makeAccordion = function(tutorials) {
   $("#home").append("<div id=\"accordion\"></div>");
   appendLoadTutorialMenuToAccordion();
-  for (var i = 0; i < tutorials.length; i++) {
-    var title = tutorials[i].title; // this is an <h3>
-    var lessons = tutorials[i].lessons;
+  for (let i = 0; i < tutorials.length; i++) {
+    const title = tutorials[i].title; // this is an <h3>
+    const lessons = tutorials[i].lessons;
     appendTutorialToAccordion(title, lessons, i);
   }
 };
 
-var removeTutorial = function(title, div, button) {
+let removeTutorial = function(title, div, button) {
   return function() {
     button.remove();
     div.remove();
@@ -164,10 +164,10 @@ var removeTutorial = function(title, div, button) {
   };
 };
 
-var insertDeleteButtonAtLastTutorial = function(tutorialMenu) {
-  var lastTitle = tutorialMenu.prev().prev();
-  var lastDiv = tutorialMenu.prev();
-  var deleteButton = $("<i>");
+let insertDeleteButtonAtLastTutorial = function(tutorialMenu) {
+  const lastTitle = tutorialMenu.prev().prev();
+  const lastDiv = tutorialMenu.prev();
+  const deleteButton = $("<i>");
   deleteButton.addClass("material-icons icon-with-action saveDialogClose");
   deleteButton.text("close");
   lastTitle.append(deleteButton);
@@ -176,8 +176,8 @@ var insertDeleteButtonAtLastTutorial = function(tutorialMenu) {
 
 module.exports = function() {
   return {
-    appendTutorialToAccordion: appendTutorialToAccordion,
-    makeAccordion: makeAccordion,
-    insertDeleteButtonAtLastTutorial: insertDeleteButtonAtLastTutorial
+    appendTutorialToAccordion,
+    makeAccordion,
+    insertDeleteButtonAtLastTutorial,
   };
 };

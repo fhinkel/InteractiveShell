@@ -1,8 +1,8 @@
 /* global fetch */
 module.exports = function(callback) {
   console.log("Fetch tutorials.");
-  fetch('/getListOfTutorials', {
-    credentials: 'same-origin'
+  fetch("/getListOfTutorials", {
+    credentials: "same-origin",
   })
       .then(function(data) {
         return data.json();

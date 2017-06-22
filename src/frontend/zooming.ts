@@ -1,7 +1,7 @@
 /* global document */
 
 function applySize(textarea, sizes) {
-  var sizePercent = Math.round(sizes.currentSize * 100);
+  const sizePercent = Math.round(sizes.currentSize * 100);
   textarea.style.fontSize = sizePercent.toString() + "%";
 }
 
@@ -22,7 +22,7 @@ function reset(textarea, sizes) {
 }
 
 function sanitizeFactor(factor) {
-  var result = factor;
+  let result = factor;
   if (result < 0) {
     result *= -1;
   }
@@ -38,19 +38,19 @@ function sanitizeFactor(factor) {
 exports.attachZoomButtons = function(textareaID,
                                      zoominID, resetID, zoomoutID,
                                      inputFactorOrDefault) {
-  var inputFactor = typeof inputFactorOrDefault === 'undefined' ?
+  const inputFactor = typeof inputFactorOrDefault === "undefined" ?
       1.1 :
       inputFactorOrDefault;
-  var sizes = {
+  const sizes = {
     factor: 1.1,
-    currentSize: 1.0
+    currentSize: 1.0,
   };
-  var textarea;
-  var zoominBtn;
-  var zoomoutBtn;
-  var resetBtn;
+  let textarea;
+  let zoominBtn;
+  let zoomoutBtn;
+  let resetBtn;
 
-  var init = function() {
+  const init = function() {
     sizes.factor = sanitizeFactor(inputFactor);
     textarea = document.getElementById(textareaID);
     zoominBtn = document.getElementById(zoominID);
@@ -58,7 +58,7 @@ exports.attachZoomButtons = function(textareaID,
     resetBtn = document.getElementById(resetID);
   };
 
-  var attachListeners = function(sizes) {
+  const attachListeners = function(sizes) {
     zoominBtn.addEventListener("click", function() {
       zoomin(textarea, sizes);
     });

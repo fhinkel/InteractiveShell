@@ -42,7 +42,6 @@
     "socket.io-cookie": "0.0.1",
     "socketio-file-upload": "0.4.6",
     "ssh2": "0.5.5",
-    "whatwg-fetch": "0.11.0",
     "winston": "0.8.3"
   },
   "scripts": {

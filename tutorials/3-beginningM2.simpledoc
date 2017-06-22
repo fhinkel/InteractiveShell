@@ -598,7 +598,7 @@ Description
      Example
       S^{-2,-3} 
      Text
-          Here is how we can define the maps in the Koszul complex:
+      Here is how we can define the maps in the Koszul complex:
      Example
       S = kk[x,y]
       phi1 = map(S^1, S^{-2,-3}, matrix"x2,xy2")
@@ -626,12 +626,12 @@ Description
           There are other ways to construct Koszul complexes.  One way is as the tensor product of
       chain complexes of length 1:
      Example
-          FF = chainComplex matrix {{x^2}} ** chainComplex matrix {{x*y^2}}
+      FF = chainComplex matrix {{x^2}} ** chainComplex matrix {{x*y^2}}
       FF.dd
      Text
-          Another way is by using the function @ TO koszul @, designed for that purpose:
+      Another way is by using the function @ TO koszul @, designed for that purpose:
      Example
-          FF = koszul matrix {{x^2, x*y^2}}
+      FF = koszul matrix {{x^2, x*y^2}}
       FF.dd
      Text
 

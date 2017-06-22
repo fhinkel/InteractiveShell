@@ -41,7 +41,7 @@ class SshDockerContainersInstanceManager implements InstanceManager {
   }
 
 resources: any;
-hostConfig: any;
+hostConfig: ssh2.ConnectConfig & {containerType?: string,  maxContainerNumber?: number, dockerRunCmd?: string, dockerCmdPrefix?: string, sshdCmd?: string, sshKey?: string};
 guestInstance: any;
 currentContainers: any[];
 
@@ -138,7 +138,7 @@ private init = (function() {
   }
 
     connectToHostAndExecCmd(cmd, next, errorHandler) {
-    const connection = new ssh2.Client();
+    const connection: ssh2.Client = new ssh2.Client();
     connection.on("ready", function() {
       connection.exec(cmd, function(err, stream) {
         if (err) {

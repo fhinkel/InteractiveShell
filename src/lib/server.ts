@@ -182,7 +182,7 @@ const spawnMathProgramInSecureContainer = function(client: Client, next) {
     connection.on("ready", function() {
       connection.exec(serverConfig.MATH_PROGRAM_COMMAND,
         {pty: true},
-        function(err, stream) {
+        function(err, stream: ssh2.ClientChannel) {
           if (err) {
             throw err;
           }
@@ -263,7 +263,7 @@ const mathProgramStart = function(client: Client, next) {
   });
 };
 
-const killMathProgram = function(stream, clientID: string) {
+const killMathProgram = function(stream: ssh2.ClientChannel, clientID: string) {
   logClient(clientID, "killMathProgramClient.");
   stream.close();
 };

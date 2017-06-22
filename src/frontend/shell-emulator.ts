@@ -3,7 +3,7 @@
 
 // historyArea is a div in which we save the command for future use
 // shell functions for
-// * postMessage
+// * postMessage2
 // * interrupt
 /* eslint-env browser */
 /* eslint "max-len": "off" */
@@ -27,24 +27,24 @@ var setCaretPosition = require('set-caret-position');
 var scrollDown = require('scroll-down');
 var getSelected = require('get-selected-text');
 var mathProgramOutput = "";
-var cmdHistory = []; // History of commands for shell-like arrow navigation
+var cmdHistory:any = []; // History of commands for shell-like arrow navigation
 cmdHistory.index = 0;
 
-var postMessage = function(msg, socket) {
+var postMessage2 = function(msg, socket) {
   socket.emit('input', msg);
   return true;
 };
 
 var interrupt = function(socket) {
   return function() {
-    postMessage(keys.ctrlc, socket);
+    postMessage2(keys.ctrlc, socket);
   };
 };
 
 var sendCallback = function(id, socket) {
   return function() {
     var str = getSelected(id);
-    postMessage(str, socket);
+    postMessage2(str, socket);
     return false;
   };
 };
@@ -57,7 +57,7 @@ var sendOnEnterCallback = function(id, socket, shell) {
       var msg = getSelected(id);
       // We only trigger the innerTrack.
       shell.trigger("innerTrack", msg);
-      postMessage(msg, socket);
+      postMessage2(msg, socket);
     }
   };
 };
@@ -150,7 +150,7 @@ module.exports = function() {
       if (shell.val().length >= mathProgramOutput.length) {
         var l = shell.val().length;
         var msg = shell.val().substring(mathProgramOutput.length, l) + tail;
-        postMessage(msg, socket);
+        postMessage2(msg, socket);
       } else {
         console.log("There must be an error.");
             // We don't want empty lines send to M2 at pressing return twice.
@@ -163,7 +163,7 @@ module.exports = function() {
             // We trigger the track manually, since we might have used tab.
         shell.trigger('track', getCurrentCommand(shell));
             // Disable tracking of posted message.
-        packageAndSendMessage('', true);
+        packageAndSendMessage('');
       }
     });
 
@@ -196,13 +196,13 @@ module.exports = function() {
         // will get a backspace back.
       if (e.keyCode === keys.backspace) {
         if (shell.val().length === mathProgramOutput.length) {
-          packageAndSendMessage("\b", true);
+          packageAndSendMessage("\b");
           e.preventDefault();
         }
       }
         // Forward key for tab completion, but do not track it.
       if (e.keyCode === keys.tab) {
-        packageAndSendMessage("\t", true);
+        packageAndSendMessage("\t");
         e.preventDefault();
       }
     });
@@ -245,7 +245,7 @@ module.exports = function() {
 
   return {
     create: create,
-    postMessage: postMessage,
+    postMessage2: postMessage2,
     sendCallback: sendCallback,
     interrupt: interrupt
   };

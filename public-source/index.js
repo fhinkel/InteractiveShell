@@ -3,6 +3,6 @@
 'use strict;';
 
 document.addEventListener('DOMContentLoaded', function() {
-  var init = require('../src/frontend/mathProgram');
+  var init = require('../src/dist/frontend/mathProgram');
   init();
 }, false);

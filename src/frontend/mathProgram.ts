@@ -1,6 +1,10 @@
 /* global io, SocketIOFileUpload, mathProgramName, DefaultText */
 /* eslint-env browser */
 
+declare var mathProgramName: string;
+declare var DefaultText: string;
+declare var io: any;
+
 var socket = null;
 var serverDisconnect = false;
 var dialogPolyfill = require('dialog-polyfill');
@@ -10,7 +14,7 @@ var $ = require('jquery');
 var saveInteractions = function() {
   var input = $("#M2In");
   var output = $("#M2Out");
-  var dialog = document.querySelector('#saveDialog');
+  var dialog:any = document.querySelector('#saveDialog');
   var inputLink = 'data:application/octet-stream,' +
       encodeURIComponent(input.val());
   var inputParagraph = document.getElementById("inputContent");
@@ -32,7 +36,7 @@ var attachMinMaxBtnActions = function() {
   var downsize = document.getElementById("downsizeOutput");
   var zoomBtns = document.getElementById("M2OutZoomBtns");
   maximize.addEventListener("click", function() {
-    var dialog = document.getElementById("fullScreenOutput");
+    var dialog:any = document.getElementById("fullScreenOutput");
     var maxCtrl = document.getElementById("M2OutCtrlBtnsMax");
     if (!dialog.showModal) {
       dialogPolyfill.registerDialog(dialog);
@@ -43,7 +47,7 @@ var attachMinMaxBtnActions = function() {
     dialog.showModal();
   });
   downsize.addEventListener("click", function() {
-    var dialog = document.getElementById("fullScreenOutput");
+    var dialog:any = document.getElementById("fullScreenOutput");
     var oldPosition = document.getElementById("right-half");
     var output = document.getElementById("M2Out");
     var ctrl = document.getElementById("M2OutCtrlBtns");
@@ -76,7 +80,7 @@ var attachCtrlBtnActions = function() {
 };
 
 var showUploadSuccessDialog = function(event) {
-  var dialog = document.getElementById("uploadSuccessDialog");
+  var dialog:any = document.getElementById("uploadSuccessDialog");
   if (!dialog.showModal) {
     dialogPolyfill.registerDialog(dialog);
   }
@@ -94,7 +98,7 @@ var showUploadSuccessDialog = function(event) {
 
 var showImageDialog = function(imageUrl) {
   if (imageUrl) {
-    var dialog = document.getElementById("showImageDialog");
+    var dialog:any = document.getElementById("showImageDialog");
     if (!dialog.showModal) {
       dialogPolyfill.registerDialog(dialog);
     }
@@ -118,15 +122,15 @@ var showImageDialog = function(imageUrl) {
 var attachCloseDialogBtns = function() {
   document.getElementById("saveDialogClose").addEventListener('click',
       function() {
-        document.getElementById("saveDialog").close();
+          (<any>document.getElementById("saveDialog")).close();
       });
   document.getElementById("uploadSuccessDialogClose").addEventListener('click',
       function() {
-        document.getElementById("uploadSuccessDialog").close();
+          (<any>document.getElementById("uploadSuccessDialog")).close();
       });
   document.getElementById("showImageDialogClose").addEventListener('click',
       function() {
-        document.getElementById("showImageDialog").close();
+          (<any>document.getElementById("showImageDialog")).close();
       });
 };
 
@@ -166,7 +170,7 @@ var codeClickAction = function() {
   code += "\n";
   $("#M2In").val($("#M2In").val() + code);
   require('scroll-down')($("#M2In"));
-  shell.postMessage(code, socket);
+  shell.postMessage2(code, socket);
 };
 
 var openTabCloseDrawer = function(event) {
@@ -174,7 +178,7 @@ var openTabCloseDrawer = function(event) {
   // show tab panel
   document.getElementById(panelId).click();
   // close drawer menu
-  document.body.querySelector('.mdl-layout__obfuscator.is-visible').click();
+    (<any>document.body.querySelector('.mdl-layout__obfuscator.is-visible')).click();
   // do not follow link
   event.preventDefault();
 };
@@ -220,7 +224,7 @@ var init = function() {
   socket.on('image', showImageDialog);
   socket.on('viewHelp', displayUrlInNewWindow);
 
-  var tutorialManager = require('../dist/frontend/tutorials')();
+  var tutorialManager = require('./tutorials')();
   var fetchTutorials = require('./fetchTutorials');
   fetchTutorials(tutorialManager.makeTutorialsList);
   $("#uptutorial").on('change', tutorialManager.uploadTutorial);

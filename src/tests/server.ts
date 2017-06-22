@@ -2,7 +2,8 @@ import chai = require("chai");
 import {Client, Clients} from "../lib/client";
 import {SocketEvent} from "../lib/enums";
 import {Instance} from "../lib/instance";
-import {clients, emitDataViaClientSockets, getInstance, instanceManager, sendDataToClient, serverConfig} from "../lib/server";
+import {clients, emitDataViaClientSockets, getInstance,
+  instanceManager, sendDataToClient, serverConfig} from "../lib/server";
 const assert = chai.assert;
 
 // Suppressing the server output
@@ -38,8 +39,8 @@ describe("Server Module:", function() {
         sshKey: "4",
       };
       instanceManager.getNewInstance = function(next){next(undefined, instance); };
-      getInstance(id, function(instance: Instance){
-        assert.equal(instance.host, "1");
+      getInstance(id, function(inst: Instance){
+        assert.equal(inst.host, "1");
       });
     });
     it("should delete client if it cannot create instance", function() {
@@ -53,7 +54,7 @@ describe("Server Module:", function() {
       };
       instanceManager.getNewInstance = function(next){next("1", instance); };
       assert.notEqual(clients[id], undefined);
-      getInstance(id, function(instance: Instance){});
+      getInstance(id, function(inst: Instance){});
       assert.equal(clients[id], undefined);
     });
   });
@@ -80,7 +81,7 @@ describe("Server Module:", function() {
         assert.equal(instance.host, "17");
       };
       clients[id].socketArray.bla = {
-        emit(event, data){
+        emit(event, data) {
           assert.equal(event, SocketEvent.result);
         },
       };

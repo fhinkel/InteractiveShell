@@ -22,9 +22,9 @@ const help = function() {
       return eventData.match(/^file:.*/) !== null;
     },
     stripSpecialLines(data) {
-      const result = data.replace(
+      const stripped = data.replace(
         /^.*>>SPECIAL_EVENT_START>>(.*)<<SPECIAL_EVENT_END<<.*$/mg, "");
-      return result;
+      return stripped;
     },
   };
   return result;

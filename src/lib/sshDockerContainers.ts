@@ -153,8 +153,8 @@ currentContainers: any[];
           stream.close();
           connection.end();
         });
-        stream.on("Error", function(err) {
-          console.log("Error in stream: " + err);
+        stream.on("Error", function(error) {
+          console.log("Error in stream: " + error);
         });
         next(stream);
       });

@@ -15,11 +15,11 @@ const help = function() {
       return eventData.match(/http/) !== null;
     },
     stripSpecialLines(data) {
-      let result = data.replace(
+      let stripped = data.replace(
         /^.*>>SPECIAL_EVENT_START>>.*<<SPECIAL_EVENT_END<<(>.*$)/mg, "$1");
-      result = result.replace(
+      stripped = stripped.replace(
         /^.*>>SPECIAL_EVENT_START>>(.*)<<SPECIAL_EVENT_END<<.*$/mg, "");
-      return result;
+      return stripped;
     },
   };
   return result;

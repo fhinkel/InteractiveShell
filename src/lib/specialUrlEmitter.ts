@@ -40,21 +40,21 @@ let emitUrlForUserGeneratedFileToClient = function(client : Client, // tslint:di
     logFunction("Image action ended.");
   });
 
-  const handleUserGeneratedFile = function(err, sftp) {
-    if (err) {
-      throw new Error("ssh2.sftp() failed: " + err);
+  const handleUserGeneratedFile = function(generateError, sftp) {
+    if (generateError) {
+      throw new Error("ssh2.sftp() failed: " + generateError);
     }
     const targetPath: string = pathPrefix + pathPostfix;
-    fs.mkdir(targetPath, function(err) {
-      if (err) {
+    fs.mkdir(targetPath, function(fsError) {
+      if (fsError) {
         logFunction("Folder exists, but we proceed anyway");
       }
       console.log("Image we want is " + path);
       const completePath = targetPath + fileName;
-      sftp.fastGet(path, completePath, function(error) {
-        if (error) {
+      sftp.fastGet(path, completePath, function(sftpError) {
+        if (sftpError) {
           console.error("Error while downloading image. PATH: " +
-              path + ", ERROR: " + error);
+              path + ", ERROR: " + sftpError);
         } else {
           setTimeout(unlink(completePath), 1000 * 60 * 10);
           emitDataViaSockets(client.socketArray,

@@ -1,6 +1,6 @@
 import {AuthOption} from "../lib/enums";
 
-const configuration = function(overrideOptions, next) {
+const configuration = function(inputOptions, next) {
   const options = {
     cookieName: "tryM2",
     authentication: AuthOption.none,
@@ -56,7 +56,7 @@ const configuration = function(overrideOptions, next) {
     }
   };
 
-  overrideDefaultOptions(overrideOptions, options);
+  overrideDefaultOptions(inputOptions, options);
   next(options);
 };
 

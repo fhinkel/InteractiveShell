@@ -6,7 +6,9 @@ import {Clients} from "./client";
 import {AuthOption, SocketEvent} from "../lib/enums";
 import {Instance} from "./instance";
 import {InstanceManager} from "./instanceManager";
+import {SshDockerContainers} from "./sshDockerContainers";
 import {SudoDockerContainers} from "./sudoDockerContainers";
+
 import * as reader from "./tutorialReader";
 
 import express = require("express");
@@ -463,7 +465,12 @@ const MathServer = function(o) {
       const guestInstance = options.startInstance;
       const hostConfig = options.hostConfig;
       instanceManager = new SudoDockerContainers(resources, hostConfig, guestInstance);
-  } else {
+  } else   if (serverConfig.CONTAINERS === "../lib/sshDockerContainers") {
+      const resources = options.perContainerResources;
+      const guestInstance = options.startInstance;
+      const hostConfig = options.hostConfig;
+      instanceManager = new SshDockerContainers(resources, hostConfig, guestInstance);
+  } else{
   instanceManager = require(serverConfig.CONTAINERS).manager(options);
   }
 

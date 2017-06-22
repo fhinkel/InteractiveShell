@@ -65,8 +65,8 @@ const logClient = function(clientID, str) {
   }
 };
 
-const userSpecificPath = function(clientId: string): string {
-  return "/" + clientId + "-files/";
+const userSpecificPath = function(client: Client): string {
+  return "/" + client.id + "-files/";
 };
 
 const disconnectSocket = function(socket): void  {
@@ -86,21 +86,21 @@ const disconnectSockets = function(sockets): void  {
   }
 };
 
-const deleteClientData = function(clientID: string): void {
-  logClient(clientID, "deleting folder " +
-      staticFolder + userSpecificPath(clientID));
+const deleteClientData = function(client: Client): void {
+  logClient(client.id, "deleting folder " +
+      staticFolder + userSpecificPath(client));
   try {
-    logClient(clientID, "Sending disconnect. ");
-    disconnectSockets(clients[clientID].socketArray);
+    logClient(client.id, "Sending disconnect. ");
+    disconnectSockets(clients[client.id].socketArray);
   } catch (error) {
-    logClient(clientID, "Socket seems already dead: " + error);
+    logClient(client.id, "Socket seems already dead: " + error);
   }
-  fs.rmdir(staticFolder + userSpecificPath(clientID), function(error) {
+  fs.rmdir(staticFolder + userSpecificPath(client), function(error) {
     if (error) {
-      logClient(clientID, "Error deleting user folder: " + error);
+      logClient(client.id, "Error deleting user folder: " + error);
     }
   });
-  delete clients[clientID];
+  delete clients[client.id];
 };
 
 const setCookie = function(cookies, clientID: string): void {
@@ -122,21 +122,21 @@ const emitDataViaSockets = function(sockets, type: SocketEvent, data: string): v
   }
 };
 
-const emitDataViaClientSockets = function(clientID: string, type: SocketEvent, data) {
-  const sockets = clients[clientID].socketArray;
+const emitDataViaClientSockets = function(client: Client, type: SocketEvent, data) {
+  const sockets = client.socketArray;
   emitDataViaSockets(sockets, type, data);
 };
 
-const getInstance = function(clientID: string, next) {
-  if (clients[clientID].instance) {
-    next(clients[clientID].instance);
+const getInstance = function(client: Client, next) {
+  if (client.instance) {
+    next(client.instance);
   } else {
     instanceManager.getNewInstance(function(err, instance: Instance) {
       if (err) {
-        emitDataViaClientSockets(clientID, SocketEvent.result,
+        emitDataViaClientSockets(client, SocketEvent.result,
           "Sorry, there was an error. Please come back later.\n" +
             err + "\n\n");
-        deleteClientData(clientID);
+        deleteClientData(client);
       } else {
         next(instance);
       }
@@ -158,25 +158,25 @@ const optLogCmdToFile = function(clientId: string, msg: string) {
   }
 };
 
-const killNotify = function(clientID: string) {
+const killNotify = function(client: Client) {
   return function() {
-    console.log("KILL: " + clientID);
-    deleteClientData(clientID);
-    optLogCmdToFile(clientID, "Killed.\n");
+    logClient(client.id, "getting killed.");
+    deleteClientData(client);
+    optLogCmdToFile(client.id, "Killed.\n");
   };
 };
 
-const spawnMathProgramInSecureContainer = function(clientID: string, next) {
-  getInstance(clientID, function(instance: Instance) {
-    instance.killNotify = killNotify(clientID);
-    clients[clientID].instance = instance;
+const spawnMathProgramInSecureContainer = function(client: Client, next) {
+  getInstance(client, function(instance: Instance) {
+    instance.killNotify = killNotify(client);
+    client.instance = instance;
     const connection = new ssh2.Client();
     connection.on("error", function(err) {
-      logClient(clientID, "Error when connecting. " + err +
+      logClient(client.id, "Error when connecting. " + err +
         "; Retrying with new instance.");
       instanceManager.removeInstance(instance);
-      delete clients[clientID].instance;
-      spawnMathProgramInSecureContainer(clientID, next);
+      delete clients[client.id].instance;
+      spawnMathProgramInSecureContainer(client, next);
     });
     connection.on("ready", function() {
       connection.exec(serverConfig.MATH_PROGRAM_COMMAND,
@@ -185,13 +185,13 @@ const spawnMathProgramInSecureContainer = function(clientID: string, next) {
           if (err) {
             throw err;
           }
-          optLogCmdToFile(clientID, "Starting.\n");
+          optLogCmdToFile(client.id, "Starting.\n");
           stream.on("close", function() {
             connection.end();
           });
           stream.on("end", function() {
             stream.close();
-            logClient(clientID, "Stream ended, closing connection.");
+            logClient(client.id, "Stream ended, closing connection.");
             connection.end();
           });
           next(stream);
@@ -200,24 +200,24 @@ const spawnMathProgramInSecureContainer = function(clientID: string, next) {
   });
 };
 
-const updateLastActiveTime = function(clientID: string) {
-  instanceManager.updateLastActiveTime(clients[clientID].instance);
+const updateLastActiveTime = function(client: Client) {
+  instanceManager.updateLastActiveTime(client.instance);
 };
 
-const addNewSocket = function(clientID: string, socket) {
-  logClient(clientID, "Adding new socket");
+const addNewSocket = function(client: Client, socket) {
+  logClient(client.id, "Adding new socket");
   const socketID: string = socket.id;
-  clients[clientID].socketArray[socketID] = socket;
+  client.socketArray[socketID] = socket;
 };
 
-const sendDataToClient = function(clientID: string) {
+const sendDataToClient = function(client: Client) {
   return function(dataObject) {
     const data = dataObject.toString();
-    if (clients[clientID].nSockets() === 0) {
-      logClient(clientID, "Error, no socket for client.");
+    if (client.nSockets() === 0) {
+      logClient(client.id, "Error, no socket for client.");
       return;
     }
-    updateLastActiveTime(clientID);
+    updateLastActiveTime(client);
     const pathPrefix = staticFolder + "-" + serverConfig.MATH_PROGRAM;
     const specialUrlEmitter = require("./specialUrlEmitter")(
       pathPrefix,
@@ -229,38 +229,34 @@ const sendDataToClient = function(clientID: string) {
     const dataMarkedAsSpecial = specialUrlEmitter.isSpecial(data);
     if (dataMarkedAsSpecial) {
       specialUrlEmitter.emitEventUrlToClient(
-        clients[clientID],
+        client,
         dataMarkedAsSpecial,
         data,
-        userSpecificPath(clientID),
+        userSpecificPath(client),
       );
       return;
     }
-    emitDataViaClientSockets(clientID, SocketEvent.result, data);
+    emitDataViaClientSockets(client, SocketEvent.result, data);
   };
 };
 
-const attachListenersToOutput = function(clientID: string) {
-  const client = clients[clientID];
-  if (!client) {
-    return;
-  }
+const attachListenersToOutput = function(client: Client) {
   if (client.mathProgramInstance) {
-    clients[clientID].mathProgramInstance
+    client.mathProgramInstance
       .removeAllListeners("data")
-      .on("data", sendDataToClient(clientID));
+      .on("data", sendDataToClient(client));
   }
 };
 
-const mathProgramStart = function(clientID: string, next) {
-  logClient(clientID, "Spawning new MathProgram process...");
-  spawnMathProgramInSecureContainer(clientID, function(stream) {
+const mathProgramStart = function(client: Client, next) {
+  logClient(client.id, "Spawning new MathProgram process...");
+  spawnMathProgramInSecureContainer(client, function(stream) {
     stream.setEncoding("utf8");
-    clients[clientID].mathProgramInstance = stream;
-    attachListenersToOutput(clientID);
+    client.mathProgramInstance = stream;
+    attachListenersToOutput(client);
     setTimeout(function() {
       if (next) {
-        next(clientID);
+        next(client);
       }
     }, 2000); // Always need a little time before start is done.
   });
@@ -282,7 +278,7 @@ const checkCookie = function(request, response, next) {
   setCookie(cookies, clientID);
 
   if (!clients[clientID]) {
-    clients[clientID] = new Client();
+    clients[clientID] = new Client(clientID);
     totalUsers += 1;
   }
   next();
@@ -326,93 +322,97 @@ const initializeServer = function() {
   app.use(unhandled);
 };
 
-const clientSanityCheck = function(clientId: string) {
-  console.log("CID is: " + clientId);
+const clientExistenceCheck = function(clientId: string): Client {
+  logExceptOnTest("Checking existence of client with id " + clientId);
   if (!clients[clientId]) {
-    console.log("No client, yet.");
-    clients[clientId] = new Client();
+    clients[clientId] = new Client(clientId);
     totalUsers += 1;
-  } else if (!clients[clientId].saneState) {
-    console.log("Have client " + clientId + ", but they are not sane.");
+  }
+  return clients[clientId];
+};
+
+const clientSanityCheck = function(client: Client) {
+  logClient(client.id, "Checking sanity");
+  if (!client.saneState) {
+    logClient(client.id, "Is not sane");
     return;
   }
-  clients[clientId].saneState = false;
+  client.saneState = false;
 
-  if (!clients[clientId].mathProgramInstance ||
-      clients[clientId].mathProgramInstance._writableState.ended) {
+  if (!client.mathProgramInstance ||
+      client.mathProgramInstance._writableState.ended) {
     console.log("Starting new mathProgram instance.");
-    mathProgramStart(clientId, function() {
-      clients[clientId].saneState = true;
+    mathProgramStart(client, function() {
+      client.saneState = true;
     });
   } else {
     console.log("Has mathProgram instance.");
-    if (clients[clientId].reconnecting) {
-      emitDataViaClientSockets(clientId,
+    if (client.reconnecting) {
+      emitDataViaClientSockets(client,
          SocketEvent.result,
         "Session resumed.\n" + serverConfig.resumeString);
-      clients[clientId].reconnecting = false;
+      client.reconnecting = false;
     }
-    clients[clientId].saneState = true;
+    client.saneState = true;
   }
 };
 
-const writeMsgOnStream = function(clientId: string, msg: string) {
-  clients[clientId].mathProgramInstance.stdin.write(msg, function(err) {
+const writeMsgOnStream = function(client: Client, msg: string) {
+  client.mathProgramInstance.stdin.write(msg, function(err) {
     if (err) {
-      logClient(clientId, "write failed: " + err);
+      logClient(client.id, "write failed: " + err);
     }
-    optLogCmdToFile(clientId, msg);
-    clientSanityCheck(clientId);
+    optLogCmdToFile(client.id, msg);
+    clientSanityCheck(client);
   });
 };
 
-const checkAndWrite = function(clientId: string, msg: string) {
-  if (!clients[clientId].mathProgramInstance ||
-      clients[clientId].mathProgramInstance._writableState.ended) {
-    clientSanityCheck(clientId);
+const checkAndWrite = function(client: Client, msg: string) {
+  if (!client.mathProgramInstance ||
+      client.mathProgramInstance._writableState.ended) {
+    clientSanityCheck(client);
   } else {
-    writeMsgOnStream(clientId, msg);
+    writeMsgOnStream(client, msg);
   }
 };
 
-const checkState = function(clientId: string) {
+const checkState = function(client: Client) {
   return new Promise(function(resolve, reject) {
-    if (clients[clientId] && clients[clientId].saneState) {
+    if (client.saneState) {
       resolve();
     } else {
-      console.log(clientId + " not accepting events.");
+      logClient(client.id, " not accepting events.");
       reject();
     }
   });
 };
 
-const socketInputAction = function(clientId: string) {
+const socketInputAction = function(client: Client) {
   return function(msg: string) {
-    console.log("Have clientId: " + clientId);
-    updateLastActiveTime(clientId);
-    checkState(clientId).then(function() {
-      checkAndWrite(clientId, msg);
+    logClient(client.id, "Receiving input");
+    updateLastActiveTime(client);
+    checkState(client).then(function() {
+      checkAndWrite(client, msg);
     }, function(){
-      clientSanityCheck(clientId);
+      clientSanityCheck(client);
     });
   };
 };
 
-const socketResetAction = function(clientId: string) {
+const socketResetAction = function(client: Client) {
   return function() {
-    optLogCmdToFile(clientId, "Resetting.\n");
-    logExceptOnTest("Received reset.");
-    checkState(clientId).then(function() {
-      const client = clients[clientId];
+    optLogCmdToFile(client.id, "Resetting.\n");
+    logClient(client.id, "Received reset.");
+    checkState(client).then(function() {
       client.saneState = false;
       if (client.mathProgramInstance) {
-        killMathProgram(client.mathProgramInstance, clientId);
+        killMathProgram(client.mathProgramInstance, client.id);
       }
-      mathProgramStart(clientId, function() {
+      mathProgramStart(client, function() {
         client.saneState = true;
       });
     }, function(){
-      clientSanityCheck(clientId);
+      clientSanityCheck(client);
     });
   };
 };
@@ -431,14 +431,15 @@ const listen = function() {
     if (clients[clientId]) {
       clients[clientId].reconnecting = true;
     }
-    clientSanityCheck(clientId);
-    addNewSocket(clientId, socket);
+    const client = clientExistenceCheck(clientId);
+    clientSanityCheck(client);
+    addNewSocket(client, socket);
     const fileUpload = require("./fileUpload")(
       logExceptOnTest,
       sshCredentials);
-    fileUpload.attachUploadListenerToSocket(clients[clientId], socket);
-    socket.on("input", socketInputAction(clientId));
-    socket.on("reset", socketResetAction(clientId));
+    fileUpload.attachUploadListenerToSocket(client, socket);
+    socket.on("input", socketInputAction(client));
+    socket.on("reset", socketResetAction(client));
   });
 
   const listener = http.listen(serverConfig.port);

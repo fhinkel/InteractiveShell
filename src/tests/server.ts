@@ -20,18 +20,18 @@ describe("Server Module:", function() {
   describe("getInstance()", function() {
     it("should allow us to call getInstance", function(done) {
       const id: string = "user123";
-      clients[id] = new Client();
+      clients[id] = new Client(id);
       clients[id].instance = {
         host: "",
         port: "",
         username: "",
         sshKey: "",
       };
-      getInstance(id, function(){done(); });
+      getInstance(clients[id], function(){done(); });
     });
     it("should be able to create a new instance if there is none", function() {
       const id: string = "user123";
-      clients[id] = new Client();
+      clients[id] = new Client(id);
       const instance: Instance = {
         host: "1",
         port: "2",
@@ -39,13 +39,13 @@ describe("Server Module:", function() {
         sshKey: "4",
       };
       instanceManager.getNewInstance = function(next){next(undefined, instance); };
-      getInstance(id, function(inst: Instance){
+      getInstance(clients[id], function(inst: Instance){
         assert.equal(inst.host, "1");
       });
     });
     it("should delete client if it cannot create instance", function() {
       const id: string = "user123";
-      clients[id] = new Client();
+      clients[id] = new Client(id);
       const instance: Instance = {
         host: "1",
         port: "2",
@@ -54,7 +54,7 @@ describe("Server Module:", function() {
       };
       instanceManager.getNewInstance = function(next){next("1", instance); };
       assert.notEqual(clients[id], undefined);
-      getInstance(id, function(inst: Instance){});
+      getInstance(clients[id], function(inst: Instance){});
       assert.equal(clients[id], undefined);
     });
   });
@@ -62,15 +62,15 @@ describe("Server Module:", function() {
   describe("sendDataToClient()", function(){
     it("should make a callable function", function(done){
       const id: string = "user123";
-      clients[id] = new Client();
-      const sender = sendDataToClient(id);
+      clients[id] = new Client(id);
+      const sender = sendDataToClient(clients[id]);
       sender("Hi.");
       done();
     });
     it("should make a call to the socket.emit function for data of type " + SocketEvent.result, function(){
       const id: string = "user123";
       serverConfig.MATH_PROGRAM = "none";
-      clients[id] = new Client();
+      clients[id] = new Client(id);
       clients[id].instance = {
         host: "17",
         port: "2",
@@ -85,7 +85,7 @@ describe("Server Module:", function() {
           assert.equal(event, SocketEvent.result);
         },
       };
-      const sender = sendDataToClient(id);
+      const sender = sendDataToClient(clients[id]);
       sender("Hi.");
     });
     // clients[id].socketArray["bla"] = {};

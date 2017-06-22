@@ -6,11 +6,12 @@ export class Client {
     instance: Instance;
     socketArray: {[socketID: string]: any; };
     mathProgramInstance: any;
-    //clientId: string;
-    constructor() {
+    id: string;
+    constructor(newId: string) {
         this.saneState = true;
         this.reconnecting = false;
         this.socketArray = [];
+        this.id = newId;
     }
     nSockets(): number{
       return Object.keys(this.socketArray).length;

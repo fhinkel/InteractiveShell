@@ -23,7 +23,7 @@ describe("Server Module:", function() {
       clients[id] = new Client(id);
       clients[id].instance = {
         host: "",
-        port: "",
+        port: 0,
         username: "",
         sshKey: "",
       };
@@ -34,7 +34,7 @@ describe("Server Module:", function() {
       clients[id] = new Client(id);
       const instance: Instance = {
         host: "1",
-        port: "2",
+        port: 2,
         username: "3",
         sshKey: "4",
       };
@@ -48,7 +48,7 @@ describe("Server Module:", function() {
       clients[id] = new Client(id);
       const instance: Instance = {
         host: "1",
-        port: "2",
+        port: 2,
         username: "3",
         sshKey: "4",
       };
@@ -73,7 +73,7 @@ describe("Server Module:", function() {
       clients[id] = new Client(id);
       clients[id].instance = {
         host: "17",
-        port: "2",
+        port: 2,
         username: "3",
         sshKey: "4",
       };

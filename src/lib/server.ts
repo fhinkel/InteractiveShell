@@ -70,7 +70,7 @@ const userSpecificPath = function(client: Client): string {
   return "/" + client.id + "-files/";
 };
 
-const disconnectSocket = function(socket): void  {
+const disconnectSocket = function(socket: SocketIO.Socket): void  {
       try{
         socket.disconnect();
       } catch (error) {
@@ -81,7 +81,7 @@ const disconnectSocket = function(socket): void  {
 const disconnectSockets = function(sockets): void  {
   for (const socketKey in sockets) {
     if (sockets.hasOwnProperty(socketKey)) {
-      const socket = sockets[socketKey];
+      const socket : SocketIO.Socket= sockets[socketKey];
       disconnectSocket(socket);
     }
   }
@@ -205,7 +205,7 @@ const updateLastActiveTime = function(client: Client) {
   instanceManager.updateLastActiveTime(client.instance);
 };
 
-const addNewSocket = function(client: Client, socket) {
+const addNewSocket = function(client: Client, socket: SocketIO.Socket) {
   logClient(client.id, "Adding new socket");
   const socketID: string = socket.id;
   client.socketArray[socketID] = socket;

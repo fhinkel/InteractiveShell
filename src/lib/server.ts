@@ -18,7 +18,7 @@ const app = express();
 const http = require("http").createServer(app);
 import fs = require("fs");
 import Cookies = require("cookies");
-const io = require("socket.io")(http);
+const io : SocketIO.Server = require("socket.io")(http);
 import ssh2 = require("ssh2");
 import SocketIOFileUpload = require("socketio-file-upload");
 
@@ -421,7 +421,7 @@ const socketResetAction = function(client: Client) {
 const listen = function() {
   const cookieParser = require("socket.io-cookie");
   io.use(cookieParser);
-  io.on("connection", function(socket) {
+  io.on("connection", function(socket: SocketIO.Socket) {
     console.log("Incoming new connection!");
     const clientId: string = getClientIdFromSocket(socket);
     if (clientId === "deadCookie") {
@@ -456,7 +456,7 @@ const authorizeIfNecessary = function(authOption: AuthOption) {
       file: path.join(__dirname, "/../../../public/users.htpasswd"),
     });
     app.use(auth.connect(basic));
-    return function(socket) {
+    return function(socket: SocketIO.Socket) {
       try {
         return socket.request.headers.authorization.substring(6);
       } catch (error) {
@@ -464,7 +464,7 @@ const authorizeIfNecessary = function(authOption: AuthOption) {
       }
     };
   }
-  return function(socket) {
+  return function(socket: SocketIO.Socket) {
     const cookies = socket.request.headers.cookie;
     return cookies[options.cookieName];
   };

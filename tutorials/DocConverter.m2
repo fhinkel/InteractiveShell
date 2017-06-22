@@ -3,26 +3,20 @@
 -- lesson. Each lesson is wrapped in a <div> with an <h4> headline. 
 -- <code> markes M2 code that can be run in the interactive shell. 
 
-
--- How do we handle "nodes"?
--- underscore operator is being translated to <sub> and messes up everything
-
--- TODO 2/29/2012
--- Example:  group all lines that have further indentation together, and make one button out of those.
---        remove initial indentation
--- Text:  write toHtml, meaning:
---          remove @...@ replacing with something inside
---          put html TEX around it
---          handle anything else not handled by TEX
--- Code:  search for SUBSECTION, grab name, put a div in
---        handle weird other things.  Possibly just ignore them
--- do not forget to print html header and wrapper.
-
-
+-- todo:
+--  complain if tabs are present
+--  flag parts of the documentation (Keyword, lines), that are not translated.
+--  tests
+--   
+--  add in several examples in aux files.
+--  change package name?
+--  markdownToSimpledoc
+--  markdownToTutorial
+--  tutorialToMarkdown
 newPackage(
         "DocConverter",
-        Version => "0.5", 
-        Date => "Jan 2014",
+        Version => "0.9", 
+        Date => "21 June 2017",
         Authors => {
             {
                 Name => "Mike Stillman", 
@@ -40,19 +34,285 @@ newPackage(
                 }
             },
         Headline => "Convert tutorial and simpleDOC formats to HTML for TryM2 tutorials",
+        AuxiliaryFiles => false, -- change to true...
         DebuggingMode => true,
         PackageExports => {"Text"}
         )
 
 export {
+    "simpledocToMarkdown",
      "convert",
+     "convertContents",
      "simpledocExample"
-     --tutorialToSimpleDoc,
-     --tutorialExample
      }
 
 keywordRE = ///^\s*Key|^\s*Headline|^\s*Description///
 descriptionRE = ///^\s*Text|^\s*Code|^\s*Example///
+
+initialSpaceSize1 = method()
+initialSpaceSize1 String := (line) -> (
+     -- Returns the number of spaces at the beginning of the line.
+     -- NO tabs are allowed in line!!
+     -- result of this should be {(0,n)}
+     initialSpace := regex("^ *", line);
+     assert(initialSpace#0#0 === 0);
+     assert(#initialSpace === 1);
+     n := initialSpace#0#1;
+     if n === #line then infinity else n
+     )
+
+-- returns a list of lists of lines, with initial space (at top level) removed
+-- it is expected that all lines are non-empty.
+-- empty lines are considered of infinite size
+splitByMinimumSpace = method()
+splitByMinimumSpace List := (lines) -> (
+    assert(all(lines, line -> instance(line,String)));
+    sizes := lines / initialSpaceSize1;
+    minsize := sizes // min;
+    pos := positions(sizes, i -> i == minsize);
+    pos = append(pos, #lines);
+    -- the following line means that if the frst line of 'lines' is not smallest indent,
+    -- then we collect all of the lines before the one of minimum size, and add it into that group.
+    if #sizes > 0 and sizes#0 > minsize then pos = prepend(0, drop(pos,1));
+    if minsize =!= infinity then
+      lines = for line in lines list substring(line, minsize);
+    for i from 0 to #pos-2 list (
+        first := pos#i;
+        last := pos#(i+1)-1;
+        lines_{first..last}
+        )
+    )
+
+
+TEST ///
+{*
+  restart
+*}
+  debug needsPackage "DocConverter"
+  L = {"    ", "  a", "   bcd"}
+  assert(L/initialSpaceSize1 === {infinity, 2, 3})
+  assert(splitByMinimumSpace L === {{"  ", "a", " bcd"}}) -- note that L_0 is not here.  Should we complain if the first element is not the smallest?
+  assert(initialSpaceSize1 "" === infinity)
+  assert(splitByMinimumSpace {} === {})
+  assert(splitByMinimumSpace {"", ""} === {{""}, {""}}) -- both are at the minimum # spaces.
+  assert(splitByMinimumSpace {"a", "", ""} === {{"a", "", ""}})-- both are at the minimum # spaces.
+  assert(splitByMinimumSpace {"  Key  ", "", "  ", "    Text  ", "  Key2"}  === {{"Key  ", "", "", "  Text  "}, {"Key2"}})
+  assert(substring("", 2) === "")
+  assert(substring("   ", 2) === " ")
+  assert(substring("abc", 0) === "abc")
+  assert(substring("abc", 1) === "bc")
+  assert(substring("abc", 2) === "c") 
+  assert(substring("abc", 3) === "")
+///
+
+
+concatenateLines = method()
+concatenateLines List := (lines) -> (
+    assert(all(lines, line -> instance(line,String)));
+    concatenate for line in lines list (line | "\n")
+    )
+
+TEST ///
+{*
+  restart
+*}
+  debug needsPackage "DocConverter"
+  assert(concatenateLines {} == "")
+  assert(concatenateLines {"", ""} === "\n\n")  
+  assert(concatenateLines {"a b", " c d"} === "a b\n c d\n") 
+///
+
+replaceWithValueOf = method()
+replaceWithValueOf String  :=  s -> (
+  -- replace content between @-symbols with its value
+  -- s = "2+2 = @ TO 2+2@, and 4-2= @TO2 {(4-2),"nnnn" }@." 
+  l := separate("@", s);
+  concatenate for i from 0 to #l-1 list (
+    if even i then 
+      l#i
+    else (
+      t := value replace( ///TO|TO2|TT///, "", l#i);
+      if instance(t, List) then 
+        t = last t;
+      t = "\\({\\tt " | toString t | "}\\)"
+    )
+  )
+ )
+
+stripSpace = method()
+stripSpace String := (str) -> (
+    str1 := replace(///^\s*///, "", str);
+    replace(///\s*$///, "", str1)
+    )
+
+TEST ///
+{*
+  restart
+*}
+  debug needsPackage "DocConverter"
+  assert(replaceWithValueOf "" === "")
+  assert(replaceWithValueOf "1@TO \"hi\"" === "1\\({\\tt hi}\\)")
+  assert(replaceWithValueOf "@@" === "\\({\\tt null}\\)")
+///
+
+processExampleSectionMD = (lines) -> (
+     -- Each line should be either completely blank, or
+     -- have some text.  Each line with more indentation than the
+     -- previous is appended to a <code> block
+     -- A string is returned.
+     lines = select(lines, line -> stripSpace line != "");
+     if #lines === 0 then return {};
+     blks := splitByMinimumSpace lines;
+     {""} | flatten for b in blks list flatten {"```", b, "```"} | {""}
+ )
+
+getSubsectionString = method()
+getSubsectionString String := (str) -> (
+    if not match(///^\s*SUBSECTION///, str) then 
+        null 
+    else (
+        h := replace(///^\s*SUBSECTION\s*\"///, "", str);
+        replace(///\",?\s*$///, "", h)
+        )
+    )
+
+
+TEST ///
+{*
+  restart
+*}
+  debug needsPackage "DocConverter"
+  assert(getSubsectionString "  SUBSECTION \"hi there\" " === "hi there")
+  assert(getSubsectionString "  SUBSECTION       \"hi there\"      what " =!= null)
+  assert(getSubsectionString "      SUBSECTION \"bases of vector spaces\" "
+
+
+///
+   
+-- simpledocToMarkdown: takes a string in simpledoc format, and extracts out the title,
+-- section headings, and text and examples, returning a markdown string, suitable for 
+-- use with web.macaulay2.com
+simpledocToMarkdown = method()
+simpledocToMarkdown String := (simpledoc) -> (
+    contents := lines simpledoc;
+    -- remove comment lines:
+    contents = select(contents, s -> not match(///^\s*--///, s));
+    for i from 0 to #contents-1 do (
+        -- check for tab characters, as they mess up the logic if handled improperly.
+        if match("\t", contents#i)
+        then return ("***ERROR***: tab character found on line "|i|".  Tabs are not allowed in simpledoc file");
+        );
+    blocks := splitByMinimumSpace contents;
+    markdownLines := flatten for blk in blocks list (
+        key := stripSpace blk#0;
+        if key == "Headline" then (
+            if #blk != 2 then (
+                << "warning: expected exactly one line under Headline" << endl;
+                << "  received instead: " << endl;
+                << concatenateLines blk;
+                );
+            if #blk == 0 then {""} else
+            {"# " | replace(///^\s*///, "", blk#1)}
+        ) else if key == "Description" then (
+            paras := splitByMinimumSpace drop(blk, 1); -- remove "Description"
+            flatten for p in paras list (
+                k := stripSpace p#0;
+                lines := drop(p,1);
+                if k == "Text" then (
+                   flatten splitByMinimumSpace (lines/replaceWithValueOf)
+                ) else if k == "Example" then (
+                    processExampleSectionMD lines
+                ) else if k == "Code" then (
+                    secname := getSubsectionString lines#0;
+                    if secname === null then (
+                        << "warning: ignoring lines: " << endl;
+                        << concatenateLines  lines;
+                        continue;
+                    ) else if #lines > 1 then (
+                        << "warning: ignoring lines: " << endl;
+                        << concatenateLines drop(lines,1);
+                        continue;
+                    );
+                    if secname === null then {"##"} else {"## " |  secname}
+                ) else (
+                    << "warning: ignoring section: " << endl;
+                    << concatenateLines p;
+                    continue
+                )
+            )
+        ) else (
+             << "warning: ignoring section: " << endl;
+             << concatenateLines blk;
+             continue
+        )
+    );
+    concatenateLines markdownLines
+    )
+
+
+
+example1 = ///
+  Key
+    example1
+  Headline
+    my great tutorial (D. Hilbert)
+  Description
+    Code
+      SUBSECTION "Abelian categories"
+    Text
+      this is the first paragraph, with $f(x) = x^3-\sin x + 1$.
+      
+      a second paragraph with a tt, @TT "hi"@.
+    Text
+
+    Example
+      R = QQ[x]
+      x^3-x-1
+      f = x -> (
+          "hi there"
+          )
+///           
+
+example2 = ///
+Key
+  what
+Headline
+  Linear algebra
+Description
+  Code 
+    SUBSECTION "bases of vector spaces"
+  Text
+    Let $V$ be a vector space, and suppose that $\{v_1, \ldots, v_n\}$ are
+    vectors in $V$.  We wish to know how to determine a subset which is a basis,
+    and whether they span $V$, and whether they are linearly independent.
+  Example
+    R = QQ
+    V = R^5
+  Text
+  
+  Example
+  Caveats
+  ///
+  
+TEST ///
+{*
+  restart
+  needsPackage "DocConverter"
+*}
+  debug DocConverter
+  example1    
+  simpledocToMarkdown example1
+  simpledocToMarkdown example2
+  
+  splitByMinimumSpace lines example1
+  simpledocToMarkdown simpledocExample
+  simpledocToMarkdown example1
+  "foo2.md" << simpledocToMarkdown example1 << close
+  
+  simpledocToMarkdown get "~/src/InteractiveShell/tutorials/1-gettingStarted.simpledoc"
+  simpledocToMarkdown get "~/src/InteractiveShell/tutorials/2-elementary-groebner.simpledoc"
+  simpledocToMarkdown get "~/src/InteractiveShell/tutorials/3-beginningM2.simpledoc";
+///       
 
 groupLines = method()
 groupLines (List,String) := (L, keywordRE) -> (
@@ -68,25 +328,6 @@ groupLines (List,String) := (L, keywordRE) -> (
 	       ))
      )
 
-
-
-replaceWithValueOf = method()
-replaceWithValueOf String  :=  s -> (
-  -- replace content between @-symbols with its value
-  -- s = "2+2 = @ TO 2+2@, and 4-2= @TO2 {(4-2),"nnnn" }@." 
-  --<< "s = " << s << endl;
-  l := separate("@", s);
-  concatenate for i from 0 to #l-1 list (
-    if even i then 
-      l#i
-    else (
-      t := value replace( ///TO|TO2|TT///, "", l#i);
-      if instance(t, List) then 
-        t = last t;
-      t = "\\({\\tt " | toString t | "}\\)"
-    )  
-    )
- )
 
 -- create string with code for HTML rather than simple doc
 -- add extra line break at every paragraph
@@ -288,7 +529,7 @@ tutorialToSimpleDoc String := (x) -> (
           )
      )
 
-simpledocExample = ///Keyword
+simpledocExample = ///Key
     "unused"
 Headline
     My wonderful tutorial (by F. Bar)
@@ -388,11 +629,51 @@ SeeAlso
   "SimpleDoc"
 ///
 
-end
+eg1 = ///
+  Key    
+    foo
+  Headline                
+    My %$&&^%^&%^& title
+  Description
+  
+    Code
+      Domething not understood
+        Well
+    Text
+    Example
+    Text
+    Example
+    
+    Text
+    
+    Example
+    SomethingElse
+    
+///
+
+TEST ///
+  -- test construction of latex constructs
+{*
+  restart
+*}
+  
+  debug needsPackage "DocConverter"
+  simpledocToMarkdown eg1 -- fails
+  
+///
+
+TEST ///
+  -- test construction of result html
+///
+
+TEST ///
+    "foo.html" << convertContents simpledocExample
+///
+end--
 
 // test of processTextSection
 restart
-debug loadPackage "DocConverter"
+loadPackage "DocConverter"
 installPackage "DocConverter"
 
 uninstallPackage "DocConverter"

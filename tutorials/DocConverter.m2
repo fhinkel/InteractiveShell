@@ -4,9 +4,9 @@
 -- <code> markes M2 code that can be run in the interactive shell. 
 
 -- todo:
---  complain if tabs are present
---  flag parts of the documentation (Keyword, lines), that are not translated.
---  tests
+--  complain if tabs are present DONE
+--  flag parts of the documentation (Keyword, lines), that are not translated. DONE
+--  tests SOME
 --   
 --  add in several examples in aux files.
 --  change package name?
@@ -41,13 +41,8 @@ newPackage(
 
 export {
     "simpledocToMarkdown",
-     "convert",
-     "convertContents",
      "simpledocExample"
      }
-
-keywordRE = ///^\s*Key|^\s*Headline|^\s*Description///
-descriptionRE = ///^\s*Text|^\s*Code|^\s*Example///
 
 initialSpaceSize1 = method()
 initialSpaceSize1 String := (line) -> (
@@ -82,7 +77,6 @@ splitByMinimumSpace List := (lines) -> (
         lines_{first..last}
         )
     )
-
 
 TEST ///
 {*
@@ -176,7 +170,6 @@ getSubsectionString String := (str) -> (
         )
     )
 
-
 TEST ///
 {*
   restart
@@ -249,8 +242,6 @@ simpledocToMarkdown String := (simpledoc) -> (
     concatenateLines markdownLines
     )
 
-
-
 example1 = ///
   Key
     example1
@@ -303,195 +294,14 @@ TEST ///
   example1    
   simpledocToMarkdown example1
   simpledocToMarkdown example2
-  
-  splitByMinimumSpace lines example1
   simpledocToMarkdown simpledocExample
-  simpledocToMarkdown example1
-  "foo2.md" << simpledocToMarkdown example1 << close
-  
+    
   simpledocToMarkdown get "~/src/InteractiveShell/tutorials/1-gettingStarted.simpledoc"
   simpledocToMarkdown get "~/src/InteractiveShell/tutorials/2-elementary-groebner.simpledoc"
   simpledocToMarkdown get "~/src/InteractiveShell/tutorials/3-beginningM2.simpledoc";
 ///       
 
-groupLines = method()
-groupLines (List,String) := (L, keywordRE) -> (
-     -- returns a list of pairs:
-     -- {{keyword, list of lines}, ...}
-     P1 := positions(L, s -> match(keywordRE, s)); 
-     P1 = append(P1, #L);
-     apply(#P1-1, i -> (
-	       keyline := L#(P1#i);  -- the line with the keyword
-	       keyword := replace(///\s*///, "", keyline);
-	       content := L_{P1#i + 1 .. P1#(i+1) - 1}; -- the corresponding content
-	       {keyword, content}
-	       ))
-     )
-
-
--- create string with code for HTML rather than simple doc
--- add extra line break at every paragraph
--- translate TEX code
--- input s spans several lines of simple doc
-toHtml = method()
-toHtml String := (s) ->  (
-  s = replaceWithValueOf s;
-  --print s;
-  --s = html TEX s;
-  s = html s;
-  s | "<br/>\n"
-  )
-
-toHtmlPara = method()
-toHtmlPara String := (s) -> (
-  s = replaceWithValueOf s;
-  --print s;
-  --s = "<p>" | html TEX s | "</p>\n"
-  s = "<p>" | html s | "</p>\n"
-  )
-
--- return string with HTML head for given title
-printHead = method()
-printHead String := title -> (
-     s :=  "<html>\n";
-     s = s |  "  <head>\n";
-     s = s |  "    <title>\n";
-     s = s |  title | "\n";
-     s = s |  "    </title>\n";
-     s = s |  "  </head>\n";
-     s = s |  "<body>\n"  
-     )
-
-processTextSection = (lines) -> (
-     -- Each line should be either completely blank, or
-     -- have some text.  Each contiguous group of non-empty lines
-     -- will be wrapped in a <p></p>.
-     -- A string is returned.
-     ----return toHtmlPara concatenate between("\n", lines); -- all lines in a text section
-     -- this next part is new.  Is it valid?  8 Jan 2014 MES
-     stripSpace := apply(lines, line -> replace("^\\s*", "", line));
-     groups := sublists(stripSpace,
-          line -> #line > 0,
-          toList,
-          identity);
-     concatenate apply(groups, g -> if not instance(g, List) 
-          then ""
-          else (   "<p>\n"
---                 | concatenate apply(g, g1 -> "    " | html TEX g1 | "\n") 
-                 | concatenate apply(g, g1 -> "    " | html replaceWithValueOf g1 | "\n") 
-                 | "</p>\n")
-     ))
-
-initialSpaceSize = (line) -> (
-     -- Returns the number of spaces at the beginning of the line.
-     -- NO tabs are allowed in line!!
-     initialSpace := regex("^ *", line);
-     initialSpace#0#1
-     )
-processExampleSection = (lines) -> (
-     -- Each line should be either completely blank, or
-     -- have some text.  Each line with more indentation than the
-     -- previous is appended to a <code> block
-     -- A string is returned.
-     lines = select(lines, s -> #s > 0);
-     sizes := lines / initialSpaceSize;
-     minsize := min sizes;
-     if minsize != sizes#0 then error "The first line of an Example section should have the
-        smallest indentation of all lines in the section.";
-     lines = apply(lines, line -> substring(line, minsize));
-     pos := positions(sizes, i -> i == minsize);
-     pos = append(pos, #lines);
-     concatenate for i from 0 to #pos - 2 list (
-          -- we make a single <code>m2code</code> from each of these
-          -- where m2code might be several lines, in which case it is:
-          -- <code>line1<br/>
-          -- line2<br/>
-          -- line3</code><br/>
-          first := pos#i;
-          last := pos#(i+1)-1;
-          if first == last then (
-               "<p><code>" | lines#first | "</code></p>\n"
-          ) else (
-               "<p><codeblock>" | 
-               concatenate (for j from first to last-1 list (lines#j | "\n"))
-               | lines#last | "</codeblock></p>\n"
-               )
-          )
-     )
-
-processSUBSECTION = (lines) -> (
-     -- lines should be of length 1 here.
-     concatenate for line in lines list (
-       "<h4>" | replace("^ *", "", line) | "</h4>\n"
-       )
-     )
-
-convertContents = method()
-convertContents String := (docstring) -> (
-     contents := lines docstring;
-     contents = select(contents, s -> not match(///^\s*--///, s));
-     M := groupLines(contents, keywordRE);
-     --MKey := first select(M, x -> match(///^\s*Key///, first x));
-     MHeadline := select(M, x -> match(///^\s*Headline///, first x));
-     MHeadline = if #MHeadline > 0 then MHeadline#0 else {null, {"Tutorial"}};
-     MDescription := first select(M, x -> match(///^\s*Description///, first x));
-     -- ignore the Key for now.
-     -- << "Key = " << last MKey << endl;
-     s := printHead first last MHeadline;
-
-     inSection := false; -- we need this to keep track of divs around lessons
-     M2 := groupLines(last MDescription, descriptionRE);
-     cc :=  concatenate apply(M2, m -> (
-	       -- m is {Keyword, List (of lines)}.
-	       -- Keyword is: Text, Code, Example (that is it at the moment)
-	       k := first m;
-	       if k === "Text" then
-                processTextSection m#1
-	       else if k === "Example" then 
-                processExampleSection m#1
-	       else if k === "Code" then (
-            if match( ///^\s*SUBSECTION///, first last m) then (
-              s := "";
-              if inSection then 
-                s = "</div>\n";
-              inSection = true;
-              h := replace( ///^\s*SUBSECTION\s*\"///, "", first last m); 
-              h = replace( ///\",?\s*$///, "", h );
-
-              s | "<div>\n    <h4>" | h | "</h4>\n" 
-              )
-            )
-	       else 
-            error "unknown Key"
-	      ));
-      s | cc | "    </div>\n  </body>\n</html>\n"
-     )
-
-convert = method()
-convert String := (filename) -> (
-    result := convertContents get (filename|".simpledoc");
-    (filename|".html") << result << close
-    )
-
-mat := (pat,line) -> class line === String and match(pat,line)
-
-makeSUBSECTION = (str) -> "SUBSECTION" => str
-makeTEXT = (str) -> "Text" => str
-makeEXAMPLE = (str) -> "Example" => str
-
-writeout = (group) -> (
-     name := group#0#0;
-     strs := group/last;
-     if name === "SUBSECTION"
-     then (
-          if #strs > 1 then error "our logic with subsections is off";
-          "    Code\n        SUBSECTION \"" | strs#0 | "\"\n"
-          )
-     else (
-          header := "    " | name | "\n";
-          header | concatenate apply(strs, s -> "        " | s | "\n")
-          )
-     )
+{*
 tutorialToSimpleDoc = method()
 tutorialToSimpleDoc String := (x) -> (
      x = lines x;
@@ -528,6 +338,7 @@ tutorialToSimpleDoc String := (x) -> (
           writeout group
           )
      )
+*}
 
 simpledocExample = ///Key
     "unused"
@@ -576,10 +387,20 @@ Description
     Mathjax is very good, but there are some idiosyncracies: To use latex formatting
     for "TT", one must place the phrase in math context.
     
-    For an example, suitable for basing your own tutorials on, see @TO "convert"@.
+    For an example, suitable for basing your own tutorials on, see @TO "simpledocToMarkdown"@.
 SeeAlso
   SimpleDoc
 ///
+
+end--
+
+restart
+uninstallPackage "DocConverter"
+restart
+needsPackage "DocConverter"
+installPackage "DocConverter"
+check "DocConverter"
+
 
 doc ///
 Key
@@ -669,7 +490,6 @@ TEST ///
 TEST ///
     "foo.html" << convertContents simpledocExample
 ///
-end--
 
 // test of processTextSection
 restart
@@ -693,25 +513,6 @@ s = ///
          type {\tt 2+2} and press return.  The expression you entered will be
          evaluated - no punctuation is required at the end of the line.
 ///
-restart
-loadPackage "DocConverter"
-L = convert "gettingStarted.simpledoc";
-"public/tutorials/getting-started.html" << L << close;
-
-
-fn = "Beginning.html"
-fn << L << close
-get ("!open " | fn)
-
-M = groupLines(L, keywordRE)
-M1 = first select(M, x -> match(///^\s*Description///, first x))
-M2 = groupLines(last M1, descriptionRE)
-M2/first
-tally oo
-M = L_{4+1..672-1};
-groupLines(M, descriptionRE)
-netList M_{202..216}
-netList oo
 
 restart
 loadPackage "DocConverter"
@@ -721,8 +522,4 @@ X = get "tu_elementary.m2"
 netList oo
 beginDocumentation()
 
-TEST ///
--- test code and assertions here
--- may have as many TEST sections as needed
-///
 

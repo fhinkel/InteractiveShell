@@ -8,7 +8,7 @@ const exists = function(clientId: string, clients: Clients, logFunction) {
   return false;
 };
 
-module.exports = function(clients: Clients, logFunction) {
+export default function clientIdHelper(clients: Clients, logFunction) {
   return {
     getNewId() {
       let clientId: string;
@@ -21,4 +21,4 @@ module.exports = function(clients: Clients, logFunction) {
       return clientId;
     },
   };
-};
+}

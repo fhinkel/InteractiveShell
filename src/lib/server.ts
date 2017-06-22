@@ -2,6 +2,7 @@
 
 import {Client} from "./client";
 import {Clients} from "./client";
+import clientIdHelper from "./clientId";
 
 import {AuthOption, SocketEvent} from "../lib/enums";
 import {Instance} from "./instance";
@@ -273,7 +274,7 @@ const checkCookie = function(request, response, next) {
   if (!clientID) {
     logExceptOnTest("New client without a cookie set came along");
     logExceptOnTest("Set new cookie!");
-    clientID = require("./clientId")(clients, logExceptOnTest).getNewId();
+    clientID = clientIdHelper(clients, logExceptOnTest).getNewId();
   }
   setCookie(cookies, clientID);
 

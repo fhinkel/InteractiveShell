@@ -481,16 +481,8 @@ const MathServer = function(o) {
   const resources = options.perContainerResources;
   const guestInstance = options.startInstance;
   const hostConfig = options.hostConfig;
-  if (serverConfig.CONTAINERS === "../lib/sudoDockerContainers") {
-      instanceManager = new SudoDockerContainers(resources, hostConfig, guestInstance);
-  } else if (serverConfig.CONTAINERS === "../lib/sshDockerContainers") {
-      instanceManager = new SshDockerContainers(resources, hostConfig, guestInstance);
-  } else if (serverConfig.CONTAINERS === "../lib/LocalContainerManager") {
-      instanceManager = new LocalContainerManager();
-  } else {
-    throw new Error ("That is the wrong serverConfig.CONTAINERS: " + serverConfig.CONTAINERS);
-  //instanceManager = require(serverConfig.CONTAINERS).manager(options);
-  }
+  // TODO: Make correct files for Singular.
+  instanceManager = serverConfig.CONTAINERS(resources, hostConfig, guestInstance);
 
   initializeServer();
 

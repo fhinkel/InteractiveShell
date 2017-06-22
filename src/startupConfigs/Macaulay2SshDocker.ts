@@ -1,3 +1,5 @@
+import {SshDockerContainers} from "../lib/sshDockerContainers";
+
 require("./startup")({
   serverConfig: {
     port: 8002,
@@ -5,7 +7,9 @@ require("./startup")({
     MATH_PROGRAM_COMMAND: "export WWWBROWSER=/usr/bin/open; " +
     "export PATH=/usr/bin:$PATH; " +
     "M2 --print-width 100",
-    CONTAINERS: "../lib/sshDockerContainers",
+    CONTAINERS(resources, hostConfig, guestInstance) {
+      return new SshDockerContainers(resources, hostConfig, guestInstance);
+    },
   },
   startInstance: {
     host: "192.168.2.42",

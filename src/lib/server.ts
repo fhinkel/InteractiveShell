@@ -251,7 +251,7 @@ const attachListenersToOutput = function(client: Client) {
 
 const mathProgramStart = function(client: Client, next) {
   logClient(client.id, "Spawning new MathProgram process...");
-  spawnMathProgramInSecureContainer(client, function(stream) {
+  spawnMathProgramInSecureContainer(client, function(stream: ssh2.ClientChannel) {
     stream.setEncoding("utf8");
     client.mathProgramInstance = stream;
     attachListenersToOutput(client);
@@ -341,7 +341,7 @@ const clientSanityCheck = function(client: Client) {
   client.saneState = false;
 
   if (!client.mathProgramInstance ||
-      client.mathProgramInstance._writableState.ended) {
+      !client.mathProgramInstance.writable) {
     console.log("Starting new mathProgram instance.");
     mathProgramStart(client, function() {
       client.saneState = true;
@@ -370,7 +370,7 @@ const writeMsgOnStream = function(client: Client, msg: string) {
 
 const checkAndWrite = function(client: Client, msg: string) {
   if (!client.mathProgramInstance ||
-      client.mathProgramInstance._writableState.ended) {
+      !client.mathProgramInstance.writable) {
     clientSanityCheck(client);
   } else {
     writeMsgOnStream(client, msg);

@@ -62,7 +62,7 @@ describe("Server Module:", function() {
     it("should make a callable function", function(done){
       const id: string = "user123";
       clients[id] = new Client();
-      let sender = sendDataToClient(id);
+      const sender = sendDataToClient(id);
       sender("Hi.");
       done();
     });
@@ -84,7 +84,7 @@ describe("Server Module:", function() {
           assert.equal(event, SocketEvent.result);
         },
       };
-      let sender = sendDataToClient(id);
+      const sender = sendDataToClient(id);
       sender("Hi.");
     });
     // clients[id].socketArray["bla"] = {};

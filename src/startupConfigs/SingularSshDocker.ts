@@ -1,3 +1,6 @@
+import {InstanceManager} from "../lib/instanceManager";
+import {SshDockerContainers} from "../lib/sshDockerContainers";
+
 require("./startup")({
   hostConfig: {
     dockerRunCmd: "",
@@ -14,7 +17,9 @@ require("./startup")({
     port: 8002,
     MATH_PROGRAM: "Singular",
     MATH_PROGRAM_COMMAND: "Singular",
-    CONTAINERS: "../lib/sshDockerContainers.ts",
+    CONTAINERS(resources, hostConfig, guestInstance): InstanceManager{
+      return new SshDockerContainers(resources, hostConfig, guestInstance);
+    },
     resumeString: "Type 'listvar();' to print the list of " +
     "existing variables.\n" +
     "Type 'basering;' to print the currently active ring.\n> ",

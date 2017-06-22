@@ -1,9 +1,14 @@
+import {InstanceManager} from "../lib/instanceManager";
+import {SudoDockerContainers} from "../lib/sudoDockerContainers";
+
 require("./startup")({
   serverConfig: {
     port: 8002,
     MATH_PROGRAM: "Singular",
     MATH_PROGRAM_COMMAND: "Singular",
-    CONTAINERS: "../lib/sudoDockerContainers.ts",
+    CONTAINERS(resources, hostConfig, guestInstance): InstanceManager {
+      return new SudoDockerContainers(resources, hostConfig, guestInstance);
+    },
     resumeString: "Type 'listvar();' to print the list of " +
     "existing variables.\n" +
     "Type 'basering;' to print the currently active ring.\n> ",

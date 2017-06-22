@@ -481,7 +481,6 @@ const MathServer = function(o) {
   const resources = options.perContainerResources;
   const guestInstance = options.startInstance;
   const hostConfig = options.hostConfig;
-  // TODO: Make correct files for Singular.
   instanceManager = serverConfig.CONTAINERS(resources, hostConfig, guestInstance);
 
   initializeServer();

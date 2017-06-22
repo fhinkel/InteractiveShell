@@ -23,7 +23,14 @@ import SocketIOFileUpload = require("socketio-file-upload");
 
 import path = require("path");
 let getClientIdFromSocket;
-let serverConfig;
+let serverConfig = {
+  MATH_PROGRAM : undefined,
+  CMD_LOG_FOLDER : undefined,
+  MATH_PROGRAM_COMMAND : undefined,
+  resumeString : undefined,
+  port : undefined,
+  CONTAINERS : undefined,
+};
 let options;
 const staticFolder = path.join(__dirname, "../../../public/public");
 
@@ -63,21 +70,34 @@ const userSpecificPath = function(clientId: string): string {
 };
 
 const disconnectSocket = function(socket): void  {
-  socket.disconnect();
+      try{
+        socket.disconnect();
+      } catch (error) {
+        logExceptOnTest("Failed to disconnect socket: " + error);
+      }
+      };
+
+const disconnectSockets = function(sockets): void  {
+  for (const socketKey in sockets) {
+    if (sockets.hasOwnProperty(socketKey)) {
+      const socket = sockets[socketKey];
+      disconnectSocket(socket);
+    }
+  }
 };
 
 const deleteClientData = function(clientID: string): void {
-  logExceptOnTest("deleting folder " +
+  logClient(clientID, "deleting folder " +
       staticFolder + userSpecificPath(clientID));
   try {
-    console.log("Sending disconnect. " + clientID);
-    disconnectSocket(clients[clientID].socket);
+    logClient(clientID, "Sending disconnect. ");
+    disconnectSockets(clients[clientID].socketArray);
   } catch (error) {
-    console.log("Socket seems already dead: " + error);
+    logClient(clientID, "Socket seems already dead: " + error);
   }
   fs.rmdir(staticFolder + userSpecificPath(clientID), function(error) {
     if (error) {
-      console.error("Error deleting user folder: " + error);
+      logClient(clientID, "Error deleting user folder: " + error);
     }
   });
   delete clients[clientID];
@@ -96,10 +116,8 @@ const emitDataViaSockets = function(sockets, type: SocketEvent, data: string): v
       try {
         socket.emit(SocketEvent[type], data);
       } catch (error) {
-        console.log("Emit error.");
+        logExceptOnTest("Error while executing socket.emit of type " + SocketEvent[type]);
       }
-    } else {
-      console.log("No socketKey");
     }
   }
 };
@@ -126,7 +144,7 @@ const getInstance = function(clientID: string, next) {
   }
 };
 
-export {clients, getInstance, instanceManager};
+export {emitDataViaClientSockets, serverConfig, clients, getInstance, instanceManager, sendDataToClient};
 
 const optLogCmdToFile = function(clientId: string, msg: string) {
   if (serverConfig.CMD_LOG_FOLDER) {
@@ -406,7 +424,7 @@ const listen = function() {
     console.log("Incoming new connection!");
     const clientId: string = getClientIdFromSocket(socket);
     if (clientId === "deadCookie") {
-      console.log("Disconnecting for dead cookie.");
+      logExceptOnTest("Disconnecting for dead cookie.");
       disconnectSocket(socket);
       return;
     }

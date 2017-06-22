@@ -1,8 +1,12 @@
 import chai = require("chai");
 import {Client, Clients} from "../lib/client";
 import {Instance} from "../lib/instance";
-import {clients, getInstance, instanceManager} from "../lib/server";
+import {serverConfig, emitDataViaClientSockets, clients, getInstance, instanceManager, sendDataToClient} from "../lib/server";
+import {SocketEvent} from "../lib/enums";
 const assert = chai.assert;
+
+// Suppressing the server output
+process.env.NODE_ENV = "test";
 
 describe("Server Module:", function() {
 
@@ -12,7 +16,7 @@ describe("Server Module:", function() {
   beforeEach(function() {
   });
 
-  describe("Server", function() {
+  describe("getInstance", function() {
     it("should allow us to call getInstance", function(done) {
       const id: string = "user123";
       clients[id] = new Client();
@@ -52,5 +56,37 @@ describe("Server Module:", function() {
       getInstance(id, function(instance: Instance){});
       assert.equal(clients[id], undefined);
     });
+  });
+
+  describe("sendDataToClient", function(){
+    it("should make a callable function", function(done){
+      const id: string = "user123";
+      clients[id] = new Client();
+      var sender = sendDataToClient(id);
+      sender("Hi.");
+      done();
+    });
+    it("should make a call to the socket.emit function for data of type " + SocketEvent["result"], function(){
+      const id: string = "user123";
+      serverConfig.MATH_PROGRAM = "none";
+      clients[id] = new Client();
+      clients[id].instance = {
+        host: "17",
+        port: "2",
+        username: "3",
+        sshKey: "4",
+      };
+      instanceManager.updateLastActiveTime = function(instance : Instance){
+        assert.equal(instance.host, "17");
+      };
+      clients[id].socketArray["bla"] = {
+        emit : function(event, data){
+          assert.equal(event, SocketEvent["result"]);
+        }
+      }
+      var sender = sendDataToClient(id);
+      sender("Hi.");
+    });
+    // clients[id].socketArray["bla"] = {};
   });
 });

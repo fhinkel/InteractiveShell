@@ -5,7 +5,6 @@ export class Client {
     reconnecting: boolean;
     instance: Instance;
     socketArray: {[socketID: string]: any; };
-    socket: any;
     mathProgramInstance: any;
     //clientId: string;
     constructor() {

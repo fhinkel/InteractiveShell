@@ -13,7 +13,7 @@ require("./startup")({
     "existing variables.\n" +
     "Type 'basering;' to print the currently active ring.\n> ",
   },
-  containerConfig: {
+  hostConfig: {
     containerType: "singular_container",
   },
   startInstance: {

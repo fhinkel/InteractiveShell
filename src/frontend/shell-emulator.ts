@@ -7,7 +7,7 @@
 // * interrupt
 /* eslint-env browser */
 /* eslint "max-len": "off" */
-let keys = {
+const keys = {
     // The keys 37, 38, 39 and 40 are the arrow keys.
   arrowUp: 38,
   arrowDown: 40,
@@ -23,26 +23,26 @@ let keys = {
 };
 
 import {Socket} from "./mathProgram";
-let unicodeBell = "\u0007";
-let setCaretPosition = require("set-caret-position");
-let scrollDown = require("scroll-down");
-let getSelected = require("get-selected-text");
+const unicodeBell = "\u0007";
+const setCaretPosition = require("set-caret-position");
+const scrollDown = require("scroll-down");
+const getSelected = require("get-selected-text");
 let mathProgramOutput = "";
-let cmdHistory: any = []; // History of commands for shell-like arrow navigation
+const cmdHistory: any = []; // History of commands for shell-like arrow navigation
 cmdHistory.index = 0;
 
-let postMessage2 = function(msg: string, socket: Socket) {
+const postMessage2 = function(msg: string, socket: Socket) {
   socket.emit("input", msg);
   return true;
 };
 
-let interrupt = function(socket: Socket) {
+const interrupt = function(socket: Socket) {
   return function() {
     postMessage2(keys.ctrlc, socket);
   };
 };
 
-let sendCallback = function(id: string, socket: Socket) {
+const sendCallback = function(id: string, socket: Socket) {
   return function() {
     const str = getSelected(id);
     postMessage2(str, socket);
@@ -50,7 +50,7 @@ let sendCallback = function(id: string, socket: Socket) {
   };
 };
 
-let sendOnEnterCallback = function(id: string, socket: Socket, shell) {
+const sendOnEnterCallback = function(id: string, socket: Socket, shell) {
   return function(e) {
     if (e.which === 13 && e.shiftKey) {
       e.preventDefault();
@@ -63,7 +63,7 @@ let sendOnEnterCallback = function(id: string, socket: Socket, shell) {
   };
 };
 
-function stripInputPrompt(lastLine:string) {
+function stripInputPrompt(lastLine: string) {
   return lastLine.replace(/^i\d+\s*:/, "");
 }
 
@@ -76,17 +76,17 @@ function stripPrompt(lastLine: string) {
   return result.replace(/^\. /, "");
 }
 
-let getCurrentCommand = function(shell) : string {
+const getCurrentCommand = function(shell): string {
   const completeText = shell.val().split("\n");
-  let lastLine : string = completeText[completeText.length - 2];
+  let lastLine: string = completeText[completeText.length - 2];
     // Need to set prompt symbol somewhere else.
   lastLine = stripInputPrompt(lastLine);
   lastLine = stripSpacesAtBeginningOfLine(lastLine);
   lastLine = stripPrompt(lastLine);
   return lastLine;
 };
- 
-let upDownArrowKeyHandling = function(shell, e: KeyboardEvent) {
+
+const upDownArrowKeyHandling = function(shell, e: KeyboardEvent) {
   e.preventDefault();
   if (cmdHistory.length === 0) {
         // Maybe we did nothing so far.
@@ -109,7 +109,7 @@ let upDownArrowKeyHandling = function(shell, e: KeyboardEvent) {
   scrollDown(shell);
 };
 
-let backspace = function(shell) {
+const backspace = function(shell) {
   const completeText = shell.val();
   const before = completeText.substring(0, mathProgramOutput.length - 1);
   const after = completeText.substring(mathProgramOutput.length, completeText.length);
@@ -224,7 +224,7 @@ module.exports = function() {
         backspace(shell);
         return;
       }
-      let msg : string = msgDirty.replace(/\u0007/, "");
+      let msg: string = msgDirty.replace(/\u0007/, "");
       msg = msg.replace(/\r\n/g, "\n");
       msg = msg.replace(/\r/g, "\n");
       const completeText = shell.val();

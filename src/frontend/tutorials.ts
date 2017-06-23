@@ -9,10 +9,10 @@ let tutorialNr = 0;
 let tutorials = [];
 let firstLoadFlag = true; // true until we show tutorial for the first time.
 // Needed because we need to load lesson 0
-let accordion = require("./accordion")();
+const accordion = require("./accordion")();
 import * as $ from "jquery";
 
-let loadLesson = function(tutorialid, lessonid) {
+const loadLesson = function(tutorialid, lessonid) {
   if (tutorialid >= 0 && tutorialid < tutorials.length) {
     tutorialNr = tutorialid;
   }
@@ -27,7 +27,7 @@ let loadLesson = function(tutorialid, lessonid) {
   MathJax.Hub.Queue(["Typeset", MathJax.Hub, "#lesson"]);
 };
 
-let loadLessonIfChanged = function(tutorialid, lessonid) {
+const loadLessonIfChanged = function(tutorialid, lessonid) {
   const changedLesson = (tutorialNr !== tutorialid || lessonNr !==
   lessonid || firstLoadFlag);
   firstLoadFlag = false;
@@ -36,7 +36,7 @@ let loadLessonIfChanged = function(tutorialid, lessonid) {
   }
 };
 
-let showLesson = function(e) {
+const showLesson = function(e) {
   let lessonId;
   let lessonIdNr;
   console.log("Showing lesson. " + $(this).toString());
@@ -54,12 +54,12 @@ let showLesson = function(e) {
   return false;
 };
 
-let switchLesson = function(incr) {
+const switchLesson = function(incr) {
   // console.log("Current lessonNr " + lessonNr);
   loadLessonIfChanged(tutorialNr, lessonNr + incr);
 };
 
-let markdownToTutorial = function(theMD) {
+const markdownToTutorial = function(theMD) {
     // input: is a simple markdown text, very little is used or recognized:
     // lines beginning with "#": title (and author) of the tutorial
     //   beginning with "##": section name (or "lesson" name)
@@ -70,7 +70,7 @@ let markdownToTutorial = function(theMD) {
     return enrichTutorialWithHtml(theHtml);
 };
 
-let enrichTutorialWithHtml = function(theHtml) {
+const enrichTutorialWithHtml = function(theHtml) {
     let result;
     const theLessons = [];
     const tutorial = $("<div>").html(theHtml);
@@ -88,7 +88,7 @@ let enrichTutorialWithHtml = function(theHtml) {
     return result;
 };
 
-let getTutorial = function(url) {
+const getTutorial = function(url) {
     return fetch(url, {
         credentials: "same-origin",
     }).then(function(response) {
@@ -102,7 +102,7 @@ let getTutorial = function(url) {
     });
 };
 
-let makeTutorialsList = function(tutorialNames) {
+const makeTutorialsList = function(tutorialNames) {
   return Promise.all(
       tutorialNames.map(getTutorial),
   ).then(function(rawTutorials) {
@@ -117,7 +117,7 @@ let makeTutorialsList = function(tutorialNames) {
   });
 };
 
-let markdownToHtml = function(markdownText) {
+const markdownToHtml = function(markdownText) {
     const lines = markdownText.split("\n");
     const output = [];
     let inSection = false; // only false until the first ##.  After that, it is true.
@@ -186,7 +186,7 @@ let markdownToHtml = function(markdownText) {
     return txt;
 };
 
-let uploadTutorial = function() {
+const uploadTutorial = function() {
     const files = this.files;
     const file = files[0];
     console.log("file name: " + file);

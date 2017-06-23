@@ -1,7 +1,7 @@
 /* global fetch */
 import * as $ from "jquery";
 
-let cssClasses = {
+const cssClasses = {
   titleSymbolClass: "material-icons titleSymbol",
   titleSymbolActive: "expand_more",
   titleSymbolInactive: "expand_less",
@@ -24,12 +24,12 @@ $.fn.extend({
   },
 });
 
-let doUptutorialClick = function() {
+const doUptutorialClick = function() {
   $("#uptutorial").val("");
   $("#uptutorial").click();
 };
 
-let scrollDownUntilTutorialVisible = function() {
+const scrollDownUntilTutorialVisible = function() {
   const y = $(this).position().top;
   const height = parseInt($("#home").css("height"), 10);
   const totalHeight = parseInt($(this).css("height"), 10) + 50;
@@ -41,7 +41,7 @@ let scrollDownUntilTutorialVisible = function() {
   }
 };
 
-let appendTutorialToAccordion = function(tmptitle, lessons, index) {
+const appendTutorialToAccordion = function(tmptitle, lessons, index) {
   const title = tmptitle.clone();
   title.wrapInner("<a href='#' class='" + cssClasses.titleHref +
           "' tutorialid=" + index + "/>")
@@ -87,7 +87,7 @@ let appendTutorialToAccordion = function(tmptitle, lessons, index) {
   $("#loadTutorialMenu").before(div);
 };
 
-let appendLoadTutorialTitleToAccordion = function() {
+const appendLoadTutorialTitleToAccordion = function() {
   const title = $("<h3>");
   title.prop("id", "loadTutorialMenu");
   title.addClass(
@@ -95,7 +95,7 @@ let appendLoadTutorialTitleToAccordion = function() {
   $("#accordion").append(title);
 };
 
-let appendInstructionsToAccordion = function() {
+const appendInstructionsToAccordion = function() {
   const instructions = $("<div>");
 
   fetch("uploadTutorialHelp.txt", {
@@ -113,7 +113,7 @@ let appendInstructionsToAccordion = function() {
   $("#accordion").append(instructions);
 };
 
-let addExpandLoadTutorialInstructionsButton = function() {
+const addExpandLoadTutorialInstructionsButton = function() {
   const expandButton = $("<i>");
   expandButton.addClass(cssClasses.titleSymbolClass);
   expandButton.text(cssClasses.titleSymbolActive);
@@ -129,7 +129,7 @@ let addExpandLoadTutorialInstructionsButton = function() {
   $("#loadTutorialMenu").append(expandButton);
 };
 
-let addLoadTutorialButton = function() {
+const addLoadTutorialButton = function() {
   const loadTutorialButton = $("<a>");
   loadTutorialButton.prop("id", "loadTutorialButton");
   loadTutorialButton.html("Load Your Own Tutorial");
@@ -139,14 +139,14 @@ let addLoadTutorialButton = function() {
   $("#loadTutorialButton").click(doUptutorialClick);
 };
 
-let appendLoadTutorialMenuToAccordion = function() {
+const appendLoadTutorialMenuToAccordion = function() {
   appendLoadTutorialTitleToAccordion();
   appendInstructionsToAccordion();
   addExpandLoadTutorialInstructionsButton();
   addLoadTutorialButton();
 };
 
-let makeAccordion = function(tutorials) {
+const makeAccordion = function(tutorials) {
   $("#home").append("<div id=\"accordion\"></div>");
   appendLoadTutorialMenuToAccordion();
   for (let i = 0; i < tutorials.length; i++) {
@@ -156,7 +156,7 @@ let makeAccordion = function(tutorials) {
   }
 };
 
-let removeTutorial = function(title, div, button) {
+const removeTutorial = function(title, div, button) {
   return function() {
     button.remove();
     div.remove();
@@ -164,7 +164,7 @@ let removeTutorial = function(title, div, button) {
   };
 };
 
-let insertDeleteButtonAtLastTutorial = function(tutorialMenu) {
+const insertDeleteButtonAtLastTutorial = function(tutorialMenu) {
   const lastTitle = tutorialMenu.prev().prev();
   const lastDiv = tutorialMenu.prev();
   const deleteButton = $("<i>");

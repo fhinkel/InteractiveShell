@@ -3,18 +3,18 @@
 
 declare var mathProgramName: string;
 declare var DefaultText: string;
-import io = require('socket.io-client');
+import io = require("socket.io-client");
 
 type Socket =  SocketIOClient.Socket & {oldEmit?: any};
 
 export {Socket};
 let socket: Socket;
 let serverDisconnect = false;
-let dialogPolyfill = require("dialog-polyfill");
-let shell = require("./shell-emulator")();
+const dialogPolyfill = require("dialog-polyfill");
+const shell = require("./shell-emulator")();
 import * as $ from "jquery";
 
-let saveInteractions = function() {
+const saveInteractions = function() {
   const input = $("#M2In");
   const output = $("#M2Out");
   const dialog: any = document.querySelector("#saveDialog");
@@ -34,7 +34,7 @@ let saveInteractions = function() {
   dialog.showModal();
 };
 
-let attachMinMaxBtnActions = function() {
+const attachMinMaxBtnActions = function() {
   const maximize = document.getElementById("maximizeOutput");
   const downsize = document.getElementById("downsizeOutput");
   const zoomBtns = document.getElementById("M2OutZoomBtns");
@@ -60,7 +60,7 @@ let attachMinMaxBtnActions = function() {
   });
 };
 
-let attachTutorialNavBtnActions = function(switchLesson) {
+const attachTutorialNavBtnActions = function(switchLesson) {
   $("#previousBtn").click(function() {
     switchLesson(-1);
   });
@@ -70,19 +70,19 @@ let attachTutorialNavBtnActions = function(switchLesson) {
   });
 };
 
-let emitReset = function() {
+const emitReset = function() {
   $("#M2Out").trigger("reset");
   socket.emit("reset");
 };
 
-let attachCtrlBtnActions = function() {
+const attachCtrlBtnActions = function() {
   $("#sendBtn").click(shell.sendCallback("M2In", socket));
   $("#resetBtn").click(emitReset);
   $("#interruptBtn").click(shell.interrupt(socket));
   $("#saveBtn").click(saveInteractions);
 };
 
-let showUploadSuccessDialog = function(event) {
+const showUploadSuccessDialog = function(event) {
   const dialog: any = document.getElementById("uploadSuccessDialog");
   if (!dialog.showModal) {
     dialogPolyfill.registerDialog(dialog);
@@ -99,7 +99,7 @@ let showUploadSuccessDialog = function(event) {
   dialog.showModal();
 };
 
-let showImageDialog = function(imageUrl) {
+const showImageDialog = function(imageUrl) {
   if (imageUrl) {
     const dialog: any = document.getElementById("showImageDialog");
     if (!dialog.showModal) {
@@ -122,7 +122,7 @@ let showImageDialog = function(imageUrl) {
   }
 };
 
-let attachCloseDialogBtns = function() {
+const attachCloseDialogBtns = function() {
   document.getElementById("saveDialogClose").addEventListener("click",
       function() {
           (document.getElementById("saveDialog") as any).close();
@@ -137,7 +137,7 @@ let attachCloseDialogBtns = function() {
       });
 };
 
-let socketOnDisconnect = function(msg) {
+const socketOnDisconnect = function(msg) {
   console.log("We got disconnected. " + msg);
   $("#M2Out").trigger("onmessage", " Sorry, your session was disconnected" +
       " by the server.\n\nPlease click the reset button to reconnect.\n\n");
@@ -147,7 +147,7 @@ let socketOnDisconnect = function(msg) {
   // location.reload();
 };
 
-let wrapEmitForDisconnect = function(event, msg) {
+const wrapEmitForDisconnect = function(event, msg) {
   if (serverDisconnect) {
     const events = ["reset", "input"];
     console.log("We are disconnected.");
@@ -162,13 +162,13 @@ let wrapEmitForDisconnect = function(event, msg) {
   return socket;
 };
 
-let displayUrlInNewWindow = function(url) {
+const displayUrlInNewWindow = function(url) {
   if (url) {
     window.open(url, "M2 Help");
   }
 };
 
-let codeClickAction = function() {
+const codeClickAction = function() {
   $(this).addClass("redWithShortTransition");
   let code = $(this).text();
   code += "\n";
@@ -177,7 +177,7 @@ let codeClickAction = function() {
   shell.postMessage2(code, socket);
 };
 
-let openTabCloseDrawer = function(event) {
+const openTabCloseDrawer = function(event) {
   const panelId = $(this).attr("href");
   // show tab panel
   document.getElementById(panelId).click();
@@ -187,35 +187,35 @@ let openTabCloseDrawer = function(event) {
   event.preventDefault();
 };
 
-let openAboutTab = function(event) {
+const openAboutTab = function(event) {
   // show tab panel
   document.getElementById("helpTitle").click();
   // do not follow link
   event.preventDefault();
 };
 
-let socketOnMessage = function(msg) {
+const socketOnMessage = function(msg) {
   if (msg !== "") {
     $("#M2Out").trigger("onmessage", msg);
   }
 };
 
-var socketOnCookie = function(cookie) {
+const socketOnCookie = function(cookie) {
   document.cookie = cookie;
-}
+};
 
-var socketOnError = function(type) {
+const socketOnError = function(type) {
   return function(error) {
     console.log("We got an " + type + " error. " + error);
     serverDisconnect = true;
   };
 };
 
-let fadeBackToOriginalColor = function() {
+const fadeBackToOriginalColor = function() {
   $(this).removeClass("redWithShortTransition");
 };
 
-let init = function() {
+const init = function() {
   const zoom = require("./zooming");
   zoom.attachZoomButtons("M2Out", "M2OutZoomIn", "M2OutResetZoom",
       "M2OutZoomOut");

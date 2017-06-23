@@ -126,16 +126,20 @@ const getInstance = function(client: Client, next) {
   if (client.instance) {
     next(client.instance);
   } else {
-    instanceManager.getNewInstance(function(err, instance: Instance) {
-      if (err) {
-        emitDataViaClientSockets(client, SocketEvent.result,
-          "Sorry, there was an error. Please come back later.\n" +
-            err + "\n\n");
-        deleteClientData(client);
-      } else {
-        next(instance);
-      }
-    });
+    try{
+      instanceManager.getNewInstance(function(err, instance: Instance) {
+        if (err) {
+          emitDataViaClientSockets(client, SocketEvent.result,
+            "Sorry, there was an error. Please come back later.\n" +
+              err + "\n\n");
+          deleteClientData(client);
+        } else {
+          next(instance);
+        }
+      });
+    } catch(error){
+      logClient(client.id, "Could not get new instance. Should not drop in here.");
+    }
   }
 };
 
@@ -360,7 +364,7 @@ const checkState = function(client: Client) {
     if (client.saneState) {
       resolve();
     } else {
-      logClient(client.id, " not accepting events.");
+      logClient(client.id, "Not accepting events.");
       reject();
     }
   });

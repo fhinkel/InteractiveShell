@@ -178,6 +178,7 @@ const spawnMathProgramInSecureContainer = function(client: Client) {
       } catch (deleteError) {
         logClient(client.id, "Error when deleting instance.");
       }
+      // Make sure the sanitizer runs.
       client.saneState = true;
       sanitizeClient(client);
     });
@@ -327,7 +328,6 @@ const sanitizeClient = function(client: Client) {
   if (!client.channel ||
       !client.channel.writable ||
       !client.instance) {
-    logClient(client.id, "Starting new mathProgram instance.");
     spawnMathProgramInSecureContainer(client);
   } else {
     logClient(client.id, "Has mathProgram instance.");

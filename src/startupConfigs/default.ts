@@ -11,10 +11,6 @@ const configuration = function(inputOptions, next) {
       resumeString: "",
       port: "8002",
     },
-    containerConfig: {
-      sshdCmd: "/usr/sbin/sshd -D",
-      containerType: "m2container",
-    },
     startInstance: {
       host: "127.0.0.1",
       username: "m2user",

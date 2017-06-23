@@ -3,9 +3,9 @@
 
 declare var mathProgramName: string;
 declare var DefaultText: string;
-declare var io: any;
+import io = require('socket.io-client');
 
-let socket = null;
+let socket: SocketIOClient.Socket & {oldEmit?: any};
 let serverDisconnect = false;
 let dialogPolyfill = require("dialog-polyfill");
 let shell = require("./shell-emulator")();
@@ -149,13 +149,14 @@ let wrapEmitForDisconnect = function(event, msg) {
     const events = ["reset", "input"];
     console.log("We are disconnected.");
     if (events.indexOf(event) !== -1) {
-      socket.connect({reconnectionAttempts: 5});
+      socket.connect();
       serverDisconnect = false;
       socket.oldEmit(event, msg);
     }
   } else {
     socket.oldEmit(event, msg);
   }
+  return socket;
 };
 
 let displayUrlInNewWindow = function(url) {
@@ -217,7 +218,6 @@ let init = function() {
       "M2OutZoomOut");
 
   socket = io();
-  console.log("Connection attempts: " + socket.reconnectionAttempts);
   socket.on("reconnect_failed", socketOnError("reconnect_fail"));
   socket.on("reconnect_error", socketOnError("reconnect_error"));
   socket.on("connect_error", socketOnError("connect_error"));

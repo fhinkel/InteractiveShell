@@ -396,20 +396,20 @@ const socketResetAction = function(client: Client) {
   };
 };
 
-const setCookieOnSocket = function(socket):string{
+const setCookieOnSocket = function(socket): string{
   const clientID = clientIdHelper(clients, logExceptOnTest).getNewId();
   const sessionCookie = Cookie.serialize(options.cookieName, clientID);
   socket.emit("cookie", sessionCookie);
   return clientID;
-}
+};
 
 const listen = function() {
   const cookieParser = require("socket.io-cookie");
   io.use(cookieParser);
   io.on("connection", function(socket: SocketIO.Socket) {
     logExceptOnTest("Incoming new connection!");
-    var clientId: string = getClientIdFromSocket(socket);
-    if(typeof clientId == 'undefined'){
+    let clientId: string = getClientIdFromSocket(socket);
+    if (typeof clientId == "undefined"){
       clientId = setCookieOnSocket(socket);
     }
     logClient(clientId, "Assigned clientID");
@@ -452,7 +452,7 @@ const authorizeIfNecessary = function(authOption: AuthOption) {
   }
   return function(socket: SocketIO.Socket) {
     const cookies = socket.request.headers.cookie;
-    if(typeof cookies == 'undefined'){
+    if (typeof cookies == "undefined"){
       // Sometimes there are no cookies
       return undefined;
     } else {

@@ -1,22 +1,19 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "module": "commonjs",
     "outDir": "src/dist",
     "sourceMap": true, 
-      "lib": ["es7", "dom"]
+    "lib": ["es7"],
+    "types" : ["node", "express", "mocha", "socket.io", "ssh2"]
   },
-  "files": [
-    "./node_modules/@types/mocha/index.d.ts",
-    "./node_modules/@types/node/index.d.ts"
-  ],
   "include": [
     "src/index.ts",
     "src/lib/*.ts",
-    "src/startupConfigs/*.ts",
-    "src/frontend/*.ts"
+    "src/startupConfigs/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "src/frontend/*.ts"
   ]
 }

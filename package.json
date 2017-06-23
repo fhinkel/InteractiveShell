@@ -20,6 +20,7 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
+    "@types/express": "^4.0.36",
     "@types/jquery": "3.2.4",
     "@types/mathjax": "0.0.31",
     "@types/mocha": "2.2.41",
@@ -64,17 +65,18 @@
     "winston": "0.8.3"
   },
   "scripts": {
-    "build": "tsc && webpack",
+    "tsc": "tsc && tsc -p src/frontend",
+    "build": "npm run tsc && webpack",
     "start": "node src/dist/index.js",
-    "debug-start": "tsc && webpack --config webpack.debug-config.js && node src/dist/index.js",
-    "basic": "build && node src/dist/index.js M2 docker",
-    "local": "build && node src/dist/index.js M2 local",
-    "twoMachines": "build && node src/dist/index.js M2 ssh",
-    "twoMachines_forever": "build && ./node_modules/forever/bin/forever start -l /home/ubuntu/webm2.logs/forever.log -o /home/ubuntu/webm2.logs/out.log -e /home/ubuntu/webm2.logs/err.log --append src/dist/startupConfigs/Macaulay2SshDocker.js",
-    "start_singular": "build && node src/dist/index.js singular docker",
-    "basic_singular": "build && node src/dist/index.js singular local",
-    "ssh_singular": "build && node src/dist/index.js singular ssh",
-    "forever_singular": "build && ./node_modules/forever/bin/forever start -l /home/user/logs/forever.log -o /home/user/logs/out.log -e /home/user/logs/err.log --append src/startupConfigs/SingularSshDocker.js",
+    "debug-start": "npm run tsc && webpack --config webpack.debug-config.js && npm start",
+    "basic": "npm run build && npm start M2 docker",
+    "local": "npm run build && npm start M2 local",
+    "twoMachines": "npm run build && npm start M2 ssh",
+    "twoMachines_forever": "npm run build && forever start -l /home/ubuntu/webm2.logs/forever.log -o /home/ubuntu/webm2.logs/out.log -e /home/ubuntu/webm2.logs/err.log --append src/dist/index.js M2 ssh",
+    "start_singular": "npm run build && npm start singular docker",
+    "basic_singular": "npm run build && npm start singular local",
+    "ssh_singular": "npm run build && npm start singular ssh",
+    "forever_singular": "npm run build && forever start -l /home/user/logs/forever.log -o /home/user/logs/out.log -e /home/user/logs/err.log --append src/dist/index.js singular ssh",
     "stop": "kill `ps ax | grep Server | grep -v monitor | grep node | awk '{print $1}'`",
     "test": "mocha -r ts-node/register src/tests/**/*.ts --reporter spec --timeout 6000",
     "lint": "tslint -c tslint.json src/lib/*.ts src/tests/*.ts src/startupConfigs/*.ts src/frontend/*.ts --fix && eslint ./public-source/ ./public/public-common/mathJaxConfig.js --fix && tslint "

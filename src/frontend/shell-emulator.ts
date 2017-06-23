@@ -31,18 +31,18 @@ let mathProgramOutput = "";
 let cmdHistory: any = []; // History of commands for shell-like arrow navigation
 cmdHistory.index = 0;
 
-let postMessage2 = function(msg, socket: Socket) {
+let postMessage2 = function(msg: string, socket: Socket) {
   socket.emit("input", msg);
   return true;
 };
 
-let interrupt = function(socket) {
+let interrupt = function(socket: Socket) {
   return function() {
     postMessage2(keys.ctrlc, socket);
   };
 };
 
-let sendCallback = function(id, socket: Socket) {
+let sendCallback = function(id: string, socket: Socket) {
   return function() {
     const str = getSelected(id);
     postMessage2(str, socket);
@@ -50,7 +50,7 @@ let sendCallback = function(id, socket: Socket) {
   };
 };
 
-let sendOnEnterCallback = function(id, socket: Socket, shell) {
+let sendOnEnterCallback = function(id: string, socket: Socket, shell) {
   return function(e) {
     if (e.which === 13 && e.shiftKey) {
       e.preventDefault();
@@ -63,30 +63,30 @@ let sendOnEnterCallback = function(id, socket: Socket, shell) {
   };
 };
 
-function stripInputPrompt(lastLine) {
+function stripInputPrompt(lastLine:string) {
   return lastLine.replace(/^i\d+\s*:/, "");
 }
 
-function stripSpacesAtBeginningOfLine(lastLine) {
+function stripSpacesAtBeginningOfLine(lastLine: string) {
   return lastLine.replace(/^\s*/, "");
 }
 
-function stripPrompt(lastLine) {
+function stripPrompt(lastLine: string) {
   const result = lastLine.replace(/^> /, "");
   return result.replace(/^\. /, "");
 }
 
-let getCurrentCommand = function(shell) {
+let getCurrentCommand = function(shell) : string {
   const completeText = shell.val().split("\n");
-  let lastLine = completeText[completeText.length - 2];
+  let lastLine : string = completeText[completeText.length - 2];
     // Need to set prompt symbol somewhere else.
   lastLine = stripInputPrompt(lastLine);
   lastLine = stripSpacesAtBeginningOfLine(lastLine);
   lastLine = stripPrompt(lastLine);
   return lastLine;
 };
-
-let upDownArrowKeyHandling = function(shell, e) {
+ 
+let upDownArrowKeyHandling = function(shell, e: KeyboardEvent) {
   e.preventDefault();
   if (cmdHistory.length === 0) {
         // Maybe we did nothing so far.
@@ -119,7 +119,7 @@ let backspace = function(shell) {
 };
 
 module.exports = function() {
-  const create = function(shell, historyArea, socket) {
+  const create = function(shell, historyArea, socket: Socket) {
     const history = historyArea;
     history.keypress(sendOnEnterCallback("M2In", socket, shell));
 
@@ -169,7 +169,7 @@ module.exports = function() {
     });
 
     // If something is entered, change to end of textarea, if at wrong position.
-    shell.keydown(function(e) {
+    shell.keydown(function(e: KeyboardEvent) {
       if (e.keyCode === keys.enter) {
         setCaretPosition(shell.attr("id"), shell.val().length);
       }
@@ -224,7 +224,7 @@ module.exports = function() {
         backspace(shell);
         return;
       }
-      let msg = msgDirty.replace(/\u0007/, "");
+      let msg : string = msgDirty.replace(/\u0007/, "");
       msg = msg.replace(/\r\n/g, "\n");
       msg = msg.replace(/\r/g, "\n");
       const completeText = shell.val();

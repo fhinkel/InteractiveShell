@@ -20,10 +20,10 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
+    "@types/jquery": "3.2.4",
     "@types/mathjax": "0.0.31",
     "@types/mocha": "2.2.41",
     "@types/node": "8.0.0",
-      "@types/jquery": "3.2.4",
     "@types/socket.io": "1.4.29",
     "@types/socket.io-client": "1.4.29",
     "@types/ssh2": "0.5.35",
@@ -60,7 +60,7 @@
     "tslint": "5.4.3",
     "typescript": "2.3.4",
     "typescript-eslint-parser": "3.0.0",
-    "webpack": "^3.0.0",
+    "webpack": "3.0.0",
     "winston": "0.8.3"
   },
   "scripts": {

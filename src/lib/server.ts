@@ -404,8 +404,6 @@ const setCookieOnSocket = function(socket): string{
 };
 
 const listen = function() {
-  const cookieParser = require("socket.io-cookie");
-  io.use(cookieParser);
   io.on("connection", function(socket: SocketIO.Socket) {
     logExceptOnTest("Incoming new connection!");
     let clientId: string = getClientIdFromSocket(socket);
@@ -451,11 +449,12 @@ const authorizeIfNecessary = function(authOption: AuthOption) {
     };
   }
   return function(socket: SocketIO.Socket) {
-    const cookies = socket.request.headers.cookie;
-    if (typeof cookies == "undefined"){
+    const rawCookies = socket.request.headers.cookie;
+    if (typeof rawCookies == "undefined"){
       // Sometimes there are no cookies
       return undefined;
     } else {
+      const cookies = Cookie.parse(rawCookies);
       return cookies[options.cookieName];
     }
   };

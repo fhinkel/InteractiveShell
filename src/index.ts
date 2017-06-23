@@ -40,7 +40,7 @@ if (mathProgram === "Macaulay2" || mathProgram === "M2") {
   } else {
     console.log("There is no mode " + mode);
   }
-} else if (mathProgram === "Singular") {
+} else if (mathProgram === "Singular" || mathProgram === "singular") {
   if (mode === "local") {
     require(path + "SingularLocalServer");
   } else if (mode === "docker") {

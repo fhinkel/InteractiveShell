@@ -23,7 +23,7 @@
     "D": "0.0.1",
     "async": "0.9.0",
     "chai": "2.2.0",
-    "cookies": "0.6.1",
+    "cookie": "0.3.1",
     "create-download-link": "1.1.0",
     "dialog-polyfill": "0.4.3",
     "exports-loader": "0.6.3",
@@ -40,7 +40,6 @@
     "set-caret-position": "3.0.0",
     "socket.io": "2.0.3",
     "socket.io-client": "2.0.3",
-    "socket.io-cookie": "0.0.1",
     "socketio-file-upload": "0.4.6",
     "ssh2": "0.5.5",
     "winston": "0.8.3"

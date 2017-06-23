@@ -136,7 +136,7 @@ const getInstance = function(client: Client, next) {
           next(instance);
         }
       });
-    } catch(error){
+    } catch (error){
       logClient(client.id, "Could not get new instance. Should not drop in here.");
     }
   }
@@ -175,9 +175,10 @@ const spawnMathProgramInSecureContainer = function(client: Client) {
         "; Retrying with new instance.");
       try{
         clients[client.id].instance = undefined;
-      } catch(deleteError) {
+      } catch (deleteError) {
         logClient(client.id, "Error when deleting instance.");
       }
+      client.saneState = true;
       sanitizeClient(client);
     });
     connection.on("ready", function() {
@@ -205,7 +206,7 @@ const spawnMathProgramInSecureContainer = function(client: Client) {
 const updateLastActiveTime = function(client: Client) {
   try {
     instanceManager.updateLastActiveTime(client.instance);
-  } catch(noInstanceError){
+  } catch (noInstanceError){
     logClient(client.id, "Found no instance.");
     sanitizeClient(client);
   }
@@ -255,14 +256,14 @@ const attachListenersToOutput = function(client: Client) {
   }
 };
 
-const attachChannelToClient = function(client:Client, channel:ssh2.ClientChannel){
+const attachChannelToClient = function(client: Client, channel: ssh2.ClientChannel){
   channel.setEncoding("utf8");
   client.channel = channel;
   attachListenersToOutput(client);
   setTimeout(function() {
     client.saneState = true;
   }, 2000); // Always need a little time before start is done.
-}
+};
 
 const killMathProgram = function(channel: ssh2.ClientChannel, clientID: string) {
   logClient(clientID, "killMathProgramClient.");
@@ -318,7 +319,7 @@ const clientExistenceCheck = function(clientId: string): Client {
 };
 
 const sanitizeClient = function(client: Client) {
-  if(!client.saneState){
+  if (!client.saneState){
     logClient(client.id, "Is already being sanitized.");
   }
   client.saneState = false;

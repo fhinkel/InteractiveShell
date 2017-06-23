@@ -324,7 +324,8 @@ const sanitizeClient = function(client: Client) {
   client.saneState = false;
 
   if (!client.channel ||
-      !client.channel.writable) {
+      !client.channel.writable ||
+      !client.instance) {
     logClient(client.id, "Starting new mathProgram instance.");
     spawnMathProgramInSecureContainer(client);
   } else {

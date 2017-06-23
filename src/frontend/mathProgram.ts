@@ -196,7 +196,11 @@ let socketOnMessage = function(msg) {
   }
 };
 
-let socketOnError = function(type) {
+var socketOnCookie = function(cookie) {
+  document.cookie = cookie;
+}
+
+var socketOnError = function(type) {
   return function(error) {
     console.log("We got an " + type + " error. " + error);
     serverDisconnect = true;
@@ -219,6 +223,7 @@ let init = function() {
   socket.on("connect_error", socketOnError("connect_error"));
   socket.on("result", socketOnMessage);
   socket.on("disconnect", socketOnDisconnect);
+  socket.on("cookie", socketOnCookie);
   socket.oldEmit = socket.emit;
   socket.emit = wrapEmitForDisconnect;
   socket.on("image", showImageDialog);

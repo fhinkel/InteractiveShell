@@ -17,7 +17,7 @@ import express = require("express");
 const app = express();
 const http = require("http").createServer(app);
 import fs = require("fs");
-import Cookies = require("cookies");
+import Cookie = require("cookie");
 const io: SocketIO.Server = require("socket.io")(http);
 import ssh2 = require("ssh2");
 import SocketIOFileUpload = require("socketio-file-upload");
@@ -102,12 +102,6 @@ const deleteClientData = function(client: Client): void {
     }
   });
   delete clients[client.id];
-};
-
-const setCookie = function(cookies, clientID: string): void {
-  cookies.set(options.cookieName, clientID, {
-    httpOnly: false,
-  });
 };
 
 const emitDataViaSockets = function(sockets, type: SocketEvent, data: string): void {
@@ -268,23 +262,6 @@ const killMathProgram = function(channel: ssh2.ClientChannel, clientID: string) 
   channel.close();
 };
 
-const checkCookie = function(request, response, next) {
-  const cookies = new Cookies(request, response);
-  let clientID = cookies.get(options.cookieName);
-  if (!clientID) {
-    logExceptOnTest("New client without a cookie set came along");
-    logExceptOnTest("Set new cookie!");
-    clientID = clientIdHelper(clients, logExceptOnTest).getNewId();
-  }
-  setCookie(cookies, clientID);
-
-  if (!clients[clientID]) {
-    clients[clientID] = new Client(clientID);
-    totalUsers += 1;
-  }
-  next();
-};
-
 const unhandled = function(request, response) {
   logExceptOnTest("Request for something we don't serve: " + request.url);
   response.writeHead(404, "Request for something we don't serve.");
@@ -314,7 +291,6 @@ const initializeServer = function() {
   app.use(favicon(staticFolder + "-" +
       serverConfig.MATH_PROGRAM + "/favicon.ico"));
   app.use(SocketIOFileUpload.router);
-  app.use(checkCookie);
   app.use(serveStatic(staticFolder + "-" + serverConfig.MATH_PROGRAM));
   app.use(serveStatic(staticFolder + "-common"));
   app.use(expressWinston.logger(loggerSettings));
@@ -328,6 +304,8 @@ const clientExistenceCheck = function(clientId: string): Client {
   if (!clients[clientId]) {
     clients[clientId] = new Client(clientId);
     totalUsers += 1;
+  } else {
+    clients[clientId].reconnecting = true;
   }
   return clients[clientId];
 };
@@ -342,12 +320,12 @@ const clientSanityCheck = function(client: Client) {
 
   if (!client.channel ||
       !client.channel.writable) {
-    console.log("Starting new mathProgram instance.");
+    logClient(client.id, "Starting new mathProgram instance.");
     mathProgramStart(client, function() {
       client.saneState = true;
     });
   } else {
-    console.log("Has mathProgram instance.");
+    logClient(client.id, "Has mathProgram instance.");
     if (client.reconnecting) {
       emitDataViaClientSockets(client,
          SocketEvent.result,
@@ -418,19 +396,27 @@ const socketResetAction = function(client: Client) {
   };
 };
 
+const setCookieOnSocket = function(socket):string{
+  const clientID = clientIdHelper(clients, logExceptOnTest).getNewId();
+  const sessionCookie = Cookie.serialize(options.cookieName, clientID);
+  socket.emit("cookie", sessionCookie);
+  return clientID;
+}
+
 const listen = function() {
   const cookieParser = require("socket.io-cookie");
   io.use(cookieParser);
   io.on("connection", function(socket: SocketIO.Socket) {
-    console.log("Incoming new connection!");
-    const clientId: string = getClientIdFromSocket(socket);
+    logExceptOnTest("Incoming new connection!");
+    var clientId: string = getClientIdFromSocket(socket);
+    if(typeof clientId == 'undefined'){
+      clientId = setCookieOnSocket(socket);
+    }
+    logClient(clientId, "Assigned clientID");
     if (clientId === "deadCookie") {
       logExceptOnTest("Disconnecting for dead cookie.");
       disconnectSocket(socket);
       return;
-    }
-    if (clients[clientId]) {
-      clients[clientId].reconnecting = true;
     }
     const client = clientExistenceCheck(clientId);
     clientSanityCheck(client);
@@ -444,7 +430,7 @@ const listen = function() {
   });
 
   const listener = http.listen(serverConfig.port);
-  console.log("Server running on " + listener.address().port);
+  logExceptOnTest("Server running on " + listener.address().port);
   return listener;
 };
 
@@ -466,7 +452,12 @@ const authorizeIfNecessary = function(authOption: AuthOption) {
   }
   return function(socket: SocketIO.Socket) {
     const cookies = socket.request.headers.cookie;
-    return cookies[options.cookieName];
+    if(typeof cookies == 'undefined'){
+      // Sometimes there are no cookies
+      return undefined;
+    } else {
+      return cookies[options.cookieName];
+    }
   };
 };
 

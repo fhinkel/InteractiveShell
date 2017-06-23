@@ -171,11 +171,8 @@ const displayUrlInNewWindow = function(url) {
 
 const codeClickAction = function() {
   $(this).addClass("redWithShortTransition");
-  let code = $(this).text();
-  code += "\n";
-  $("#M2In").val($("#M2In").val() + code);
-  require("scroll-down")($("#M2In"));
-  shell.postMessage2(code, socket);
+  let code = $(this).text() + "\n";
+  $("#M2Out").trigger("postMessage", code);
 };
 
 const openTabCloseDrawer = function(event) {

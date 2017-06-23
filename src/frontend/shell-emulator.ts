@@ -3,7 +3,6 @@
 
 // historyArea is a div in which we save the command for future use
 // shell functions for
-// * postMessage2
 // * interrupt
 /* eslint-env browser */
 /* eslint "max-len": "off" */
@@ -31,21 +30,21 @@ let mathProgramOutput = "";
 const cmdHistory: any = []; // History of commands for shell-like arrow navigation
 cmdHistory.index = 0;
 
-const postMessage2 = function(msg: string, socket: Socket) {
+const postRawMessage = function(msg: string, socket: Socket) {
   socket.emit("input", msg);
   return true;
 };
 
 const interrupt = function(socket: Socket) {
   return function() {
-    postMessage2(keys.ctrlc, socket);
+    postRawMessage(keys.ctrlc, socket);
   };
 };
 
 const sendCallback = function(id: string, socket: Socket) {
   return function() {
     const str = getSelected(id);
-    postMessage2(str, socket);
+    postRawMessage(str, socket);
     return false;
   };
 };
@@ -58,7 +57,7 @@ const sendOnEnterCallback = function(id: string, socket: Socket, shell) {
       const msg = getSelected(id);
       // We only trigger the innerTrack.
       shell.trigger("innerTrack", msg);
-      postMessage2(msg, socket);
+      postRawMessage(msg, socket);
     }
   };
 };
@@ -133,6 +132,11 @@ module.exports = function() {
       }
     });
 
+    shell.on("postMessage", function(e, msg) {
+      shell.trigger("track", msg);
+      postRawMessage(msg, socket);
+    });
+
     shell.on("innerTrack", function(e, msg) {
         // This function will track the messages, i.e. such that arrow up and
         // down work, but it will not put the msg in the history textarea. We
@@ -151,7 +155,7 @@ module.exports = function() {
       if (shell.val().length >= mathProgramOutput.length) {
         const l = shell.val().length;
         const msg = shell.val().substring(mathProgramOutput.length, l) + tail;
-        postMessage2(msg, socket);
+        postRawMessage(msg, socket);
       } else {
         console.log("There must be an error.");
             // We don't want empty lines send to M2 at pressing return twice.
@@ -246,7 +250,6 @@ module.exports = function() {
 
   return {
     create,
-    postMessage2,
     sendCallback,
     interrupt,
   };

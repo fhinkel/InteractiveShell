@@ -18,8 +18,7 @@ function moveWelcomeTutorialToBeginning(
 type GetListFunction = (any, {writeHead, end}) => void;
 
 function tutorialReader(prefix: string, fs): GetListFunction {
-  const filter = require("async/filter");
-  const concat = require("async/concat");
+  const async = require("async");
 
   const prefixedFsReaddir = function(path: string, next): void {
     const totalPath: string = prefix + path;
@@ -43,12 +42,12 @@ function tutorialReader(prefix: string, fs): GetListFunction {
     const pathForTutorials: string = "tutorials/";
     const pathForUserTutorials: string = "shared-tutorials/";
     const folderList: string[] = [pathForTutorials, pathForUserTutorials];
-    filter(
+    async.filter(
       folderList,
       prefixedFsExists,
       function(existingFolders,
       ) {
-        concat(
+        async.concat(
           existingFolders,
           prefixedFsReaddir,
           function(err, files: string[],

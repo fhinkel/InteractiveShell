@@ -165,7 +165,8 @@ const killNotify = function(client: Client) {
   };
 };
 
-const spawnMathProgramInSecureContainer = function(client: Client, next) {
+const spawnMathProgramInSecureContainer = function(client: Client) {
+  logClient(client.id, "Spawning new MathProgram process...");
   getInstance(client, function(instance: Instance) {
     instance.killNotify = killNotify(client);
     client.instance = instance;
@@ -173,9 +174,13 @@ const spawnMathProgramInSecureContainer = function(client: Client, next) {
     connection.on("error", function(err) {
       logClient(client.id, "Error when connecting. " + err +
         "; Retrying with new instance.");
-      instanceManager.removeInstance(instance);
-      delete clients[client.id].instance;
-      spawnMathProgramInSecureContainer(client, next);
+      try{
+        instanceManager.removeInstance(instance);
+        delete clients[client.id].instance;
+      } catch(deleteError) {
+        logClient(client.id, "Error when deleting instance.");
+      }
+      clientSanityCheck(client);
     });
     connection.on("ready", function() {
       connection.exec(serverConfig.MATH_PROGRAM_COMMAND,
@@ -193,7 +198,7 @@ const spawnMathProgramInSecureContainer = function(client: Client, next) {
             logClient(client.id, "Channel to Math program ended, closing connection.");
             connection.end();
           });
-          next(channel);
+          attachChannelToClient(client, channel);
         });
     }).connect(sshCredentials(instance));
   });
@@ -247,19 +252,14 @@ const attachListenersToOutput = function(client: Client) {
   }
 };
 
-const mathProgramStart = function(client: Client, next) {
-  logClient(client.id, "Spawning new MathProgram process...");
-  spawnMathProgramInSecureContainer(client, function(channel: ssh2.ClientChannel) {
-    channel.setEncoding("utf8");
-    client.channel = channel;
-    attachListenersToOutput(client);
-    setTimeout(function() {
-      if (next) {
-        next(client);
-      }
-    }, 2000); // Always need a little time before start is done.
-  });
-};
+const attachChannelToClient = function(client:Client, channel:ssh2.ClientChannel){
+  channel.setEncoding("utf8");
+  client.channel = channel;
+  attachListenersToOutput(client);
+  setTimeout(function() {
+    client.saneState = true;
+  }, 2000); // Always need a little time before start is done.
+}
 
 const killMathProgram = function(channel: ssh2.ClientChannel, clientID: string) {
   logClient(clientID, "killMathProgramClient.");
@@ -325,9 +325,7 @@ const clientSanityCheck = function(client: Client) {
   if (!client.channel ||
       !client.channel.writable) {
     logClient(client.id, "Starting new mathProgram instance.");
-    mathProgramStart(client, function() {
-      client.saneState = true;
-    });
+    spawnMathProgramInSecureContainer(client);
   } else {
     logClient(client.id, "Has mathProgram instance.");
     if (client.reconnecting) {
@@ -373,8 +371,8 @@ const checkState = function(client: Client) {
 const socketInputAction = function(client: Client) {
   return function(msg: string) {
     logClient(client.id, "Receiving input");
-    updateLastActiveTime(client);
     checkState(client).then(function() {
+      updateLastActiveTime(client);
       checkAndWrite(client, msg);
     }, function(){
       clientSanityCheck(client);
@@ -391,9 +389,7 @@ const socketResetAction = function(client: Client) {
       if (client.channel) {
         killMathProgram(client.channel, client.id);
       }
-      mathProgramStart(client, function() {
-        client.saneState = true;
-      });
+      spawnMathProgramInSecureContainer(client);
     }, function(){
       clientSanityCheck(client);
     });

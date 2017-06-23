@@ -6,7 +6,7 @@ require("./startup")({
     port: 8002,
     MATH_PROGRAM: "Singular",
     MATH_PROGRAM_COMMAND: "Singular",
-    CONTAINERS(LocalContainerManager): InstanceManager {
+    CONTAINERS(): InstanceManager {
       return new LocalContainerManager();
     },
   },

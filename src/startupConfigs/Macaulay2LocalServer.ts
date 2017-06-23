@@ -3,7 +3,7 @@ import {LocalContainerManager} from "../lib/LocalContainerManager";
 
 require("./startup")({
   serverConfig: {
-    CONTAINERS(LocalContainerManager): InstanceManager {
+    CONTAINERS(): InstanceManager {
       return new LocalContainerManager();
     },
   },

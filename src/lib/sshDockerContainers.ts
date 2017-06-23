@@ -17,7 +17,7 @@ class SshDockerContainersInstanceManager implements InstanceManager {
     }
     const removalCommand = this.hostConfig.dockerCmdPrefix + " docker rm -f " +
         instance.containerName;
-    this.connectToHostAndExecCmd(removalCommand, function(stream) {
+    this.connectToHostAndExecCmd(removalCommand, (function(stream) {
       stream.on("data", function() {
       });
       stream.stderr.on("data", function() {
@@ -26,7 +26,7 @@ class SshDockerContainersInstanceManager implements InstanceManager {
       if (next) {
         next();
       }
-    }, function() {});
+    }).bind(this), function() {});
   }
 
   getNewInstance(next){

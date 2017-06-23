@@ -2,16 +2,27 @@
 /* eslint "new-cap": "off" */
 
 declare var MathJax: jax.IMathJax;
-
-let lessonNr = 0;
-let tutorialNr = 0;
-let tutorials = [];
-let firstLoadFlag = true; // true until we show tutorial for the first time.
-// Needed because we need to load lesson 0
 const accordion = require("./accordion")();
 import * as $ from "jquery";
 
-const loadLesson = function(tutorialid, lessonid) {
+type Lesson = {
+    title: string;
+    html: JQuery<HTMLElement>;
+}
+
+type Tutorial = {
+    title: JQuery<HTMLElement>; // <h4> html element
+    current: number;
+    lessons: Lesson[];
+}
+
+let lessonNr: number = 0;
+let tutorialNr: number = 0;
+let tutorials: any[] = [];
+let firstLoadFlag: boolean = true; // true until we show tutorial for the first time.
+// Needed because we need to load lesson 0
+
+const loadLesson = function(tutorialid: number, lessonid: number) {
   if (tutorialid >= 0 && tutorialid < tutorials.length) {
     tutorialNr = tutorialid;
   }
@@ -26,7 +37,7 @@ const loadLesson = function(tutorialid, lessonid) {
   MathJax.Hub.Queue(["Typeset", MathJax.Hub, "#lesson"]);
 };
 
-const loadLessonIfChanged = function(tutorialid, lessonid) {
+const loadLessonIfChanged = function(tutorialid: number, lessonid: number): void {
   const changedLesson = (tutorialNr !== tutorialid || lessonNr !==
   lessonid || firstLoadFlag);
   firstLoadFlag = false;
@@ -53,12 +64,12 @@ const showLesson = function(e) {
   return false;
 };
 
-const switchLesson = function(incr) {
+const switchLesson = function(incr: number): void {
   // console.log("Current lessonNr " + lessonNr);
   loadLessonIfChanged(tutorialNr, lessonNr + incr);
 };
 
-const markdownToTutorial = function(theMD) {
+const markdownToTutorial = function(theMD: string) {
     // input: is a simple markdown text, very little is used or recognized:
     // lines beginning with "#": title (and author) of the tutorial
     //   beginning with "##": section name (or "lesson" name)

@@ -29,7 +29,7 @@ class SudoDockerContainersInstanceManager implements InstanceManager {
       }).bind(this));
   }
 
-removeInstance(instance: Instance) {
+private removeInstance(instance: Instance) {
     console.log("Removing container: " + instance.containerName);
     const removeDockerContainer = "sudo docker rm -f " + instance.containerName;
     exec(removeDockerContainer, function(error) {

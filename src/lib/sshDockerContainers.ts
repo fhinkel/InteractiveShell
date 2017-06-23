@@ -10,7 +10,7 @@ class SshDockerContainersInstanceManager implements InstanceManager {
     instance.lastActiveTime = Date.now();
   }
 
-   removeInstance(instance: Instance, next) {
+   private removeInstance(instance: Instance, next) {
     console.log("Removing container: " + instance.containerName);
     if (instance.killNotify) {
       instance.killNotify();

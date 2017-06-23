@@ -2,7 +2,7 @@
 /* eslint-env browser */
 /* eslint "new-cap": "off" */
 
-import * as MathJax from "mathjax";
+declare var MathJax:any;
 
 let lessonNr = 0;
 let tutorialNr = 0;

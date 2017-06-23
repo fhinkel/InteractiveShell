@@ -34,7 +34,6 @@
     "http-auth": "2.3.1",
     "imports-loader": "0.6.5",
     "jquery": "2.2.3",
-    "mathjax": "2.7.1",
     "scroll-down": "2.0.0",
     "serve-favicon": "2.1.7",
     "serve-static": "1.7.2",

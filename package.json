@@ -20,6 +20,7 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
+    "@types/mathjax": "0.0.31",
     "D": "0.0.1",
     "async": "0.9.0",
     "chai": "2.2.0",

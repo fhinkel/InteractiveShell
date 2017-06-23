@@ -203,7 +203,12 @@ const spawnMathProgramInSecureContainer = function(client: Client) {
 };
 
 const updateLastActiveTime = function(client: Client) {
-  instanceManager.updateLastActiveTime(client.instance);
+  try {
+    instanceManager.updateLastActiveTime(client.instance);
+  } catch(noInstanceError){
+    logClient(client.id, "Found no instance.");
+    sanitizeClient(client);
+  }
 };
 
 const addNewSocket = function(client: Client, socket: SocketIO.Socket) {

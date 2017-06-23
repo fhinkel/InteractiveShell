@@ -1,5 +1,5 @@
 /* global fetch */
-let $ = require("jquery");
+import * as $ from "jquery";
 
 let cssClasses = {
   titleSymbolClass: "material-icons titleSymbol",

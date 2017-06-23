@@ -9,7 +9,7 @@ let socket = null;
 let serverDisconnect = false;
 let dialogPolyfill = require("dialog-polyfill");
 let shell = require("./shell-emulator")();
-let $ = require("jquery");
+import * as $ from "jquery";
 
 let saveInteractions = function() {
   const input = $("#M2In");

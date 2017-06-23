@@ -10,7 +10,7 @@ let tutorials = [];
 let firstLoadFlag = true; // true until we show tutorial for the first time.
 // Needed because we need to load lesson 0
 let accordion = require("./accordion")();
-let $ = require("jquery");
+import * as $ from "jquery";
 
 let loadLesson = function(tutorialid, lessonid) {
   if (tutorialid >= 0 && tutorialid < tutorials.length) {

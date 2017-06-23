@@ -5,7 +5,10 @@ declare var mathProgramName: string;
 declare var DefaultText: string;
 import io = require('socket.io-client');
 
-let socket: SocketIOClient.Socket & {oldEmit?: any};
+type Socket =  SocketIOClient.Socket & {oldEmit?: any};
+
+export {Socket};
+let socket: Socket;
 let serverDisconnect = false;
 let dialogPolyfill = require("dialog-polyfill");
 let shell = require("./shell-emulator")();

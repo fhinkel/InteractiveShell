@@ -22,6 +22,7 @@ let keys = {
   ctrlc: "\x03",
 };
 
+import {Socket} from "./mathProgram";
 let unicodeBell = "\u0007";
 let setCaretPosition = require("set-caret-position");
 let scrollDown = require("scroll-down");
@@ -30,7 +31,7 @@ let mathProgramOutput = "";
 let cmdHistory: any = []; // History of commands for shell-like arrow navigation
 cmdHistory.index = 0;
 
-let postMessage2 = function(msg, socket) {
+let postMessage2 = function(msg, socket: Socket) {
   socket.emit("input", msg);
   return true;
 };
@@ -41,7 +42,7 @@ let interrupt = function(socket) {
   };
 };
 
-let sendCallback = function(id, socket) {
+let sendCallback = function(id, socket: Socket) {
   return function() {
     const str = getSelected(id);
     postMessage2(str, socket);
@@ -49,7 +50,7 @@ let sendCallback = function(id, socket) {
   };
 };
 
-let sendOnEnterCallback = function(id, socket, shell) {
+let sendOnEnterCallback = function(id, socket: Socket, shell) {
   return function(e) {
     if (e.which === 13 && e.shiftKey) {
       e.preventDefault();

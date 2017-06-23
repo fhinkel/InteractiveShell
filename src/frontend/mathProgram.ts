@@ -1,4 +1,4 @@
-/* global io, SocketIOFileUpload, mathProgramName, DefaultText */
+/* global SocketIOFileUpload, mathProgramName, DefaultText */
 /* eslint-env browser */
 
 declare var mathProgramName: string;

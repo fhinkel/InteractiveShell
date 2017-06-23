@@ -1,4 +1,3 @@
-/* global MathJax, fetch */
 /* eslint-env browser */
 /* eslint "new-cap": "off" */
 

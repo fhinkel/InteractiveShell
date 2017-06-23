@@ -20,12 +20,12 @@ const saveInteractions = function() {
   const output = $("#M2Out");
   const dialog: any = document.querySelector("#saveDialog");
   const inputLink = "data:application/octet-stream," +
-      encodeURIComponent(input.val());
+      encodeURIComponent(<string>input.val());
   const inputParagraph = document.getElementById("inputContent");
   inputParagraph.setAttribute("href", inputLink);
   inputParagraph.setAttribute("download", "input.txt");
   const outputLink = "data:application/octet-stream," +
-      encodeURIComponent(output.val());
+      encodeURIComponent(<string>output.val());
   const outputParagraph = document.getElementById("outputContent");
   outputParagraph.setAttribute("href", outputLink);
   outputParagraph.setAttribute("download", "output.txt");

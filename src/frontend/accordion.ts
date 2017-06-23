@@ -53,8 +53,8 @@ const appendTutorialToAccordion = function(tmptitle, lessons, index) {
         $(this).toggleClass(cssClasses.titleHover);
       })
       .click(function() {
-        $(this).toggleClass(cssClasses.titleToggleClass)
-            .find("> .titleSymbol").toggleText(
+          (<any>$(this).toggleClass(cssClasses.titleToggleClass)
+           .find("> .titleSymbol")).toggleText(
             cssClasses.titleSymbolActive + " " +
             cssClasses.titleSymbolInactive).end()
             .next().slideToggle(scrollDownUntilTutorialVisible);
@@ -120,7 +120,7 @@ const addExpandLoadTutorialInstructionsButton = function() {
   expandButton.click(function() {
     const title = $("#loadTutorialMenu");
     const instructions = $("#loadTutorialInstructions");
-    expandButton.toggleText(cssClasses.titleSymbolInactive + " " +
+      (<any>expandButton).toggleText(cssClasses.titleSymbolInactive + " " +
         cssClasses.titleSymbolActive);
     title.toggleClass(
         cssClasses.titleToggleClass);

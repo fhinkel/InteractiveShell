@@ -1,13 +1,10 @@
-let ssh2 = require("ssh2");
-const SocketIOFileUpload = require("socketio-file-upload");
+import ssh2 = require("ssh2");
+import SocketIOFileUpload = require("socketio-file-upload");
 
 const completeFileUpload = function(client, sshCredentials) {
   return function(event) {
     const credentials = sshCredentials(client.instance);
-    const connection = ssh2();
-
-    connection.on("end", function() {
-    });
+    const connection: ssh2.Client = new ssh2.Client();
 
     connection.on("ready", function() {
       connection.sftp(function(err, sftp) {

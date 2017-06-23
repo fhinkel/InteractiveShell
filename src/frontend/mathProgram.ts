@@ -4,6 +4,7 @@
 declare var mathProgramName: string;
 declare var DefaultText: string;
 import io = require("socket.io-client");
+import SocketIOFileUpload = require('socketio-file-upload');
 
 type Socket =  SocketIOClient.Socket & {oldEmit?: any};
 

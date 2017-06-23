@@ -89,25 +89,26 @@ private init = (function() {
     });
   };
 
-   private checkForSuccessfulContainerStart = (function(instance: Instance, next) {
-    const getListOfAllContainers = this.hostConfig.dockerCmdPrefix +
+   private checkForSuccessfulContainerStart = function(instance: Instance, next) {
+    let self = this;
+    const getListOfAllContainers = self.hostConfig.dockerCmdPrefix +
         " docker ps --no-trunc | grep " +
         instance.containerName +
         " | wc -l";
-    this.connectToHostAndExecCmd(getListOfAllContainers, (function(stream) {
-      stream.on("data", (function(dataObject) {
+    self.connectToHostAndExecCmd(getListOfAllContainers, function(stream) {
+      stream.on("data", function(dataObject) {
         const data = dataObject.toString();
         if (data === "") {
-          this.getNewInstance(next);
+          self.getNewInstance(next);
         } else {
-          this.checkForRunningSshd(instance, next);
+          self.checkForRunningSshd(instance, next);
         }
-      }).bind(this));
+      });
 
       stream.stderr.on("data", function() {
       });
-    }).bind(this), next);
-  }).bind(this);
+    }, next);
+  };
 /*
    process.on("uncaughtException", function(err) {
     console.error("Caught exception in cm process object: " + err);
@@ -169,15 +170,16 @@ private init = (function() {
     });
   }
     killOldestContainer = function(next) {
-    this.sortInstancesByAge();
-    if (this.isLegal(this.currentContainers[0])) {
-      this.removeInstance(this.currentContainers[0], function() {
-        this.getNewInstance(next);
-      });
-    } else {
-      throw new Error("Too many active users.");
-    }
-  };
+      let self = this;
+      self.sortInstancesByAge();
+      if (self.isLegal(self.currentContainers[0])) {
+        self.removeInstance(self.currentContainers[0], function() {
+          self.getNewInstance(next);
+        });
+      } else {
+        throw new Error("Too many active users.");
+      }
+    };
 
   connectWithSshAndCreateContainer = (function(instance: Instance, next) {
     const dockerRunCmd = this.getDockerStartCmd(instance);

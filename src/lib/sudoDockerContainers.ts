@@ -49,7 +49,6 @@ constructor(resources: any, options: any, currentInstance: Instance) {
   this.options = options;
   this.currentInstance = currentInstance;
 }
-c;
 
 constructDockerRunCommand(resources, newInstance: Instance) {
     let dockerRunCmd = "sudo docker run -d";

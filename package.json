@@ -66,7 +66,7 @@
   },
   "scripts": {
     "tsc": "tsc && tsc -p src/frontend",
-    "build": "npm run tsc && webpack",
+    "build": "npm run lint && npm run tsc && webpack",
     "start": "node src/dist/index.js",
     "debug-start": "npm run tsc && webpack --config webpack.debug-config.js && npm start",
     "basic": "npm run build && npm start M2 docker",

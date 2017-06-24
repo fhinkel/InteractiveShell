@@ -28,4 +28,4 @@ export function startup(overrideOptions) {
     .catch(function(err) {
       console.log(err);
     });
-};
+}

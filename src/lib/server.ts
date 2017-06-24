@@ -118,13 +118,13 @@ const emitDataViaSockets = function(sockets, type: SocketEvent, data: string): v
   }
 };
 
-const emitDataSafelyViaSocket = function(socket, type: SocketEvent, data: string) : void {
+const emitDataSafelyViaSocket = function(socket, type: SocketEvent, data: string): void {
   try {
     socket.emit(SocketEvent[type], data);
   } catch (error) {
     logExceptOnTest("Error while executing socket.emit of type " + SocketEvent[type]);
   }
-}
+};
 
 const emitDataViaClientSockets = function(client: Client, type: SocketEvent, data) {
   const sockets = client.socketArray;
@@ -346,8 +346,6 @@ const sanitizeClient = function(client: Client) {
     client.saneState = true;
   }
 };
-
-
 
 const writeMsgOnStream = function(client: Client, msg: string) {
   client.channel.stdin.write(msg, function(err) {

@@ -9,7 +9,7 @@ startup({
     MATH_PROGRAM_COMMAND: "export WWWBROWSER=/usr/bin/open; " +
     "export PATH=/usr/bin:$PATH; " +
     "M2 --print-width 100",
-    CONTAINERS(resources, hostConfig, guestInstance): InstanceManager{
+    CONTAINERS(resources, hostConfig, guestInstance): InstanceManager {
       return new SshDockerContainers(resources, hostConfig, guestInstance);
     },
   },

@@ -79,7 +79,7 @@
     "forever_singular": "npm run build && forever start -l /home/user/logs/forever.log -o /home/user/logs/out.log -e /home/user/logs/err.log --append src/dist/index.js singular ssh",
     "stop": "kill `ps ax | grep Server | grep -v monitor | grep node | awk '{print $1}'`",
     "test": "mocha -r ts-node/register src/tests/**/*.ts --reporter spec --timeout 6000",
-    "lint": "tslint -c tslint.json src/lib/*.ts src/startupConfigs/*.ts --fix && eslint ./public-source/ ./public/public-common/mathJaxConfig.js --fix && tslint "
+    "lint": "tslint -c tslint.json src/lib/*.ts src/startupConfigs/*.ts --fix && eslint ./public-source/ ./public/public-common/mathJaxConfig.js --fix"
   },
   "repository": {
     "type": "git",

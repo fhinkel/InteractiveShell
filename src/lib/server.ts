@@ -15,10 +15,12 @@ import * as reader from "./tutorialReader";
 
 import express = require("express");
 const app = express();
-const http = require("http").createServer(app);
+import httpModule = require("http");
+const http = httpModule.createServer(app);
 import fs = require("fs");
 import Cookie = require("cookie");
-const io: SocketIO.Server = require("socket.io")(http);
+import ioModule = require("socket.io");
+const io: SocketIO.Server = ioModule(http);
 import ssh2 = require("ssh2");
 import SocketIOFileUpload = require("socketio-file-upload");
 
@@ -400,11 +402,11 @@ const socketResetAction = function(client: Client) {
   };
 };
 
-const threeDays = 3*86409000;
+const threeDays = 3 * 86409000;
 
 const setCookieOnSocket = function(socket): string{
   const clientID = clientIdHelper(clients, logExceptOnTest).getNewId();
-  const expDate = new Date(new Date().getTime()+threeDays);
+  const expDate = new Date(new Date().getTime() + threeDays);
   const sessionCookie = Cookie.serialize(options.cookieName, clientID, {expires: expDate});
   socket.emit("cookie", sessionCookie);
   return clientID;

@@ -4,13 +4,13 @@
 
 ## Quickstart
 
-Run the following commands in a terminal:
+Run the following commands in a terminal (`vagrant` might take a while):
 ```bash
 git clone https://github.com/fhinkel/InteractiveShell.git
 cd InteractiveShell/setups/basic
 vagrant up
 ```
-and go to [localhost:8002](localhost:8002) to use Macaulay2.
+Point your broser to [localhost:8002](localhost:8002).
 
 ## Purpose
 

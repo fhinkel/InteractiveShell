@@ -16,26 +16,27 @@ class SudoDockerContainersInstanceManager implements InstanceManager {
   }
 
   public getNewInstance(next) {
-    const newInstance = JSON.parse(JSON.stringify(this.currentInstance));
-    this.currentInstance.port++;
+    const self = this;
+    const newInstance = JSON.parse(JSON.stringify(self.currentInstance));
+    self.currentInstance.port++;
     newInstance.containerName = "m2Port" + newInstance.port;
-    exec(this.constructDockerRunCommand(this.resources, newInstance),
-      (function(error) {
+    exec(self.constructDockerRunCommand(self.resources, newInstance),
+      function(error) {
         if (error) {
           const containerAlreadyStarted =
                 error.message.match(/Conflict. The name/) ||
                 error.message.match(/Conflict. The container name/);
           if (containerAlreadyStarted) {
-            this.getNewInstance(next);
+            self.getNewInstance(next);
           } else {
             console.error("Error starting the docker container: " +
                   error.message);
             throw error;
           }
         } else {
-          this.waitForSshd(next, newInstance);
+          self.waitForSshd(next, newInstance);
         }
-      }).bind(this));
+      });
   }
 
   public updateLastActiveTime() {

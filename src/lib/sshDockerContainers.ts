@@ -12,32 +12,6 @@ class SshDockerContainersInstanceManager implements InstanceManager {
   private guestInstance: any;
   private currentContainers: any[];
 
-  private init = (function() {
-    this.hostConfig.dockerRunCmd = this.hostConfig.dockerCmdPrefix + " docker run -d";
-    this.hostConfig.dockerRunCmd += " --cpu-shares " + this.resources.cpuShares;
-    this.hostConfig.dockerRunCmd += " -m " + this.resources.memory + "m";
-    this.hostConfig.dockerRunCmd += " --name";
-  }).bind(this);
-
-  private connectWithSshAndCreateContainer = (function(instance: Instance, next) {
-    const dockerRunCmd = this.getDockerStartCmd(instance);
-    this.connectToHostAndExecCmd(dockerRunCmd, (function(stream) {
-      stream.on("data", (function(dataObject) {
-        instance.containerId = dataObject.toString();
-        this.checkForSuccessfulContainerStart(instance, next);
-      }).bind(this));
-      stream.stderr.on("data", (function(dataObject) {
-        // If we get stderr, there will not come an id, so don't be
-        // afraid of data.
-        const data = dataObject.toString();
-        if (data.match(/ERROR/i)) {
-          this.getNewInstance(next);
-          stream.end();
-        }
-      }).bind(this));
-    }).bind(this), next);
-  }).bind(this);
-
   constructor(resources: any, options: any, currentInstance: Instance) {
     this.resources = resources;
     this.guestInstance = currentInstance;
@@ -62,19 +36,47 @@ class SshDockerContainersInstanceManager implements InstanceManager {
     }
   }
 
+  private init = function() {
+    this.hostConfig.dockerRunCmd = this.hostConfig.dockerCmdPrefix + " docker run -d";
+    this.hostConfig.dockerRunCmd += " --cpu-shares " + this.resources.cpuShares;
+    this.hostConfig.dockerRunCmd += " -m " + this.resources.memory + "m";
+    this.hostConfig.dockerRunCmd += " --name";
+  };
+
+  private connectWithSshAndCreateContainer = function(instance: Instance, next) {
+    const self = this;
+    const dockerRunCmd = self.getDockerStartCmd(instance);
+    self.connectToHostAndExecCmd(dockerRunCmd, function(stream) {
+      stream.on("data", function(dataObject) {
+        instance.containerId = dataObject.toString();
+        self.checkForSuccessfulContainerStart(instance, next);
+      });
+      stream.stderr.on("data", function(dataObject) {
+        // If we get stderr, there will not come an id, so don't be
+        // afraid of data.
+        const data = dataObject.toString();
+        if (data.match(/ERROR/i)) {
+          self.getNewInstance(next);
+          stream.end();
+        }
+      });
+    }, next);
+  };
+
   private removeInstance(instance: Instance, next) {
+    const self = this;
     console.log("Removing container: " + instance.containerName);
     if (instance.killNotify) {
       instance.killNotify();
     }
-    const removalCommand = this.hostConfig.dockerCmdPrefix + " docker rm -f " +
+    const removalCommand = self.hostConfig.dockerCmdPrefix + " docker rm -f " +
         instance.containerName;
-    this.connectToHostAndExecCmd(removalCommand, (function(stream) {
-      this.removeInstanceFromArray(instance);
+    self.connectToHostAndExecCmd(removalCommand, function(stream) {
+      self.removeInstanceFromArray(instance);
       if (next) {
         next();
       }
-    }).bind(this));
+    });
   }
 
   private getDockerStartCmd(instance: Instance) {
@@ -124,24 +126,25 @@ class SshDockerContainersInstanceManager implements InstanceManager {
   };
 
   private checkForRunningSshd(instance: Instance, next) {
-    const getContainerProcesses = this.hostConfig.dockerCmdPrefix + " docker exec " +
+    const self = this;
+    const getContainerProcesses = self.hostConfig.dockerCmdPrefix + " docker exec " +
         instance.containerName + " ps aux";
-    const filterForSshd = "grep \"" + this.hostConfig.sshdCmd + "\"";
+    const filterForSshd = "grep \"" + self.hostConfig.sshdCmd + "\"";
     const excludeGrepAndWc = "grep -v grep | wc -l";
     const sshdCheckCmd = getContainerProcesses + " | " + filterForSshd + " | " +
         excludeGrepAndWc;
-    this.connectToHostAndExecCmd(sshdCheckCmd, (function(stream) {
-      stream.on("data", (function(dataObject) {
+    self.connectToHostAndExecCmd(sshdCheckCmd, function(stream) {
+      stream.on("data", function(dataObject) {
         const data = dataObject.toString();
         if (data === "") {
-          this.checkForRunningSshd(instance, next);
+          self.checkForRunningSshd(instance, next);
         } else {
           instance.lastActiveTime = Date.now();
-          this.addInstanceToArray(instance);
+          self.addInstanceToArray(instance);
           next(null, instance);
         }
-      }).bind(this));
-    }).bind(this), next);
+      });
+    }, next);
   }
 
   private connectToHostAndExecCmd(cmd, next, errorHandler?) {

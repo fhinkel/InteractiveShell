@@ -383,7 +383,7 @@ const socketInputAction = function(socket, client: Client) {
   return function(msg: string) {
     logClient(client.id, "Receiving input");
     checkClientSanity(client).then(function() {
-      setCookieOnSocket(socket);
+      setCookieOnSocket(socket, client.id);
       updateLastActiveTime(client);
       checkAndWrite(client, msg);
     });
@@ -405,12 +405,16 @@ const socketResetAction = function(client: Client) {
 
 const sevenDays = 7*86409000;
 
-const setCookieOnSocket = function(socket): string{
+const initializeClientId = function(socket): string{
   const clientID = clientIdHelper(clients, logExceptOnTest).getNewId();
+  setCookieOnSocket(socket, clientID);
+  return clientID;
+}
+
+const setCookieOnSocket = function(socket, clientID : string): void{
   const expDate = new Date(new Date().getTime()+sevenDays);
   const sessionCookie = Cookie.serialize(options.cookieName, clientID, {expires: expDate});
   socket.emit("cookie", sessionCookie);
-  return clientID;
 };
 
 const listen = function() {
@@ -418,7 +422,7 @@ const listen = function() {
     logExceptOnTest("Incoming new connection!");
     let clientId: string = getClientIdFromSocket(socket);
     if (typeof clientId == "undefined") {
-      clientId = setCookieOnSocket(socket);
+      clientId = initializeClientId(socket);
     }
     logClient(clientId, "Assigned clientID");
     if (clientId === "deadCookie") {

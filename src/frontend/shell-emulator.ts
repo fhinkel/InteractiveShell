@@ -63,7 +63,7 @@ const sendOnEnterCallback = function(id: string, socket: Socket, shell) {
 };
 
 function stripInputPrompt(lastLine: string) {
-  return lastLine.replace(/^i\d+\s*:/, "");
+  return lastLine.replace(/^i(\d|\*)+\s*:/, "");
 }
 
 function stripSpacesAtBeginningOfLine(lastLine: string) {

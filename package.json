@@ -29,7 +29,7 @@
     "@types/socket.io-client": "1.4.29",
     "@types/ssh2": "0.5.35",
     "D": "0.0.1",
-    "async": "0.9.0",
+    "async": "2.4.1",
     "chai": "2.2.0",
     "cookie": "^0.3.1",
     "create-download-link": "1.1.0",

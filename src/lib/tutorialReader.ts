@@ -33,7 +33,7 @@ function tutorialReader(prefix: string, fs): GetListFunction {
   const prefixedFsExists = function(path: string, next): void {
     const totalPath: string = prefix + path;
     fs.exists(totalPath, function(exists) {
-      next(exists);
+      next(null, exists);
     });
   };
 
@@ -42,11 +42,13 @@ function tutorialReader(prefix: string, fs): GetListFunction {
     const pathForTutorials: string = "tutorials/";
     const pathForUserTutorials: string = "shared-tutorials/";
     const folderList: string[] = [pathForTutorials, pathForUserTutorials];
-    async.filter(
-      folderList,
-      prefixedFsExists,
-      function(existingFolders,
-      ) {
+    async.filter(folderList, prefixedFsExists, function(err, existingFolders) {
+      if (err) {
+        console.log("Something went wrong when getting the list of tutorials.")
+          response.writeHead(500, {'Content-Type': 'text/plain'});
+          response.end('Something went wrong when getting the list of tutorials.');
+          return;
+      }
         async.concat(
           existingFolders,
           prefixedFsReaddir,

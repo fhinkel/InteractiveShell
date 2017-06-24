@@ -1,3 +1,13 @@
+2017-06-23 
+* Address review comments in paper
+* Polish new tutorial converter
+
+# Nice to haves
+* Upgrade async package (code fails with v2)
+* Separate M2 from Singular logic
+* Set it up on Google compute engine
+* Test coverage
+
 2017-06-19 Ithaca
 * We want an easy setup for AWS, Digitalocean, GDC, etc
 * We want to send a maintenance notification to our users in cae of sesrver downtime

@@ -58,15 +58,15 @@ exports.attachZoomButtons = function(textareaID,
     resetBtn = document.getElementById(resetID);
   };
 
-  const attachListeners = function(sizes) {
+  const attachListeners = function(s) {
     zoominBtn.addEventListener("click", function() {
-      zoomin(textarea, sizes);
+      zoomin(textarea, s);
     });
     zoomoutBtn.addEventListener("click", function() {
-      zoomout(textarea, sizes);
+      zoomout(textarea, s);
     });
     resetBtn.addEventListener("click", function() {
-      reset(textarea, sizes);
+      reset(textarea, s);
     });
   };
 

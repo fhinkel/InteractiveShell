@@ -403,16 +403,16 @@ const socketResetAction = function(client: Client) {
   };
 };
 
-const sevenDays = 7*86409000;
+const sevenDays = 7 * 86409000;
 
 const initializeClientId = function(socket): string{
   const clientID = clientIdHelper(clients, logExceptOnTest).getNewId();
   setCookieOnSocket(socket, clientID);
   return clientID;
-}
+};
 
-const setCookieOnSocket = function(socket, clientID : string): void{
-  const expDate = new Date(new Date().getTime()+sevenDays);
+const setCookieOnSocket = function(socket, clientID: string): void{
+  const expDate = new Date(new Date().getTime() + sevenDays);
   const sessionCookie = Cookie.serialize(options.cookieName, clientID, {expires: expDate});
   socket.emit("cookie", sessionCookie);
 };

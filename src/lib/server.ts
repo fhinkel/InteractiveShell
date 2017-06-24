@@ -421,7 +421,7 @@ const listen = function() {
   io.on("connection", function(socket: SocketIO.Socket) {
     logExceptOnTest("Incoming new connection!");
     let clientId: string = getClientIdFromSocket(socket);
-    if (typeof clientId == "undefined") {
+    if (typeof clientId === "undefined") {
       clientId = initializeClientId(socket);
     }
     logClient(clientId, "Assigned clientID");
@@ -464,7 +464,7 @@ const authorizeIfNecessary = function(authOption: AuthOption) {
   }
   return function(socket: SocketIO.Socket) {
     const rawCookies = socket.request.headers.cookie;
-    if (typeof rawCookies == "undefined") {
+    if (typeof rawCookies === "undefined") {
       // Sometimes there are no cookies
       return undefined;
     } else {

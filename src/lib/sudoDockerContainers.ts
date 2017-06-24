@@ -40,7 +40,7 @@ class SudoDockerContainersInstanceManager implements InstanceManager {
 
   public updateLastActiveTime() {
     //
-  };
+  }
 
   private removeInstance(instance: Instance) {
     console.log("Removing container: " + instance.containerName);
@@ -69,7 +69,7 @@ class SudoDockerContainersInstanceManager implements InstanceManager {
     const filterForSshd = "grep \"" + this.options.sshdCmd + "\"";
     const excludeGrep = "grep -v grep";
 
-    var self = this;
+    const self = this;
     exec(dockerRunningProcesses + " | " + filterForSshd + " | " + excludeGrep,
       function(error, stdout, stderr) {
         if (error) {

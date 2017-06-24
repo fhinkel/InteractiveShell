@@ -6,7 +6,9 @@ import {InstanceManager} from "./instanceManager";
 
 class SshDockerContainersInstanceManager implements InstanceManager {
   private resources: any;
-  private hostConfig: ssh2.ConnectConfig & {containerType?: string,  maxContainerNumber?: number, dockerRunCmd?: string, dockerCmdPrefix?: string, sshdCmd?: string, sshKey?: string};
+  private hostConfig: ssh2.ConnectConfig & {containerType?: string,
+    maxContainerNumber?: number, dockerRunCmd?: string, dockerCmdPrefix?: string,
+    sshdCmd?: string, sshKey?: string};
   private guestInstance: any;
   private currentContainers: any[];
 

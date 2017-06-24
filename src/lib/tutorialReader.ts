@@ -15,7 +15,7 @@ function moveWelcomeTutorialToBeginning(
   return tutorials;
 }
 
-type GetListFunction = (any, {writeHead, end}) => void;
+type GetListFunction = (request: any, response: { writeHead: any; end: any; }) => void;
 
 function tutorialReader(prefix: string, fs): GetListFunction {
   const async = require("async");

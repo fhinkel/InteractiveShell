@@ -55,10 +55,10 @@ const clients: Clients = {};
 let totalUsers: number = 0;
 
 let instanceManager: InstanceManager = {
-    getNewInstance(next: any){
+    getNewInstance(next: any) {
       //
     },
-    updateLastActiveTime(){
+    updateLastActiveTime() {
       //
     },
 };
@@ -74,7 +74,7 @@ const userSpecificPath = function(client: Client): string {
 };
 
 const disconnectSocket = function(socket: SocketIO.Socket): void  {
-      try{
+      try {
         socket.disconnect();
       } catch (error) {
         logExceptOnTest("Failed to disconnect socket: " + error);
@@ -129,7 +129,7 @@ const getInstance = function(client: Client, next) {
   if (client.instance) {
     next(client.instance);
   } else {
-    try{
+    try {
       instanceManager.getNewInstance(function(err, instance: Instance) {
         if (err) {
           emitDataViaClientSockets(client, SocketEvent.result,
@@ -140,7 +140,7 @@ const getInstance = function(client: Client, next) {
           next(instance);
         }
       });
-    } catch (error){
+    } catch (error) {
       logClient(client.id, "Could not get new instance. Should not drop in here.");
     }
   }
@@ -177,7 +177,7 @@ const spawnMathProgramInSecureContainer = function(client: Client) {
     connection.on("error", function(err) {
       logClient(client.id, "Error when connecting. " + err +
         "; Retrying with new instance.");
-      try{
+      try {
         clients[client.id].instance = undefined;
       } catch (deleteError) {
         logClient(client.id, "Error when deleting instance.");
@@ -211,7 +211,7 @@ const spawnMathProgramInSecureContainer = function(client: Client) {
 const updateLastActiveTime = function(client: Client) {
   try {
     instanceManager.updateLastActiveTime(client.instance);
-  } catch (noInstanceError){
+  } catch (noInstanceError) {
     logClient(client.id, "Found no instance.");
     sanitizeClient(client);
   }
@@ -324,7 +324,7 @@ const clientExistenceCheck = function(clientId: string): Client {
 };
 
 const sanitizeClient = function(client: Client) {
-  if (!client.saneState){
+  if (!client.saneState) {
     logClient(client.id, "Is already being sanitized.");
   }
   client.saneState = false;
@@ -414,7 +414,7 @@ const listen = function() {
   io.on("connection", function(socket: SocketIO.Socket) {
     logExceptOnTest("Incoming new connection!");
     let clientId: string = getClientIdFromSocket(socket);
-    if (typeof clientId == "undefined"){
+    if (typeof clientId == "undefined") {
       clientId = setCookieOnSocket(socket);
     }
     logClient(clientId, "Assigned clientID");
@@ -457,7 +457,7 @@ const authorizeIfNecessary = function(authOption: AuthOption) {
   }
   return function(socket: SocketIO.Socket) {
     const rawCookies = socket.request.headers.cookie;
-    if (typeof rawCookies == "undefined"){
+    if (typeof rawCookies == "undefined") {
       // Sometimes there are no cookies
       return undefined;
     } else {

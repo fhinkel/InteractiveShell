@@ -25,7 +25,7 @@ class SshDockerContainersInstanceManager implements InstanceManager {
     }).bind(this));
   }
 
-  getNewInstance(next){
+  getNewInstance(next) {
     if (this.currentContainers.length >= this.hostConfig.maxContainerNumber) {
       this.killOldestContainer(next);
     } else {

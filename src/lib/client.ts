@@ -14,7 +14,7 @@ export class Client {
         this.socketArray = [];
         this.id = newId;
     }
-    nSockets(): number{
+    nSockets(): number {
       return Object.keys(this.socketArray).length;
     }
 }

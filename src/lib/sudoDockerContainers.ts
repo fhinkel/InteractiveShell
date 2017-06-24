@@ -6,7 +6,7 @@ const exec = child_process.exec;
 let waitForSshd;
 
 class SudoDockerContainersInstanceManager implements InstanceManager {
-  getNewInstance(next){
+  getNewInstance(next) {
     const newInstance = JSON.parse(JSON.stringify(this.currentInstance));
     this.currentInstance.port++;
     newInstance.containerName = "m2Port" + newInstance.port;
@@ -39,7 +39,7 @@ private removeInstance(instance: Instance) {
       }
     });
   }
-updateLastActiveTime(){
+updateLastActiveTime() {
   //
 }
 resources: any;

@@ -1,5 +1,5 @@
 import chai = require("chai");
-import {Client, Clients} from "../lib/client";
+import {Client} from "../lib/client";
 import {SocketEvent} from "../lib/enums";
 import {Instance} from "../lib/instance";
 import {clients, emitDataViaClientSockets, getInstance,

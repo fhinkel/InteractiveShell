@@ -10,7 +10,7 @@ git clone https://github.com/fhinkel/InteractiveShell.git
 cd InteractiveShell/setups/basic
 vagrant up
 ```
-and go to [localhost:8002](localhost:8002) to use Macaulay2.:
+and go to [localhost:8002](localhost:8002) to use Macaulay2.
 
 ## Purpose
 

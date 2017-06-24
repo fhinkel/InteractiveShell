@@ -39,7 +39,9 @@ private removeInstance(instance: Instance) {
       }
     });
   }
-updateLastActiveTime(){}
+updateLastActiveTime(){
+  //
+}
 resources: any;
 options: any;
 currentInstance: any;

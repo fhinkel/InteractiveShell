@@ -40,8 +40,7 @@ function tutorialReader(prefix: string, fs): GetListFunction {
   const getListOfTutorials = function(request, response: {writeHead, end})
     : void {
     const pathForTutorials: string = "tutorials/";
-    const pathForUserTutorials: string = "shared-tutorials/";
-    const folderList: string[] = [pathForTutorials, pathForUserTutorials];
+    const folderList: string[] = [pathForTutorials];
     async.filter(folderList, prefixedFsExists, function(err, existingFolders) {
       if (err) {
         console.log("Something went wrong when getting the list of tutorials.");

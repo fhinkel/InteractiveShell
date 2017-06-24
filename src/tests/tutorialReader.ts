@@ -51,8 +51,7 @@ describe("GetListOfTutorials Module:", function() {
         },
         end() {
           const expected = JSON.stringify([
-            "tutorials/mock.html",
-            "shared-tutorials/mock.html",
+            "tutorials/mock.html"
           ]);
           assert.equal(spy.args, expected);
           assert(spy.calledOnce);

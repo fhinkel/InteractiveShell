@@ -379,10 +379,11 @@ const checkClientSanity = function(client: Client) {
   });
 };
 
-const socketInputAction = function(client: Client) {
+const socketInputAction = function(socket, client: Client) {
   return function(msg: string) {
     logClient(client.id, "Receiving input");
     checkClientSanity(client).then(function() {
+      setCookieOnSocket(socket);
       updateLastActiveTime(client);
       checkAndWrite(client, msg);
     });
@@ -402,11 +403,11 @@ const socketResetAction = function(client: Client) {
   };
 };
 
-const threeDays = 3 * 86409000;
+const sevenDays = 7*86409000;
 
 const setCookieOnSocket = function(socket): string{
   const clientID = clientIdHelper(clients, logExceptOnTest).getNewId();
-  const expDate = new Date(new Date().getTime() + threeDays);
+  const expDate = new Date(new Date().getTime()+sevenDays);
   const sessionCookie = Cookie.serialize(options.cookieName, clientID, {expires: expDate});
   socket.emit("cookie", sessionCookie);
   return clientID;
@@ -432,7 +433,7 @@ const listen = function() {
       logExceptOnTest,
       sshCredentials);
     fileUpload.attachUploadListenerToSocket(client, socket);
-    socket.on("input", socketInputAction(client));
+    socket.on("input", socketInputAction(socket, client));
     socket.on("reset", socketResetAction(client));
   });
 

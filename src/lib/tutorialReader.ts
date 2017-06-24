@@ -44,18 +44,18 @@ function tutorialReader(prefix: string, fs): GetListFunction {
     const folderList: string[] = [pathForTutorials, pathForUserTutorials];
     async.filter(folderList, prefixedFsExists, function(err, existingFolders) {
       if (err) {
-        console.log("Something went wrong when getting the list of tutorials.")
-          response.writeHead(500, {'Content-Type': 'text/plain'});
-          response.end('Something went wrong when getting the list of tutorials.');
-          return;
+        console.log("Something went wrong when getting the list of tutorials.");
+        response.writeHead(500, {"Content-Type": "text/plain"});
+        response.end("Something went wrong when getting the list of tutorials.");
+        return;
       }
-        async.concat(
+      async.concat(
           existingFolders,
           prefixedFsReaddir,
-          function(err, files: string[],
+          function(concatError, files: string[],
           ) {
-            if (err) {
-              throw new Error("async.concat() failed: " + err);
+            if (concatError) {
+              throw new Error("async.concat() failed: " + concatError);
             }
             let tutorials: Tutorials = files.filter(
               function(filename: Tutorial): Tutorials {

@@ -5,12 +5,12 @@ declare var MathJax: jax.IMathJax;
 const accordion = require("./accordion")();
 import * as $ from "jquery";
 
-type Lesson = {
+interface Lesson {
     title: string;
     html: JQuery<HTMLElement>;
 }
 
-type Tutorial = {
+interface Tutorial {
     title: JQuery<HTMLElement>; // <h4> html element
     current: number;
     lessons: Lesson[];
@@ -52,7 +52,7 @@ const showLesson = function(e) {
   console.log("Showing lesson. " + $(this).toString());
   console.log("Showing lesson. " + $(this).attr("tutorialid"));
   const tutorialId = $(this).attr("tutorialid");
-  const tutorialIdNr = parseInt(<any>tutorialId.match(/\d/g), 10);
+  const tutorialIdNr = parseInt(tutorialId.match(/\d/g) as any, 10);
   if (e.data && e.data.lessonIdNr) {
     lessonIdNr = parseInt(e.data.lessonIdNr, 10);
   } else { // Get number from link attribute

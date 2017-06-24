@@ -90,7 +90,7 @@ private init = (function() {
   };
 
    private checkForSuccessfulContainerStart = function(instance: Instance, next) {
-    let self = this;
+    const self = this;
     const getListOfAllContainers = self.hostConfig.dockerCmdPrefix +
         " docker ps --no-trunc | grep " +
         instance.containerName +
@@ -170,7 +170,7 @@ private init = (function() {
     });
   }
     killOldestContainer = function(next) {
-      let self = this;
+      const self = this;
       self.sortInstancesByAge();
       if (self.isLegal(self.currentContainers[0])) {
         self.removeInstance(self.currentContainers[0], function() {

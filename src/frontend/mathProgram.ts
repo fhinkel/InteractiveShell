@@ -4,7 +4,7 @@
 declare var mathProgramName: string;
 declare var DefaultText: string;
 import io = require("socket.io-client");
-declare var SocketIOFileUpload : any;
+declare var SocketIOFileUpload: any;
 
 type Socket =  SocketIOClient.Socket & {oldEmit?: any};
 
@@ -20,12 +20,12 @@ const saveInteractions = function() {
   const output = $("#M2Out");
   const dialog: any = document.querySelector("#saveDialog");
   const inputLink = "data:application/octet-stream," +
-      encodeURIComponent(<string>input.val());
+      encodeURIComponent(input.val() as string);
   const inputParagraph = document.getElementById("inputContent");
   inputParagraph.setAttribute("href", inputLink);
   inputParagraph.setAttribute("download", "input.txt");
   const outputLink = "data:application/octet-stream," +
-      encodeURIComponent(<string>output.val());
+      encodeURIComponent(output.val() as string);
   const outputParagraph = document.getElementById("outputContent");
   outputParagraph.setAttribute("href", outputLink);
   outputParagraph.setAttribute("download", "output.txt");
@@ -171,7 +171,7 @@ const displayUrlInNewWindow = function(url) {
 
 const codeClickAction = function() {
   $(this).addClass("redWithShortTransition");
-  let code = $(this).text() + "\n";
+  const code = $(this).text() + "\n";
   $("#M2Out").trigger("postMessage", code);
 };
 

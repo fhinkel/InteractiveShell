@@ -26,13 +26,17 @@ constructor() {
 
   this.options = options;
 }
-removeInstance = function(instance: Instance, next?: any) {};
+removeInstance = function(instance: Instance, next?: any) {
+  //
+};
 
 getNewInstance = function(next: any) {
     next(false, this.options.credentials);
   };
 
-updateLastActiveTime(instance: Instance) {}
+updateLastActiveTime(instance: Instance) {
+  //
+}
 }
 
 export {LocalContainerManager as LocalContainerManager};

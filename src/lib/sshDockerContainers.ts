@@ -5,12 +5,62 @@ import {Instance} from "./instance";
 import {InstanceManager} from "./instanceManager";
 
 class SshDockerContainersInstanceManager implements InstanceManager {
+  private resources: any;
+  private hostConfig: ssh2.ConnectConfig & {containerType?: string,  maxContainerNumber?: number, dockerRunCmd?: string, dockerCmdPrefix?: string, sshdCmd?: string, sshKey?: string};
+  private guestInstance: any;
+  private currentContainers: any[];
 
-  updateLastActiveTime(instance: Instance) {
+  private init = (function() {
+    this.hostConfig.dockerRunCmd = this.hostConfig.dockerCmdPrefix + " docker run -d";
+    this.hostConfig.dockerRunCmd += " --cpu-shares " + this.resources.cpuShares;
+    this.hostConfig.dockerRunCmd += " -m " + this.resources.memory + "m";
+    this.hostConfig.dockerRunCmd += " --name";
+  }).bind(this);
+
+  private connectWithSshAndCreateContainer = (function(instance: Instance, next) {
+    const dockerRunCmd = this.getDockerStartCmd(instance);
+    this.connectToHostAndExecCmd(dockerRunCmd, (function(stream) {
+      stream.on("data", (function(dataObject) {
+        instance.containerId = dataObject.toString();
+        this.checkForSuccessfulContainerStart(instance, next);
+      }).bind(this));
+      stream.stderr.on("data", (function(dataObject) {
+        // If we get stderr, there will not come an id, so don't be
+        // afraid of data.
+        const data = dataObject.toString();
+        if (data.match(/ERROR/i)) {
+          this.getNewInstance(next);
+          stream.end();
+        }
+      }).bind(this));
+    }).bind(this), next);
+  }).bind(this);
+
+  constructor(resources: any, options: any, currentInstance: Instance) {
+    this.resources = resources;
+    this.guestInstance = currentInstance;
+    this.hostConfig = options;
+    const currentContainers = [];
+    this.currentContainers = currentContainers;
+    this.init();
+  }
+
+  public updateLastActiveTime(instance: Instance) {
     instance.lastActiveTime = Date.now();
   }
 
-   private removeInstance(instance: Instance, next) {
+  public getNewInstance(next) {
+    if (this.currentContainers.length >= this.hostConfig.maxContainerNumber) {
+      this.killOldestContainer(next);
+    } else {
+      const currentInstance = JSON.parse(JSON.stringify(this.guestInstance));
+      this.guestInstance.port++;
+      currentInstance.containerName = "m2Port" + currentInstance.port;
+      this.connectWithSshAndCreateContainer(currentInstance, next);
+    }
+  }
+
+  private removeInstance(instance: Instance, next) {
     console.log("Removing container: " + instance.containerName);
     if (instance.killNotify) {
       instance.killNotify();
@@ -25,39 +75,7 @@ class SshDockerContainersInstanceManager implements InstanceManager {
     }).bind(this));
   }
 
-  getNewInstance(next) {
-    if (this.currentContainers.length >= this.hostConfig.maxContainerNumber) {
-      this.killOldestContainer(next);
-    } else {
-      const currentInstance = JSON.parse(JSON.stringify(this.guestInstance));
-      this.guestInstance.port++;
-      currentInstance.containerName = "m2Port" + currentInstance.port;
-      this.connectWithSshAndCreateContainer(currentInstance, next);
-    }
-  }
-
-resources: any;
-hostConfig: ssh2.ConnectConfig & {containerType?: string,  maxContainerNumber?: number, dockerRunCmd?: string, dockerCmdPrefix?: string, sshdCmd?: string, sshKey?: string};
-guestInstance: any;
-currentContainers: any[];
-
-private init = (function() {
-    this.hostConfig.dockerRunCmd = this.hostConfig.dockerCmdPrefix + " docker run -d";
-    this.hostConfig.dockerRunCmd += " --cpu-shares " + this.resources.cpuShares;
-    this.hostConfig.dockerRunCmd += " -m " + this.resources.memory + "m";
-    this.hostConfig.dockerRunCmd += " --name";
-  }).bind(this);
-
- constructor(resources: any, options: any, currentInstance: Instance) {
-   this.resources = resources;
-   this.guestInstance = currentInstance;
-   this.hostConfig = options;
-   const currentContainers = [];
-   this.currentContainers = currentContainers;
-   this.init();
-}
-
-   private getDockerStartCmd(instance: Instance) {
+  private getDockerStartCmd(instance: Instance) {
     let result = this.hostConfig.dockerRunCmd;
     result += " " + instance.containerName;
     result += " -p " + instance.port + ":22";
@@ -70,22 +88,22 @@ private init = (function() {
     this.currentContainers.splice(position, 1);
   };
 
-   private addInstanceToArray = function(instance: Instance) {
+  private addInstanceToArray = function(instance: Instance) {
     this.currentContainers.push(instance);
   };
 
-   private isLegal = function(instance: Instance) {
+  private isLegal = function(instance: Instance) {
     const age = Date.now() - instance.lastActiveTime;
     return age > this.hostConfig.minContainerAge;
   };
 
-   private sortInstancesByAge = function() {
+  private sortInstancesByAge = function() {
     this.currentContainers.sort(function(a, b) {
       return a.lastActiveTime - b.lastActiveTime;
     });
   };
 
-   private checkForSuccessfulContainerStart = function(instance: Instance, next) {
+  private checkForSuccessfulContainerStart = function(instance: Instance, next) {
     const self = this;
     const getListOfAllContainers = self.hostConfig.dockerCmdPrefix +
         " docker ps --no-trunc | grep " +
@@ -102,12 +120,8 @@ private init = (function() {
       });
     }, next);
   };
-/*
-   process.on("uncaughtException", function(err) {
-    console.error("Caught exception in cm process object: " + err);
-  });
-*/
-   private checkForRunningSshd(instance: Instance, next) {
+
+  private checkForRunningSshd(instance: Instance, next) {
     const getContainerProcesses = this.hostConfig.dockerCmdPrefix + " docker exec " +
         instance.containerName + " ps aux";
     const filterForSshd = "grep \"" + this.hostConfig.sshdCmd + "\"";
@@ -128,7 +142,7 @@ private init = (function() {
     }).bind(this), next);
   }
 
-    connectToHostAndExecCmd(cmd, next, errorHandler?) {
+  private connectToHostAndExecCmd(cmd, next, errorHandler?) {
     const connection: ssh2.Client = new ssh2.Client();
     connection.on("ready", function() {
       connection.exec(cmd, function(err, stream) {
@@ -159,36 +173,18 @@ private init = (function() {
       privateKey: fs.readFileSync(this.hostConfig.sshKey),
     });
   }
-    killOldestContainer = function(next) {
-      const self = this;
-      self.sortInstancesByAge();
-      if (self.isLegal(self.currentContainers[0])) {
-        self.removeInstance(self.currentContainers[0], function() {
-          self.getNewInstance(next);
-        });
-      } else {
-        throw new Error("Too many active users.");
-      }
-    };
 
-  connectWithSshAndCreateContainer = (function(instance: Instance, next) {
-    const dockerRunCmd = this.getDockerStartCmd(instance);
-    this.connectToHostAndExecCmd(dockerRunCmd, (function(stream) {
-      stream.on("data", (function(dataObject) {
-        instance.containerId = dataObject.toString();
-        this.checkForSuccessfulContainerStart(instance, next);
-      }).bind(this));
-      stream.stderr.on("data", (function(dataObject) {
-        // If we get stderr, there will not come an id, so don't be
-        // afraid of data.
-        const data = dataObject.toString();
-        if (data.match(/ERROR/i)) {
-          this.getNewInstance(next);
-          stream.end();
-        }
-      }).bind(this));
-    }).bind(this), next);
-  }).bind(this);
+  private killOldestContainer = function(next) {
+    const self = this;
+    self.sortInstancesByAge();
+    if (self.isLegal(self.currentContainers[0])) {
+      self.removeInstance(self.currentContainers[0], function() {
+        self.getNewInstance(next);
+      });
+    } else {
+      throw new Error("Too many active users.");
+    }
+  };
 }
 
 export {SshDockerContainersInstanceManager as SshDockerContainers};

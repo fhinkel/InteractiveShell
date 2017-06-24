@@ -18,15 +18,13 @@ class SshDockerContainersInstanceManager implements InstanceManager {
     const removalCommand = this.hostConfig.dockerCmdPrefix + " docker rm -f " +
         instance.containerName;
     this.connectToHostAndExecCmd(removalCommand, (function(stream) {
-      stream.on("data", function() {
-      });
       stream.stderr.on("data", function() {
       });
       this.removeInstanceFromArray(instance);
       if (next) {
         next();
       }
-    }).bind(this), function() {});
+    }).bind(this));
   }
 
   getNewInstance(next){
@@ -138,7 +136,7 @@ private init = (function() {
     }).bind(this), next);
   }
 
-    connectToHostAndExecCmd(cmd, next, errorHandler) {
+    connectToHostAndExecCmd(cmd, next, errorHandler?) {
     const connection: ssh2.Client = new ssh2.Client();
     connection.on("ready", function() {
       connection.exec(cmd, function(err, stream) {

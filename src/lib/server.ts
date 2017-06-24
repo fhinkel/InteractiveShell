@@ -132,23 +132,19 @@ const emitDataViaClientSockets = function(client: Client, type: SocketEvent, dat
 };
 
 const getInstance = function(client: Client, next) {
-  if (client.instance) {
-    next(client.instance);
-  } else {
-    try {
-      instanceManager.getNewInstance(function(err, instance: Instance) {
-        if (err) {
-          emitDataViaClientSockets(client, SocketEvent.result,
-            "Sorry, there was an error. Please come back later.\n" +
-              err + "\n\n");
-          deleteClientData(client);
-        } else {
-          next(instance);
-        }
-      });
-    } catch (error) {
-      logClient(client.id, "Could not get new instance. Should not drop in here.");
-    }
+  try {
+    instanceManager.getNewInstance(function(err, instance: Instance) {
+      if (err) {
+        emitDataViaClientSockets(client, SocketEvent.result,
+          "Sorry, there was an error. Please come back later.\n" +
+            err + "\n\n");
+        deleteClientData(client);
+      } else {
+        next(instance);
+      }
+    });
+  } catch (error) {
+    logClient(client.id, "Could not get new instance. Should not drop in here.");
   }
 };
 
@@ -178,21 +174,16 @@ const spawnMathProgramInSecureContainer = function(client: Client) {
   logClient(client.id, "Spawning new MathProgram process...");
   getInstance(client, function(instance: Instance) {
     instance.killNotify = killNotify(client);
-    client.instance = instance;
     const connection: ssh2.Client = new ssh2.Client();
     connection.on("error", function(err) {
       logClient(client.id, "Error when connecting. " + err +
         "; Retrying with new instance.");
-      try {
-        clients[client.id].instance = undefined;
-      } catch (deleteError) {
-        logClient(client.id, "Error when deleting instance.");
-      }
       // Make sure the sanitizer runs.
       client.saneState = true;
       sanitizeClient(client);
     });
     connection.on("ready", function() {
+      client.instance = instance;
       connection.exec(serverConfig.MATH_PROGRAM_COMMAND,
         {pty: true},
         function(err, channel: ssh2.ClientChannel) {
@@ -345,6 +336,10 @@ const sanitizeClient = function(client: Client) {
     logClient(client.id, "Has mathProgram instance.");
     client.saneState = true;
   }
+  // Avoid stuck sanitizer.
+  setTimeout(function() {
+    client.saneState = true;
+  }, 2000);
 };
 
 const writeMsgOnStream = function(client: Client, msg: string) {

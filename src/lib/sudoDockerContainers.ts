@@ -3,10 +3,19 @@ import {InstanceManager} from "./instanceManager";
 
 import child_process = require("child_process");
 const exec = child_process.exec;
-let waitForSshd;
 
 class SudoDockerContainersInstanceManager implements InstanceManager {
-  getNewInstance(next) {
+  private resources: any;
+  private options: any;
+  private currentInstance: any;
+
+  constructor(resources: any, options: any, currentInstance: Instance) {
+    this.resources = resources;
+    this.options = options;
+    this.currentInstance = currentInstance;
+  }
+
+  public getNewInstance(next) {
     const newInstance = JSON.parse(JSON.stringify(this.currentInstance));
     this.currentInstance.port++;
     newInstance.containerName = "m2Port" + newInstance.port;
@@ -29,7 +38,7 @@ class SudoDockerContainersInstanceManager implements InstanceManager {
       }).bind(this));
   }
 
-private removeInstance(instance: Instance) {
+  private removeInstance(instance: Instance) {
     console.log("Removing container: " + instance.containerName);
     const removeDockerContainer = "sudo docker rm -f " + instance.containerName;
     exec(removeDockerContainer, function(error) {
@@ -39,20 +48,8 @@ private removeInstance(instance: Instance) {
       }
     });
   }
-updateLastActiveTime() {
-  //
-}
-resources: any;
-options: any;
-currentInstance: any;
 
-constructor(resources: any, options: any, currentInstance: Instance) {
-  this.resources = resources;
-  this.options = options;
-  this.currentInstance = currentInstance;
-}
-
-constructDockerRunCommand(resources, newInstance: Instance) {
+  private constructDockerRunCommand(resources, newInstance: Instance) {
     let dockerRunCmd = "sudo docker run -d";
     dockerRunCmd += " -c " + resources.cpuShares;
     dockerRunCmd += " -m " + resources.memory + "m";
@@ -61,7 +58,8 @@ constructDockerRunCommand(resources, newInstance: Instance) {
     dockerRunCmd += this.options.containerType + " " + this.options.sshdCmd;
     return dockerRunCmd;
   }
-waitForSshd(next, instance: Instance) {
+
+  private waitForSshd(next, instance: Instance) {
     const dockerRunningProcesses = "sudo docker exec " + instance.containerName +
         " ps aux";
     const filterForSshd = "grep \"" + this.options.sshdCmd + "\"";

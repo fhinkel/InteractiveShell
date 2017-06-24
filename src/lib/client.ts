@@ -2,20 +2,20 @@ import {Instance} from "./instance";
 import ssh2 = require("ssh2");
 
 export class Client {
-    saneState: boolean;
-    reconnecting: boolean;
-    instance: Instance;
-    socketArray: {[socketID: string]: any; };
-    channel: ssh2.ClientChannel;
-    id: string;
+    public saneState: boolean;
+    public reconnecting: boolean;
+    public instance: Instance;
+    public socketArray: {[socketID: string]: any; };
+    public channel: ssh2.ClientChannel;
+    public id: string;
     constructor(newId: string) {
         this.saneState = true;
         this.reconnecting = false;
         this.socketArray = [];
         this.id = newId;
     }
-    nSockets(): number {
-      return Object.keys(this.socketArray).length;
+    public nSockets(): number {
+        return Object.keys(this.socketArray).length;
     }
 }
 

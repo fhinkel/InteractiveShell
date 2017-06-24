@@ -144,8 +144,8 @@ npm start
 
 
 ## Contributing
-We welcome any contributions. Feel free to send us an email if you want to provide a tutorial or have
-any questions: [trym2@googlegroups.com](mailto:trym2@googlegroups.com).
+We welcome any contributions. Feel free to contact us if you want to provide a tutorial or have
+any questions: [TryM2 Google group](https://groups.google.com/forum/#!forum/trym2).
 
 ### Tests
 Install Docker, or boot2docker etc. Inside boot2docker, run the tests with

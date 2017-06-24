@@ -113,14 +113,18 @@ const emitDataViaSockets = function(sockets, type: SocketEvent, data: string): v
   for (const socketKey in sockets) {
     if (sockets.hasOwnProperty(socketKey)) {
       const socket = sockets[socketKey];
-      try {
-        socket.emit(SocketEvent[type], data);
-      } catch (error) {
-        logExceptOnTest("Error while executing socket.emit of type " + SocketEvent[type]);
-      }
+      emitDataSafelyViaSocket(socket, type, data);
     }
   }
 };
+
+const emitDataSafelyViaSocket = function(socket, type: SocketEvent, data: string) : void {
+  try {
+    socket.emit(SocketEvent[type], data);
+  } catch (error) {
+    logExceptOnTest("Error while executing socket.emit of type " + SocketEvent[type]);
+  }
+}
 
 const emitDataViaClientSockets = function(client: Client, type: SocketEvent, data) {
   const sockets = client.socketArray;
@@ -314,13 +318,15 @@ const initializeServer = function() {
   app.use(unhandled);
 };
 
-const clientExistenceCheck = function(clientId: string): Client {
+const clientExistenceCheck = function(clientId: string, socket): Client {
   logExceptOnTest("Checking existence of client with id " + clientId);
   if (!clients[clientId]) {
     clients[clientId] = new Client(clientId);
     totalUsers += 1;
   } else {
-    clients[clientId].reconnecting = true;
+    emitDataSafelyViaSocket(socket,
+       SocketEvent.result,
+      "Session resumed.\n" + serverConfig.resumeString);
   }
   return clients[clientId];
 };
@@ -337,15 +343,11 @@ const sanitizeClient = function(client: Client) {
     spawnMathProgramInSecureContainer(client);
   } else {
     logClient(client.id, "Has mathProgram instance.");
-    if (client.reconnecting) {
-      emitDataViaClientSockets(client,
-         SocketEvent.result,
-        "Session resumed.\n" + serverConfig.resumeString);
-      client.reconnecting = false;
-    }
     client.saneState = true;
   }
 };
+
+
 
 const writeMsgOnStream = function(client: Client, msg: string) {
   client.channel.stdin.write(msg, function(err) {
@@ -430,7 +432,7 @@ const listen = function() {
       disconnectSocket(socket);
       return;
     }
-    const client = clientExistenceCheck(clientId);
+    const client = clientExistenceCheck(clientId, socket);
     sanitizeClient(client);
     addNewSocket(client, socket);
     const fileUpload = require("./fileUpload")(

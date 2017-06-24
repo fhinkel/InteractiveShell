@@ -1,4 +1,8 @@
 
+2.0.0 6/23/2017
+    * Markdown format for wirting tutorials
+    * Internally: use TypeScript
+
 1.1.0 4/13/2015
     * Multi-line code tags
     * Docker containers instead of schroots

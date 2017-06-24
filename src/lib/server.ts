@@ -383,7 +383,7 @@ const socketInputAction = function(client: Client) {
     checkClientSanity(client).then(function() {
       updateLastActiveTime(client);
       checkAndWrite(client, msg);
-    }, function(){});
+    });
   };
 };
 
@@ -396,7 +396,7 @@ const socketResetAction = function(client: Client) {
         killMathProgram(client.channel, client.id);
       }
       sanitizeClient(client);
-    }, function(){});
+    });
   };
 };
 

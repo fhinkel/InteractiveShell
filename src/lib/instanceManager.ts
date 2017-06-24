@@ -1,8 +1,8 @@
 import {Instance} from "./instance";
 
 interface InstanceManager {
-    public getNewInstance(next: any);
-    public updateLastActiveTime(instance: Instance);
+    getNewInstance(next: any);
+    updateLastActiveTime(instance: Instance);
 }
 
 export {InstanceManager};

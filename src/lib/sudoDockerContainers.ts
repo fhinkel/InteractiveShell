@@ -38,6 +38,10 @@ class SudoDockerContainersInstanceManager implements InstanceManager {
       }).bind(this));
   }
 
+  public updateLastActiveTime() {
+    //
+  };
+
   private removeInstance(instance: Instance) {
     console.log("Removing container: " + instance.containerName);
     const removeDockerContainer = "sudo docker rm -f " + instance.containerName;
@@ -65,6 +69,7 @@ class SudoDockerContainersInstanceManager implements InstanceManager {
     const filterForSshd = "grep \"" + this.options.sshdCmd + "\"";
     const excludeGrep = "grep -v grep";
 
+    var self = this;
     exec(dockerRunningProcesses + " | " + filterForSshd + " | " + excludeGrep,
       function(error, stdout, stderr) {
         if (error) {
@@ -79,7 +84,7 @@ class SudoDockerContainersInstanceManager implements InstanceManager {
           next(null, instance);
         } else {
           console.log("sshd not ready yet.");
-          waitForSshd(next, instance);
+          self.waitForSshd(next, instance);
         }
       });
   }

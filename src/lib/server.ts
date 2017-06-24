@@ -1,7 +1,7 @@
 "use strict;";
 
 import {Client} from "./client";
-import {Clients} from "./client";
+import {IClients} from "./client";
 import clientIdHelper from "./clientId";
 
 import {AuthOption, SocketEvent} from "../lib/enums";
@@ -52,7 +52,7 @@ const sshCredentials = function(instance: Instance): ssh2.ConnectConfig {
   };
 };
 
-const clients: Clients = {};
+const clients: IClients = {};
 
 let totalUsers: number = 0;
 

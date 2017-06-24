@@ -1,13 +1,13 @@
 import {Client} from "./client";
-import {Clients} from "./client";
+import {IClients} from "./client";
 
-const currentUsers = function(clients: Clients): number {
+const currentUsers = function(clients: IClients): number {
   return Object.keys(clients).length;
 };
 
 let totalUsers;
 
-module.exports = function(clients: Clients, total: number, program: string) {
+module.exports = function(clients: IClients, total: number, program: string) {
   totalUsers = total;
   const stats = function(request, response): void {
     response.writeHead(200, {

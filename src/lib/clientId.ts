@@ -1,6 +1,6 @@
-import {Clients} from "./client";
+import {IClients} from "./client";
 
-const exists = function(clientId: string, clients: Clients, logFunction) {
+const exists = function(clientId: string, clients: IClients, logFunction) {
   if (clientId in clients) {
     logFunction("Client already exists");
     return true;
@@ -8,7 +8,7 @@ const exists = function(clientId: string, clients: Clients, logFunction) {
   return false;
 };
 
-export default function clientIdHelper(clients: Clients, logFunction) {
+export default function clientIdHelper(clients: IClients, logFunction) {
   return {
     getNewId() {
       let clientId: string;

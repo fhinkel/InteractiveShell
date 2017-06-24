@@ -19,5 +19,5 @@ export class Client {
     }
 }
 
-interface Clients {[clientId: string]: Client; }
-export {Clients};
+interface IClients {[clientId: string]: Client; }
+export {IClients};

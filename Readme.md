@@ -69,22 +69,18 @@ Vagrant from within [Git BASH](https://msysgit.github.io/). Do the following ins
 git clone https://github.com/fhinkel/InteractiveShell.git
 cd InteractiveShell/setups/basic
 vagrant up
-vagrant ssh
-cd InteractiveShell
-npm install
-npm start
 ```
+
+The web app is running at [http://localhost:8002](http://localhost:8002). Every Macaulay2 instance runs in a
+separate Docker container with limited resources and does not have access to your
+filesystem. Users can only access files inside their Docker container. You can manipulate the memory limits
+of the server in the Vagrantfile and for the single users in the file {InteractiveShell/src/startupConfigs/default.js}.
 
 If vagrant cannot mount due to a vboxfs not found error, do
 
 ```bash
 vagrant plugin install vagrant-vbguest
 ```
-
-The web app is running at [http://localhost:8002](http://localhost:8002). Every Macaulay2 instance runs in a
-separate Docker container with limited resources and does not have access to your
-filesystem. Users can only access files inside their
-Docker container.
 
 ### Without Virtualisation
 
@@ -127,7 +123,25 @@ We have a vagrant configuration that starts server and containers on separate in
 cd separate_machines
 vagrant up
 ```
-Adjust resource limits as needed.
+
+
+### Adjusting resource limits
+You can manipulate the resource limits of the virtual machine in the Vagrantfile. Furthermore the startup files in the
+dircectory
+```
+InteractiveShell/src/startupConfigs
+```
+contain several default values for the resource limits of the single container.
+
+If you manipulate these files and want to manually restart, enter the directory of the setup you are using and
+```bash
+vagrant ssh
+killall node
+cd InteractiveShell
+npm install
+npm start
+```
+
 
 ## Contributing
 We welcome any contributions. Feel free to send us an email if you want to provide a tutorial or have

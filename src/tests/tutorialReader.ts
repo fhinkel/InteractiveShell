@@ -32,16 +32,16 @@ describe("GetListOfTutorials Module:", function() {
 
   describe("GetTutorialList with a stubbed file system", function() {
     let readDirStub;
-    let existsStub;
+    let accessStub;
 
     beforeEach(function() {
       readDirStub = sinon.stub(fs, "readdir");
-      existsStub = sinon.stub(fs, "exists");
+      accessStub = sinon.stub(fs, "access");
     });
 
     afterEach(function() {
       readDirStub.restore();
-      existsStub.restore();
+      accessStub.restore();
     });
 
     it("should get the list with shared tutorials", function(done) {
@@ -62,7 +62,7 @@ describe("GetListOfTutorials Module:", function() {
       spy = sinon.spy(response, "end");
 
       readDirStub.yields(null, ["mock.html", "nothtml.foo"]);
-      existsStub.yields(true);
+      accessStub.yields(false); // access err false implies folder exists.
 
       getList(null, response);
     });
@@ -82,8 +82,8 @@ describe("GetListOfTutorials Module:", function() {
       spy = sinon.spy(response, "end");
 
       readDirStub.yields(null, ["mock.html", "nothtml.foo"]);
-      existsStub.onFirstCall().yields(true);
-      existsStub.onSecondCall().yields(false);
+      accessStub.onFirstCall().yields(false); // access err false implies folder exists.
+      accessStub.onSecondCall().yields(true);
 
       getList(null, response);
     });

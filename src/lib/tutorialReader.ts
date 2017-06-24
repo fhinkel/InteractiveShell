@@ -32,8 +32,8 @@ function tutorialReader(prefix: string, fs): GetListFunction {
 
   const prefixedFsExists = function(path: string, next): void {
     const totalPath: string = prefix + path;
-    fs.exists(totalPath, function(exists) {
-      next(null, exists);
+    fs.access(totalPath, fs.constants.R_OK, function(error) {
+      next(null, !error);
     });
   };
 
@@ -52,10 +52,10 @@ function tutorialReader(prefix: string, fs): GetListFunction {
       async.concat(
           existingFolders,
           prefixedFsReaddir,
-          function(concatError, files: string[],
+          function(error, files: string[],
           ) {
-            if (concatError) {
-              throw new Error("async.concat() failed: " + concatError);
+            if (error) {
+              throw new Error("async.concat() failed: " + error);
             }
             let tutorials: Tutorials = files.filter(
               function(filename: Tutorial): Tutorials {

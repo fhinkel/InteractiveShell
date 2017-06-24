@@ -127,7 +127,7 @@ Berlin. \trym2 is suitable for both beginners and seasoned experts.
 
 We considered off the shelf solutions, such as the Sage
 notebook~\cite{sagenotebook}, but we wanted a more
-lightweight solution: one that does not require users to create
+lightweight solution, in particular one that does not require users to create
 new accounts at a web site.
 
 \trym2 runs in modern browsers, including Chrome, Firefox, Safari, and Edge, both on mobile devices and desktop
@@ -238,35 +238,86 @@ since multiple users are sharing these resources.
 
 \section{Tutorials}
 
-You can create your own tutorials for the web version. If you teach a course,
-email your tutorial to your students. They can include your tutorial in their web app by clicking
-{\it Load Tutorial} on the website.
-If you want to share a tutorial with the community, we would
-be happy to include them on the website!
+The purpose of the mathematical tutorials in \trym2 is to make abstract
+mathematical concepts more concrete as well as to provide a playground for users
+and students to experiment and explore the mathematics.
 
-You can use the \M2 package {\it DocConverter}.
-It converts a file from {\it SimpleDoc} to the tutorial specific HTML. Please see the
-{\it DocConverter} package for instructions and examples.
+The tutorials are interactive, \M2 examples in a tutorial can be run
+by clicking or pressing on the highlighted code.  The text of the
+tutorial includes mathematics, using the mathjax tex library for
+browsers.  Users can easily modify this \M2 code in the Editor, in
+order to work examples and exercises, or to investigate further the
+mathematical concepts taught in the tutorial.
 
+\trym2 includes several tutorials describing basic \M2 usage and
+mathematics around Gr\"obner bases and polynomial algebra.  These
+tutorials include content written by the authors and by David
+Eisenbud.
 
+Additional tutorials can be used in \trym2 by simply uploading them in the
+{\it Load your own tutorial} section.
+
+\subsection{Authoring a tutorial}
+
+The format of tutorials for \trym2 is the simple markdown format, used
+on many websites, such as github. The title line begins with a ``\#''
+and contains the title (and possibly author) of the tutorial. Each lesson
+in the tutorial is marked by two ``\#''s, and each piece of \M2 code is enclosed in triple
+backticks ``` (these should be on their own line).  The text itself
+can contain latex math, as well as html markup.  Blank lines separate
+paragraphs. A tutorial template file is available for download in the
+{\it Load your own tutorial} section of \trym2, see
+Figure~\ref{fig:markdown}.
+
+Instructors or users who wish to share their tutorials with their
+students or others should distribute their tutorials to them, e.g. via
+email, a course website, dropbox, google drive, etc.  Each
+user then uploads the tutorial in their own \trym2.  Note that an
+uploaded tuorial is only available to that user, it is not made
+publically available.  We encourage interested authors to share their
+tutorials at the \trym2 google group (\cite{trym2:googlegroup}).  This
+is also an excellent place to ask questions and get help about writing
+tutorials.
+
+Existing \M2 documentation in simpledoc format can be converted into
+tutorials via the \M2 package {\tt TryM2Tutorials}.  This is how several of
+the distributed tutorials were generated.
+
+We are collaborating with several mathematicians to develop more
+tutorials.  We will keep a curated collection of tutorials on various
+mathematical topics at the \trym2 google group (\cite{trym2:googlegroup}).
+ 
 \section{Internal structure}
 
-We choose to implement the server in Node.js
-because of Node.js's event-driven, non-blocking I/O model~\cite{nodejs}.
-The Node.js server functions as a bridge between \M2 instances and end users.
+The front end of \trym2 is written in TypeScript, and uses Material Design Lite
+\cite{MDL} for user interface elements.  The server back end is
+implemented in Node.js. The Node.js server functions as a bridge
+between \M2 instances and users.  For every user, the server starts
+a new \M2 process in a separate and sandboxed linux virtual environment.
 
-For every user we start a new \M2 process and
-provide them with the underlying Linux system in a separate virtual environment.
-This allows advanced users to
-interact with the file system or run shell commands by using \M2's {\tt get} 
+Technically, this is achieved by using Docker
+containers~\cite{docker}. Docker implements a high-level API to
+provide lightweight containers that run processes in isolation.  The
+server starts a new Docker container running \M2 for every user. The
+Node.js server communicates with Docker containers via {\it ssh}. This
+allows containers to run on independent machines, so in the future
+this will allow the configuration of systems which can scale with
+demand.
+
+This architecture provides a sandboxed and secure linux environment
+for every \trym2 user.  For instance, users can interact with the
+sandboxed file system and run shell commands via \M2's {\tt get}
 command:
 
-\begin{verbatim}
+{\tiny\begin{verbatim}
 i1 : -- get information on the underlying
      -- operating system
      get "!uname -mrs" 
-o1 = Linux 3.13.0-49-generic x86_64
+o1 = Linux 4.4.0-81-generic x86_64
+\end{verbatim}
+}
 
+{\tiny\begin{verbatim}
 i2 : -- write to a file     
      "results.txt" << "Hello!" << close
 o2 = results.txt
@@ -280,12 +331,8 @@ o3 = results.txt
 i4 : -- obtain the file
      get "!open results.txt"
 \end{verbatim}
+}
 
-Technically, this is achieved by using Docker containers~\cite{docker}. Docker implements
-a high-level API to provide lightweight containers that run processes in isolation.
-We start a new Docker container running \M2 for every user. The Node.js
-server communicates with Docker containers via {\it ssh}. This allows us to easily
-scale the application as demand grows.
 
 To ease the setup process we provide a virtual machine that contains both the Node.js server
 and Docker. This virtual machine is configured using {\tt vagrant}, a tool to create and
@@ -293,26 +340,19 @@ configure reproducible and portable development environments~\cite{vagrant}.
 
 \section{Conclusion}
 
-By providing \M2 as a web application, we hope to lower the
- entry barrier for new users, therefore increasing the number 
+\trym2 lowers the entry barrier for new users of \M2, therefore increasing the number 
  of users and fostering research in computational algebraic geometry and commutative algebra. 
 
-
-We are collaborating with several mathematicians to develop more tutorials.
-We plan to substantially increase the number of tutorials in the tutorial database over the next semester.
-
-
-We envision some form of session sharing which allows to use the web app as a tool for collaborative research.
-
-
-The application was designed with \M2 in mind, but
-the entire structure will work for other command line programs such as Singular~\cite{singular},
-and GAP~\cite{GAP4}. A similar web application for Singular is work in progress.
+For all users, \trym2 is a useful way to use \M2 on shared or mobile
+devices where it is difficult or impossible to install software. For
+some, the user interface of \trym2 is a more natural way to interact with \M2.
 
 \section{Acknowledgments}
 
-We would like to thank Charles Boyd, Dan Grayson, Greg Smith, and Benjamin Lorenz for
+We would like to thank Dan Grayson, Greg Smith, and Benjamin Lorenz for
 fruitful discussions on system security and on user interface design.
+We would like to thank David Eisenbud for writing his \M2 tutorials.
+
 
 \bibliographystyle{plain}
 \bibliography{references}

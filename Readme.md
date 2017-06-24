@@ -10,7 +10,7 @@ git clone https://github.com/fhinkel/InteractiveShell.git
 cd InteractiveShell/setups/basic
 vagrant up
 ```
-Point your broser to [localhost:8002](localhost:8002).
+Point your broser to [localhost:8002](http://localhost:8002).
 
 ## Purpose
 

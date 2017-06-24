@@ -1,8 +1,7 @@
 import {InstanceManager} from "../lib/instanceManager";
 import {SudoDockerContainers} from "../lib/sudoDockerContainers";
-import {startup} from "./startup";
 
-startup({
+const options = {
   serverConfig: {
     port: 8002,
     MATH_PROGRAM: "Singular",
@@ -23,4 +22,6 @@ startup({
     username: "singularUser",
   },
   help: require("./HelpSingular").help(),
-});
+};
+
+export {options};

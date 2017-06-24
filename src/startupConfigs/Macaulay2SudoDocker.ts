@@ -1,8 +1,7 @@
 import {InstanceManager} from "../lib/instanceManager";
 import {SudoDockerContainers} from "../lib/sudoDockerContainers";
 
-import {startup} from "./startup";
-startup({
+const options = {
   serverConfig: {
     port: 8002,
     MATH_PROGRAM_COMMAND: "export WWWBROWSER=/usr/bin/open; " +
@@ -12,4 +11,6 @@ startup({
       return new SudoDockerContainers(resources, hostConfig, guestInstance);
     },
   },
-});
+};
+
+export {options};

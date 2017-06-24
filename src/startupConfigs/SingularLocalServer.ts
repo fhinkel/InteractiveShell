@@ -1,8 +1,7 @@
 import {InstanceManager} from "../lib/instanceManager";
 import {LocalContainerManager} from "../lib/LocalContainerManager";
-import {startup} from "./startup";
 
-startup({
+const options = {
   serverConfig: {
     port: 8002,
     MATH_PROGRAM: "Singular",
@@ -11,4 +10,6 @@ startup({
       return new LocalContainerManager();
     },
   },
-});
+};
+
+export {options};

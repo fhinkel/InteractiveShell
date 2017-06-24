@@ -1,8 +1,7 @@
 import {InstanceManager} from "../lib/instanceManager";
 import {SshDockerContainers} from "../lib/sshDockerContainers";
-import {startup} from "./startup";
 
-startup({
+const options = {
   serverConfig: {
     port: 8002,
     MATH_PROGRAM: "Macaulay2",
@@ -21,4 +20,6 @@ startup({
     containerName: "",
     lastActiveTime: 0,
   },
-});
+};
+
+export {options};

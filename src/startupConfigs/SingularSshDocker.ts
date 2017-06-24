@@ -1,8 +1,7 @@
 import {InstanceManager} from "../lib/instanceManager";
 import {SshDockerContainers} from "../lib/sshDockerContainers";
-import {startup} from "./startup";
 
-startup({
+const options = {
   hostConfig: {
     dockerRunCmd: "",
     maxContainerNumber: 10,
@@ -34,4 +33,6 @@ startup({
     lastActiveTime: 0,
   },
   help: require("./HelpSingular").help(),
-});
+};
+
+export {options};

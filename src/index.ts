@@ -2,6 +2,10 @@ let mathProgram : string = "Macaulay2";
 let mode : string = "docker";
 const args : string[] = process.argv;
 const n : number = args.length;
+import fs = require("fs");
+import {AuthOption} from "./lib/enums";
+
+import {options, overrideDefaultOptions} from "./startupConfigs/default";
 
 if (n > 2) {
   mathProgram = args[2];
@@ -30,26 +34,57 @@ if (mathProgram === "--help") {
   process.exit(0);
 }
 
+var overrideOptions;
 if (mathProgram === "Macaulay2" || mathProgram === "M2") {
   if (mode === "local") {
-    require(path + "Macaulay2LocalServer");
+    overrideOptions = require(path + "Macaulay2LocalServer");
   } else if (mode === "docker") {
-    require(path + "Macaulay2SudoDocker");
+    overrideOptions = require(path + "Macaulay2SudoDocker");
   } else if (mode === "ssh") {
-    require(path + "Macaulay2SshDocker");
+    overrideOptions = require(path + "Macaulay2SshDocker");
   } else {
     console.log("There is no mode " + mode);
   }
 } else if (mathProgram === "Singular" || mathProgram === "singular") {
   if (mode === "local") {
-    require(path + "SingularLocalServer");
+    overrideOptions = require(path + "SingularLocalServer");
   } else if (mode === "docker") {
-    require(path + "SingularSudoDocker");
+    overrideOptions = require(path + "SingularSudoDocker");
   } else if (mode === "ssh") {
-    require(path + "SingularSshDocker");
+    overrideOptions = require(path + "SingularSshDocker");
   } else {
     console.log("There is no mode " + mode);
   }
 } else {
   console.log("Did not recognize math program " + mathProgram);
 }
+
+overrideDefaultOptions(overrideOptions.options, options);
+console.log("Done reading options.");
+
+
+// This starts the main server!
+
+const fileExistsPromise = function(filename) {
+  return new Promise(function(resolve) {
+    fs.access(filename, fs.constants.R_OK, function(err) {
+      resolve(!err);
+    });
+  });
+};
+
+fileExistsPromise("public/users.htpasswd")
+.then(function(exists) {
+  if (exists) {
+    overrideOptions.authentication = AuthOption.basic;
+  } else {
+    overrideOptions.authentication = AuthOption.none;
+  }
+})
+.then(function() {
+  const MathServer = require("./lib/server").mathServer(options);
+  MathServer.listen();
+})
+.catch(function(err) {
+  console.log(err);
+});

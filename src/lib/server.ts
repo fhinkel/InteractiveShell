@@ -400,9 +400,12 @@ const socketResetAction = function(client: Client) {
   };
 };
 
+const threeDays = 3*86409000;
+
 const setCookieOnSocket = function(socket): string{
   const clientID = clientIdHelper(clients, logExceptOnTest).getNewId();
-  const sessionCookie = Cookie.serialize(options.cookieName, clientID);
+  const expDate = new Date(new Date().getTime()+threeDays);
+  const sessionCookie = Cookie.serialize(options.cookieName, clientID, {expires: expDate});
   socket.emit("cookie", sessionCookie);
   return clientID;
 };

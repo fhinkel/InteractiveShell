@@ -55,8 +55,12 @@ const clients: Clients = {};
 let totalUsers: number = 0;
 
 let instanceManager: InstanceManager = {
-    getNewInstance(next: any){},
-    updateLastActiveTime(){},
+    getNewInstance(next: any){
+      //
+    },
+    updateLastActiveTime(){
+      //
+    },
 };
 
 const logClient = function(clientID, str) {

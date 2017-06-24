@@ -132,7 +132,7 @@ const emitDataViaClientSockets = function(client: Client, type: SocketEvent, dat
 };
 
 const getInstance = function(client: Client, next) {
-  if(client.instance){
+  if (client.instance) {
     next(client.instance);
   } else {
     try {
@@ -183,11 +183,11 @@ const spawnMathProgramInSecureContainer = function(client: Client) {
       logClient(client.id, "Error when connecting. " + err +
         "; Retrying with new instance.");
       // Make sure the sanitizer runs.
-      try{
+      try {
         delete client.instance;
         client.saneState = true;
         sanitizeClient(client);
-      } catch (instanceDeleteError){
+      } catch (instanceDeleteError) {
         logClient(client.id, "Error when deleting instance: " + instanceDeleteError);
         deleteClientData(client);
       }

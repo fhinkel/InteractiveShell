@@ -37,7 +37,7 @@ newPackage(
                 },
             {
                 Name => "Franziska Hinkelmann", 
-                Email => "franziska.hinkelmann@tngtech.com"
+                Email => "franziska.hinkelmann@gmail.com"
                 },
             {
                 Name => "Lars Kastner", 

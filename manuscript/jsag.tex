@@ -142,7 +142,7 @@ tutorials and share them with other \M2 users.
         side shows a tutorial giving an introduction to Gr\"obner
         bases. Text in yellow boxes can be clicked and is then executed by
         \M2 on the server. The complete output of the calculations
-        is show on the right hand side. Clicking {\it Home, Tutorials, Editor, About}
+        is show on the right hand side. Clicking {\it Home, Tutorial, Editor, About}
         changes the left hand view, {\it Reset, Interrupt}
         reset and interrupt the \M2 session on the server, {\it
         Save} provides both the input and the output of the current
@@ -173,44 +173,50 @@ is already available online (\cite{trySingular}).
 An important design decision is to keep the interface as simple as
 possible.  Therefore there is no login or registration.
 
-After first opening \cite{webm2}, the user is presented with a split
-window.  The right hand side provides a shell like environment running
-\M2. The user can type into it and use the arrow keys for navigating
-through the command history. You can use the tabulator key for
-command completion.
+After first opening \cite{webM2}, the user is presented with a split
+window~\ref{fig:home}.  The right hand side of this window provides a
+shell like environment running \M2. The user can type into it and use
+the arrow keys for navigating through the command history.
+The tab key works for command completion.
 
-On the left hand side, you can switch between {\it Home}, {\it
-  Tutorial}, and {\it Input}. {\it Home} shows the available
+On the left hand side of the window, the user can switch between {\it Home}, {\it
+  Tutorial}, {\it Editor}, and {\it About}. {\it Home} shows the available
  tutorials. {\it Tutorial} shows the currently selected
 tutorial. Tutorials are interactive and contain executable pieces of
-\M2 code that are run by clicking on them. {\it Input} is a
-text area in which you can type \M2 commands and execute them.
+\M2 code that are run by clicking on them. {\it Editor} is a
+text area in which one can type \M2 commands and evaluate them.
 
 All code executed, either by clicking on interactive parts in a
-tutorial or by entering code in the {\it Input} window, will appear in 
-the terminal on the right hand side together with the \M2 output.
-
+tutorial or by entering code in the {\it Editor} window, will appear in 
+the shell emulator on the right hand side together with the \M2 output.
 
 The {\it Reset} button resets a \M2 session, i.e., restarts 
 the \M2 process: it stops any running calculation, deletes all variables, 
 unloads all packages, and then reloads the standard packages.
 
 The {\it Interrupt} button stops a running calculation, without
-resetting the \M2 session. This is useful if you want to stop a long calculation.
+resetting the \M2 session. This can be used to stop a long running
+calculation.
 
 \subsection{Features}
-You can run any command in the \M2 web application that you can run in the desktop version.
-To find the current version of \M2,
-enter and evaluate: {\tt version}.  You can load a package
- using {\tt loadPackage} or {\tt needsPackage}, e.g. {\tt needsPackage "BoijSoederberg"}.  
-You can upload a new packages by clicking the {\it Upload file}
-button. Similarly, you can upload any other file that you want to 
-read or manipulate with \M2, e.g., text files with data. 
+
+The user can run any command in \trym2 that can be run in the desktop
+computer version, including commands that refer to external programs
+distributed with \M2, such as gfan, bertini, and phcpack.  \M2 comes
+with a large number of contributed \M2 packages.  \trym2 can access
+all of these packages.  As in the desktop computer version, one loads
+such a \M2 package using {\tt needsPackage}, e.g. {\tt needsPackage
+  "BoijSoederberg"}.  The user can upload files. For instance, \M2
+packages not included in the \M2 distribution can be uploaded and then
+loaded into the user's \M2 session using {\tt needsPackage}.  The {\it
+  Upload File} button uploads files to the server where they are
+available to the user's \M2 session.  This works for all file types,
+including \M2 package files.
 
 \begin{figure*}[htb]
     \includegraphics[width=.95\textwidth]{withGraph.jpg}
     \caption{Screenshot after the user
-      generated an image. Some \M2 packages can generate
+      has generated an image. Some \M2 packages can generate
       graphs. By invoking the command {\tt displayGraph}, the image is
       generated on the server and displayed to the user.}
     \label{fig:graph}
@@ -220,11 +226,15 @@ Results from a session can be retrieved by using the {\it Save}
 button, or by using copy and paste. If \M2 generates
 images such as graphs, those are presented to the user, see Figure \ref{fig:graph}.
 
-
-Session are usually kept alive for several days. When you start a \M2 session and visit the web app at a later time, 
-you will find your previous session. Occasionally, 
-we have to reboot the server or deploy a new version, this, 
-unfortunately, will delete your session. Also, we have to restrict resources since you are on a shared machine.
+There is a maximum number of concurrent users.  If there are not this
+many users, the \M2 sessions are usually kept alive for several
+days. When a user starts a \trym2 session and visits the web app at a
+later time, they will continue the previous session. During times of
+high demand, inactive sessions may be kept for a shorter period of
+time, to make room for new users.  Occasionally the server must be
+rebooted, this will unfortunately remove all active sessions.
+Resources are generally more restricted than on a personal computer,
+since multiple users are sharing these resources.
 
 \section{Tutorials}
 

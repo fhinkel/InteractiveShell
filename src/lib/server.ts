@@ -132,19 +132,23 @@ const emitDataViaClientSockets = function(client: Client, type: SocketEvent, dat
 };
 
 const getInstance = function(client: Client, next) {
-  try {
-    instanceManager.getNewInstance(function(err, instance: Instance) {
-      if (err) {
-        emitDataViaClientSockets(client, SocketEvent.result,
-          "Sorry, there was an error. Please come back later.\n" +
-            err + "\n\n");
-        deleteClientData(client);
-      } else {
-        next(instance);
-      }
-    });
-  } catch (error) {
-    logClient(client.id, "Could not get new instance. Should not drop in here.");
+  if(client.instance){
+    next(client.instance);
+  } else {
+    try {
+      instanceManager.getNewInstance(function(err, instance: Instance) {
+        if (err) {
+          emitDataViaClientSockets(client, SocketEvent.result,
+            "Sorry, there was an error. Please come back later.\n" +
+              err + "\n\n");
+          deleteClientData(client);
+        } else {
+          next(instance);
+        }
+      });
+    } catch (error) {
+      logClient(client.id, "Could not get new instance. Should not drop in here.");
+    }
   }
 };
 
@@ -179,8 +183,14 @@ const spawnMathProgramInSecureContainer = function(client: Client) {
       logClient(client.id, "Error when connecting. " + err +
         "; Retrying with new instance.");
       // Make sure the sanitizer runs.
-      client.saneState = true;
-      sanitizeClient(client);
+      try{
+        delete client.instance;
+        client.saneState = true;
+        sanitizeClient(client);
+      } catch (instanceDeleteError){
+        logClient(client.id, "Error when deleting instance: " + instanceDeleteError);
+        deleteClientData(client);
+      }
     });
     connection.on("ready", function() {
       client.instance = instance;

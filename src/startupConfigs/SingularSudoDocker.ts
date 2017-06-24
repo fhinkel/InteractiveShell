@@ -1,7 +1,8 @@
 import {InstanceManager} from "../lib/instanceManager";
 import {SudoDockerContainers} from "../lib/sudoDockerContainers";
+import {startup} from "./startup";
 
-require("./startup")({
+startup({
   serverConfig: {
     port: 8002,
     MATH_PROGRAM: "Singular",

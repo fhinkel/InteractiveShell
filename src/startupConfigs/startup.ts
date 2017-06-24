@@ -10,7 +10,7 @@ const fileExistsPromise = function(filename) {
   });
 };
 
-module.exports = function(overrideOptions) {
+export function startup(overrideOptions) {
   fileExistsPromise("public/users.htpasswd")
     .then(function(exists) {
       if (exists) {

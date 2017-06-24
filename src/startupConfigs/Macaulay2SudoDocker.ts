@@ -1,7 +1,8 @@
 import {InstanceManager} from "../lib/instanceManager";
 import {SudoDockerContainers} from "../lib/sudoDockerContainers";
 
-require("./startup")({
+import {startup} from "./startup";
+startup({
   serverConfig: {
     port: 8002,
     MATH_PROGRAM_COMMAND: "export WWWBROWSER=/usr/bin/open; " +

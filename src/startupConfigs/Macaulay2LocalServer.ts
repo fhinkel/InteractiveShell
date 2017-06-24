@@ -1,7 +1,8 @@
 import {InstanceManager} from "../lib/instanceManager";
 import {LocalContainerManager} from "../lib/LocalContainerManager";
+import {startup} from "./startup";
 
-require("./startup")({
+startup({
   serverConfig: {
     CONTAINERS(): InstanceManager {
       return new LocalContainerManager();

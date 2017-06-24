@@ -1,7 +1,8 @@
 import {InstanceManager} from "../lib/instanceManager";
 import {SshDockerContainers} from "../lib/sshDockerContainers";
+import {startup} from "./startup";
 
-require("./startup")({
+startup({
   hostConfig: {
     dockerRunCmd: "",
     maxContainerNumber: 10,

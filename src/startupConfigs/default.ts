@@ -15,7 +15,7 @@ const options = {
     host: "127.0.0.1",
     username: "m2user",
     port: "123",
-    sshKey: "/home/ubuntu/InteractiveShell/id_rsa",
+    sshKey: process.env.HOME + "/InteractiveShell/id_rsa",
     containerName: "",
   },
   perContainerResources: {
@@ -29,9 +29,9 @@ const options = {
     sshdCmd: "/usr/sbin/sshd -D",
     dockerCmdPrefix: "sudo ",
     host: "192.168.2.42",
-    username: "ubuntu",
+    username: "vagrant",
     port: "22",
-    sshKey: "/home/ubuntu/keys/host_key",
+    sshKey: process.env.HOME + "/keys/host_key",
   },
   help: require("./HelpMacaulay2").help(),
 };

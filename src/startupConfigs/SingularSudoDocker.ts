@@ -18,7 +18,7 @@ const options = {
   },
   startInstance: {
     host: "127.0.0.1",
-    sshKey: "/home/ubuntu/InteractiveShell/setups/Singular/id_rsa",
+    sshKey: process.env.HOME + "/InteractiveShell/setups/Singular/id_rsa",
     username: "singularUser",
   },
   help: require("./HelpSingular").help(),

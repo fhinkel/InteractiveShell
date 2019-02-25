@@ -66,7 +66,7 @@
     "basic": "npm run build && npm start M2 docker",
     "local": "npm run build && npm start M2 local",
     "twoMachines": "npm run build && npm start M2 ssh",
-    "twoMachines_forever": "npm run build && forever start -l /home/ubuntu/webm2.logs/forever.log -o /home/ubuntu/webm2.logs/out.log -e /home/ubuntu/webm2.logs/err.log --append src/dist/index.js M2 ssh",
+    "twoMachines_forever": "npm run build && forever start -l $HOME/webm2.logs/forever.log -o $HOME/webm2.logs/out.log -e $HOME/webm2.logs/err.log --append src/dist/index.js M2 ssh",
     "start_singular": "npm run build && npm start singular docker",
     "basic_singular": "npm run build && npm start singular local",
     "ssh_singular": "npm run build && npm start singular ssh",

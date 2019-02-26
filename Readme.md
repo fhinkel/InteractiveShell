@@ -2,6 +2,16 @@
 
 # Interactive Shell - a Web App for Macaulay2
 
+## Quickstart
+
+Run the following commands in a terminal (`vagrant` might take a while):
+```bash
+git clone https://github.com/fhinkel/InteractiveShell.git
+cd InteractiveShell/setups/basic
+vagrant up
+```
+Point your broser to [localhost:8002](http://localhost:8002).
+
 ## Purpose
 
 With Interactive Shell you can build a web app for interactive command-line tools.

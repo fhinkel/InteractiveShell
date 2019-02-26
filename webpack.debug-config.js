@@ -6,10 +6,8 @@ module.exports = {
     path: __dirname,
     filename: "public/public-common/index.js"
   },
+  mode: 'development',
   module: {
-    loaders: [
-      {test: /\.css$/, loader: "style!css"}
-    ]
   },
   plugins: [
   ]

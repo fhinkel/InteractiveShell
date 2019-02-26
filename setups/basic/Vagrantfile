@@ -4,7 +4,7 @@
 # Settings:
 mathProgram = "M2"
 npmCmd = "npm start"
-logfilePath = "/home/ubuntu/web" + mathProgram + ".log"
+logfilePath = "/home/vagrant/web" + mathProgram + ".log"
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
@@ -17,7 +17,7 @@ Vagrant.configure(2) do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "ubuntu/xenial64"
+  config.vm.box = "ubuntu/bionic64"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -43,8 +43,8 @@ Vagrant.configure(2) do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder "../../", "/home/ubuntu/InteractiveShell"
-  config.vm.synced_folder "../../Macaulay2-tutorials", "/home/ubuntu/InteractiveShell/public-Macaulay2/shared-tutorials"
+  config.vm.synced_folder "../../", "/home/vagrant/InteractiveShell"
+  config.vm.synced_folder "../../Macaulay2-tutorials", "/home/vagrant/InteractiveShell/public-Macaulay2/shared-tutorials"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -74,24 +74,10 @@ Vagrant.configure(2) do |config|
   # documentation for more information about their specific syntax and use.
   config.vm.provision "sudo", type:"shell", privileged:true, inline: <<-SHELL
     apt-get update && apt-get upgrade -y
-    apt-get install -y wget
+    apt-get install -y wget nodejs npm
     wget -qO- https://get.docker.com/ | sh
-    chown -R ubuntu:ubuntu /home/ubuntu/InteractiveShell
+    chown -R vagrant:vagrant /home/vagrant/InteractiveShell
   SHELL
-
-  config.vm.provision "nvm", type:"shell", privileged:false, inline: <<-SHELL
-    curl https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
-    source ~/.nvm/nvm.sh; 
-    nvm install stable
-    nvm use stable
-   SHELL
-
-  config.vm.provision "node-modules", type:"shell", privileged:false, inline: <<-SHELL
-    source ~/.bashrc;
-    source ~/.nvm/nvm.sh; 
-    cd InteractiveShell
-    npm install
-   SHELL
 
   config.vm.provision "docker", type:"shell", privileged:false, inline: <<-SHELL
     cd InteractiveShell
@@ -102,11 +88,11 @@ Vagrant.configure(2) do |config|
   SHELL
    
   config.vm.provision "remove", type:"shell", privileged:false, run: "always", inline: <<-SHELL
-       rm -f /home/ubuntu/InteractiveShell/public/users.htpasswd
+       rm -f /home/vagrant/InteractiveShell/public/users.htpasswd
      SHELL
     
       if File.exists?('users.htpasswd') then 
-        config.vm.provision "file", source: "./users.htpasswd", run: "always", destination: "/home/ubuntu/InteractiveShell/public/users.htpasswd"
+        config.vm.provision "file", source: "./users.htpasswd", run: "always", destination: "/home/vagrant/InteractiveShell/public/users.htpasswd"
       end
 
   # config.vm.provision "cron", type:"shell", privileged:false do |cron|
@@ -114,8 +100,7 @@ Vagrant.configure(2) do |config|
   # end
 
   config.vm.provision "startup_server", type:"shell", privileged:false, run: "always", inline: <<-SHELL
-      source ~/.nvm/nvm.sh 
-      cd /home/ubuntu/InteractiveShell
+      cd /home/vagrant/InteractiveShell
       (npm start 2>&1 > ../webm2.log) &
       sleep 10
   SHELL

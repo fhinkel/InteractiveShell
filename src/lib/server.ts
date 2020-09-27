@@ -4,6 +4,7 @@ import {Client} from "./client";
 import {IClients} from "./client";
 import clientIdHelper from "./clientId";
 
+import { AddressInfo } from "net";
 import {AuthOption, SocketEvent} from "../lib/enums";
 import {Instance} from "./instance";
 import {InstanceManager} from "./instanceManager";
@@ -447,7 +448,7 @@ const listen = function() {
   });
 
   const listener = http.listen(serverConfig.port);
-  logExceptOnTest("Server running on " + listener.address().port);
+  logExceptOnTest("Server running on " + (listener.address() as AddressInfo).port);
   return listener;
 };
 

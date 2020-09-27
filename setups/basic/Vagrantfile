@@ -83,6 +83,7 @@ Vagrant.configure(2) do |config|
     systemctl enable docker
     grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
     chown -R vagrant:vagrant /home/vagrant/InteractiveShell
+    firewall-cmd --zone=public --permanent --add-port=8002/tcp
   SHELL
   
   config.vm.provision :reload
